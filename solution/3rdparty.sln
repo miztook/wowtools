@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CascLib", "..\3rdparty\CascLib\CascLib.vcxproj", "{06FA80C9-A964-42B8-9E2C-A15BC92372BD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pugixml", "..\3rdparty\pugixml\pugixml.vcxproj", "{BB9615C2-A6E8-486D-A4F5-257A621DAC25}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{06FA80C9-A964-42B8-9E2C-A15BC92372BD}.Debug|x64.ActiveCfg = Debug|x64
+		{06FA80C9-A964-42B8-9E2C-A15BC92372BD}.Debug|x64.Build.0 = Debug|x64
+		{06FA80C9-A964-42B8-9E2C-A15BC92372BD}.Release|x64.ActiveCfg = Release|x64
+		{06FA80C9-A964-42B8-9E2C-A15BC92372BD}.Release|x64.Build.0 = Release|x64
+		{BB9615C2-A6E8-486D-A4F5-257A621DAC25}.Debug|x64.ActiveCfg = Debug|x64
+		{BB9615C2-A6E8-486D-A4F5-257A621DAC25}.Debug|x64.Build.0 = Debug|x64
+		{BB9615C2-A6E8-486D-A4F5-257A621DAC25}.Release|x64.ActiveCfg = Release|x64
+		{BB9615C2-A6E8-486D-A4F5-257A621DAC25}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
