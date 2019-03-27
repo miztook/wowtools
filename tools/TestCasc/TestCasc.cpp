@@ -1,5 +1,7 @@
 #include <crtdbg.h>
 #include <stdio.h>
+#include <regex>
+#include <iostream>
 
 #include "CascLib.h"
 #include "CascCommon.h"
@@ -14,6 +16,13 @@ int main(int argc, char* argv[])
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
+
+	const std::regex pattern("^(\\d).(\\d).(\\d).(\\d+)");
+	std::match_results<std::string::const_iterator> sm;
+	std::string str("8.1.5.29814");
+	std::regex_match(str, sm, pattern);
+ 	for (int i = 0; i < sm.size(); ++i)
+		printf("%s\n", sm[i].str().c_str());
 
 	const char* szStorage = R"(D:\World Of Warcraft\Data\)";
 	const char* filename = "character\\human\\male\\humanmale00.skin";
