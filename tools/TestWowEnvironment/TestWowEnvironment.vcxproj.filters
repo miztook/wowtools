@@ -2,5 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="TestWowEnvironment.cpp" />
+    <ClCompile Include="CMemFile.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CMemFile.h" />
   </ItemGroup>
 </Project>
