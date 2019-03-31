@@ -141,11 +141,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CFileSystem.cpp" />
     <ClCompile Include="CMemFile.cpp" />
+    <ClCompile Include="CReadFile.cpp" />
+    <ClCompile Include="CWriteFile.cpp" />
     <ClCompile Include="TestWowEnvironment.cpp" />
+    <ClCompile Include="wowEnvironment.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CFileSystem.h" />
     <ClInclude Include="CMemFile.h" />
+    <ClInclude Include="CReadFile.h" />
+    <ClInclude Include="CWriteFile.h" />
+    <ClInclude Include="prefine.h" />
+    <ClInclude Include="function.h" />
+    <ClInclude Include="stringext.h" />
+    <ClInclude Include="wowEnvironment.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

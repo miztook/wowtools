@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 	std::match_results<std::string::const_iterator> sm;
 	std::string str("8.1.5.29814");
 	std::regex_match(str, sm, pattern);
- 	for (int i = 0; i < sm.size(); ++i)
+	for (int i = 0; i < sm.size(); ++i)
 		printf("%s\n", sm[i].str().c_str());
 
 	const char* szStorage = R"(D:\World Of Warcraft\Data\)";

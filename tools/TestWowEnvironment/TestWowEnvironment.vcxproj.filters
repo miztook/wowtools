@@ -2,9 +2,51 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="TestWowEnvironment.cpp" />
-    <ClCompile Include="CMemFile.cpp" />
+    <ClCompile Include="CMemFile.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="CFileSystem.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="CReadFile.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="CWriteFile.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="wowEnvironment.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CMemFile.h" />
+    <Filter Include="Base">
+      <UniqueIdentifier>{13b00b1a-eac0-48f4-b5aa-e7904efe4164}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CMemFile.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="stringext.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="function.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="prefine.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="CFileSystem.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="CReadFile.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="CWriteFile.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="wowEnvironment.h">
+      <Filter>Base</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
