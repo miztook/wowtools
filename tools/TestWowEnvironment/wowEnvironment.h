@@ -21,10 +21,9 @@ public:
 public:
 	bool init(const char* szLocale);
 
-	const CMemFile* openFile(const char* filename, bool tempfile = true) const;
+	const CMemFile* openFile(const char* filename) const;
 	bool exists(const char* filename) const;
 
-	bool setLocale(const char* locale);
 	const char* getLocale() const { return Locale.c_str(); }
 
 private:

@@ -48,7 +48,3 @@
 #ifndef QMAX_PATH
 #define		QMAX_PATH	512
 #endif
-
-#ifndef ARRAY_COUNT
-#define ARRAY_COUNT(a)		(sizeof(a)/sizeof(a[0]))
-#endif

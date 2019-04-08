@@ -1033,9 +1033,9 @@ struct Noiser
 	}
 };
 
-inline static auint32 generateHashValue(const char *fname, const int size) {
+inline static uint32_t generateHashValue(const char *fname, const int size) {
 	int		i;
-	auint32	hash;
+	uint32_t	hash;
 
 	hash = 0;
 	i = 0;
@@ -1043,7 +1043,7 @@ inline static auint32 generateHashValue(const char *fname, const int size) {
 		char letter = (char)tolower(fname[i]);
 		if (letter == '.') break;				// don't include extension
 		if (letter == '\\') letter = '/';		// damn path names
-		hash += (auint32)(letter)*(i + 119);
+		hash += (uint32_t)(letter)*(i + 119);
 		++i;
 	}
 	hash = (hash ^ (hash >> 10) ^ (hash >> 20));

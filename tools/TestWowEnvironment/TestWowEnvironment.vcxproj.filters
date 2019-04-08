@@ -33,9 +33,6 @@
     <ClInclude Include="function.h">
       <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="prefine.h">
-      <Filter>Base</Filter>
-    </ClInclude>
     <ClInclude Include="CFileSystem.h">
       <Filter>Base</Filter>
     </ClInclude>
@@ -46,6 +43,9 @@
       <Filter>Base</Filter>
     </ClInclude>
     <ClInclude Include="wowEnvironment.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="predefine.h">
       <Filter>Base</Filter>
     </ClInclude>
   </ItemGroup>

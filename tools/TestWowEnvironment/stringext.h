@@ -2,6 +2,8 @@
 
 #include "predefine.h"
 #include <string>
+#include <vector>
+#include <cassert>
 
 inline bool isAbsoluteFileName(const std::string& filename)
 {
@@ -60,7 +62,7 @@ inline bool isLowerFileName(const std::string& filename)
 	unsigned int len = (unsigned int)filename.length();
 	for (unsigned int i = 0; i < len; ++i)
 	{
-		if (std::isupper(filename[i]))
+		if (isupper(filename[i]))
 			return false;
 	}
 	return true;
@@ -73,8 +75,8 @@ inline bool isSpace(char ch)
 
 inline bool isComment(const char* p)
 {
-	auint32 len = (auint32)strlen(p);
-	for (auint32 i = 0; i < len; ++i)
+	uint32_t len = (uint32_t)strlen(p);
+	for (uint32_t i = 0; i < len; ++i)
 	{
 		if (isSpace(p[i]))
 			continue;
@@ -89,8 +91,8 @@ inline bool isComment(const char* p)
 
 inline bool isEnclosedStart(const char* p)
 {
-	auint32 len = (auint32)strlen(p);
-	for (auint32 i = 0; i < len; ++i)
+	uint32_t len = (uint32_t)strlen(p);
+	for (uint32_t i = 0; i < len; ++i)
 	{
 		if (isSpace(p[i]))
 			continue;
@@ -123,12 +125,12 @@ inline bool isEnclosedEnd(const char* p)
 inline void makeMacroString(std::string& macroString, const char* strMacro)
 {
 	macroString.clear();
-	auint32 len = (auint32)strlen(strMacro);
+	uint32_t len = (uint32_t)strlen(strMacro);
 	if (len == 0)
 		return;
 
-	auint32 p = 0;
-	for (auint32 i = 0; i < len; ++i)
+	uint32_t p = 0;
+	for (uint32_t i = 0; i < len; ++i)
 	{
 		if (strMacro[i] == '#')	//split
 		{
@@ -156,12 +158,12 @@ inline void makeMacroString(std::string& macroString, const char* strMacro)
 inline void makeMacroStringList(std::vector<std::string>& macroStrings, const char* strMacro)
 {
 	macroStrings.clear();
-	auint32 len = (auint32)strlen(strMacro);
+	uint32_t len = (uint32_t)strlen(strMacro);
 	if (len == 0)
 		return;
 
-	auint32 p = 0;
-	for (auint32 i = 0; i < len; ++i)
+	uint32_t p = 0;
+	for (uint32_t i = 0; i < len; ++i)
 	{
 		if (i > 0 && strMacro[i] == '#')	//split
 		{
@@ -272,7 +274,7 @@ inline void split(const std::string& _str, char split, std::vector<std::string>&
 	retVString.clear();
 
 	char* str = new char[_str.length() + 1];
-	ASSERT(str);
+	assert(str);
 	strcpy(str, _str.data());
 
 	char* pchStart = str;
@@ -299,7 +301,7 @@ inline void split(const std::string& _str, const char* split, std::vector<std::s
 	retVString.clear();
 
 	char* str = new char[_str.length() + 1];
-	ASSERT(str);
+	assert(str);
 	strcpy(str, _str.data());
 
 	char* pchStart = str;

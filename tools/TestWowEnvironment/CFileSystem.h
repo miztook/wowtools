@@ -9,7 +9,7 @@ class CWriteFile;
 class CFileSystem
 {
 public:
-	explicit CFileSystem(const char* baseDir);
+	CFileSystem(const char* baseDir, const char* wowDir);
 	~CFileSystem();
 
 public:
@@ -23,9 +23,13 @@ public:
 
 	 const char* getBaseDirectory() const { return BaseDirectory.c_str(); }
 	 const char* getDataDirectory() const { return DataDirectory.c_str(); }
+	 const char* getWowBaseDirectory() const { return WowBaseDirectory.c_str(); }
+	 const char* getWowDataDirectory() const { return WowDataDirectory.c_str(); }
 	 bool isFileExists(const char* filename);
 
 private:
 	std::string		BaseDirectory;
 	std::string		DataDirectory;
+	std::string		WowBaseDirectory;
+	std::string		WowDataDirectory;
 };
