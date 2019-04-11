@@ -2,7 +2,9 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <set>
+#include <array>
 
 #include "CascLib.h"
 #include "CascCommon.h"
@@ -19,7 +21,8 @@ public:
 	~wowEnvironment();
 
 public:
-	bool init(const char* szLocale);
+	bool init();
+	bool loadCascListFiles();
 
 	const CMemFile* openFile(const char* filename) const;
 	bool exists(const char* filename) const;
@@ -27,16 +30,17 @@ public:
 	const char* getLocale() const { return Locale.c_str(); }
 
 private:
-	void initBuildInfo();
+	bool initBuildInfo(std::string& activeLocale);
 
 	bool loadRoot();
 	void unloadRoot();
 
-	void loadCascListFiles();
-
 private:
 	CFileSystem*		FileSystem;
-	std::string		Locale;
 	uint32_t		CascLocale;
+	std::string		Locale;
+	std::array<int, 4>			Version;
 	HANDLE	hStorage;
+	std::map<int, int>	FileIdMap;
+	std::vector<std::string> CascListFiles;
 };

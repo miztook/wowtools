@@ -9,16 +9,16 @@
 CFileSystem::CFileSystem(const char * baseDir, const char* wowDir)
 {
 	BaseDirectory = baseDir;
-	normalizeFileName(BaseDirectory);
+	normalizeDirName(BaseDirectory);
 
 	DataDirectory = BaseDirectory + DATA_SUBDIR;
-	normalizeFileName(DataDirectory);
+	normalizeDirName(DataDirectory);
 
 	WowBaseDirectory = wowDir;
-	normalizeFileName(WowBaseDirectory);
+	normalizeDirName(WowBaseDirectory);
 
 	WowDataDirectory = WowBaseDirectory + DATA_SUBDIR;
-	normalizeFileName(WowDataDirectory);
+	normalizeDirName(WowDataDirectory);
 }
 
 CFileSystem::~CFileSystem()

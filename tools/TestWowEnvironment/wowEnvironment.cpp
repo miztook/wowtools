@@ -3,6 +3,8 @@
 #include "CMemFile.h"
 #include "CReadFile.h"
 #include "stringext.h"
+#include "function.h"
+#include <regex>
 
 wowEnvironment::wowEnvironment(CFileSystem* fs)
 	: FileSystem(fs)
@@ -15,9 +17,11 @@ wowEnvironment::~wowEnvironment()
 	unloadRoot();
 }
 
-bool wowEnvironment::init(const char * szLocale)
+bool wowEnvironment::init()
 {
-	Locale = szLocale;
+	if (!initBuildInfo(Locale))
+		return false;
+
 	if (Locale == "enUS")
 		CascLocale = CASC_LOCALE_ENUS;
 	else if (Locale == "koKR")
@@ -53,24 +57,123 @@ bool wowEnvironment::init(const char * szLocale)
 
 	loadRoot();
 
-	return false;
+	return true;
 }
 
-void wowEnvironment::initBuildInfo()
+bool wowEnvironment::loadCascListFiles()
 {
-	std::string buildInfo = FileSystem->getBaseDirectory();
-	normalizeFileName(buildInfo);
+	CascListFiles.clear();
+	FileIdMap.clear();
+
+	std::string listFile = FileSystem->getDataDirectory();
+	normalizeDirName(listFile);
+	std::string filename;
+	std_string_format(filename, "listfile%d%d.txt", Version[0], Version[1]);
+	listFile += filename;
+
+	CReadFile* file = FileSystem->createAndOpenFile(listFile.c_str(), false);
+	if (!file)
+		return false;
+
+	char buffer[1024] = { 0 };
+	while (file->readLine(buffer, 1024))
+	{
+		std::string filename(buffer);
+
+		if (filename.length() == 0)
+			break;
+		normalizeFileName(filename);
+
+		int id = (int)CascGetFileId(hStorage, filename.c_str());
+		if (id >= 0)
+		{
+			CascListFiles.emplace_back(filename);
+			FileIdMap[id] = (int)CascListFiles.size() - 1;
+		}
+	}
+
+	delete file;
+	return true;
+}
+
+bool wowEnvironment::initBuildInfo(std::string& activeLocale)
+{
+	std::string buildInfo = FileSystem->getWowBaseDirectory();
+	normalizeDirName(buildInfo);
 	buildInfo += ".build.info";
 
 	CReadFile* file = FileSystem->createAndOpenFile(buildInfo.c_str(), false);
-	
+	if (!file)
+		return false;
+
+	activeLocale = "";
+	char buffer[1024] = { 0 };
+
+	//read header
+	file->readLine(buffer, 1024);
+	std::vector<std::string> headers;
+	int activeIndex = 0;
+	int versionIndex = 0;
+	int tagIndex = 0;
+	std_string_split(std::string(buffer), '|', headers);
+	for (int i = 0; i < (int)headers.size(); ++i)
+	{
+		if (strstr(headers[i].c_str(), "Active"))
+			activeIndex = i;
+		else if (strstr(headers[i].c_str(), "Version"))
+			versionIndex = i;
+		else if (strstr(headers[i].c_str(), "Tags"))
+			tagIndex = i;
+	}
+
+	//read values
+	while (file->readLine(buffer, 1024))
+	{
+		std::vector<std::string> values;
+		std_string_split(std::string(buffer), '|', values);
+
+		assert(values.size() == headers.size());
+
+		//skip inactive
+		if (values[activeIndex] == "0")
+			continue;
+
+		//version
+		const std::regex pattern("^(\\d).(\\d).(\\d).(\\d+)");
+		std::match_results<std::string::const_iterator> sm;
+		std::regex_match(values[versionIndex], sm, pattern);
+		if (sm.size() == 5)
+		{
+			Version[0] = atoi(sm[1].str().c_str());
+			Version[1] = atoi(sm[2].str().c_str());
+			Version[2] = atoi(sm[3].str().c_str());
+			Version[3] = atoi(sm[4].str().c_str());
+		}
+
+		//locale
+		std::string tag = values[tagIndex];
+		std_string_split(tag, ':', values);
+		for (const auto& str : values)
+		{
+			if (strstr(str.c_str(), "text?"))
+			{
+				std::vector<std::string> taglist;
+				std_string_split(str, ' ', taglist);
+
+				if (taglist.size() >= 2)
+					activeLocale = taglist[taglist.size() - 2];
+			}
+		}
+	}
+
 	delete file;
+	return true;
 }
 
 bool wowEnvironment::loadRoot()
 {
 	unloadRoot();
-	const char* dataDir = FileSystem->getDataDirectory();
+	const char* dataDir = FileSystem->getWowDataDirectory();
 	if (!CascOpenStorage(dataDir, CascLocale, &hStorage))
 	{
 		hStorage = nullptr;

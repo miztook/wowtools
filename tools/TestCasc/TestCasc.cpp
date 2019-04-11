@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 		printf("%s\n", sm[i].str().c_str());
 
 	const char* szStorage = R"(D:\World Of Warcraft\Data\)";
-	const char* filename = "character\\human\\male\\humanmale00.skin";
+	const char* filename = "character/human/male/humanmale00.skin";
 	int err = TestOpenStorage_OpenFile(szStorage, filename);
 
 	if (err == ERROR_SUCCESS)
@@ -74,7 +74,10 @@ static int TestOpenStorage_OpenFile(const TCHAR * szStorage, const char * szFile
 
 	if (nError == ERROR_SUCCESS)
 	{
-		// Open a file
+		int id = CascGetFileId(hStorage, szFileName);
+		printf("file name : %s, file id : %d\n", szFileName, id);
+
+		// Open a file	
 		if (!CascOpenFile(hStorage, szFileName, CASC_LOCALE_ZHCN, 0, &hFile))
 		{
 			assert(GetLastError() != ERROR_SUCCESS);

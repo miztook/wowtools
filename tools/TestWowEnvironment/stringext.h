@@ -255,13 +255,10 @@ inline std::string& std_string_format(std::string& _str, const char* _Format, ..
 	va_list marker = NULL;
 	va_start(marker, _Format);
 
-	size_t num_of_chars = _vscprintf(_Format, marker);
+	int num_of_chars = vsnprintf(nullptr, 0, _Format, marker);
+	tmp.resize(num_of_chars + 1);
 
-	if (num_of_chars > tmp.capacity()) {
-		tmp.resize(num_of_chars + 1);
-	}
-
-	vsprintf_s((char *)tmp.data(), tmp.capacity(), _Format, marker);
+	vsprintf((char *)tmp.data(), _Format, marker);
 
 	va_end(marker);
 
@@ -269,7 +266,7 @@ inline std::string& std_string_format(std::string& _str, const char* _Format, ..
 	return _str;
 }
 
-inline void split(const std::string& _str, char split, std::vector<std::string>& retVString)
+inline void std_string_split(const std::string& _str, char split, std::vector<std::string>& retVString)
 {
 	retVString.clear();
 
@@ -285,8 +282,7 @@ inline void split(const std::string& _str, char split, std::vector<std::string>&
 		if (pch)
 			*pch = '\0';
 
-		if (strlen(pchStart) > 0)
-			retVString.push_back(pchStart);
+		retVString.push_back(pchStart);
 
 		if (!pch)
 			break;
@@ -296,7 +292,7 @@ inline void split(const std::string& _str, char split, std::vector<std::string>&
 	delete[] str;
 }
 
-inline void split(const std::string& _str, const char* split, std::vector<std::string>& retVString)
+inline void std_string_split(const std::string& _str, const char* split, std::vector<std::string>& retVString)
 {
 	retVString.clear();
 
@@ -312,8 +308,7 @@ inline void split(const std::string& _str, const char* split, std::vector<std::s
 		if (pch)
 			*pch = '\0';
 
-		if (strlen(pchStart) > 0)
-			retVString.push_back(pchStart);
+		retVString.push_back(pchStart);
 
 		if (!pch)
 			break;

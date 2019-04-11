@@ -1,5 +1,15 @@
 #include "CMemFile.h"
 
+CMemFile::CMemFile(uint8_t* buf, uint32_t size, const char* fname) : buffer(buf), size(size), pointer(0), eof(false)
+{
+	filename = fname;
+}
+
+CMemFile::~CMemFile()
+{
+	close();
+}
+
 uint32_t CMemFile::read( void* dest, uint32_t bytes )
 {
 	if (eof) 

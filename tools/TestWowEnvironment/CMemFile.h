@@ -5,14 +5,8 @@
 class CMemFile
 {
 public:
-	CMemFile( uint8_t* buf, uint32_t size, const char* fname) : buffer(buf), size(size), pointer(0), eof(false)
-	{
-		filename = fname;
-	}
-	~CMemFile()
-	{
-		close();
-	}
+	CMemFile(uint8_t* buf, uint32_t size, const char* fname);
+	~CMemFile();
 
 	uint32_t		read(void* dest, uint32_t bytes);
 	uint32_t		getSize() const { return size; }
@@ -20,9 +14,9 @@ public:
 	uint8_t*		getBuffer() { return buffer; }
 	uint8_t*		getPointer() { return buffer + pointer; }
 	bool		isEof() const { return eof; }
-	bool		seek(int32_t offset, bool relative=false);
+	bool		seek(int32_t offset, bool relative = false);
 	void		close();
-	const char*	getFileName() const { return filename.c_str(); }			
+	const char*	getFileName() const { return filename.c_str(); }
 
 private:
 	uint8_t*		buffer;
