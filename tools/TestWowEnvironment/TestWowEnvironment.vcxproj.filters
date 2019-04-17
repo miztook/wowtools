@@ -2,51 +2,51 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="TestWowEnvironment.cpp" />
-    <ClCompile Include="CMemFile.cpp">
-      <Filter>Base</Filter>
+    <ClCompile Include="..\Common\CFileSystem.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="CFileSystem.cpp">
-      <Filter>Base</Filter>
+    <ClCompile Include="..\Common\CMemFile.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="CReadFile.cpp">
-      <Filter>Base</Filter>
+    <ClCompile Include="..\Common\CReadFile.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="CWriteFile.cpp">
-      <Filter>Base</Filter>
+    <ClCompile Include="..\Common\CWriteFile.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="wowEnvironment.cpp">
-      <Filter>Base</Filter>
+    <ClCompile Include="..\Common\wowEnvironment.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Base">
+    <Filter Include="Common">
       <UniqueIdentifier>{13b00b1a-eac0-48f4-b5aa-e7904efe4164}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CMemFile.h">
-      <Filter>Base</Filter>
+    <ClInclude Include="..\Common\CFileSystem.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="stringext.h">
-      <Filter>Base</Filter>
+    <ClInclude Include="..\Common\CMemFile.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="function.h">
-      <Filter>Base</Filter>
+    <ClInclude Include="..\Common\CReadFile.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="CFileSystem.h">
-      <Filter>Base</Filter>
+    <ClInclude Include="..\Common\CWriteFile.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="CReadFile.h">
-      <Filter>Base</Filter>
+    <ClInclude Include="..\Common\function.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="CWriteFile.h">
-      <Filter>Base</Filter>
+    <ClInclude Include="..\Common\predefine.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="wowEnvironment.h">
-      <Filter>Base</Filter>
+    <ClInclude Include="..\Common\stringext.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="predefine.h">
-      <Filter>Base</Filter>
+    <ClInclude Include="..\Common\wowEnvironment.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

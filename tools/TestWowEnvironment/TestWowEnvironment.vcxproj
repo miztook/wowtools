@@ -89,7 +89,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\Common;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
     </ClCompile>
@@ -102,7 +102,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\Common;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
     </ClCompile>
@@ -117,7 +117,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\Common;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
     </ClCompile>
@@ -134,7 +134,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\Common;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
     </ClCompile>
@@ -145,22 +145,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CFileSystem.cpp" />
-    <ClCompile Include="CMemFile.cpp" />
-    <ClCompile Include="CReadFile.cpp" />
-    <ClCompile Include="CWriteFile.cpp" />
+    <ClCompile Include="..\Common\CFileSystem.cpp" />
+    <ClCompile Include="..\Common\CMemFile.cpp" />
+    <ClCompile Include="..\Common\CReadFile.cpp" />
+    <ClCompile Include="..\Common\CWriteFile.cpp" />
+    <ClCompile Include="..\Common\wowEnvironment.cpp" />
     <ClCompile Include="TestWowEnvironment.cpp" />
-    <ClCompile Include="wowEnvironment.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CFileSystem.h" />
-    <ClInclude Include="CMemFile.h" />
-    <ClInclude Include="CReadFile.h" />
-    <ClInclude Include="CWriteFile.h" />
-    <ClInclude Include="predefine.h" />
-    <ClInclude Include="function.h" />
-    <ClInclude Include="stringext.h" />
-    <ClInclude Include="wowEnvironment.h" />
+    <ClInclude Include="..\Common\CFileSystem.h" />
+    <ClInclude Include="..\Common\CMemFile.h" />
+    <ClInclude Include="..\Common\CReadFile.h" />
+    <ClInclude Include="..\Common\CWriteFile.h" />
+    <ClInclude Include="..\Common\function.h" />
+    <ClInclude Include="..\Common\predefine.h" />
+    <ClInclude Include="..\Common\stringext.h" />
+    <ClInclude Include="..\Common\wowEnvironment.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

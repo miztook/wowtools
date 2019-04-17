@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 	for (int i = 0; i < sm.size(); ++i)
 		printf("%s\n", sm[i].str().c_str());
 
-	const char* szStorage = R"(D:\World Of Warcraft\Data\)";
+	const char* szStorage = R"(E:\World Of Warcraft\Data\)";
 	const char* filename = "character/human/male/humanmale00.skin";
 	int err = TestOpenStorage_OpenFile(szStorage, filename);
 
