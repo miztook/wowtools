@@ -7,8 +7,6 @@
 #include "wowEnvironment.h"
 #include "function.h"
 
-using namespace std;
-
 #pragma comment(lib, "CascLib.lib")
 
 void testWowEnvironment();
@@ -45,4 +43,6 @@ void testWowEnvironment()
 
 	delete wowEnv;
 	delete fs;
+
+
 }

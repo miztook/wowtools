@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <set>
 #include <array>
 
@@ -11,8 +11,6 @@
 
 class CFileSystem;
 class CMemFile;
-
-#define LISTFILE    "listfile80.txt"
 
 class wowEnvironment
 {
@@ -27,7 +25,10 @@ public:
 	const CMemFile* openFile(const char* filename) const;
 	bool exists(const char* filename) const;
 
+	const CFileSystem* getFileSystem() const { return FileSystem; }
+
 	const char* getLocale() const { return Locale.c_str(); }
+	const std::array<int, 4>& getVersion() const { return Version; }
 
 private:
 	bool initBuildInfo(std::string& activeLocale);
@@ -41,6 +42,6 @@ private:
 	std::string		Locale;
 	std::array<int, 4>			Version;
 	HANDLE	hStorage;
-	std::map<int, int>	FileIdMap;
+	std::unordered_map<int, int>	FileIdMap;
 	std::vector<std::string> CascListFiles;
 };

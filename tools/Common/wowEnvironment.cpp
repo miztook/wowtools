@@ -6,8 +6,10 @@
 #include "function.h"
 #include <regex>
 
+#define LISTFILE "listfile.txt"
+
 wowEnvironment::wowEnvironment(CFileSystem* fs)
-	: FileSystem(fs)
+	: FileSystem(fs), hStorage(nullptr), CascLocale(0)
 {
 
 }
@@ -70,12 +72,13 @@ bool wowEnvironment::loadCascListFiles()
 	dir += std_string_format("%d.%d", Version[0], Version[1]);
 	normalizeDirName(dir);
 
-	std::string listFile = dir + "listfile.txt";
+	std::string listFile = dir + LISTFILE;
 
 	CReadFile* file = FileSystem->createAndOpenFile(listFile.c_str(), false);
 	if (!file)
 		return false;
 
+	FileIdMap.reserve(900000);
 	char buffer[1024] = { 0 };
 	while (file->readLine(buffer, 1024))
 	{
@@ -83,7 +86,7 @@ bool wowEnvironment::loadCascListFiles()
 
 		if (filename.length() == 0)
 			break;
-		normalizeFileName(filename);
+		//normalizeFileName(filename);
 
 		int id = (int)CascGetFileId(hStorage, filename.c_str());
 		if (id >= 0)
