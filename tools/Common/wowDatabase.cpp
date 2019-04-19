@@ -4,6 +4,7 @@
 #include "stringext.h"
 #include "function.h"
 #include "CMemFile.h"
+
 #include "wowDbFile.h"
 
 #include "pugixml.hpp"
@@ -54,9 +55,10 @@ const DBFile * wowDatabase::loadDBFile(const CTableStruct * table) const
 	if (!memFile)
 		return nullptr;
 
-	const char* magic = (const char*)memFile->getBuffer();
+	const DBFile* file = DBFile::readDBFile(memFile);
+	delete memFile;
 
-	return nullptr;
+	return file;
 }
 
 bool wowDatabase::initFromXml()

@@ -9,4 +9,5 @@ enum class WowDBType : int
 	WDB6,
 	WDC1,
 	WDC2,
+	WDC3,
 };

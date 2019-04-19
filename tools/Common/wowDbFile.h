@@ -6,6 +6,7 @@
 #include "wowEnums.h"
 
 class CTableStruct;
+class CMemFile;
 
 using VAR_T = Variant<uint32_t, uint8_t, uint64_t, int32_t, std::string>;
 
@@ -14,11 +15,14 @@ class DBFile
 public:
 	DBFile()
 		: recordSize(0), recordCount(0), fieldCount(0), stringSize(0)
-		, data(nullptr), stringTable(nullptr), DBType(WowDBType::Unknown)
+		, data(nullptr), stringTable(nullptr)
 	{
 
 	}
 	virtual ~DBFile() {}
+
+public:
+	static const DBFile* readDBFile(CMemFile* memFile);
 
 public:
 	virtual bool open() = 0;
@@ -28,8 +32,6 @@ public:
 	uint32_t getRecordCount() const { return recordCount; }
 
 protected:
-	WowDBType DBType;
-
 	uint32_t recordSize;
 	uint32_t recordCount;
 	uint32_t fieldCount;
