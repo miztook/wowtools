@@ -25,9 +25,6 @@
     <ClCompile Include="..\Common\wowDatabase.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\wowDbFile.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
     <ClCompile Include="..\Common\wowTable.cpp">
       <Filter>Common</Filter>
     </ClCompile>

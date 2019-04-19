@@ -165,7 +165,6 @@
     <ClCompile Include="..\Common\CReadFile.cpp" />
     <ClCompile Include="..\Common\CWriteFile.cpp" />
     <ClCompile Include="..\Common\wowDatabase.cpp" />
-    <ClCompile Include="..\Common\wowDbFile.cpp" />
     <ClCompile Include="..\Common\wowEnvironment.cpp" />
     <ClCompile Include="..\Common\wowTable.cpp" />
     <ClCompile Include="TestWowDatabase.cpp" />
