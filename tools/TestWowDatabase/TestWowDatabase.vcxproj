@@ -167,6 +167,7 @@
     <ClCompile Include="..\Common\wowDatabase.cpp" />
     <ClCompile Include="..\Common\wowDbFile.cpp" />
     <ClCompile Include="..\Common\wowEnvironment.cpp" />
+    <ClCompile Include="..\Common\wowTable.cpp" />
     <ClCompile Include="TestWowDatabase.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -177,9 +178,11 @@
     <ClInclude Include="..\Common\function.h" />
     <ClInclude Include="..\Common\predefine.h" />
     <ClInclude Include="..\Common\stringext.h" />
+    <ClInclude Include="..\Common\varianttype.h" />
     <ClInclude Include="..\Common\wowDatabase.h" />
     <ClInclude Include="..\Common\wowDbFile.h" />
     <ClInclude Include="..\Common\wowEnvironment.h" />
+    <ClInclude Include="..\Common\wowTable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

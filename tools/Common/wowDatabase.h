@@ -25,6 +25,7 @@ public:
 	bool isKey;
 	bool needIndex;
 
+	int pos;
 	bool isCommonData;
 	bool isRelationshipData;
 };

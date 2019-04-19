@@ -28,6 +28,9 @@
     <ClCompile Include="..\Common\wowDbFile.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="..\Common\wowTable.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Common\CFileSystem.h">
@@ -58,6 +61,12 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\wowDbFile.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\wowTable.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\varianttype.h">
       <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>

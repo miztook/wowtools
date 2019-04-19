@@ -69,6 +69,7 @@ bool wowDatabase::initFromXml()
 			auto attr_key = dbfield.attribute("primary");
 			auto attr_arraySize = dbfield.attribute("arraySize");
 			auto attr_index = dbfield.attribute("createIndex");
+			auto attr_pos = dbfield.attribute("pos");
 			auto attr_commonData = dbfield.attribute("commonData");
 			auto attr_relationshipData = dbfield.attribute("relationshipData");
 
@@ -81,6 +82,7 @@ bool wowDatabase::initFromXml()
 				fieldStruct.needIndex = !attr_index.empty();
 				fieldStruct.arraySize = attr_arraySize.as_uint();
 
+				fieldStruct.pos = attr_pos.as_int();
 				fieldStruct.isCommonData = attr_commonData.as_bool();
 				fieldStruct.isRelationshipData = attr_relationshipData.as_bool();
 
