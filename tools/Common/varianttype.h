@@ -176,7 +176,7 @@ public:
 	template<int index>
 	using IndexType = typename IndexType<index, Types...>::DataType;
 
-	Variant(void) :m_typeIndex(typeid(void)), m_index(-1)
+	Variant(void) : m_typeIndex(typeid(void))
 	{
 	}
 

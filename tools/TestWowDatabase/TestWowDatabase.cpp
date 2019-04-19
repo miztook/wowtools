@@ -55,7 +55,7 @@ void testWowDatabase()
 
 	for (const CTableStruct& table : wowDB->getDBStructList())
 	{
-		const DBFile* file = wowDB->loadDBFile(&table);
+		CMemFile* file = wowDB->loadDBMemFile(&table);
 		if (!file)
 			printf("load table memFile fail! %s\n", table.name.c_str());
 		else

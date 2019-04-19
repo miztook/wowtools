@@ -8,7 +8,7 @@
 class CTableStruct;
 class CMemFile;
 
-using VAR_T = Variant<uint32_t, uint8_t, uint64_t, int32_t, std::string>;
+using VAR_T = Variant<uint32_t, int, float, std::string>;
 
 class DBFile
 {
@@ -25,9 +25,7 @@ public:
 	static const DBFile* readDBFile(CMemFile* memFile);
 
 public:
-	virtual bool open() = 0;
-	virtual void close() = 0;
-	virtual std::vector<VAR_T> getRecordValue(uint32_t index, const CTableStruct* table) = 0;
+	virtual std::vector<VAR_T> getRecordValue(uint32_t index, const CTableStruct* table) const = 0;
 
 	uint32_t getRecordCount() const { return recordCount; }
 
