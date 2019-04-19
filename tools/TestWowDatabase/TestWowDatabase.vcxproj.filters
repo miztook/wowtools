@@ -69,5 +69,8 @@
     <ClInclude Include="..\Common\varianttype.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\wowEnums.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

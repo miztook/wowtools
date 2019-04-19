@@ -3,20 +3,21 @@
 #include "CFileSystem.h"
 #include "stringext.h"
 #include "function.h"
+#include "CMemFile.h"
+#include "wowDbFile.h"
 
 #include "pugixml.hpp"
 
 #define DATABASEFILE "database.xml"
+#define DBFILESDIR "DBFilesClient/"
 
+const char* g_szDB_Ext[] = {".db2", ".dbc"};
 
 wowDatabase::wowDatabase(const wowEnvironment* env)
 	: Environment(env)
 {
 }
 
-wowDatabase::~wowDatabase()
-{
-}
 
 bool wowDatabase::init()
 {
@@ -26,12 +27,36 @@ bool wowDatabase::init()
 	return true;
 }
 
-const CTableStruct* wowDatabase::getTableStruct(const char* name) const
+CMemFile * wowDatabase::loadDBMemFile(const CTableStruct* table) const
 {
-	auto itr = DbStructureMap.find(name);
-	if (itr == DbStructureMap.end())
+	if (!table)
 		return nullptr;
-	return &itr->second;
+
+	std::string baseName = DBFILESDIR;
+	normalizeDirName(baseName);
+	baseName += table->name;
+
+	CMemFile* file = nullptr;
+	for (const auto& ext : g_szDB_Ext)
+	{
+		std::string filename = baseName + ext;
+		file = Environment->openFile(filename.c_str());
+		if (file)
+			break;
+	}
+	
+	return file;
+}
+
+const DBFile * wowDatabase::loadDBFile(const CTableStruct * table) const
+{
+	CMemFile* memFile = loadDBMemFile(table);
+	if (!memFile)
+		return nullptr;
+
+	const char* magic = (const char*)memFile->getBuffer();
+
+	return nullptr;
 }
 
 bool wowDatabase::initFromXml()
@@ -93,7 +118,8 @@ bool wowDatabase::initFromXml()
 			++fieldId;
 		}
 
-		DbStructureMap[tblStruct.name] = tblStruct;
+		DbStructureList.emplace_back(tblStruct);
 	}
 	return true;
 }
+

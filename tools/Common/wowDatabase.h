@@ -2,11 +2,13 @@
 
 #include <string>
 #include <vector>
-#include <map>
+#include <list>
 #include <set>
 #include <array>
 
 class wowEnvironment;
+class CMemFile;
+class DBFile;
 
 class CFieldStruct
 {
@@ -41,17 +43,21 @@ class wowDatabase
 {
 public:
 	explicit wowDatabase(const wowEnvironment* env);
-	~wowDatabase();
+	~wowDatabase() = default;
 
 public:
 	bool init();
 
-	const CTableStruct* getTableStruct(const char* name) const;
+	CMemFile* loadDBMemFile(const CTableStruct* table) const;
+
+	const std::list<CTableStruct>& getDBStructList() const { return DbStructureList; }
+
+	const DBFile* loadDBFile(const CTableStruct* table) const;
 
 private:
 	bool initFromXml();
 
 private:
 	const wowEnvironment*		Environment;
-	std::map<std::string, CTableStruct> DbStructureMap;
+	std::list<CTableStruct>		DbStructureList;
 };

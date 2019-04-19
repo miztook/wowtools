@@ -78,7 +78,8 @@ bool wowEnvironment::loadCascListFiles()
 	if (!file)
 		return false;
 
-	FileIdMap.reserve(900000);
+	CascListFiles.reserve(800000);
+	FileIdMap.reserve(800000);
 	char buffer[1024] = { 0 };
 	while (file->readLine(buffer, 1024))
 	{
@@ -97,6 +98,57 @@ bool wowEnvironment::loadCascListFiles()
 	}
 
 	delete file;
+	return true;
+}
+
+CMemFile * wowEnvironment::openFile(const char * filename) const
+{
+	HANDLE hFile;
+
+	char realfilename[QMAX_PATH];
+	normalizeFileName(filename, realfilename, QMAX_PATH);
+	Q_strlwr(realfilename);
+
+	if (!CascOpenFile(hStorage, realfilename, CascLocale, 0, &hFile))
+	{
+		return nullptr;
+	}
+
+	DWORD dwHigh;
+	uint32_t size = CascGetFileSize(hFile, &dwHigh);
+
+	// HACK: in patch.mpq some files don't want to open and give 1 for filesize
+	if (size <= 1 || size == 0xffffffff) {
+		CascCloseFile(hFile);
+		return nullptr;
+	}
+
+	uint8_t* buffer = new uint8_t[size];
+
+	bool ret = CascReadFile(hFile, buffer, (DWORD)size, nullptr);
+	if (!ret)
+	{
+		delete[] buffer;
+
+		CascCloseFile(hFile);
+		return nullptr;
+	}
+
+	CascCloseFile(hFile);
+
+	return new CMemFile(buffer, size, realfilename);
+}
+
+bool wowEnvironment::exists(const char * filename) const
+{
+	if (strlen(filename) == 0)
+		return false;
+
+	HANDLE hFile;
+	if (!CascOpenFile(hStorage, filename, CascLocale, 0, &hFile))
+		return false;
+
+	CascCloseFile(hFile);
 	return true;
 }
 

@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <vector>
 #include "varianttype.h"
+#include "wowEnums.h"
 
 class CTableStruct;
 
@@ -13,7 +14,7 @@ class DBFile
 public:
 	DBFile()
 		: recordSize(0), recordCount(0), fieldCount(0), stringSize(0)
-		, data(nullptr), stringTable(nullptr)
+		, data(nullptr), stringTable(nullptr), DBType(WowDBType::Unknown)
 	{
 
 	}
@@ -27,6 +28,8 @@ public:
 	uint32_t getRecordCount() const { return recordCount; }
 
 protected:
+	WowDBType DBType;
+
 	uint32_t recordSize;
 	uint32_t recordCount;
 	uint32_t fieldCount;

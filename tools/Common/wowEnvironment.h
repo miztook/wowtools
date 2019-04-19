@@ -22,13 +22,15 @@ public:
 	bool init();
 	bool loadCascListFiles();
 
-	const CMemFile* openFile(const char* filename) const;
+	CMemFile* openFile(const char* filename) const;
 	bool exists(const char* filename) const;
 
 	const CFileSystem* getFileSystem() const { return FileSystem; }
-
 	const char* getLocale() const { return Locale.c_str(); }
 	const std::array<int, 4>& getVersion() const { return Version; }
+
+	//
+
 
 private:
 	bool initBuildInfo(std::string& activeLocale);

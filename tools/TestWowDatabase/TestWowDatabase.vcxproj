@@ -181,6 +181,7 @@
     <ClInclude Include="..\Common\varianttype.h" />
     <ClInclude Include="..\Common\wowDatabase.h" />
     <ClInclude Include="..\Common\wowDbFile.h" />
+    <ClInclude Include="..\Common\wowEnums.h" />
     <ClInclude Include="..\Common\wowEnvironment.h" />
     <ClInclude Include="..\Common\wowTable.h" />
   </ItemGroup>

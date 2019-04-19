@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <regex>
 #include <iostream>
+#include <list>
 
 #include "CFileSystem.h"
 #include "wowEnvironment.h"
@@ -51,6 +52,15 @@ void testWowDatabase()
 		printf("wowDB init fail!\n");
 	else
 		printf("wowDB init success!\n");
+
+	for (const CTableStruct& table : wowDB->getDBStructList())
+	{
+		const DBFile* file = wowDB->loadDBFile(&table);
+		if (!file)
+			printf("load table memFile fail! %s\n", table.name.c_str());
+		else
+			printf("%s\n", table.name.c_str());
+	}
 
 	delete wowDB;
 	delete wowEnv;
