@@ -169,6 +169,7 @@
     <ClCompile Include="..\Common\wowEnvironment.cpp" />
     <ClCompile Include="..\Common\wowTable.cpp" />
     <ClCompile Include="..\Common\wowWDB5File.cpp" />
+    <ClCompile Include="..\Common\wowWDC3File.cpp" />
     <ClCompile Include="TestWowDatabase.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -186,6 +187,7 @@
     <ClInclude Include="..\Common\wowEnvironment.h" />
     <ClInclude Include="..\Common\wowTable.h" />
     <ClInclude Include="..\Common\wowWDB5File.h" />
+    <ClInclude Include="..\Common\wowWDC3File.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

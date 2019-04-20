@@ -18,17 +18,18 @@ bool WDB5File::open(CMemFile* memFile)
 	recordSize = header.record_size;
 	recordCount = header.record_count;
 	fieldCount = header.field_count;
+	stringSize = header.string_table_size;
 
+	//field
 	std::vector<WDB5File::field_structure> fields;
 	fields.resize(fieldCount);
 	memFile->read(fields.data(), fieldCount * sizeof(WDB5File::field_structure));
-
 	for (const auto& field : fields)
 	{
 		m_fieldSizes[field.position] = field.size;
 	}
 
-	stringSize = header.string_table_size;
+	//
 	data = memFile->getPointer();
 	stringTable = data + recordSize * recordCount;
 
@@ -52,7 +53,7 @@ bool WDB5File::open(CMemFile* memFile)
 
 			m_IDs.push_back(header.min_id + i);
 			m_recordOffsets.push_back(buffer + offset);
-			recordCount++;
+			++recordCount;
 		}
 	}
 	else

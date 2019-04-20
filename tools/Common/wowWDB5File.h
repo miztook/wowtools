@@ -50,4 +50,5 @@ protected:
 	std::vector<const uint8_t*> m_recordOffsets;
 
 	bool m_isSparseTable;
+
 };

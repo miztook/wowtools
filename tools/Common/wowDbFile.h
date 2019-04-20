@@ -19,7 +19,7 @@ public:
 	{
 
 	}
-	virtual ~DBFile() {}
+	virtual ~DBFile() = default;
 
 public:
 	static const DBFile* readDBFile(CMemFile* memFile);
@@ -34,6 +34,6 @@ protected:
 	uint32_t recordCount;
 	uint32_t fieldCount;
 	uint32_t stringSize;
-	uint8_t* data;
-	uint8_t* stringTable;
+	const uint8_t* data;
+	const uint8_t* stringTable;
 };
