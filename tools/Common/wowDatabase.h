@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include <list>
+#include <map>
 #include <set>
 #include <array>
 
@@ -50,7 +50,7 @@ public:
 
 	CMemFile* loadDBMemFile(const CTableStruct* table) const;
 
-	const std::list<CTableStruct>& getDBStructList() const { return DbStructureList; }
+	const std::map<std::string, CTableStruct>& getDBStructMap() const { return DbStructureMap; }
 
 	const DBFile* loadDBFile(const CTableStruct* table) const;
 
@@ -59,5 +59,5 @@ private:
 
 private:
 	const wowEnvironment*		Environment;
-	std::list<CTableStruct>		DbStructureList;
+	std::map<std::string, CTableStruct>		DbStructureMap;
 };

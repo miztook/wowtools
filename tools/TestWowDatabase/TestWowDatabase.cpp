@@ -9,6 +9,8 @@
 #include "wowDatabase.h"
 #include "function.h"
 
+#include "wowDbFile.h"
+
 using namespace std;
 
 #pragma comment(lib, "CascLib.lib")
@@ -53,14 +55,18 @@ void testWowDatabase()
 	else
 		printf("wowDB init success!\n");
 
-	for (const CTableStruct& table : wowDB->getDBStructList())
+	for (const auto& kv : wowDB->getDBStructMap())
 	{
-		CMemFile* file = wowDB->loadDBMemFile(&table);
+		const CTableStruct& table = kv.second;
+		const DBFile* file = wowDB->loadDBFile(&table);
 		if (!file)
 			printf("load table memFile fail! %s\n", table.name.c_str());
 		else
 			printf("%s\n", table.name.c_str());
+
+		delete file;
 	}
+	
 
 	delete wowDB;
 	delete wowEnv;

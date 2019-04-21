@@ -4,7 +4,7 @@
 #include <vector>
 #include <map>
 
-class WDC3File : public WDB5File
+class WDC3File : public DBFile
 {
 public:
 	struct header
@@ -19,8 +19,8 @@ public:
 		uint32_t min_id;
 		uint32_t max_id;
 		uint32_t locale;                 // as seen in TextWowEnum
-		uint32_t flags;                  // possible values are listed in Known Flag Meanings
-		uint32_t id_index;               // this is the index of the field containing ID values; this is ignored if flags & 0x04 != 0
+		uint16_t flags;                  // possible values are listed in Known Flag Meanings
+		uint16_t id_index;               // this is the index of the field containing ID values; this is ignored if flags & 0x04 != 0
 		uint32_t total_field_count;      // from WDC1 onwards, this value seems to always be the same as the 'field_count' value
 		uint32_t bitpacked_data_offset;  // relative position in record where bitpacked data begins; not important for parsing the file
 		uint32_t lookup_column_count;
@@ -32,7 +32,7 @@ public:
 
 	struct section_header
 	{
-		uint32_t tact_key_hash;          // TactKeyLookup hash
+		uint64_t tact_key_hash;          // TactKeyLookup hash
 		uint32_t file_offset;            // Absolute position to the beginning of the section
 		uint32_t record_count;           // 'record_count' for the section
 		uint32_t string_table_size;      // 'string_table_size' for the section
@@ -43,10 +43,10 @@ public:
 		uint32_t copy_table_count;       // Count of the number of deduplication entries (you can multiply by 8 to mimic the old 'copy_table_size' field
 	};
 
-	WDC3File() = default;
+	explicit WDC3File(CMemFile* memFile);
 	~WDC3File() = default;
 
-	bool open(CMemFile* memFile);
+	bool open();
 
 	virtual std::vector<VAR_T> getRecordValue(uint32_t index, const CTableStruct* table) const override;
 
@@ -83,7 +83,7 @@ private:
 		uint32_t offset;
 		uint16_t size;
 	};
-#pragma pop()
+#pragma pack()
 
 	struct relationship_entry 
 	{
@@ -91,11 +91,29 @@ private:
 		uint32_t record_index;
 	};
 
+	struct field_structure
+	{
+		int16_t size;
+		uint16_t position;
+	};
+
+	struct copy_table_entry
+	{
+		uint32_t newRowId;
+		uint32_t copiedRowId;
+	};
+
 	bool readFieldValue(uint32_t recordIndex, uint32_t fieldIndex, uint32_t arrayIndex, uint32_t arraySize, uint32_t& result) const;
 	uint32_t readBitpackedValue(field_storage_info info, const uint8_t* recordOffset) const;
-	int readSignedBitpackedValue(field_storage_info info, unsigned char* recordOffset) const;
 
 private:
+	std::vector<uint32_t> m_IDs;
+	std::map<int, int> m_fieldSizes;
+	std::vector<const uint8_t*> m_recordOffsets;
+
+	bool m_isSparseTable;
+
+	WDC3File::header m_header;
 	std::vector<section_header> m_sectionHeaders;
 	std::vector<field_storage_info> m_fieldStorageInfo;
 

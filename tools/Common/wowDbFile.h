@@ -4,22 +4,26 @@
 #include <vector>
 #include "varianttype.h"
 #include "wowEnums.h"
+#include "CMemFile.h"
 
 class CTableStruct;
-class CMemFile;
 
-using VAR_T = Variant<uint32_t, int, float, std::string>;
+using VAR_T = Variant<uint32_t, uint64_t, uint16_t, int, float, std::string>;
 
 class DBFile
 {
 public:
-	DBFile()
-		: recordSize(0), recordCount(0), fieldCount(0), stringSize(0)
+	explicit DBFile(CMemFile* memFile)
+		: m_pMemFile(memFile)
+		, recordSize(0), recordCount(0), fieldCount(0), stringSize(0)
 		, data(nullptr), stringTable(nullptr)
 	{
 
 	}
-	virtual ~DBFile() = default;
+	virtual ~DBFile()
+	{
+		delete m_pMemFile;
+	}
 
 public:
 	static const DBFile* readDBFile(CMemFile* memFile);
@@ -30,6 +34,8 @@ public:
 	uint32_t getRecordCount() const { return recordCount; }
 
 protected:
+	CMemFile* m_pMemFile;
+
 	uint32_t recordSize;
 	uint32_t recordCount;
 	uint32_t fieldCount;

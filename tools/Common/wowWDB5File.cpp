@@ -2,18 +2,25 @@
 
 #include "CMemFile.h"
 #include "wowDatabase.h"
+#include <cassert>
 
-WDB5File::WDB5File()
-	: m_isSparseTable(false)
+WDB5File::WDB5File(CMemFile* memFile)
+	: DBFile(memFile), m_isSparseTable(false)
 {
 }
 
-bool WDB5File::open(CMemFile* memFile)
+bool WDB5File::open()
 {
-	const uint8_t* buffer = memFile->getBuffer();
+	if (!m_pMemFile)
+	{
+		assert(false);
+		return false;
+	}
+
+	const uint8_t* buffer = m_pMemFile->getBuffer();
 
 	WDB5File::header header;
-	memFile->read(&header, sizeof(header));
+	m_pMemFile->read(&header, sizeof(header));
 
 	recordSize = header.record_size;
 	recordCount = header.record_count;
@@ -23,20 +30,20 @@ bool WDB5File::open(CMemFile* memFile)
 	//field
 	std::vector<WDB5File::field_structure> fields;
 	fields.resize(fieldCount);
-	memFile->read(fields.data(), fieldCount * sizeof(WDB5File::field_structure));
+	m_pMemFile->read(fields.data(), fieldCount * sizeof(WDB5File::field_structure));
 	for (const auto& field : fields)
 	{
 		m_fieldSizes[field.position] = field.size;
 	}
 
 	//
-	data = memFile->getPointer();
+	data = m_pMemFile->getPointer();
 	stringTable = data + recordSize * recordCount;
 
 	if ((header.flags & 0x01) != 0)
 	{
 		m_isSparseTable = true;
-		memFile->seek(stringSize);
+		m_pMemFile->seek(stringSize);
 
 		recordCount = 0;
 
@@ -45,8 +52,8 @@ bool WDB5File::open(CMemFile* memFile)
 			uint32_t offset;
 			uint16_t length;
 
-			memFile->read(&offset, sizeof(offset));
-			memFile->read(&length, sizeof(length));
+			m_pMemFile->read(&offset, sizeof(offset));
+			m_pMemFile->read(&length, sizeof(length));
 
 			if ((offset == 0) || (length == 0))
 				continue;
@@ -62,11 +69,11 @@ bool WDB5File::open(CMemFile* memFile)
 		m_recordOffsets.reserve(recordCount);
 
 		// read IDs
-		memFile->seek(recordSize*recordCount + stringSize, true);
+		m_pMemFile->seek(recordSize*recordCount + stringSize, true);
 		if ((header.flags & 0x04) != 0)
 		{
 			m_IDs.resize(recordCount);
-			memFile->read(m_IDs.data(), recordCount * sizeof(uint32_t));
+			m_pMemFile->read(m_IDs.data(), recordCount * sizeof(uint32_t));
 		}
 		else
 		{
@@ -105,7 +112,7 @@ bool WDB5File::open(CMemFile* memFile)
 
 		std::vector<copy_table_entry> copyTable;
 		copyTable.resize(nbEntries); 
-		memFile->read(copyTable.data(), header.copy_table_size);
+		m_pMemFile->read(copyTable.data(), header.copy_table_size);
 
 		// create a id->offset map
 		std::map<uint32_t, const uint8_t*> IDToOffsetMap;

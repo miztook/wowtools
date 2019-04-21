@@ -56,8 +56,6 @@ const DBFile * wowDatabase::loadDBFile(const CTableStruct * table) const
 		return nullptr;
 
 	const DBFile* file = DBFile::readDBFile(memFile);
-	delete memFile;
-
 	return file;
 }
 
@@ -120,7 +118,7 @@ bool wowDatabase::initFromXml()
 			++fieldId;
 		}
 
-		DbStructureList.emplace_back(tblStruct);
+		DbStructureMap[tblStruct.name] = tblStruct;
 	}
 	return true;
 }

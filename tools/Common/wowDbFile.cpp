@@ -1,6 +1,9 @@
 #include "wowDbFile.h"
 
 #include "CMemFile.h"
+#include "wowWDB5File.h"
+#include "wowWDC3File.h"
+#include <cassert>
 
 const DBFile* DBFile::readDBFile(CMemFile * memFile)
 {
@@ -21,6 +24,22 @@ const DBFile* DBFile::readDBFile(CMemFile * memFile)
 		dbType = WowDBType::WDC2;
 	else if (strncmp(magic, "WDC3", 4) == 0)
 		dbType = WowDBType::WDC3;
+
+	if (dbType == WowDBType::WDC3)
+	{
+		WDC3File* file = new WDC3File(memFile);
+		if (!file->open())
+		{
+			delete file;
+			return nullptr;
+		}
+		else
+			return file;
+	}
+	else
+	{
+		assert(false);
+	}
 
 	return nullptr;
 }
