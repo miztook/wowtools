@@ -239,7 +239,7 @@ bool WDC3File::open()
 			curPtr += 4;
 			memcpy(&recordIndex, curPtr, 4);
 			curPtr += 4;
-			m_relationShipData[recordIndex] = std_string_format("%u", foreignKey);
+			m_relationShipData[recordIndex] = foreignKey;
 		}
 	}
 
@@ -310,13 +310,13 @@ std::vector<VAR_T> WDC3File::getRecordValue(uint32_t index, const CTableStruct* 
 
 		if (field.isRelationshipData)
 		{
-			std::string str;
+			uint32_t key;
 			auto itr = m_relationShipData.find(index);
 			if (itr != m_relationShipData.end())
-				str = itr->second;
+				key = itr->second;
 			else
-				str = "";
-			v = str;
+				key = 0;
+			v = key;
 			result.push_back(v);
 			continue;
 		}

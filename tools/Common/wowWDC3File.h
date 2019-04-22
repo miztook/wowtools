@@ -119,7 +119,7 @@ private:
 
 	std::map<uint32_t, uint32_t> m_palletBlockOffsets;
 	std::map<uint32_t, std::map<uint32_t, uint32_t> > m_commonData;
-	std::map<uint32_t, std::string> m_relationShipData;
+	std::map<uint32_t, uint32_t> m_relationShipData;
 
 	std::vector<uint8_t> m_palletData;
 };

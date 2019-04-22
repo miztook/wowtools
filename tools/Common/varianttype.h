@@ -238,7 +238,7 @@ public:
 	}
 
 	template<typename T>
-	typename std::decay<T>::type& Get()
+	typename std::decay<T>::type& Get() const
 	{
 		using U = typename std::decay<T>::type;
 		if (!Is<U>())

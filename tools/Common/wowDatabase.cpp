@@ -25,6 +25,9 @@ bool wowDatabase::init()
 	if (!initFromXml())
 		return false;
 
+	if (!loadAllTables())
+		return false;
+
 	return true;
 }
 
@@ -49,7 +52,128 @@ CMemFile * wowDatabase::loadDBMemFile(const CTableStruct* table) const
 	return file;
 }
 
-const DBFile * wowDatabase::loadDBFile(const CTableStruct * table) const
+bool wowDatabase::loadAllTables()
+{
+	if (!m_AnimationDataTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_CharBaseSectionTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_CharComponentTextureLayoutsTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_CharComponentTextureSectionsTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_CharHairGeoSetsTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_CharSectionsTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_CharacterFacialHairStylesTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_ChrClassesTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_ChrCustomizationTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_ChrRacesTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_ComponentModelFileDataTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_ComponentTextureFileDataTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_CreatureDisplayInfoTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_CreatureDisplayInfoExtraTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_CreatureModelDataTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_CreatureTypeTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_HelmetGeosetDataTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_ItemTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	return true;
+}
+
+const CTableStruct* wowDatabase::getDBStruct(const char* name) const
+{
+	auto itr = DbStructureMap.find(name);
+	if (itr != DbStructureMap.end())
+		return &itr->second;
+	return nullptr;
+}
+
+const DBFile* wowDatabase::loadDBFile(const CTableStruct * table) const
 {
 	CMemFile* memFile = loadDBMemFile(table);
 	if (!memFile)
@@ -105,7 +229,7 @@ bool wowDatabase::initFromXml()
 
 				fieldStruct.isKey = !attr_key.empty();
 				fieldStruct.needIndex = !attr_index.empty();
-				fieldStruct.arraySize = attr_arraySize.as_uint();
+				fieldStruct.arraySize = attr_arraySize.empty() ? 1 : attr_arraySize.as_uint();
 
 				fieldStruct.pos = attr_pos.as_int();
 				fieldStruct.isCommonData = attr_commonData.as_bool();
