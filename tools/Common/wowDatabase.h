@@ -79,6 +79,11 @@ public:
 	CreatureTypeTable	m_CreatureTypeTable;
 	HelmetGeosetDataTable	m_HelmetGeosetDataTable;
 	ItemTable	m_ItemTable;
+	ItemAppearanceTable		m_ItemAppearanceTable;
+	ItemClassTable		m_ItemClassTable;
+	ItemDisplayInfoTable	m_ItemDisplayInfoTable;
+	ItemDisplayInfoMaterialResTable		m_ItemDisplayInfoMaterialResTable;
+	ItemModifiedAppearanceTable		m_ItemModifiedAppearanceTable;
 
 private:
 	const wowEnvironment*		Environment;

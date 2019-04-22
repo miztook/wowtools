@@ -49,7 +49,7 @@ Item
 ItemAppearance
 ItemClass
 ItemDisplayInfo
-ItemDisplayInfoMeterialRes
+ItemDisplayInfoMaterialRes
 ItemModifiedAppearance
 ItemSet
 ItemSparse
@@ -800,6 +800,204 @@ public:
 	bool loadData(const wowDatabase* database)
 	{
 		if (!BaseTable::loadData(database, "Item"))
+			return false;
+		BUILD_ID2INDEX_MAP(ID);
+		return true;
+	}
+};
+
+class ItemAppearanceTable : public BaseTable
+{
+public:
+	struct SRecord
+	{
+		uint32_t ID;
+		uint32_t ItemDisplayInfoID;
+	};
+
+	std::vector<SRecord>  RecordList;
+
+public:
+	ItemAppearanceTable()
+	{
+		onLoadItem = [this](const std::vector<VAR_T>& val)
+		{
+			assert(val.size() == 2);
+			SRecord r;
+			r.ID = val[0].Get<uint32_t>();
+			r.ItemDisplayInfoID = val[1].Get<uint32_t>();
+			RecordList.emplace_back(r);
+		};
+	}
+
+public:
+	bool loadData(const wowDatabase* database)
+	{
+		if (!BaseTable::loadData(database, "ItemAppearance"))
+			return false;
+		BUILD_ID2INDEX_MAP(ID);
+		return true;
+	}
+};
+
+class ItemClassTable : public BaseTable
+{
+public:
+	struct SRecord
+	{
+		uint32_t Col0;
+		std::string Name;
+		uint32_t ID;
+	};
+
+	std::vector<SRecord>  RecordList;
+
+public:
+	ItemClassTable()
+	{
+		onLoadItem = [this](const std::vector<VAR_T>& val)
+		{
+			assert(val.size() == 3);
+			SRecord r;
+			r.Col0 = val[0].Get<uint32_t>();
+			r.Name = val[1].Get<std::string>();
+			r.ID = val[2].Get<uint32_t>();
+			RecordList.emplace_back(r);
+		};
+	}
+
+public:
+	bool loadData(const wowDatabase* database)
+	{
+		if (!BaseTable::loadData(database, "ItemClass"))
+			return false;
+		BUILD_ID2INDEX_MAP(ID);
+		return true;
+	}
+};
+
+class ItemDisplayInfoTable : public BaseTable
+{
+public:
+	struct SRecord
+	{
+		uint32_t ID;
+		uint32_t Model[2];
+		uint32_t TextureItemID[2];
+		uint16_t GeosetGroup[6];
+		uint32_t ParticleColorID;
+		uint32_t HelmetGeosetVis[2];
+	};
+
+	std::vector<SRecord>  RecordList;
+
+public:
+	ItemDisplayInfoTable()
+	{
+		onLoadItem = [this](const std::vector<VAR_T>& val)
+		{
+			assert(val.size() == 14);
+			SRecord r;
+			r.ID = val[0].Get<uint32_t>();
+			for (uint32_t i = 0; i < 2; ++i)
+			{
+				r.Model[i] = val[1+i].Get<uint32_t>();
+			}
+			for (uint32_t i = 0; i < 2; ++i)
+			{
+				r.TextureItemID[i] = val[3+i].Get<uint32_t>();
+			}			
+			for (uint32_t i = 0; i < 6; ++i)
+			{
+				r.GeosetGroup[i] = val[5+i].Get<uint16_t>();
+			}
+			r.ParticleColorID = val[11].Get<uint32_t>();
+			for (uint32_t i = 0; i < 2; ++i)
+			{
+				r.HelmetGeosetVis[i] = val[12+i].Get<uint32_t>();
+			}
+			RecordList.emplace_back(r);
+		};
+	}
+
+public:
+	bool loadData(const wowDatabase* database)
+	{
+		if (!BaseTable::loadData(database, "ItemDisplayInfo"))
+			return false;
+		BUILD_ID2INDEX_MAP(ID);
+		return true;
+	}
+};
+
+class ItemDisplayInfoMaterialResTable : public BaseTable
+{
+public:
+	struct SRecord
+	{
+		uint32_t ID;
+		uint32_t ItemDisplayInfoID;
+		uint32_t TextureFileDataID;
+	};
+
+	std::vector<SRecord>  RecordList;
+
+public:
+	ItemDisplayInfoMaterialResTable()
+	{
+		onLoadItem = [this](const std::vector<VAR_T>& val)
+		{
+			assert(val.size() == 3);
+			SRecord r;
+			r.ID = val[0].Get<uint32_t>();
+			r.ItemDisplayInfoID = val[1].Get<uint32_t>();
+			r.TextureFileDataID = val[2].Get<uint32_t>();
+			RecordList.emplace_back(r);
+		};
+	}
+
+public:
+	bool loadData(const wowDatabase* database)
+	{
+		if (!BaseTable::loadData(database, "ItemDisplayInfoMaterialRes"))
+			return false;
+		BUILD_ID2INDEX_MAP(ID);
+		return true;
+	}
+};
+
+class ItemModifiedAppearanceTable : public BaseTable
+{
+public:
+	struct SRecord
+	{
+		uint32_t ID;
+		uint32_t ItemID;
+		uint32_t ItemAppearanceID;
+		uint16_t ItemLevel;
+	};
+
+	std::vector<SRecord>  RecordList;
+
+public:
+	ItemModifiedAppearanceTable()
+	{
+		onLoadItem = [this](const std::vector<VAR_T>& val)
+		{
+			assert(val.size() == 4);
+			SRecord r;
+			r.ID = val[0].Get<uint32_t>();
+			r.ItemID = val[1].Get<uint32_t>();
+			r.ItemAppearanceID = val[2].Get<uint32_t>();
+			r.ItemLevel = val[3].Get<uint16_t>();
+			RecordList.emplace_back(r);
+		};
+	}
+
+public:
+	bool loadData(const wowDatabase* database)
+	{
+		if (!BaseTable::loadData(database, "ItemModifiedAppearance"))
 			return false;
 		BUILD_ID2INDEX_MAP(ID);
 		return true;

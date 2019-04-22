@@ -162,6 +162,36 @@ bool wowDatabase::loadAllTables()
 		return false;
 	}
 
+	if (!m_ItemAppearanceTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_ItemClassTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_ItemDisplayInfoTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_ItemDisplayInfoMaterialResTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_ItemModifiedAppearanceTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
 	return true;
 }
 
