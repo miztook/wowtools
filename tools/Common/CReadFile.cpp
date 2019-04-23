@@ -42,20 +42,17 @@ uint32_t CReadFile::readLine(char* buffer, uint32_t len /*= MAX_READ_NUM*/)
 
 	assert(!IsBinary);
 
-	int c = fgetc(File);
-	uint32_t count = 0;
-	while (c != '\n' && c != '\r' && c != EOF)
-	{
-		if (1 + count >= len)
-			break;
-		buffer[count] = c;
-		++count;
+	if (!fgets(buffer, len, File))
+		return false;
 
-		c = fgetc(File);
-	}
-	buffer[count] = '\0';
+	//chop the \n\r
+	if (buffer[0] && (buffer[strlen(buffer) - 1] == '\n' || buffer[strlen(buffer) - 1] == '\r'))
+		buffer[strlen(buffer) - 1] = '\0';
 
-	return count;
+	if (buffer[0] && (buffer[strlen(buffer) - 1] == '\n' || buffer[strlen(buffer) - 1] == '\r'))
+		buffer[strlen(buffer) - 1] = '\0';
+
+	return (uint32_t)strlen(buffer) + 1;
 }
 
 uint32_t CReadFile::readLineSkipSpace(char* buffer, uint32_t len /*= MAX_READ_NUM*/)

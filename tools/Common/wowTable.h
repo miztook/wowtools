@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <functional>
 
 #include "wowDbFile.h"
@@ -11,12 +11,13 @@
 class wowDatabase;
 
 #define BUILD_INDEX_MAP(id2indexMap, field)		\
+id2indexMap.reserve(RecordList.size());			\
 for (uint32_t i = 0; i < (uint32_t)RecordList.size(); ++i)	\
 { id2indexMap[RecordList[i].##field] = i; }	
 
 #define IMPLEMENT_RECORD_COMMON()	\
 std::vector<SRecord>  RecordList;				\
-std::map<uint32_t, uint32_t> Id2IndexMap;			\
+std::unordered_map<uint32_t, uint32_t> Id2IndexMap;			\
 std::function<void(const std::vector<VAR_T>& val)>   OnLoadItem;	\
 bool hasKey() const { return !Id2IndexMap.empty(); }		\
 const SRecord* getByID(uint32_t id) const		\

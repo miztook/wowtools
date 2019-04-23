@@ -11,8 +11,6 @@
 
 #include "wowDbFile.h"
 
-using namespace std;
-
 #pragma comment(lib, "CascLib.lib")
 #pragma comment(lib, "pugixml.lib")
 
@@ -54,19 +52,6 @@ void testWowDatabase()
 		printf("wowDB init fail!\n");
 	else
 		printf("wowDB init success!\n");
-
-	for (const auto& kv : wowDB->getDBStructMap())
-	{
-		const CTableStruct& table = kv.second;
-		const DBFile* file = wowDB->loadDBFile(&table);
-		if (!file)
-			printf("load table memFile fail! %s\n", table.name.c_str());
-		else
-			printf("%s\n", table.name.c_str());
-
-		delete file;
-	}
-	
 
 	delete wowDB;
 	delete wowEnv;
