@@ -1003,3 +1003,160 @@ public:
 		return true;
 	}
 };
+
+class ItemSetTable : public BaseTable
+{
+public:
+	struct SRecord
+	{
+		uint32_t ID;
+		std::string Name;
+		int Item[17];
+	};
+
+	std::vector<SRecord>  RecordList;
+
+public:
+	ItemSetTable()
+	{
+		onLoadItem = [this](const std::vector<VAR_T>& val)
+		{
+			assert(val.size() == 19);
+			SRecord r;
+			r.ID = val[0].Get<uint32_t>();
+			r.Name = val[1].Get<std::string>();
+			for (uint32_t i = 0; i < 17; ++i)
+			{
+				r.Item[i] = val[2 + i].Get<int>();
+			}
+			RecordList.emplace_back(r);
+		};
+	}
+
+public:
+	bool loadData(const wowDatabase* database)
+	{
+		if (!BaseTable::loadData(database, "ItemSet"))
+			return false;
+		BUILD_ID2INDEX_MAP(ID);
+		return true;
+	}
+};
+
+class ItemSparseTable : public BaseTable
+{
+public:
+	struct SRecord
+	{
+		uint32_t ID;
+		uint64_t AllowableRace;
+		std::string Description;
+		std::string DisplayLang3;
+		std::string DisplayLang2;
+		std::string DisplayLang1;
+		std::string Name;
+	};
+
+	std::vector<SRecord>  RecordList;
+
+public:
+	ItemSparseTable()
+	{
+		onLoadItem = [this](const std::vector<VAR_T>& val)
+		{
+			assert(val.size() == 7);
+			SRecord r;
+			r.ID = val[0].Get<uint32_t>();
+			r.AllowableRace = val[1].Get<uint64_t>();
+			r.Description = val[2].Get<std::string>();
+			r.DisplayLang3 = val[3].Get<std::string>();
+			r.DisplayLang2 = val[4].Get<std::string>();
+			r.DisplayLang1 = val[5].Get<std::string>();
+			r.Name = val[6].Get<std::string>();
+			RecordList.emplace_back(r);
+		};
+	}
+
+public:
+	bool loadData(const wowDatabase* database)
+	{
+		if (!BaseTable::loadData(database, "ItemSparse"))
+			return false;
+		BUILD_ID2INDEX_MAP(ID);
+		return true;
+	}
+};
+
+class ItemSubClassTable : public BaseTable
+{
+public:
+	struct SRecord
+	{
+		uint32_t Col0;
+		uint16_t ID;
+		uint16_t SubClassID;
+		std::string Name;
+		std::string VerboseName;
+	};
+
+	std::vector<SRecord>  RecordList;
+
+public:
+	ItemSubClassTable()
+	{
+		onLoadItem = [this](const std::vector<VAR_T>& val)
+		{
+			assert(val.size() == 5);
+			SRecord r;
+			r.Col0 = val[0].Get<uint32_t>();
+			r.ID = val[1].Get<uint16_t>();
+			r.SubClassID = val[2].Get<uint16_t>();
+			r.Name = val[3].Get<std::string>();
+			r.VerboseName = val[4].Get<std::string>();
+			RecordList.emplace_back(r);
+		};
+	}
+
+public:
+	bool loadData(const wowDatabase* database)
+	{
+		if (!BaseTable::loadData(database, "ItemSubClass"))
+			return false;
+		BUILD_ID2INDEX_MAP(ID);
+		return true;
+	}
+};
+
+class ModelFileDataTable : public BaseTable
+{
+public:
+	struct SRecord
+	{
+		uint32_t ModelID;
+		uint32_t ID;
+	};
+
+	std::vector<SRecord>  RecordList;
+
+public:
+	ModelFileDataTable()
+	{
+		onLoadItem = [this](const std::vector<VAR_T>& val)
+		{
+			assert(val.size() == 2);
+			SRecord r;
+			r.ModelID = val[0].Get<uint32_t>();
+			r.ID = val[1].Get<uint32_t>();
+			RecordList.emplace_back(r);
+		};
+	}
+
+public:
+	bool loadData(const wowDatabase* database)
+	{
+		if (!BaseTable::loadData(database, "ModelFileData"))
+			return false;
+		BUILD_ID2INDEX_MAP(ID);
+		return true;
+	}
+};

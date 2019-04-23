@@ -84,6 +84,10 @@ public:
 	ItemDisplayInfoTable	m_ItemDisplayInfoTable;
 	ItemDisplayInfoMaterialResTable		m_ItemDisplayInfoMaterialResTable;
 	ItemModifiedAppearanceTable		m_ItemModifiedAppearanceTable;
+	ItemSetTable	m_ItemSetTable;
+	ItemSparseTable		m_ItemSparseTable;
+	ItemSubClassTable		m_ItemSubClassTable;
+	ModelFileDataTable		m_ModelFileDataTable;
 
 private:
 	const wowEnvironment*		Environment;

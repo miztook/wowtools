@@ -32,6 +32,8 @@ bool WDC3File::open()
 	m_sectionHeaders.resize(m_header.section_count);
 	m_pMemFile->read(m_sectionHeaders.data(), sizeof(section_header) * m_header.section_count);
 
+	m_isSparseTable = m_sectionHeaders[0].offset_map_id_count > 0;
+
 	//field
 	std::vector<WDC3File::field_structure> fields;
 	fields.resize(fieldCount);
@@ -219,7 +221,7 @@ bool WDC3File::open()
 	if (m_sectionHeaders[0].offset_map_id_count > 0)
 	{
 		uint32_t nbEntries = m_sectionHeaders[0].offset_map_id_count;
-		offsetMap.reserve(nbEntries);
+		offsetMap.resize(nbEntries);
 		memcpy(offsetMap.data(), curPtr, nbEntries * sizeof(offset_map_entry));
 		curPtr += (nbEntries * sizeof(offset_map_entry));
 	}
@@ -256,7 +258,6 @@ bool WDC3File::open()
 	if (!offsetMap.empty())
 	{
 		m_recordOffsets.clear();
-		m_isSparseTable = true;
 		for (const auto& it : offsetMap)
 			m_recordOffsets.push_back(sectionData - m_sectionHeaders[0].file_offset + it.offset);
 	}
@@ -333,7 +334,7 @@ std::vector<VAR_T> WDC3File::getRecordValue(uint32_t index, const CTableStruct* 
 				if (m_isSparseTable)
 				{
 					const uint8_t* ptr = recordOffset;
-					for (int f = 0; f <= field.pos; ++i)
+					for (int f = 0; f <= field.pos; ++f)
 					{
 						if (table->fields[f].isKey)
 							continue;

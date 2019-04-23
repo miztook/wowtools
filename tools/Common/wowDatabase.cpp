@@ -192,6 +192,30 @@ bool wowDatabase::loadAllTables()
 		return false;
 	}
 
+	if (!m_ItemSetTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_ItemSparseTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_ItemSubClassTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_ModelFileDataTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
 	return true;
 }
 
