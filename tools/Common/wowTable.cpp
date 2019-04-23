@@ -3,7 +3,7 @@
 #include "wowDatabase.h"
 #include "wowDbFile.h"
 
-bool BaseTable::loadData(const wowDatabase * database, const char* tableName)
+bool g_IterateTableRecords(const wowDatabase * database, const char * tableName, const std::function<void(const std::vector<VAR_T>&val)>& callback)
 {
 	const CTableStruct* table = database->getDBStruct(tableName);
 	if (!table)
@@ -23,13 +23,11 @@ bool BaseTable::loadData(const wowDatabase * database, const char* tableName)
 	for (uint32_t i = 0; i < file->getRecordCount(); ++i)
 	{
 		const std::vector<VAR_T>& val = file->getRecordValue(i, table);
-		
-		if (onLoadItem)
-			onLoadItem(val);
+
+		if (callback)
+			callback(val);
 	}
 
 	delete file;
 	return true;
 }
-
-

@@ -10,22 +10,33 @@
 
 class wowDatabase;
 
-#define BUILD_ID2INDEX_MAP(field)		\
+#define BUILD_INDEX_MAP(id2indexMap, field)		\
 for (uint32_t i = 0; i < (uint32_t)RecordList.size(); ++i)	\
-{ Id2IndexMap[RecordList[i].##field] = i; }	
+{ id2indexMap[RecordList[i].##field] = i; }	
 
-class BaseTable
-{
-public:
-	bool hasKey() const { return !Id2IndexMap.empty(); }
+#define IMPLEMENT_RECORD_COMMON()	\
+std::vector<SRecord>  RecordList;				\
+std::map<uint32_t, uint32_t> Id2IndexMap;			\
+std::function<void(const std::vector<VAR_T>& val)>   OnLoadItem;	\
+bool hasKey() const { return !Id2IndexMap.empty(); }		\
+const SRecord* getByID(uint32_t id) const		\
+{							\
+	auto itr = Id2IndexMap.find(id);			\
+	if (itr == Id2IndexMap.end())			\
+		return nullptr;					\
+	return &RecordList[itr->second];			\
+}
 
-	std::map<uint32_t, uint32_t> Id2IndexMap;
+#define IMPLEMENT_RECORD_LOAD(name)			\
+bool loadData(const wowDatabase* database)		\
+{									\
+	if (!g_IterateTableRecords(database, name, OnLoadItem))		\
+		return false;				\
+	BUILD_INDEX_MAP(Id2IndexMap, ID);			\
+	return true;					\
+}
 
-protected:
-	bool loadData(const wowDatabase* database, const char* tableName);
-
-	std::function<void (const std::vector<VAR_T>& val)> onLoadItem;
-};
+bool g_IterateTableRecords(const wowDatabase* database, const char* tableName, const std::function<void(const std::vector<VAR_T>& val)>& callback);
 
 /*
 AnimationData
@@ -63,7 +74,7 @@ TextureFileData
 
 
 */
-class AnimationDataTable : public BaseTable
+class AnimationDataTable
 {
 public:
 	struct SRecord
@@ -72,12 +83,9 @@ public:
 		std::string Name;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	AnimationDataTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 2);
 			SRecord r;
@@ -88,16 +96,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "AnimationData"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("AnimationData");
 };
 
-class CharBaseSectionTable : public BaseTable
+class CharBaseSectionTable
 {
 public:
 	struct SRecord
@@ -108,12 +112,9 @@ public:
 		uint32_t ResolutionVariationEnum;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	CharBaseSectionTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 4);
 			SRecord r;
@@ -126,16 +127,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "CharBaseSection"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("CharBaseSection");
 };
 
-class CharComponentTextureLayoutsTable : public BaseTable
+class CharComponentTextureLayoutsTable
 {
 public:
 	struct SRecord
@@ -145,12 +142,9 @@ public:
 		uint16_t Height;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	CharComponentTextureLayoutsTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 3);
 			SRecord r;
@@ -162,16 +156,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "CharComponentTextureLayouts"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("CharComponentTextureLayouts");
 };
 
-class CharComponentTextureSectionsTable : public BaseTable
+class CharComponentTextureSectionsTable
 {
 public:
 	struct SRecord
@@ -185,12 +175,9 @@ public:
 		uint16_t Height;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	CharComponentTextureSectionsTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 7);
 			SRecord r;
@@ -206,16 +193,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "CharComponentTextureSections"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("CharComponentTextureSections");
 };
 
-class CharHairGeoSetsTable : public BaseTable
+class CharHairGeoSetsTable
 {
 public:
 	struct SRecord
@@ -231,12 +214,9 @@ public:
 		uint32_t ColorIndex;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	CharHairGeoSetsTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 9);
 			SRecord r;
@@ -254,16 +234,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "CharHairGeoSets"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("CharHairGeoSets");
 };
 
-class CharSectionsTable : public BaseTable
+class CharSectionsTable
 {
 public:
 	struct SRecord
@@ -278,12 +254,9 @@ public:
 		uint16_t ColorIndex;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	CharSectionsTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 10);
 			SRecord r;
@@ -303,16 +276,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "CharSections"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("CharSections");
 };
 
-class CharacterFacialHairStylesTable : public BaseTable
+class CharacterFacialHairStylesTable
 {
 public:
 	struct SRecord
@@ -324,12 +293,9 @@ public:
 		uint32_t Geoset[5];
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	CharacterFacialHairStylesTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 9);
 			SRecord r;
@@ -346,16 +312,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "CharacterFacialHairStyles"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("CharacterFacialHairStyles");
 };
 
-class ChrClassesTable : public BaseTable
+class ChrClassesTable
 {
 public:
 	struct SRecord
@@ -364,12 +326,9 @@ public:
 		std::string Name;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	ChrClassesTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 2);
 			SRecord r;
@@ -380,16 +339,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "ChrClasses"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("ChrClasses");
 };
 
-class ChrCustomizationTable : public BaseTable
+class ChrCustomizationTable
 {
 public:
 	struct SRecord
@@ -403,12 +358,9 @@ public:
 		uint32_t RaceId;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	ChrCustomizationTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 9);
 			SRecord r;
@@ -427,16 +379,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "ChrCustomization"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("ChrCustomization");
 };
 
-class ChrRacesTable : public BaseTable
+class ChrRacesTable
 {
 public:
 	struct SRecord
@@ -457,12 +405,9 @@ public:
 		int FemaleTextureFallbackRaceID;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	ChrRacesTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 14);
 			SRecord r;
@@ -486,16 +431,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "ChrRaces"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("ChrRaces");
 };
 
-class ComponentModelFileDataTable : public BaseTable
+class ComponentModelFileDataTable
 {
 public:
 	struct SRecord
@@ -507,12 +448,9 @@ public:
 		uint16_t PositionIndex;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	ComponentModelFileDataTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 5);
 			SRecord r;
@@ -526,16 +464,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "ComponentModelFileData"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("ComponentModelFileData");
 };
 
-class ComponentTextureFileDataTable : public BaseTable
+class ComponentTextureFileDataTable
 {
 public:
 	struct SRecord
@@ -546,12 +480,9 @@ public:
 		uint16_t RaceID;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	ComponentTextureFileDataTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 4);
 			SRecord r;
@@ -564,16 +495,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "ComponentTextureFileData"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("ComponentTextureFileData");
 };
 
-class CreatureDisplayInfoTable : public BaseTable
+class CreatureDisplayInfoTable
 {
 public:
 	struct SRecord
@@ -585,12 +512,9 @@ public:
 		uint16_t ParticleColorID;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	CreatureDisplayInfoTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 7);
 			SRecord r;
@@ -607,16 +531,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "CreatureDisplayInfo"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("CreatureDisplayInfo");
 };
 
-class CreatureDisplayInfoExtraTable : public BaseTable
+class CreatureDisplayInfoExtraTable
 {
 public:
 	struct SRecord
@@ -629,12 +549,9 @@ public:
 		uint16_t FacialHair;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	CreatureDisplayInfoExtraTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 6);
 			SRecord r;
@@ -649,16 +566,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "CreatureDisplayInfoExtra"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("CreatureDisplayInfoExtra");
 };
 
-class CreatureModelDataTable : public BaseTable
+class CreatureModelDataTable
 {
 public:
 	struct SRecord
@@ -667,12 +580,9 @@ public:
 		uint32_t FileID;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	CreatureModelDataTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 2);
 			SRecord r;
@@ -683,16 +593,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "CreatureModelData"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("CreatureModelData");
 };
 
-class CreatureTypeTable : public BaseTable
+class CreatureTypeTable
 {
 public:
 	struct SRecord
@@ -702,12 +608,9 @@ public:
 		uint16_t Flags;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	CreatureTypeTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 3);
 			SRecord r;
@@ -719,16 +622,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "CreatureType"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("CreatureType");
 };
 
-class HelmetGeosetDataTable : public BaseTable
+class HelmetGeosetDataTable
 {
 public:
 	struct SRecord
@@ -739,12 +638,9 @@ public:
 		uint32_t GeosetVisDataID;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	HelmetGeosetDataTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 4);
 			SRecord r;
@@ -757,16 +653,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "HelmetGeosetData"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("HelmetGeosetData");
 };
 
-class ItemTable : public BaseTable
+class ItemTable
 {
 public:
 	struct SRecord
@@ -778,12 +670,9 @@ public:
 		uint16_t Sheath;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	ItemTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 5);
 			SRecord r;
@@ -797,16 +686,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "Item"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("Item");
 };
 
-class ItemAppearanceTable : public BaseTable
+class ItemAppearanceTable
 {
 public:
 	struct SRecord
@@ -815,12 +700,9 @@ public:
 		uint32_t ItemDisplayInfoID;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	ItemAppearanceTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 2);
 			SRecord r;
@@ -831,16 +713,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "ItemAppearance"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("ItemAppearance");
 };
 
-class ItemClassTable : public BaseTable
+class ItemClassTable
 {
 public:
 	struct SRecord
@@ -850,12 +728,9 @@ public:
 		uint32_t ID;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	ItemClassTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 3);
 			SRecord r;
@@ -867,16 +742,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "ItemClass"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("ItemClass");
 };
 
-class ItemDisplayInfoTable : public BaseTable
+class ItemDisplayInfoTable
 {
 public:
 	struct SRecord
@@ -889,12 +760,9 @@ public:
 		uint32_t HelmetGeosetVis[2];
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	ItemDisplayInfoTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 14);
 			SRecord r;
@@ -921,16 +789,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "ItemDisplayInfo"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("ItemDisplayInfo");
 };
 
-class ItemDisplayInfoMaterialResTable : public BaseTable
+class ItemDisplayInfoMaterialResTable
 {
 public:
 	struct SRecord
@@ -940,12 +804,9 @@ public:
 		uint32_t TextureFileDataID;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	ItemDisplayInfoMaterialResTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 3);
 			SRecord r;
@@ -957,16 +818,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "ItemDisplayInfoMaterialRes"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("ItemDisplayInfoMaterialRes");
 };
 
-class ItemModifiedAppearanceTable : public BaseTable
+class ItemModifiedAppearanceTable
 {
 public:
 	struct SRecord
@@ -977,12 +834,9 @@ public:
 		uint16_t ItemLevel;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	ItemModifiedAppearanceTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 4);
 			SRecord r;
@@ -995,16 +849,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "ItemModifiedAppearance"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("ItemModifiedAppearance");
 };
 
-class ItemSetTable : public BaseTable
+class ItemSetTable
 {
 public:
 	struct SRecord
@@ -1014,12 +864,9 @@ public:
 		int Item[17];
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	ItemSetTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 19);
 			SRecord r;
@@ -1034,16 +881,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "ItemSet"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("ItemSet");
 };
 
-class ItemSparseTable : public BaseTable
+class ItemSparseTable
 {
 public:
 	struct SRecord
@@ -1057,12 +900,9 @@ public:
 		std::string Name;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	ItemSparseTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 7);
 			SRecord r;
@@ -1078,16 +918,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "ItemSparse"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("ItemSparse");
 };
 
-class ItemSubClassTable : public BaseTable
+class ItemSubClassTable
 {
 public:
 	struct SRecord
@@ -1099,12 +935,9 @@ public:
 		std::string VerboseName;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	ItemSubClassTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 5);
 			SRecord r;
@@ -1118,16 +951,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "ItemSubClass"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("ItemSubClass");
 };
 
-class ModelFileDataTable : public BaseTable
+class ModelFileDataTable
 {
 public:
 	struct SRecord
@@ -1136,12 +965,9 @@ public:
 		uint32_t ID;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	ModelFileDataTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 2);
 			SRecord r;
@@ -1152,16 +978,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "ModelFileData"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("ModelFileData");
 };
 
-class MountTable : public BaseTable
+class MountTable
 {
 public:
 	struct SRecord
@@ -1170,12 +992,9 @@ public:
 		std::string Name;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	MountTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 2);
 			SRecord r;
@@ -1186,16 +1005,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "Mount"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("Mount");
 };
 
-class MountXDisplayTable : public BaseTable
+class MountXDisplayTable
 {
 public:
 	struct SRecord
@@ -1205,12 +1020,9 @@ public:
 		uint32_t DisplayID;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	MountXDisplayTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 3);
 			SRecord r;
@@ -1222,16 +1034,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "MountXDisplay"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("MountXDisplay");
 };
 
-class NpcModelItemSlotDisplayInfoTable : public BaseTable
+class NpcModelItemSlotDisplayInfoTable
 {
 public:
 	struct SRecord
@@ -1242,12 +1050,9 @@ public:
 		uint16_t ItemType;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	NpcModelItemSlotDisplayInfoTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 4);
 			SRecord r;
@@ -1260,16 +1065,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "NpcModelItemSlotDisplayInfo"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("NpcModelItemSlotDisplayInfo");
 };
 
-class ParticleColorTable : public BaseTable
+class ParticleColorTable
 {
 public:
 	struct SRecord
@@ -1280,12 +1081,9 @@ public:
 		int EndColor[3];
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	ParticleColorTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 10);
 			SRecord r;
@@ -1307,16 +1105,12 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "ParticleColor"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("ParticleColor");
 };
 
-class TextureFileDataTable : public BaseTable
+class TextureFileDataTable
 {
 public:
 	struct SRecord
@@ -1325,12 +1119,9 @@ public:
 		uint32_t ID;
 	};
 
-	std::vector<SRecord>  RecordList;
-
-public:
 	TextureFileDataTable()
 	{
-		onLoadItem = [this](const std::vector<VAR_T>& val)
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
 			assert(val.size() == 2);
 			SRecord r;
@@ -1341,11 +1132,8 @@ public:
 	}
 
 public:
-	bool loadData(const wowDatabase* database)
-	{
-		if (!BaseTable::loadData(database, "TextureFileData"))
-			return false;
-		BUILD_ID2INDEX_MAP(ID);
-		return true;
-	}
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("TextureFileData");
 };
+
