@@ -88,6 +88,11 @@ public:
 	ItemSparseTable		m_ItemSparseTable;
 	ItemSubClassTable		m_ItemSubClassTable;
 	ModelFileDataTable		m_ModelFileDataTable;
+	MountTable		m_MountTable;
+	MountXDisplayTable		m_MountXDisplayTable;
+	NpcModelItemSlotDisplayInfoTable	m_NpcModelItemSlotDisplayInfoTable;
+	ParticleColorTable		m_ParticleColorTable;
+	TextureFileDataTable	m_TextureFileDataTable;
 
 private:
 	const wowEnvironment*		Environment;

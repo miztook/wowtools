@@ -216,6 +216,36 @@ bool wowDatabase::loadAllTables()
 		return false;
 	}
 
+	if (!m_MountTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_MountXDisplayTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_NpcModelItemSlotDisplayInfoTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_ParticleColorTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
+	if (!m_TextureFileDataTable.loadData(this))
+	{
+		assert(false);
+		return false;
+	}
+
 	return true;
 }
 

@@ -1160,3 +1160,192 @@ public:
 		return true;
 	}
 };
+
+class MountTable : public BaseTable
+{
+public:
+	struct SRecord
+	{
+		uint32_t ID;
+		std::string Name;
+	};
+
+	std::vector<SRecord>  RecordList;
+
+public:
+	MountTable()
+	{
+		onLoadItem = [this](const std::vector<VAR_T>& val)
+		{
+			assert(val.size() == 2);
+			SRecord r;
+			r.ID = val[0].Get<uint32_t>();
+			r.Name = val[1].Get<std::string>();
+			RecordList.emplace_back(r);
+		};
+	}
+
+public:
+	bool loadData(const wowDatabase* database)
+	{
+		if (!BaseTable::loadData(database, "Mount"))
+			return false;
+		BUILD_ID2INDEX_MAP(ID);
+		return true;
+	}
+};
+
+class MountXDisplayTable : public BaseTable
+{
+public:
+	struct SRecord
+	{
+		uint32_t ID;
+		uint32_t MountID;
+		uint32_t DisplayID;
+	};
+
+	std::vector<SRecord>  RecordList;
+
+public:
+	MountXDisplayTable()
+	{
+		onLoadItem = [this](const std::vector<VAR_T>& val)
+		{
+			assert(val.size() == 3);
+			SRecord r;
+			r.ID = val[0].Get<uint32_t>();
+			r.MountID = val[1].Get<uint32_t>();
+			r.DisplayID = val[2].Get<uint32_t>();
+			RecordList.emplace_back(r);
+		};
+	}
+
+public:
+	bool loadData(const wowDatabase* database)
+	{
+		if (!BaseTable::loadData(database, "MountXDisplay"))
+			return false;
+		BUILD_ID2INDEX_MAP(ID);
+		return true;
+	}
+};
+
+class NpcModelItemSlotDisplayInfoTable : public BaseTable
+{
+public:
+	struct SRecord
+	{
+		uint32_t ID;
+		uint32_t CreatureDisplayInfoExtraID;
+		uint32_t ItemDisplayInfoID;
+		uint16_t ItemType;
+	};
+
+	std::vector<SRecord>  RecordList;
+
+public:
+	NpcModelItemSlotDisplayInfoTable()
+	{
+		onLoadItem = [this](const std::vector<VAR_T>& val)
+		{
+			assert(val.size() == 4);
+			SRecord r;
+			r.ID = val[0].Get<uint32_t>();
+			r.CreatureDisplayInfoExtraID = val[1].Get<uint32_t>();
+			r.ItemDisplayInfoID = val[2].Get<uint32_t>();
+			r.ItemType = val[3].Get<uint16_t>();
+			RecordList.emplace_back(r);
+		};
+	}
+
+public:
+	bool loadData(const wowDatabase* database)
+	{
+		if (!BaseTable::loadData(database, "NpcModelItemSlotDisplayInfo"))
+			return false;
+		BUILD_ID2INDEX_MAP(ID);
+		return true;
+	}
+};
+
+class ParticleColorTable : public BaseTable
+{
+public:
+	struct SRecord
+	{
+		uint32_t ID;
+		int StartColor[3];
+		int MidColor[3];
+		int EndColor[3];
+	};
+
+	std::vector<SRecord>  RecordList;
+
+public:
+	ParticleColorTable()
+	{
+		onLoadItem = [this](const std::vector<VAR_T>& val)
+		{
+			assert(val.size() == 10);
+			SRecord r;
+			r.ID = val[0].Get<uint32_t>();
+			for (uint32_t i = 0; i < 3; ++i)
+			{
+				r.StartColor[i] = val[1+i].Get<int>();
+			}
+			for (uint32_t i = 0; i < 3; ++i)
+			{
+				r.MidColor[i] = val[4+i].Get<int>();
+			}
+			for (uint32_t i = 0; i < 3; ++i)
+			{
+				r.EndColor[i] = val[7+i].Get<int>();
+			}
+			RecordList.emplace_back(r);
+		};
+	}
+
+public:
+	bool loadData(const wowDatabase* database)
+	{
+		if (!BaseTable::loadData(database, "ParticleColor"))
+			return false;
+		BUILD_ID2INDEX_MAP(ID);
+		return true;
+	}
+};
+
+class TextureFileDataTable : public BaseTable
+{
+public:
+	struct SRecord
+	{
+		uint32_t TextureID;
+		uint32_t ID;
+	};
+
+	std::vector<SRecord>  RecordList;
+
+public:
+	TextureFileDataTable()
+	{
+		onLoadItem = [this](const std::vector<VAR_T>& val)
+		{
+			assert(val.size() == 2);
+			SRecord r;
+			r.TextureID = val[0].Get<uint32_t>();
+			r.ID = val[1].Get<uint32_t>();
+			RecordList.emplace_back(r);
+		};
+	}
+
+public:
+	bool loadData(const wowDatabase* database)
+	{
+		if (!BaseTable::loadData(database, "TextureFileData"))
+			return false;
+		BUILD_ID2INDEX_MAP(ID);
+		return true;
+	}
+};
