@@ -1,6 +1,7 @@
 #pragma once
 
 #include "predefine.h"
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <cassert>
@@ -17,6 +18,16 @@ inline bool isAbsoluteFileName(const std::string& filename)
 #endif
 
 	return false;
+}
+
+inline void str_toupper(std::string& str)
+{
+	std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+}
+
+inline void str_tolower(std::string& str)
+{
+	std::transform(str.begin(), str.end(), str.begin(), ::tolower);
 }
 
 inline void normalizeFileName(std::string& filename)

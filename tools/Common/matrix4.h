@@ -1,5 +1,10 @@
 #pragma once
 
+#include "vector2d.h"
+#include "vector3d.h"
+#include "plane3d.h"
+#include "aabbox3d.h"
+
 //row major matrix
 template <class T>
 class CMatrix4
@@ -287,7 +292,7 @@ inline CMatrix4<T>& CMatrix4<T>::buildTextureTransform(float rotateRad, const ve
 template <class T>
 inline CMatrix4<T>& CMatrix4<T>::operator=(const CMatrix4<T> &other)
 {
-	ASSERT(this != &other);
+	assert(this != &other);
 	memcpy(M, other.M, 16 * sizeof(T));
 	return *this;
 }

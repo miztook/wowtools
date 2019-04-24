@@ -121,5 +121,11 @@
     <ClInclude Include="..\Common\base.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\wowWMOStruct.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\line3d.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

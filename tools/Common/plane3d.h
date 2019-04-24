@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include "base.h"
 
 enum EIntersectionRelation3D : int32_t
 {

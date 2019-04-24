@@ -97,5 +97,4 @@ public:
 private:
 	const wowEnvironment*		Environment;
 	std::map<std::string, CTableStruct>		DbStructureMap;
-
 };

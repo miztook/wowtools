@@ -2,6 +2,14 @@
 
 #include "predefine.h"
 
+enum E_LIGHT_TYPE : int32_t
+{
+	ELT_POINT = 0,
+	ELT_SPOT,
+	ELT_DIRECTIONAL,
+	ELT_AMBIENT,
+};
+
 enum E_VERTEX_TYPE : int32_t
 {
 	EVT_INVALID = -1,

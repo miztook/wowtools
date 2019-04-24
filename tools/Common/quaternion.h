@@ -1,5 +1,8 @@
 #pragma once
 
+#include "vector3d.h"
+#include "matrix4.h"
+
 class quaternion
 {
 public:
@@ -13,7 +16,7 @@ public:
 	//
 	quaternion& operator=(const quaternion& other)
 	{
-		ASSERT(this != &other);
+		assert(this != &other);
 		X = other.X;
 		Y = other.Y;
 		Z = other.Z;

@@ -87,7 +87,9 @@ bool wowEnvironment::loadCascListFiles()
 
 		if (filename.length() == 0)
 			break;
-		//normalizeFileName(filename);
+
+		normalizeFileName(filename);
+		str_tolower(filename);
 
 		int id = (int)CascGetFileId(hStorage, filename.c_str());
 		if (id >= 0)
@@ -98,6 +100,27 @@ bool wowEnvironment::loadCascListFiles()
 	}
 
 	delete file;
+
+	DirIndexMap.clear();
+	{
+		int nFiles = (int)CascListFiles.size();
+		for (int i = 0; i < nFiles; ++i)
+		{
+			const char* szFile = CascListFiles[i].c_str();
+			const char* p = strchr(szFile, '/');
+			while (p)
+			{
+				std::string dir(szFile, (uint32_t)(p - szFile));
+				if (DirIndexMap.find(dir) == DirIndexMap.end())
+					DirIndexMap[dir] = i;														//add dir to index
+
+				if (*(p + 1) == '0')
+					break;
+				p = strchr(p + 1, '/');
+			}
+		}
+	}
+
 	return true;
 }
 
@@ -150,6 +173,66 @@ bool wowEnvironment::exists(const char * filename) const
 
 	CascCloseFile(hFile);
 	return true;
+}
+
+void wowEnvironment::iterateFiles(const char* ext, WOWFILECALLBACK callback) const
+{
+	uint32_t count = (uint32_t)CascListFiles.size();
+	for (uint32_t i = 0; i < count; ++i)
+	{
+		const char* filename = CascListFiles[i].c_str();
+		if (hasFileExtensionA(filename, ext))
+		{
+			callback(filename);
+		}
+	}
+}
+
+void wowEnvironment::iterateFiles(const char* path, const char * ext, WOWFILECALLBACK callback) const
+{
+	std::string strBaseDir(path);
+	str_tolower(strBaseDir);
+	auto itr = DirIndexMap.find(strBaseDir);
+	if (itr == DirIndexMap.end())
+		return;
+
+	//calc start
+	int nStart = itr->second;
+
+	uint32_t count = (uint32_t)CascListFiles.size();
+	for (uint32_t i = nStart; i < count; ++i)
+	{
+		const char* filename = CascListFiles[i].c_str();
+		if (hasFileExtensionA(filename, ext))
+		{
+			callback(filename);
+		}
+
+		if (strstr(filename, strBaseDir.c_str()) == nullptr)
+			break;
+	}
+}
+
+void wowEnvironment::buildWmoFileList()
+{
+	WmoFileList.clear();
+	iterateFiles("world", "wmo", [this](const char* filename)
+	{
+		if (strstr(filename, "internal"))
+			return;
+
+		uint32_t len = (uint32_t)strlen(filename);
+		if (len > 8 &&
+			filename[len - 8] == '_' &&
+			isdigit((int)filename[len - 7]) &&
+			isdigit((int)filename[len - 6]) &&
+			isdigit((int)filename[len - 5]))		//_xxx.wmo
+		{
+			return;
+		}
+
+		WmoFileList.emplace_back(filename);
+	});
 }
 
 bool wowEnvironment::initBuildInfo(std::string& activeLocale)

@@ -97,6 +97,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\Common;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -112,6 +113,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\Common;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -180,6 +182,7 @@
     <ClInclude Include="..\Common\CWriteFile.h" />
     <ClInclude Include="..\Common\frustum.h" />
     <ClInclude Include="..\Common\function.h" />
+    <ClInclude Include="..\Common\line3d.h" />
     <ClInclude Include="..\Common\matrix4.h" />
     <ClInclude Include="..\Common\plane3d.h" />
     <ClInclude Include="..\Common\predefine.h" />
@@ -198,6 +201,7 @@
     <ClInclude Include="..\Common\wowWDB5File.h" />
     <ClInclude Include="..\Common\wowWDC3File.h" />
     <ClInclude Include="..\Common\wowWMOFile.h" />
+    <ClInclude Include="..\Common\wowWMOStruct.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

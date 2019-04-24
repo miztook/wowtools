@@ -1,6 +1,8 @@
 #pragma once
 
 #include "base.h"
+#include "plane3d.h"
+#include "line3d.h"
 
 static const uint16_t g_aabboxLineIndex[] = { 5,1, 1,3, 3,7, 7,5, 
 		0,2, 2,6, 6,4, 4,0, 
@@ -20,9 +22,9 @@ public:
 	 bool operator==(const aabbox3d<T>& other) const { return MinEdge == other.MinEdge && MaxEdge == other.MaxEdge; }
 	 bool operator!=(const aabbox3d<T>& other) const { return !(*this == other ); }
 
-	 aabbox3d& operator=(const aabbox3d<T>& other) 
+	aabbox3d& operator=(const aabbox3d<T>& other) 
 	{
-		ASSERT(this != &other);
+		assert(this != &other);
 		MinEdge = other.MinEdge;
 		MaxEdge = other.MaxEdge;
 		return *this;
@@ -53,13 +55,13 @@ public:
 			p.Z >= MinEdge.Z && p.Z <= MaxEdge.Z);
 	}
 
-	 bool intersectsWithBox(const aabbox3d<T>& other) const
+	bool intersectsWithBox(const aabbox3d<T>& other) const
 	{
 		return (MinEdge.X <= other.MaxEdge.X && MinEdge.Y <= other.MaxEdge.Y && MinEdge.Z <= other.MaxEdge.Z &&
 			MaxEdge.X >= other.MinEdge.X && MaxEdge.Y >= other.MinEdge.Y && MaxEdge.Z >= other.MinEdge.Z);
 	}
 
-	 bool intersectsWithLine(const line3d<T>& line) const
+	bool intersectsWithLine(const line3d<T>& line) const
 	{
 		return intersectsWithLine(line.getMiddle(), line.getVector().normalize(),
 			(T)(line.getLength() * 0.5));
