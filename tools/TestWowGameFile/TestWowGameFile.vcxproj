@@ -168,17 +168,28 @@
     <ClCompile Include="..\Common\wowTable.cpp" />
     <ClCompile Include="..\Common\wowWDB5File.cpp" />
     <ClCompile Include="..\Common\wowWDC3File.cpp" />
+    <ClCompile Include="..\Common\wowWMOFile.cpp" />
     <ClCompile Include="TestWowGameFile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Common\aabbox3d.h" />
+    <ClInclude Include="..\Common\base.h" />
     <ClInclude Include="..\Common\CFileSystem.h" />
     <ClInclude Include="..\Common\CMemFile.h" />
     <ClInclude Include="..\Common\CReadFile.h" />
     <ClInclude Include="..\Common\CWriteFile.h" />
+    <ClInclude Include="..\Common\frustum.h" />
     <ClInclude Include="..\Common\function.h" />
+    <ClInclude Include="..\Common\matrix4.h" />
+    <ClInclude Include="..\Common\plane3d.h" />
     <ClInclude Include="..\Common\predefine.h" />
+    <ClInclude Include="..\Common\quaternion.h" />
+    <ClInclude Include="..\Common\S3DVertex.h" />
+    <ClInclude Include="..\Common\SColor.h" />
     <ClInclude Include="..\Common\stringext.h" />
     <ClInclude Include="..\Common\varianttype.h" />
+    <ClInclude Include="..\Common\vector2d.h" />
+    <ClInclude Include="..\Common\vector3d.h" />
     <ClInclude Include="..\Common\wowDatabase.h" />
     <ClInclude Include="..\Common\wowDbFile.h" />
     <ClInclude Include="..\Common\wowEnums.h" />
@@ -186,6 +197,7 @@
     <ClInclude Include="..\Common\wowTable.h" />
     <ClInclude Include="..\Common\wowWDB5File.h" />
     <ClInclude Include="..\Common\wowWDC3File.h" />
+    <ClInclude Include="..\Common\wowWMOFile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

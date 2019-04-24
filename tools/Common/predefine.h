@@ -48,3 +48,7 @@
 #ifndef QMAX_PATH
 #define		QMAX_PATH	512
 #endif
+
+#ifndef DELETE_ARRAY
+#define DELETE_ARRAY(T, p)		{ delete[] (static_cast<const T*>(p)); }
+#endif

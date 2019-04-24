@@ -43,6 +43,7 @@
 #define IR(x)                           ((unsigned int&)(x))
 #define FR(x)                           ((float&)(x))
 
+const float ROUNDING_ERROR_f32 = 0.000001f;
 const float PI = 3.14159265358979324f;
 
 const float DEGTORAD = 0.01745329251994329577f;
@@ -87,6 +88,19 @@ inline void swap_(T& a, T& b)
 	T c(a);
 	a = b;
 	b = c;
+}
+
+inline bool equals_(const float a, const float b, float tolerance = ROUNDING_ERROR_f32)
+{
+	return (a + tolerance >= b) && (a - tolerance <= b);
+}
+inline bool equals_(const int32_t a, const int32_t b, int32_t tolerance = 0)
+{
+	return (a + tolerance >= b) && (a - tolerance <= b);
+}
+inline bool equals_(const uint32_t a, const uint32_t b, int32_t tolerance = 0)
+{
+	return (a + tolerance >= b) && (a - tolerance <= b);
 }
 
 inline float squareroot_(const float f)
@@ -373,7 +387,7 @@ inline void Q_fullpath(const char* filename, char* outfilename, size_t size)
 inline int Q_mkdir(const char* path)
 {
 #ifdef A_PLATFORM_WIN_DESKTOP
-	return _mkdir(path);
+	return mkdir(path);
 #else
 	return mkdir(path, 0777);
 #endif
@@ -381,20 +395,12 @@ inline int Q_mkdir(const char* path)
 
 inline int Q_rmdir(const char* path)
 {
-#ifdef A_PLATFORM_WIN_DESKTOP
-	return _rmdir(path);
-#else
 	return rmdir(path);
-#endif
 }
 
 inline char* Q_getcwd(char* dstbuf, int sizebytes)
 {
-#ifdef  A_PLATFORM_WIN_DESKTOP
-	return _getcwd(dstbuf, sizebytes);
-#else
 	return getcwd(dstbuf, sizebytes);
-#endif
 }
 
 inline bool isAbsoluteFileName(const char* filename)
