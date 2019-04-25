@@ -37,6 +37,8 @@ public:
 	void iterateFiles(const char* ext, WOWFILECALLBACK callback) const;
 	void iterateFiles(const char* path, const char* ext, WOWFILECALLBACK callback) const;
 
+	const char* getFileNameById(uint32_t id) const;
+
 public:
 	void buildWmoFileList();
 
@@ -56,7 +58,7 @@ private:
 	std::string		Locale;
 	std::array<int, 4>			Version;
 	HANDLE	hStorage;
-	std::unordered_map<int, int>	FileIdMap;
+	std::unordered_map<uint32_t, uint32_t>	FileIdMap;
 	std::vector<std::string>	CascListFiles;
 	std::map<std::string, int>	DirIndexMap;
 
