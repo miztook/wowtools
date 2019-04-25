@@ -216,7 +216,8 @@ void wowEnvironment::iterateFiles(const char* path, const char * ext, WOWFILECAL
 const char * wowEnvironment::getFileNameById(uint32_t id) const
 {
 	auto itr = FileIdMap.find(id);
-
+	if (itr != FileIdMap.end())
+		return CascListFiles[itr->second].c_str();
 	return nullptr;
 }
 

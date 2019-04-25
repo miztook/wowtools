@@ -47,11 +47,9 @@ void testWowGameFile()
 	wowEnv->buildWmoFileList();
 
 	const char* path = "World\\wmo\\Northrend\\Dalaran\\ND_Dalaran.wmo";
-	CMemFile* memFile = wowEnv->openFile(path);
-	wowWMOFile* wmoFile = new wowWMOFile();
-	wmoFile->loadFile(memFile);
+	wowWMOFile* wmoFile = new wowWMOFile(wowEnv);
+	wmoFile->loadFile(path);
 	delete wmoFile;
-	delete memFile;
 
 	delete wowEnv;
 	delete fs;

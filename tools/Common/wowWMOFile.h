@@ -10,6 +10,7 @@
 #include "wowWMOStruct.h"
 
 class CMemFile;
+class wowEnvironment;
 
 enum class E_WMO_SHADER : int32_t
 {
@@ -42,8 +43,8 @@ struct SWMOMaterial
 	}
 	uint32_t flags;
 	E_WMO_SHADER	shaderType;
-	std::string texture0;
-	std::string texture1;
+	uint32_t tex1FileId;
+	uint32_t tex2FileId;
 	SColor color0;
 	SColor color1;
 	SColor color2;
@@ -132,6 +133,7 @@ struct SWMOBspNode
 
 struct SWMOGroup
 {
+	uint32_t		index;
 	uint32_t		flags;
 	aabbox3df		box;
 	std::string			name;
@@ -142,11 +144,12 @@ struct SWMOGroup
 class wowWMOFile
 {
 public:
-	wowWMOFile();
+	explicit wowWMOFile(const wowEnvironment* wowEnv);
 	~wowWMOFile();
 
 public:
-	bool loadFile(CMemFile* pMemFile);
+	bool loadFile(const char* filename);
+	bool loadGroupFile(CMemFile* pMemFile, SWMOGroup& group);
 
 public:
 	WMO::wmoHeader		Header;
@@ -162,4 +165,7 @@ public:
 
 	std::vector<char>		TextureFileNameBlock;
 	std::vector<char>		GroupNameBlock;
+
+private:
+	const wowEnvironment* WowEnvironment;
 };

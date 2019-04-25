@@ -45,13 +45,13 @@ namespace WMO
 		uint32_t flags;
 		uint32_t shadertype;		//enum shaderType
 		uint32_t alphatest; // Blending: 0 for opaque, 1 for transparent
-		int32_t tex1;
+		uint32_t tex1;
 		uint8_t col1R;
 		uint8_t col1G;
 		uint8_t col1B;
 		uint8_t col1A;
 		uint32_t flag1;
-		int32_t tex2;
+		uint32_t tex2;
 		uint8_t col2R;
 		uint8_t col2G;
 		uint8_t col2B;
