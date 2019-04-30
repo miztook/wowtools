@@ -112,9 +112,8 @@ struct SWMOBatch
 	uint16_t vertexStart;
 	uint16_t vertexEnd;
 	uint16_t matId;
-	vector3df minPoint;
-	vector3df maxPoint;
 
+	aabbox3df box;
 	uint16_t getVertexCount() const { return vertexEnd - vertexStart + 1; }
 };
 
@@ -136,9 +135,13 @@ struct SWMOGroup
 	uint32_t		index;
 	uint32_t		flags;
 	aabbox3df		box;
+	bool	hasVertexColor;
 	std::string			name;
 	std::vector<SWMOBatch>	batchList;
-	std::vector<SWMOBspNode>  bspNodeList;
+	std::vector<uint16_t>   indices;
+	std::vector<SVertex_PNCT2>	vertices;
+	std::vector<uint16_t>	lightList;
+	std::vector<uint16_t>	doodadList;
 };
 
 class wowWMOFile

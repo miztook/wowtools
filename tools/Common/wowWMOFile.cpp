@@ -176,6 +176,10 @@ bool wowWMOFile::loadFile(const char* filename)
 		{
 
 		}
+		else if (strcmp(fourcc, "MODI") == 0)
+		{
+
+		}
 		else
 		{
 			assert(false);
@@ -188,8 +192,22 @@ bool wowWMOFile::loadFile(const char* filename)
 	Box.set(vector3df(999999.9f), vector3df(-999999.9f));
 	for (SWMOGroup& group : GroupList)
 	{
-		loadGroupFile(memFile, group);
+		if (!loadGroupFile(memFile, group))
+		{
+			assert(false);
+			return false;
+		}
 		Box.addInternalBox(group.box);
+
+		//group box
+		for (auto& batch : group.batchList)
+		{
+			batch.box.set(vector3df(999999.9f), vector3df(-999999.9f));
+			for (uint32_t k = batch.vertexStart; k <= batch.vertexEnd; ++k)
+			{
+				batch.box.addInternalPoint(group.vertices[k].Pos);
+			}
+		}
 	}
 
 	delete memFile;
@@ -213,6 +231,8 @@ bool wowWMOFile::loadGroupFile(CMemFile* pMemFile, SWMOGroup& group)
 
 	char fourcc[5];
 	uint32_t size;
+
+	uint32_t nTcoords = 0;
 
 	while (!file->isEof())
 	{
@@ -238,6 +258,114 @@ bool wowWMOFile::loadGroupFile(CMemFile* pMemFile, SWMOGroup& group)
 			size = sizeof(WMO::wmoGroupHeader);
 			nextpos = file->getPos() + size;
 			file->read(&header, sizeof(WMO::wmoGroupHeader));
+		}
+		else if (strcmp(fourcc, "MOPY") == 0)
+		{
+
+		}
+		else if (strcmp(fourcc, "MOVI") == 0)
+		{
+			uint16_t icount = (uint16_t)(size / sizeof(uint16_t));
+			group.indices.resize(icount);
+			file->read(group.indices.data(), icount * sizeof(uint16_t));
+		}
+		else if (strcmp(fourcc, "MOVT") == 0)
+		{
+			uint32_t vcount = size / sizeof(vector3df);
+			group.vertices.resize(vcount);
+			for (uint32_t i = 0; i < vcount; ++i)
+			{
+				vector3df tmp;
+				file->read(&tmp, sizeof(vector3df));
+				group.vertices[i].Pos = WMO::fixCoordinate(tmp);
+			}
+		}
+		else if (strcmp(fourcc, "MONR") == 0)
+		{
+			uint32_t vcount = (uint32_t)group.vertices.size();
+			assert(size == vcount * sizeof(vector3df));
+			for (uint32_t i = 0; i < vcount; ++i)
+			{
+				vector3df tmp;
+				file->read(&tmp, sizeof(vector3df));
+				group.vertices[i].Normal = WMO::fixCoordinate(tmp);
+				group.vertices[i].Normal.normalize();
+			}
+		}
+		else if (strcmp(fourcc, "MOTV") == 0)
+		{
+			uint32_t vcount = (uint32_t)group.vertices.size();
+			assert(size == vcount * sizeof(vector2df));
+			if (nTcoords == 0)
+			{
+				for (uint32_t i = 0; i < vcount; ++i)
+				{
+					vector2df tmp;
+					file->read(&tmp, sizeof(vector2df));
+					group.vertices[i].TCoords0 = tmp;
+				}
+			}
+			else
+			{
+				for (uint32_t i = 0; i < vcount; ++i)
+				{
+					vector2df tmp;
+					file->read(&tmp, sizeof(vector2df));
+					group.vertices[i].TCoords1 = tmp;
+				}
+			}
+			++nTcoords;
+			assert(nTcoords <= 2);
+		}
+		else if (strcmp(fourcc, "MOCV") == 0)
+		{
+			group.hasVertexColor = true;
+			uint32_t vcount = (uint32_t)group.vertices.size();
+			assert(size == vcount * sizeof(SColor));
+			for (uint32_t i = 0; i < vcount; ++i)
+			{
+				SColor color;
+				file->read(&color, sizeof(SColor));
+				group.vertices[i].Color = color;
+			}
+		}
+		else if (strcmp(fourcc, "MOBA") == 0)
+		{
+			uint32_t numBatches = (uint32_t)(size / sizeof(WMO::wmoGroupBatch));
+			group.batchList.resize(numBatches);
+			for (uint32_t i = 0; i < numBatches; ++i)
+			{
+				WMO::wmoGroupBatch batch;
+				file->read(&batch, sizeof(WMO::wmoGroupBatch));
+
+				group.batchList[i].indexStart = batch.indexStart;
+				group.batchList[i].indexCount = batch.indexCount;
+				group.batchList[i].vertexStart = batch.vertexStart;
+				group.batchList[i].vertexEnd = batch.vertexEnd;
+				group.batchList[i].matId = batch.matId;
+
+				assert(batch.matId < Header.nMaterials);
+			}
+		}
+		else if (strcmp(fourcc, "MOLR") == 0)
+		{
+			uint32_t nLights = (uint32_t)(size / sizeof(uint16_t));
+			group.lightList.resize(nLights);
+			file->read(group.lightList.data(), nLights * sizeof(uint16_t));
+		}
+		else if (strcmp(fourcc, "MODR") == 0)
+		{
+			uint32_t nDoodads = (uint32_t)(size / sizeof(uint16_t));
+			group.doodadList.resize(nDoodads);
+			file->read(group.doodadList.data(), nDoodads * sizeof(uint16_t));
+		}
+		else if (strcmp(fourcc, "MOBN") == 0)			//bsp node
+		{
+
+		}
+		else if (strcmp(fourcc, "MOBR") == 0)				//bsp triangle
+		{
+
 		}
 		else if (strcmp(fourcc, "MLIQ") == 0)
 		{
