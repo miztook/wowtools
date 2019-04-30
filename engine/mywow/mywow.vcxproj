@@ -47,6 +47,9 @@
     <ClInclude Include="..\common\wowWDC3File.h" />
     <ClInclude Include="..\common\wowWMOFile.h" />
     <ClInclude Include="..\common\wowWMOStruct.h" />
+    <ClInclude Include="..\engine\CInputReader.h" />
+    <ClInclude Include="..\engine\CSysUtil.h" />
+    <ClInclude Include="..\engine\Engine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp" />
@@ -60,6 +63,9 @@
     <ClCompile Include="..\common\wowWDB5File.cpp" />
     <ClCompile Include="..\common\wowWDC3File.cpp" />
     <ClCompile Include="..\common\wowWMOFile.cpp" />
+    <ClCompile Include="..\engine\CInputRead_Win.cpp" />
+    <ClCompile Include="..\engine\CSysUtil_Win.cpp" />
+    <ClCompile Include="..\engine\Engine.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5FC4A776-9356-4FE9-93BA-F610DEE4E660}</ProjectGuid>
@@ -127,7 +133,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\common;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\common;..\engine</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -140,7 +146,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\common;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\common;..\engine</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -155,6 +161,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\common;..\engine</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -171,6 +178,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\common;..\engine</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
