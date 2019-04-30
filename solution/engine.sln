@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mywow", "..\engine\mywow\mywow.vcxproj", "{5FC4A776-9356-4FE9-93BA-F610DEE4E660}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "renderer", "..\engine\renderer\renderer.vcxproj", "{F1921F3C-47EB-4A70-8501-0D6FFACC2B42}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "app1", "..\engine\app1\app1.vcxproj", "{EE39B722-B6E2-4ADD-B685-6D763CFCE08B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5FC4A776-9356-4FE9-93BA-F610DEE4E660}.Debug|x64.ActiveCfg = Debug|x64
+		{5FC4A776-9356-4FE9-93BA-F610DEE4E660}.Debug|x64.Build.0 = Debug|x64
+		{5FC4A776-9356-4FE9-93BA-F610DEE4E660}.Release|x64.ActiveCfg = Release|x64
+		{5FC4A776-9356-4FE9-93BA-F610DEE4E660}.Release|x64.Build.0 = Release|x64
+		{F1921F3C-47EB-4A70-8501-0D6FFACC2B42}.Debug|x64.ActiveCfg = Debug|x64
+		{F1921F3C-47EB-4A70-8501-0D6FFACC2B42}.Debug|x64.Build.0 = Debug|x64
+		{F1921F3C-47EB-4A70-8501-0D6FFACC2B42}.Release|x64.ActiveCfg = Release|x64
+		{F1921F3C-47EB-4A70-8501-0D6FFACC2B42}.Release|x64.Build.0 = Release|x64
+		{EE39B722-B6E2-4ADD-B685-6D763CFCE08B}.Debug|x64.ActiveCfg = Debug|x64
+		{EE39B722-B6E2-4ADD-B685-6D763CFCE08B}.Debug|x64.Build.0 = Debug|x64
+		{EE39B722-B6E2-4ADD-B685-6D763CFCE08B}.Release|x64.ActiveCfg = Release|x64
+		{EE39B722-B6E2-4ADD-B685-6D763CFCE08B}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

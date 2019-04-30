@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\common\aabbox3d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\base.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CFileSystem.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CMemFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CReadFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CWriteFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\frustum.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\function.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\line3d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\matrix4.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\plane3d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\predefine.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\quaternion.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\S3DVertex.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\SColor.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\stringext.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\varianttype.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\vector2d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\vector3d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowDatabase.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowDbFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowEnums.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowEnvironment.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowTable.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowWDB5File.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowWDC3File.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowWMOFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowWMOStruct.h">
+      <Filter>common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\common\CFileSystem.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CMemFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CReadFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CWriteFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\wowDatabase.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\wowDbFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\wowEnvironment.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\wowTable.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\wowWDB5File.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\wowWDC3File.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\wowWMOFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
