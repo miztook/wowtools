@@ -133,6 +133,13 @@
     <OutDir>$(SolutionDir)\engine_$(Platform)\$(Configuration)\</OutDir>
     <IntDir>..\..\.build\$(ProjectName)_$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)\engine_$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\..\.build\$(ProjectName)_$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>..\..\.build\$(ProjectName)_$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>

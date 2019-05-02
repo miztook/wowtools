@@ -7,8 +7,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mywow", "..\engine\mywow\my
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "app1", "..\engine\app1\app1.vcxproj", "{EE39B722-B6E2-4ADD-B685-6D763CFCE08B}"
 	ProjectSection(ProjectDependencies) = postProject
+		{470A0D65-E445-4F68-9955-89BDE415A17A} = {470A0D65-E445-4F68-9955-89BDE415A17A}
 		{5FC4A776-9356-4FE9-93BA-F610DEE4E660} = {5FC4A776-9356-4FE9-93BA-F610DEE4E660}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mywowdriver", "..\engine\mywow\mywowdriver.vcxproj", "{470A0D65-E445-4F68-9955-89BDE415A17A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +27,10 @@ Global
 		{EE39B722-B6E2-4ADD-B685-6D763CFCE08B}.Debug|x64.Build.0 = Debug|x64
 		{EE39B722-B6E2-4ADD-B685-6D763CFCE08B}.Release|x64.ActiveCfg = Release|x64
 		{EE39B722-B6E2-4ADD-B685-6D763CFCE08B}.Release|x64.Build.0 = Release|x64
+		{470A0D65-E445-4F68-9955-89BDE415A17A}.Debug|x64.ActiveCfg = Debug|x64
+		{470A0D65-E445-4F68-9955-89BDE415A17A}.Debug|x64.Build.0 = Debug|x64
+		{470A0D65-E445-4F68-9955-89BDE415A17A}.Release|x64.ActiveCfg = Release|x64
+		{470A0D65-E445-4F68-9955-89BDE415A17A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
