@@ -87,6 +87,23 @@ enum E_INPUT_MESSAGE : int32_t
 	Key_Up,
 };
 
+enum E_DRIVER_TYPE : int
+{
+	EDT_NULL = 0,
+	EDT_OPENGL,
+	EDT_COUNT,
+};
+
+enum E_AA_MODE : int
+{
+	E_AA_NONE = 0,
+	E_AA_MSAA_1,
+	E_AA_MSAA_2,
+	E_AA_MSAA_3,
+	E_AA_MSAA_4,
+	E_AA_FXAA,
+};
+
 enum E_LIGHT_TYPE : int32_t
 {
 	ELT_POINT = 0,

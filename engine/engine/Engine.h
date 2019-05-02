@@ -5,7 +5,7 @@
 #include "CInputReader.h"
 
 //
-bool createEngine(const SWindowInfo& wndInfo, const SRendererInfo& rendererInfo);
+bool createEngine(const SWindowInfo& wndInfo, E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode);
 
 void destroyEngine();
 

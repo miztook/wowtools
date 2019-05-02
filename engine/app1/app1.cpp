@@ -16,12 +16,7 @@ int main()
 	SWindowInfo wndInfo = CSysUtil::createWindow("app1", 1136, 640, false, false);
 	HWND hwnd = wndInfo.hwnd;
 
-	SRendererInfo rendererInfo;
-	rendererInfo.adapter = 0;
-	rendererInfo.vsync = true;
-	rendererInfo.antialias = 1;
-
-	if (!createEngine(wndInfo, rendererInfo))
+	if (!createEngine(wndInfo, EDT_OPENGL, true, E_AA_MSAA_1))
 	{
 		destroyEngine();
 		return -1;

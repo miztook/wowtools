@@ -15,9 +15,9 @@ public:
 	void setRelativeTransformation(const matrix4& mat);
 
 	//
-	matrix4 getDir() const { return f3d::normalize(RelativeRotateMatrix.getRow(2)); }
-	matrix4 getUp() const { return f3d::normalize(RelativeRotateMatrix.getRow(1)); }
-	matrix4 getRight() const { return f3d::normalize(RelativeRotateMatrix.getRow(0)); }
+	vector3df getDir() const { return f3d::normalize(RelativeRotateMatrix.getRow(2)); }
+	vector3df getUp() const { return f3d::normalize(RelativeRotateMatrix.getRow(1)); }
+	vector3df getRight() const { return f3d::normalize(RelativeRotateMatrix.getRow(0)); }
 	void setDirAndUp(const vector3df& dir, const vector3df& up);
 	vector3df getPos() const { return RelativeTransformation.getTranslation(); }
 	void setPos(const vector3df& pos) { RelativeTransformation.setTranslation(pos); }
