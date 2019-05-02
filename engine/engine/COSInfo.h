@@ -2,6 +2,7 @@
 
 #include "base.h"
 #include "function.h"
+#include <string>
 
 class COSInfo
 {

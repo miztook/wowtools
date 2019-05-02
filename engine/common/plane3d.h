@@ -64,7 +64,7 @@ public:
 
 	void normalize()
 	{
-		T lensq = Normal.getLengthSQ();
+		T lensq = Normal.SquareMagnitude();
 		if (equals_(lensq, 1.0f))
 			return;
 

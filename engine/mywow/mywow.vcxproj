@@ -27,6 +27,7 @@
     <ClInclude Include="..\common\CWriteFile.h" />
     <ClInclude Include="..\common\frustum.h" />
     <ClInclude Include="..\common\function.h" />
+    <ClInclude Include="..\common\function3d.h" />
     <ClInclude Include="..\common\line3d.h" />
     <ClInclude Include="..\common\matrix4.h" />
     <ClInclude Include="..\common\plane3d.h" />
@@ -51,6 +52,7 @@
     <ClInclude Include="..\engine\COSInfo.h" />
     <ClInclude Include="..\engine\CSysUtil.h" />
     <ClInclude Include="..\engine\CTimer.h" />
+    <ClInclude Include="..\engine\CTransform.h" />
     <ClInclude Include="..\engine\Engine.h" />
     <ClInclude Include="..\engine\mywow.h" />
   </ItemGroup>

@@ -68,6 +68,12 @@ public:
 	void rotateVect(vector3df& vect) const;
 	void inverseRotateVect(vector3df& vect) const;
 
+	vector3df getRow(int i) const { return vector3df(m[i][0], m[i][1], m[i][2]); }
+	vector3df getCol(int i) const { return vector3df(m[0][i], m[1][i], m[2][i]); }
+	//	Set row and column
+	void setRow(int i, const vector3df& v) { m[i][0] = v.x; m[i][1] = v.y; m[i][2] = v.z; }
+	void setCol(int i, const vector3df& v) { m[0][i] = v.x; m[1][i] = v.y; m[2][i] = v.z; }
+
 	CMatrix4<T>& setTranslation(const vector3d<T>& translation);
 	vector3d<T> getTranslation() const { return vector3d<T>(M[12], M[13], M[14]); }
 
@@ -155,24 +161,24 @@ inline CMatrix4<T>& CMatrix4<T>::buildMatrix(const vector3d<T>& vDir, const vect
 	vX = vY.crossProduct(vZ);
 	vX.normalize();
 
-	m00 = vX.X;
-	m01 = vX.Y;
-	m02 = vX.Z;
+	m00 = vX.x;
+	m01 = vX.y;
+	m02 = vX.z;
 	m03 = (T)0.0f;
 
-	m10 = vY.X;
-	m11 = vY.Y;
-	m12 = vY.Z;
+	m10 = vY.x;
+	m11 = vY.y;
+	m12 = vY.z;
 	m13 = (T)0.0f;
 
-	m20 = vZ.X;
-	m21 = vZ.Y;
-	m22 = vZ.Z;
+	m20 = vZ.x;
+	m21 = vZ.y;
+	m22 = vZ.z;
 	m23 = (T)0.0f;
 
-	m30 = vPos.X;
-	m31 = vPos.Y;
-	m32 = vPos.Z;
+	m30 = vPos.x;
+	m31 = vPos.y;
+	m32 = vPos.z;
 	m33 = (T)1.0f;
 
 	return *this;
@@ -266,18 +272,18 @@ inline CMatrix4<T>& CMatrix4<T>::buildTextureTransform(float rotateRad, const ve
 	const float c = cosf(rotateRad);
 	const float s = sinf(rotateRad);
 
-	M[0] = (T)(c * scale.X);
-	M[1] = (T)(s * scale.Y);
+	M[0] = (T)(c * scale.x);
+	M[1] = (T)(s * scale.y);
 	M[2] = 0;
 	M[3] = 0;
 
-	M[4] = (T)(-s * scale.X);
-	M[5] = (T)(c * scale.Y);
+	M[4] = (T)(-s * scale.x);
+	M[5] = (T)(c * scale.y);
 	M[6] = 0;
 	M[7] = 0;
 
-	M[8] = (T)(c * scale.X * rotatecenter.X + -s * rotatecenter.Y + translate.X);
-	M[9] = (T)(s * scale.Y * rotatecenter.X + c * rotatecenter.Y + translate.Y);
+	M[8] = (T)(c * scale.x * rotatecenter.x + -s * rotatecenter.y + translate.x);
+	M[9] = (T)(s * scale.y * rotatecenter.x + c * rotatecenter.y + translate.y);
 	M[10] = 1;
 	M[11] = 0;
 
@@ -619,14 +625,14 @@ inline void CMatrix4<T>::transformVect(vector3df& vect, float& z) const
 {
 	float vector[3];
 
-	vector[0] = vect.X*M[0] + vect.Y*M[4] + vect.Z*M[8] + M[12];
-	vector[1] = vect.X*M[1] + vect.Y*M[5] + vect.Z*M[9] + M[13];
-	vector[2] = vect.X*M[2] + vect.Y*M[6] + vect.Z*M[10] + M[14];
-	z = vect.X*M[3] + vect.Y*M[7] + vect.Z*M[11] + M[15];
+	vector[0] = vect.x*M[0] + vect.y*M[4] + vect.z*M[8] + M[12];
+	vector[1] = vect.x*M[1] + vect.y*M[5] + vect.z*M[9] + M[13];
+	vector[2] = vect.x*M[2] + vect.y*M[6] + vect.z*M[10] + M[14];
+	z = vect.x*M[3] + vect.y*M[7] + vect.z*M[11] + M[15];
 
-	vect.X = vector[0];
-	vect.Y = vector[1];
-	vect.Z = vector[2];
+	vect.x = vector[0];
+	vect.y = vector[1];
+	vect.z = vector[2];
 }
 
 template <class T>
@@ -634,13 +640,13 @@ inline void CMatrix4<T>::transformVect(vector3df& vect) const
 {
 	float vector[3];
 
-	vector[0] = vect.X*M[0] + vect.Y*M[4] + vect.Z*M[8] + M[12];
-	vector[1] = vect.X*M[1] + vect.Y*M[5] + vect.Z*M[9] + M[13];
-	vector[2] = vect.X*M[2] + vect.Y*M[6] + vect.Z*M[10] + M[14];
+	vector[0] = vect.x*M[0] + vect.y*M[4] + vect.z*M[8] + M[12];
+	vector[1] = vect.x*M[1] + vect.y*M[5] + vect.z*M[9] + M[13];
+	vector[2] = vect.x*M[2] + vect.y*M[6] + vect.z*M[10] + M[14];
 
-	vect.X = vector[0];
-	vect.Y = vector[1];
-	vect.Z = vector[2];
+	vect.x = vector[0];
+	vect.y = vector[1];
+	vect.z = vector[2];
 }
 
 template <class T>
@@ -668,17 +674,17 @@ inline void CMatrix4<T>::transformForClipPlane(plane3df& plane) const
 
 	plane.normalize();
 
-	float x = plane.Normal.X;
-	float y = plane.Normal.Y;
-	float z = plane.Normal.Z;
+	float x = plane.Normal.x;
+	float y = plane.Normal.y;
+	float z = plane.Normal.z;
 	float d = plane.D;
 
 	vector3df normal;
 	float D;
 
-	normal.X = x * m.M[0] + y * m.M[4] + z * m.M[8] + d * m.M[12];
-	normal.Y = x * m.M[1] + y * m.M[5] + z * m.M[9] + d * m.M[13];
-	normal.Z = x * m.M[2] + y * m.M[6] + z * m.M[10] + d * m.M[14];
+	normal.x = x * m.M[0] + y * m.M[4] + z * m.M[8] + d * m.M[12];
+	normal.y = x * m.M[1] + y * m.M[5] + z * m.M[9] + d * m.M[13];
+	normal.z = x * m.M[2] + y * m.M[6] + z * m.M[10] + d * m.M[14];
 	D = x * m.M[3] + y * m.M[7] + z * m.M[11] + d * m.M[15];
 
 	plane.setPlane(normal, D);
@@ -708,38 +714,38 @@ template <class T>
 inline void CMatrix4<T>::rotateVect(vector3df& vect) const
 {
 	vector3df tmp = vect;
-	vect.X = tmp.X*M[0] + tmp.Y*M[4] + tmp.Z*M[8];
-	vect.Y = tmp.X*M[1] + tmp.Y*M[5] + tmp.Z*M[9];
-	vect.Z = tmp.X*M[2] + tmp.Y*M[6] + tmp.Z*M[10];
+	vect.x = tmp.x*M[0] + tmp.y*M[4] + tmp.z*M[8];
+	vect.y = tmp.x*M[1] + tmp.y*M[5] + tmp.z*M[9];
+	vect.z = tmp.x*M[2] + tmp.y*M[6] + tmp.z*M[10];
 }
 
 template <class T>
 inline  void CMatrix4<T>::inverseRotateVect(vector3df& vect) const
 {
 	vector3df tmp = vect;
-	vect.X = tmp.X*M[0] + tmp.Y*M[1] + tmp.Z*M[2];
-	vect.Y = tmp.X*M[4] + tmp.Y*M[5] + tmp.Z*M[6];
-	vect.Z = tmp.X*M[8] + tmp.Y*M[9] + tmp.Z*M[10];
+	vect.x = tmp.x*M[0] + tmp.y*M[1] + tmp.z*M[2];
+	vect.y = tmp.x*M[4] + tmp.y*M[5] + tmp.z*M[6];
+	vect.z = tmp.x*M[8] + tmp.y*M[9] + tmp.z*M[10];
 }
 
 template <class T>
 inline CMatrix4<T>& CMatrix4<T>::setTranslation(const vector3d<T>& translation)
 {
-	M[12] = translation.X;
-	M[13] = translation.Y;
-	M[14] = translation.Z;
+	M[12] = translation.x;
+	M[13] = translation.y;
+	M[14] = translation.z;
 	return *this;
 }
 
 template <class T>
 inline CMatrix4<T>& CMatrix4<T>::setRotationRadians(const vector3d<T>& rotation)
 {
-	const float cr = cos(rotation.X);
-	const float sr = sin(rotation.X);
-	const float cp = cos(rotation.Y);
-	const float sp = sin(rotation.Y);
-	const float cy = cos(rotation.Z);
-	const float sy = sin(rotation.Z);
+	const float cr = cos(rotation.x);
+	const float sr = sin(rotation.x);
+	const float cp = cos(rotation.y);
+	const float sp = sin(rotation.y);
+	const float cy = cos(rotation.z);
+	const float sy = sin(rotation.z);
 
 	M[0] = (T)(cp*cy);
 	M[1] = (T)(cp*sy);
@@ -764,9 +770,9 @@ inline vector3d<T> CMatrix4<T>::getRotationRadians() const
 {
 	const CMatrix4<T> &mat = *this;
 	const vector3d<T> scale = getScale();
-	const vector3d<float> invScale(reciprocal_(scale.X), reciprocal_(scale.Y), reciprocal_(scale.Z));
+	const vector3d<float> invScale(reciprocal_(scale.x), reciprocal_(scale.y), reciprocal_(scale.z));
 
-	float Y = -asin(mat[2] * invScale.X);
+	float Y = -asin(mat[2] * invScale.x);
 	const float C = cos(Y);
 
 	float rotx, roty, X, Z;
@@ -774,18 +780,18 @@ inline vector3d<T> CMatrix4<T>::getRotationRadians() const
 	if (!iszero_(C))
 	{
 		const float invC = reciprocal_(C);
-		rotx = mat[10] * invC * invScale.Z;
-		roty = mat[6] * invC * invScale.Y;
+		rotx = mat[10] * invC * invScale.z;
+		roty = mat[6] * invC * invScale.y;
 		X = atan2(roty, rotx);
-		rotx = mat[0] * invC * invScale.X;
-		roty = mat[1] * invC * invScale.X;
+		rotx = mat[0] * invC * invScale.x;
+		roty = mat[1] * invC * invScale.x;
 		Z = atan2(roty, rotx);
 	}
 	else
 	{
 		X = 0.0;
-		rotx = mat[5] * invScale.Y;
-		roty = -mat[4] * invScale.Y;
+		rotx = mat[5] * invScale.y;
+		roty = -mat[4] * invScale.y;
 		Z = atan2(roty, rotx);
 	}
 
@@ -802,9 +808,9 @@ inline vector3d<T> CMatrix4<T>::getRotationRadians() const
 template <class T>
 inline CMatrix4<T>& CMatrix4<T>::setScale(const vector3d<T>& scale)
 {
-	T x = abs_(scale.X);			// 0
-	T y = abs_(scale.Y);			// 5
-	T z = abs_(scale.Z);			// 10
+	T x = abs_(scale.x);			// 0
+	T y = abs_(scale.y);			// 5
+	T z = abs_(scale.z);			// 10
 
 	M[0] *= x;
 	M[1] *= y;
@@ -848,19 +854,19 @@ inline  CMatrix4<T>& CMatrix4<T>::buildCameraLookAtMatrixLH(
 
 	vector3df yaxis = zaxis.crossProduct(xaxis);
 
-	M[0] = (T)xaxis.X;
-	M[1] = (T)yaxis.X;
-	M[2] = (T)zaxis.X;
+	M[0] = (T)xaxis.x;
+	M[1] = (T)yaxis.x;
+	M[2] = (T)zaxis.x;
 	M[3] = 0;
 
-	M[4] = (T)xaxis.Y;
-	M[5] = (T)yaxis.Y;
-	M[6] = (T)zaxis.Y;
+	M[4] = (T)xaxis.y;
+	M[5] = (T)yaxis.y;
+	M[6] = (T)zaxis.y;
 	M[7] = 0;
 
-	M[8] = (T)xaxis.Z;
-	M[9] = (T)yaxis.Z;
-	M[10] = (T)zaxis.Z;
+	M[8] = (T)xaxis.z;
+	M[9] = (T)yaxis.z;
+	M[10] = (T)zaxis.z;
 	M[11] = 0;
 
 	M[12] = (T)-xaxis.dotProduct(position);
@@ -885,19 +891,19 @@ inline CMatrix4<T>& CMatrix4<T>::buildCameraLookAtMatrixRH(
 
 	vector3df yaxis = zaxis.crossProduct(xaxis);
 
-	M[0] = (T)xaxis.X;
-	M[1] = (T)yaxis.X;
-	M[2] = (T)zaxis.X;
+	M[0] = (T)xaxis.x;
+	M[1] = (T)yaxis.x;
+	M[2] = (T)zaxis.x;
 	M[3] = 0;
 
-	M[4] = (T)xaxis.Y;
-	M[5] = (T)yaxis.Y;
-	M[6] = (T)zaxis.Y;
+	M[4] = (T)xaxis.y;
+	M[5] = (T)yaxis.y;
+	M[6] = (T)zaxis.y;
 	M[7] = 0;
 
-	M[8] = (T)xaxis.Z;
-	M[9] = (T)yaxis.Z;
-	M[10] = (T)zaxis.Z;
+	M[8] = (T)xaxis.z;
+	M[9] = (T)yaxis.z;
+	M[10] = (T)zaxis.z;
 	M[11] = 0;
 
 	M[12] = (T)-xaxis.dotProduct(position);

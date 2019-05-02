@@ -8,12 +8,12 @@ namespace WMO
 {
 	inline vector3df fixCoordinate(const vector3df& v)
 	{
-		return vector3df(v.X, v.Z, v.Y);
+		return vector3df(v.x, v.z, v.y);
 	}
 
 	inline vector3df fixCoordinate2(const vector3df& v)
 	{
-		return vector3df(v.X, v.Z, -v.Y);
+		return vector3df(v.x, v.z, -v.y);
 	}
 
 	inline quaternion fixQuat(const quaternion& q)

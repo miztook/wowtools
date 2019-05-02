@@ -7,72 +7,72 @@ class vector2d
 {
 public:
 	//
-	 vector2d() : X(0), Y(0) {}
-	 vector2d(T nx, T ny) : X(nx), Y(ny) {}
-	 explicit vector2d(T n) : X(n), Y(n) {}
+	 vector2d() : x(0), y(0) {}
+	 vector2d(T nx, T ny) : x(nx), y(ny) {}
+	 explicit vector2d(T n) : x(n), y(n) {}
 	 vector2d(const vector2d<T>& other) { *this = other; }
 
 	//
-	 vector2d<T> operator-() const { return vector2d<T>(-X, -Y); }
+	 vector2d<T> operator-() const { return vector2d<T>(-x, -y); }
 	 vector2d<T>& operator=(const vector2d<T>& other)
 	{ 
-		X = other.X; Y = other.Y;
+		x = other.x; y = other.y;
 		 return *this;
 	}
 
-	 vector2d<T> operator+(const vector2d<T>& other) const { return vector2d<T>(X + other.X, Y + other.Y); }
-	 vector2d<T>& operator+=(const vector2d<T>& other) { X+=other.X; Y+=other.Y; return *this; }
+	 vector2d<T> operator+(const vector2d<T>& other) const { return vector2d<T>(x + other.x, y + other.y); }
+	 vector2d<T>& operator+=(const vector2d<T>& other) { x+=other.x; y+=other.y; return *this; }
 
-	 vector2d<T> operator-(const vector2d<T>& other) const { return vector2d<T>(X - other.X, Y - other.Y); }
-	 vector2d<T>& operator-=(const vector2d<T>& other) { X-=other.X; Y-=other.Y; return *this; }
+	 vector2d<T> operator-(const vector2d<T>& other) const { return vector2d<T>(x - other.x, y - other.y); }
+	 vector2d<T>& operator-=(const vector2d<T>& other) { x-=other.x; y-=other.y; return *this; }
 
-	 vector2d<T> operator*(const vector2d<T>& other) const { return vector2d<T>(X * other.X, Y * other.Y); }
-	 vector2d<T>& operator*=(const vector2d<T>& other) { X*=other.X; Y*=other.Y; return *this; }
-	 vector2d<T> operator*(const T v) const { return vector2d<T>(X * v, Y * v); }
-	 vector2d<T>& operator*=(const T v) { X*=v; Y*=v; return *this; }
+	 vector2d<T> operator*(const vector2d<T>& other) const { return vector2d<T>(x * other.x, y * other.y); }
+	 vector2d<T>& operator*=(const vector2d<T>& other) { x*=other.x; y*=other.y; return *this; }
+	 vector2d<T> operator*(const T v) const { return vector2d<T>(x * v, y * v); }
+	 vector2d<T>& operator*=(const T v) { x*=v; y*=v; return *this; }
 
-	 vector2d<T> operator/(const vector2d<T>& other) const { return vector2d<T>(X / other.X, Y / other.Y); }
-	 vector2d<T>& operator/=(const vector2d<T>& other) { X/=other.X; Y/=other.Y; return *this; }
-	 vector2d<T> operator/(const T v) const { return vector2d<T>(X / v, Y / v); }
-	 vector2d<T>& operator/=(const T v) { X/=v; Y/=v; return *this; }
+	 vector2d<T> operator/(const vector2d<T>& other) const { return vector2d<T>(x / other.x, y / other.y); }
+	 vector2d<T>& operator/=(const vector2d<T>& other) { x/=other.x; y/=other.y; return *this; }
+	 vector2d<T> operator/(const T v) const { return vector2d<T>(x / v, y / v); }
+	 vector2d<T>& operator/=(const T v) { x/=v; y/=v; return *this; }
 
 	bool operator==(const vector2d<T>& other) const 
 	{
 		if ( this == &other ) return true;
-		return X == other.X && Y == other.Y;
+		return x == other.x && y == other.y;
 	}
 
 	 bool operator!=(const vector2d<T>& other) const { return !(*this == other ); }
 
 	//
-	 bool equals(const vector2d<T>& other) const { return equals_(X, other.X) && equals_(Y, other.Y); }
+	 bool equals(const vector2d<T>& other) const { return equals_(x, other.x) && equals_(y, other.y); }
 
-	 void set(T nx, T ny) {X=nx; Y=ny;}
-	 void set(const vector2d<T>& p) { X=p.X; Y=p.Y; }
-	 void clear() { memset(&X,0,sizeof(T)*2); }
+	 void set(T nx, T ny) {x=nx; y=ny;}
+	 void set(const vector2d<T>& p) { x=p.x; y=p.y; }
+	 void clear() { memset(&x,0,sizeof(T)*2); }
 
-	 T getLength() const { return squareroot_( X*X + Y*Y ); }
-	 T getLengthSQ() const { return X*X + Y*Y; }
-	 T dotProduct(const vector2d<T>& other) const { return X*other.X + Y*other.Y; }
+	 T magnitude() const { return squareroot_( x*x + y*y ); }
+	 T squareMagnitude() const { return x*x + y*y; }
+	 T dotProduct(const vector2d<T>& other) const { return x*other.x + y*other.y; }
 
-	 T getDistanceFrom(const vector2d<T>& other) const { return vector2d<T>(X - other.X, Y - other.Y).getLength(); }
-	 T getDistanceFromSQ(const vector2d<T>& other) const { return vector2d<T>(X - other.X, Y - other.Y).getLengthSQ(); }
+	 T getDistanceFrom(const vector2d<T>& other) const { return vector2d<T>(x - other.x, y - other.y).magnitude(); }
+	 T getDistanceFromSQ(const vector2d<T>& other) const { return vector2d<T>(x - other.x, y - other.y).squareMagnitude(); }
 
 	 vector2d<T>& normalize()
 	{
-		float length = (float)(X*X + Y*Y);
+		float length = (float)(x*x + y*y);
 		if (equals_(length, 0.f))
 			return *this;
 		length = reciprocal_squareroot_( length );
-		X = (T)(X * length);
-		Y = (T)(Y * length);
+		x = (T)(x * length);
+		y = (T)(y * length);
 		return *this;
 	}
 
 	 static vector2d<T> interpolate(const vector2d<T>& a, const vector2d<T>& b, float d)
 	{
 		float inv = 1.0f - d;
-		return vector2d<T>((a.X*inv + b.X*d), (a.Y*inv + b.Y*d));
+		return vector2d<T>((a.x*inv + b.x*d), (a.y*inv + b.y*d));
 	}
 
 	 vector2d<T> getInterpolated_quadratic(const vector2d<T>& v2, const vector2d<T>& v3, float d) const
@@ -83,14 +83,14 @@ public:
 		const float mul1 = 2.0f * d * inv;
 		const float mul2 = d * d;
 
-		return vector2d<T> ( (T)(X * mul0 + v2.X * mul1 + v3.X * mul2),
-			(T)(Y * mul0 + v2.Y * mul1 + v3.Y * mul2));
+		return vector2d<T> ( (T)(x * mul0 + v2.x * mul1 + v3.x * mul2),
+			(T)(y * mul0 + v2.y * mul1 + v3.y * mul2));
 	}
 
 
 public:
-	T X;
-	T Y;
+	T x;
+	T y;
 };
 
 typedef vector2d<float> vector2df;

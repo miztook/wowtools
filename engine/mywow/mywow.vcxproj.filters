@@ -113,6 +113,12 @@
     <ClInclude Include="..\engine\CTimer.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\engine\CTransform.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\function3d.h">
+      <Filter>common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">

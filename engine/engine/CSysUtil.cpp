@@ -41,8 +41,8 @@ bool CSysUtil::getCursorPosition(vector2di & pos)
 	POINT pt;
 	if (::GetCursorPos(&pt))
 	{
-		pos.X = (int32_t)pt.x;
-		pos.Y = (int32_t)pt.y;
+		pos.x = (int32_t)pt.x;
+		pos.y = (int32_t)pt.y;
 		return true;
 	}
 	return false;

@@ -41,24 +41,24 @@ public:
 
 	 bool isZero() const { return MaxEdge == MinEdge; }
 
-	 bool isValid() const { return MaxEdge.X >= MinEdge.X && MaxEdge.Y >= MinEdge.Y && MaxEdge.Z >= MinEdge.Z; }
+	 bool isValid() const { return MaxEdge.x >= MinEdge.x && MaxEdge.y >= MinEdge.y && MaxEdge.z >= MinEdge.z; }
 
 	 vector3d<T> getCenter() const { return (MinEdge + MaxEdge)*0.5f; }
 	 vector3d<T> getExtent() const { return MaxEdge - MinEdge; }
-	 T getVolume() const { const vector3d<T> e = getExtent(); return e.X * e.Y * e.Z; }
+	 T getVolume() const { const vector3d<T> e = getExtent(); return e.x * e.y * e.z; }
 	 aabbox3d<T>	getInterpolated( const aabbox3d<T>& other, float d ) const;
 
 	bool isPointInside(const vector3d<T>& p) const
 	{
-		return (p.X >= MinEdge.X && p.X <= MaxEdge.X &&
-			p.Y >= MinEdge.Y && p.Y <= MaxEdge.Y &&
-			p.Z >= MinEdge.Z && p.Z <= MaxEdge.Z);
+		return (p.x >= MinEdge.x && p.x <= MaxEdge.x &&
+			p.y >= MinEdge.y && p.y <= MaxEdge.y &&
+			p.z >= MinEdge.z && p.z <= MaxEdge.z);
 	}
 
 	bool intersectsWithBox(const aabbox3d<T>& other) const
 	{
-		return (MinEdge.X <= other.MaxEdge.X && MinEdge.Y <= other.MaxEdge.Y && MinEdge.Z <= other.MaxEdge.Z &&
-			MaxEdge.X >= other.MinEdge.X && MaxEdge.Y >= other.MinEdge.Y && MaxEdge.Z >= other.MinEdge.Z);
+		return (MinEdge.x <= other.MaxEdge.x && MinEdge.y <= other.MaxEdge.y && MinEdge.z <= other.MaxEdge.z &&
+			MaxEdge.x >= other.MinEdge.x && MaxEdge.y >= other.MinEdge.y && MaxEdge.z >= other.MinEdge.z);
 	}
 
 	bool intersectsWithLine(const line3d<T>& line) const
@@ -112,14 +112,14 @@ inline void aabbox3d<T>::makePoints(vector3d<T>* points) const
 	0---------4/
 	*/
 
-	points[0] = center + vector3d<T>(-ext.X, -ext.Y, -ext.Z);
-	points[1] = center + vector3d<T>(-ext.X, ext.Y, -ext.Z);
-	points[2] = center + vector3d<T>(-ext.X, -ext.Y, ext.Z);
-	points[3] = center + vector3d<T>(-ext.X, ext.Y, ext.Z);
-	points[4] = center + vector3d<T>(ext.X, -ext.Y, -ext.Z);
-	points[5] = center + vector3d<T>(ext.X, ext.Y, -ext.Z);
-	points[6] = center + vector3d<T>(ext.X, -ext.Y, ext.Z);
-	points[7] = center + vector3d<T>(ext.X, ext.Y, ext.Z);
+	points[0] = center + vector3d<T>(-ext.x, -ext.y, -ext.z);
+	points[1] = center + vector3d<T>(-ext.x, ext.y, -ext.z);
+	points[2] = center + vector3d<T>(-ext.x, -ext.y, ext.z);
+	points[3] = center + vector3d<T>(-ext.x, ext.y, ext.z);
+	points[4] = center + vector3d<T>(ext.x, -ext.y, -ext.z);
+	points[5] = center + vector3d<T>(ext.x, ext.y, -ext.z);
+	points[6] = center + vector3d<T>(ext.x, -ext.y, ext.z);
+	points[7] = center + vector3d<T>(ext.x, ext.y, ext.z);
 }
 
 template <class T>
@@ -132,13 +132,13 @@ inline void aabbox3d<T>::addInternalBox( const aabbox3d<T>& b )
 template <class T>
 inline void aabbox3d<T>::addInternalPoint( const vector3d<T>& p )
 {
-	if (p.X >MaxEdge.X)		MaxEdge.X = p.X;
-	if (p.Y >MaxEdge.Y)		MaxEdge.Y = p.Y;
-	if (p.Z >MaxEdge.Z)		MaxEdge.Z = p.Z;
+	if (p.x >MaxEdge.x)		MaxEdge.x = p.x;
+	if (p.y >MaxEdge.y)		MaxEdge.y = p.y;
+	if (p.z >MaxEdge.z)		MaxEdge.z = p.z;
 
-	if(p.X <MinEdge.X)		MinEdge.X = p.X;
-	if(p.Y <MinEdge.Y)		MinEdge.Y = p.Y;
-	if(p.Z <MinEdge.Z)		MinEdge.Z = p.Z;
+	if(p.x <MinEdge.x)		MinEdge.x = p.x;
+	if(p.y <MinEdge.y)		MinEdge.y = p.y;
+	if(p.z <MinEdge.z)		MinEdge.z = p.z;
 }
 
 template <class T>
@@ -147,22 +147,22 @@ inline EIntersectionRelation3D aabbox3d<T>::classifyPlaneRelation( const plane3d
 	vector3d<T> nearPoint(MaxEdge);
 	vector3d<T> farPoint(MinEdge);
 
-	if (plane.Normal.X > (T)0)
+	if (plane.Normal.x > (T)0)
 	{
-		nearPoint.X = MinEdge.X;
-		farPoint.X = MaxEdge.X;
+		nearPoint.x = MinEdge.x;
+		farPoint.x = MaxEdge.x;
 	}
 			
-	if (plane.Normal.Y > (T)0)
+	if (plane.Normal.y > (T)0)
 	{
-		nearPoint.Y = MinEdge.Y;
-		farPoint.Y = MaxEdge.Y;
+		nearPoint.y = MinEdge.y;
+		farPoint.y = MaxEdge.y;
 	}
 			
-	if (plane.Normal.Z > (T)0)
+	if (plane.Normal.z > (T)0)
 	{
-		nearPoint.Z = MinEdge.Z;
-		farPoint.Z = MaxEdge.Z;
+		nearPoint.z = MinEdge.z;
+		farPoint.z = MaxEdge.z;
 	}
 
 	if (plane.Normal.dotProduct(nearPoint) + plane.D > (T)0)
@@ -187,21 +187,21 @@ inline bool aabbox3d<T>::intersectsWithLine( const vector3d<T>& linemiddle, cons
 	const vector3d<T> e = getExtent() * (T)0.5;
 	const vector3d<T> t = getCenter() - linemiddle;
 
-	if ((fabs(t.X) > e.X + halflength * fabs(linevect.X)) ||
-		(fabs(t.Y) > e.Y + halflength * fabs(linevect.Y)) ||
-		(fabs(t.Z) > e.Z + halflength * fabs(linevect.Z)) )
+	if ((fabs(t.x) > e.x + halflength * fabs(linevect.x)) ||
+		(fabs(t.y) > e.y + halflength * fabs(linevect.y)) ||
+		(fabs(t.z) > e.z + halflength * fabs(linevect.z)) )
 		return false;
 
-	T r = e.Y * (T)fabs(linevect.Z) + e.Z * (T)fabs(linevect.Y);
-	if (fabs(t.Y*linevect.Z - t.Z*linevect.Y) > r )
+	T r = e.y * (T)fabs(linevect.z) + e.z * (T)fabs(linevect.y);
+	if (fabs(t.y*linevect.z - t.z*linevect.y) > r )
 		return false;
 
-	r = e.X * (T)fabs(linevect.Z) + e.Z * (T)fabs(linevect.X);
-	if (fabs(t.Z*linevect.X - t.X*linevect.Z) > r )
+	r = e.x * (T)fabs(linevect.z) + e.z * (T)fabs(linevect.x);
+	if (fabs(t.z*linevect.x - t.x*linevect.z) > r )
 		return false;
 
-	r = e.X * (T)fabs(linevect.Y) + e.Y * (T)fabs(linevect.X);
-	if (fabs(t.X*linevect.Y - t.Y*linevect.X) > r)
+	r = e.x * (T)fabs(linevect.y) + e.y * (T)fabs(linevect.x);
+	if (fabs(t.x*linevect.y - t.y*linevect.x) > r)
 		return false;
 
 	return true;

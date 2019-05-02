@@ -2,6 +2,8 @@
 
 #include <memory.h>
 #include "plane3d.h"
+#include "matrix4.h"
+#include "vector3d.h"
 
 enum VFPLANES : int32_t
 {
@@ -81,39 +83,39 @@ inline void frustum::transform(const matrix4& mat)
 inline void frustum::setFrom(const matrix4& mat)
 {
 	// left clipping plane
-	planes[VF_LEFT_PLANE].Normal.X = mat[3] + mat[0];
-	planes[VF_LEFT_PLANE].Normal.Y = mat[7] + mat[4];
-	planes[VF_LEFT_PLANE].Normal.Z = mat[11] + mat[8];
+	planes[VF_LEFT_PLANE].Normal.x = mat[3] + mat[0];
+	planes[VF_LEFT_PLANE].Normal.y = mat[7] + mat[4];
+	planes[VF_LEFT_PLANE].Normal.z = mat[11] + mat[8];
 	planes[VF_LEFT_PLANE].D = mat[15] + mat[12];
 
 	// right clipping plane
-	planes[VF_RIGHT_PLANE].Normal.X = mat[3] - mat[0];
-	planes[VF_RIGHT_PLANE].Normal.Y = mat[7] - mat[4];
-	planes[VF_RIGHT_PLANE].Normal.Z = mat[11] - mat[8];
+	planes[VF_RIGHT_PLANE].Normal.x = mat[3] - mat[0];
+	planes[VF_RIGHT_PLANE].Normal.y = mat[7] - mat[4];
+	planes[VF_RIGHT_PLANE].Normal.z = mat[11] - mat[8];
 	planes[VF_RIGHT_PLANE].D = mat[15] - mat[12];
 
 	// top clipping plane
-	planes[VF_TOP_PLANE].Normal.X = mat[3] - mat[1];
-	planes[VF_TOP_PLANE].Normal.Y = mat[7] - mat[5];
-	planes[VF_TOP_PLANE].Normal.Z = mat[11] - mat[9];
+	planes[VF_TOP_PLANE].Normal.x = mat[3] - mat[1];
+	planes[VF_TOP_PLANE].Normal.y = mat[7] - mat[5];
+	planes[VF_TOP_PLANE].Normal.z = mat[11] - mat[9];
 	planes[VF_TOP_PLANE].D = mat[15] - mat[13];
 
 	// bottom clipping plane
-	planes[VF_BOTTOM_PLANE].Normal.X = mat[3] + mat[1];
-	planes[VF_BOTTOM_PLANE].Normal.Y = mat[7] + mat[5];
-	planes[VF_BOTTOM_PLANE].Normal.Z = mat[11] + mat[9];
+	planes[VF_BOTTOM_PLANE].Normal.x = mat[3] + mat[1];
+	planes[VF_BOTTOM_PLANE].Normal.y = mat[7] + mat[5];
+	planes[VF_BOTTOM_PLANE].Normal.z = mat[11] + mat[9];
 	planes[VF_BOTTOM_PLANE].D = mat[15] + mat[13];
 
 	// far clipping plane
-	planes[VF_FAR_PLANE].Normal.X = mat[3] - mat[2];
-	planes[VF_FAR_PLANE].Normal.Y = mat[7] - mat[6];
-	planes[VF_FAR_PLANE].Normal.Z = mat[11] - mat[10];
+	planes[VF_FAR_PLANE].Normal.x = mat[3] - mat[2];
+	planes[VF_FAR_PLANE].Normal.y = mat[7] - mat[6];
+	planes[VF_FAR_PLANE].Normal.z = mat[11] - mat[10];
 	planes[VF_FAR_PLANE].D = mat[15] - mat[14];
 
 	// near clipping plane
-	planes[VF_NEAR_PLANE].Normal.X = mat[2];
-	planes[VF_NEAR_PLANE].Normal.Y = mat[6];
-	planes[VF_NEAR_PLANE].Normal.Z = mat[10];
+	planes[VF_NEAR_PLANE].Normal.x = mat[2];
+	planes[VF_NEAR_PLANE].Normal.y = mat[6];
+	planes[VF_NEAR_PLANE].Normal.z = mat[10];
 	planes[VF_NEAR_PLANE].D = mat[14];
 
 	// normalize normals
@@ -159,43 +161,43 @@ inline void frustum::makePlane(const matrix4& mat, VFPLANES side, plane3df& plan
 	switch (side)
 	{
 	case VF_NEAR_PLANE:
-		plane.Normal.X = mat[2];
-		plane.Normal.Y = mat[6];
-		plane.Normal.Z = mat[10];
+		plane.Normal.x = mat[2];
+		plane.Normal.y = mat[6];
+		plane.Normal.z = mat[10];
 		plane.D = mat[14];
 		break;
 	case VF_FAR_PLANE:
-		plane.Normal.X = mat[3] - mat[2];
-		plane.Normal.Y = mat[7] - mat[6];
-		plane.Normal.Z = mat[11] - mat[10];
+		plane.Normal.x = mat[3] - mat[2];
+		plane.Normal.y = mat[7] - mat[6];
+		plane.Normal.z = mat[11] - mat[10];
 		plane.D = mat[15] - mat[14];
 		break;
 	case VF_LEFT_PLANE:
-		plane.Normal.X = mat[3] + mat[0];
-		plane.Normal.Y = mat[7] + mat[4];
-		plane.Normal.Z = mat[11] + mat[8];
+		plane.Normal.x = mat[3] + mat[0];
+		plane.Normal.y = mat[7] + mat[4];
+		plane.Normal.z = mat[11] + mat[8];
 		plane.D = mat[15] + mat[12];
 		break;
 	case VF_RIGHT_PLANE:
-		plane.Normal.X = mat[3] - mat[0];
-		plane.Normal.Y = mat[7] - mat[4];
-		plane.Normal.Z = mat[11] - mat[8];
+		plane.Normal.x = mat[3] - mat[0];
+		plane.Normal.y = mat[7] - mat[4];
+		plane.Normal.z = mat[11] - mat[8];
 		plane.D = mat[15] - mat[12];
 		break;
 	case VF_TOP_PLANE:
-		plane.Normal.X = mat[3] - mat[1];
-		plane.Normal.Y = mat[7] - mat[5];
-		plane.Normal.Z = mat[11] - mat[9];
+		plane.Normal.x = mat[3] - mat[1];
+		plane.Normal.y = mat[7] - mat[5];
+		plane.Normal.z = mat[11] - mat[9];
 		plane.D = mat[15] - mat[13];
 		break;
 	case VF_BOTTOM_PLANE:
-		plane.Normal.X = mat[3] + mat[1];
-		plane.Normal.Y = mat[7] + mat[5];
-		plane.Normal.Z = mat[11] + mat[9];
+		plane.Normal.x = mat[3] + mat[1];
+		plane.Normal.y = mat[7] + mat[5];
+		plane.Normal.z = mat[11] + mat[9];
 		plane.D = mat[15] + mat[13];
 		break;
 	default:
-		ASSERT(false);
+		assert(false);
 	}
 
 	plane.normalize();

@@ -45,7 +45,7 @@ public:
 	quaternion& fromAngleAxis (float angle, const vector3df& axis);
 	void toAngleAxis (float &angle, vector3df& axis) const;
 	quaternion& fromEuler( float pitch, float yaw, float roll );
-	 quaternion& fromEuler( const vector3df& vec ) { return fromEuler(vec.X, vec.Y, vec.Z); }
+	 quaternion& fromEuler( const vector3df& vec ) { return fromEuler(vec.x, vec.y, vec.z); }
 	void toEuler(vector3df& euler) const;
 	 quaternion& makeIdentity()	{ W = 1.f; X = 0.f; Y = 0.f; Z = 0.f; return *this; }
 	quaternion& normalize();
@@ -98,9 +98,9 @@ inline quaternion& quaternion::fromAngleAxis (float angle, const vector3df& axis
 	const float fHalfAngle = 0.5f*angle;
 	const float fSin = sinf(fHalfAngle);
 	W = cosf(fHalfAngle);
-	X = fSin*axis.X;
-	Y = fSin*axis.Y;
-	Z = fSin*axis.Z;
+	X = fSin*axis.x;
+	Y = fSin*axis.y;
+	Z = fSin*axis.z;
 	return *this;
 }
 
@@ -111,17 +111,17 @@ inline void quaternion::toAngleAxis (float &angle, vector3df& axis) const
 	if (iszero_(scale) || W > 1.0f || W < -1.0f)
 	{
 		angle = 0.0f;
-		axis.X = 0.0f;
-		axis.Y = 1.0f;
-		axis.Z = 0.0f;
+		axis.x = 0.0f;
+		axis.y = 1.0f;
+		axis.z = 0.0f;
 	}
 	else
 	{
 		const float invscale = reciprocal_(scale);
 		angle = 2.0f * acosf(W);
-		axis.X = X * invscale;
-		axis.Y = Y * invscale;
-		axis.Z = Z * invscale;
+		axis.x = X * invscale;
+		axis.y = Y * invscale;
+		axis.z = Z * invscale;
 	}
 }
 
@@ -163,13 +163,13 @@ inline void quaternion::toEuler( vector3df& euler ) const
 	const float sqz = Z*Z;
 
 	// heading = rotation about z-axis
-	euler.Z = (float) (atan2(2.0f * (X*Y +Z*W),(sqx - sqy - sqz + sqw)));
+	euler.z = (float) (atan2(2.0f * (X*Y +Z*W),(sqx - sqy - sqz + sqw)));
 
 	// bank = rotation about x-axis
-	euler.X = (float) (atan2(2.0f * (Y*Z +X*W),(-sqx - sqy + sqz + sqw)));
+	euler.x = (float) (atan2(2.0f * (Y*Z +X*W),(-sqx - sqy + sqz + sqw)));
 
 	// attitude = rotation about y-axis
-	euler.Y = asinf( clamp_(-2.0f * (X*Z - Y*W), -1.0f, 1.0f) );
+	euler.y = asinf( clamp_(-2.0f * (X*Z - Y*W), -1.0f, 1.0f) );
 }
 
 
@@ -327,9 +327,9 @@ inline quaternion& quaternion::rotationFromTo( const vector3df& from, const vect
 	const float s = squareroot_( (1+d)*2 ); // optimize inv_sqrt
 	const float invs = 1.f / s;
 	const vector3df c = v0.crossProduct(v1)*invs;
-	X = c.X;
-	Y = c.Y;
-	Z = c.Z;
+	X = c.x;
+	Y = c.y;
+	Z = c.z;
 	W = s * 0.5f;
 
 	return *this;
@@ -360,11 +360,11 @@ inline void quaternion::transformVect( vector3df& vect ) const
 
 	float vector[3];
 
-	vector[0] = vect.X*m[0] + vect.Y*m[4] + vect.Z*m[8] + m[12];
-	vector[1] = vect.X*m[1] + vect.Y*m[5] + vect.Z*m[9] + m[13];
-	vector[2] = vect.X*m[2] + vect.Y*m[6] + vect.Z*m[10] + m[14];
+	vector[0] = vect.x*m[0] + vect.y*m[4] + vect.z*m[8] + m[12];
+	vector[1] = vect.x*m[1] + vect.y*m[5] + vect.z*m[9] + m[13];
+	vector[2] = vect.x*m[2] + vect.y*m[6] + vect.z*m[10] + m[14];
 
-	vect.X = vector[0];
-	vect.Y = vector[1];
-	vect.Z = vector[2];
+	vect.x = vector[0];
+	vect.y = vector[1];
+	vect.z = vector[2];
 }
