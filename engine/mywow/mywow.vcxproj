@@ -48,8 +48,11 @@
     <ClInclude Include="..\common\wowWMOFile.h" />
     <ClInclude Include="..\common\wowWMOStruct.h" />
     <ClInclude Include="..\engine\CInputReader.h" />
+    <ClInclude Include="..\engine\COSInfo.h" />
     <ClInclude Include="..\engine\CSysUtil.h" />
+    <ClInclude Include="..\engine\CTimer.h" />
     <ClInclude Include="..\engine\Engine.h" />
+    <ClInclude Include="..\engine\mywow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp" />
@@ -63,8 +66,10 @@
     <ClCompile Include="..\common\wowWDB5File.cpp" />
     <ClCompile Include="..\common\wowWDC3File.cpp" />
     <ClCompile Include="..\common\wowWMOFile.cpp" />
-    <ClCompile Include="..\engine\CInputRead_Win.cpp" />
-    <ClCompile Include="..\engine\CSysUtil_Win.cpp" />
+    <ClCompile Include="..\engine\CInputReader.cpp" />
+    <ClCompile Include="..\engine\COSInfo.cpp" />
+    <ClCompile Include="..\engine\CSysUtil.cpp" />
+    <ClCompile Include="..\engine\CTimer.cpp" />
     <ClCompile Include="..\engine\Engine.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

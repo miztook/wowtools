@@ -16,9 +16,6 @@ public:
 
 class CInputReader
 {
-private:
-	DISALLOW_COPY_AND_ASSIGN(CInputReader);
-
 public:
 	CInputReader();
 	~CInputReader();
@@ -26,7 +23,6 @@ public:
 public:
 	bool acquire(E_INPUT_DEVICE device);
 	bool unacquire(E_INPUT_DEVICE device);
-	bool capture(E_INPUT_DEVICE device);
 	bool isKeyPressed(uint8_t keycode);
 	bool isMousePressed(E_MOUSE_BUTTON button);
 

@@ -155,6 +155,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="app1.cpp" />
+    <ClCompile Include="desktopInput.cpp" />
+    <ClCompile Include="game.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="game.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

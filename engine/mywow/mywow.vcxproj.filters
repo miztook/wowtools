@@ -104,6 +104,15 @@
     <ClInclude Include="..\engine\Engine.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\engine\mywow.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\COSInfo.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CTimer.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">
@@ -139,13 +148,19 @@
     <ClCompile Include="..\common\wowWMOFile.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\engine\CInputRead_Win.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\CSysUtil_Win.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\engine\Engine.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CSysUtil.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\COSInfo.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CInputReader.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CTimer.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

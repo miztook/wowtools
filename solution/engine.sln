@@ -8,6 +8,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "renderer", "..\engine\renderer\renderer.vcxproj", "{F1921F3C-47EB-4A70-8501-0D6FFACC2B42}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "app1", "..\engine\app1\app1.vcxproj", "{EE39B722-B6E2-4ADD-B685-6D763CFCE08B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F1921F3C-47EB-4A70-8501-0D6FFACC2B42} = {F1921F3C-47EB-4A70-8501-0D6FFACC2B42}
+		{5FC4A776-9356-4FE9-93BA-F610DEE4E660} = {5FC4A776-9356-4FE9-93BA-F610DEE4E660}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

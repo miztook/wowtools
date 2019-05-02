@@ -28,6 +28,15 @@ struct SWindowInfo
 	uint32_t height;
 };
 
+struct SRendererInfo
+{
+	SRendererInfo() : adapter(0), vsync(true), antialias(1) {}
+
+	uint32_t adapter;
+	bool vsync;
+	uint8_t  antialias;
+};
+
 class IMessageHandler
 {
 public:
