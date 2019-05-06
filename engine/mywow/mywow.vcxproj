@@ -48,13 +48,26 @@
     <ClInclude Include="..\common\wowWDC3File.h" />
     <ClInclude Include="..\common\wowWMOFile.h" />
     <ClInclude Include="..\common\wowWMOStruct.h" />
+    <ClInclude Include="..\engine\CCamera.h" />
+    <ClInclude Include="..\engine\CGeometryCreator.h" />
+    <ClInclude Include="..\engine\CGraphics.h" />
+    <ClInclude Include="..\engine\CImage.h" />
     <ClInclude Include="..\engine\CInputReader.h" />
     <ClInclude Include="..\engine\COSInfo.h" />
+    <ClInclude Include="..\engine\CRenderScene.h" />
+    <ClInclude Include="..\engine\CSceneEnvironment.h" />
+    <ClInclude Include="..\engine\CSceneNode.h" />
     <ClInclude Include="..\engine\CSysUtil.h" />
     <ClInclude Include="..\engine\CTimer.h" />
     <ClInclude Include="..\engine\CTransform.h" />
     <ClInclude Include="..\engine\Engine.h" />
+    <ClInclude Include="..\engine\IMaterialRenderServices.h" />
+    <ClInclude Include="..\engine\IRenderTarget.h" />
+    <ClInclude Include="..\engine\ITexture.h" />
+    <ClInclude Include="..\engine\ITextureWriter.h" />
+    <ClInclude Include="..\engine\IVideoDriver.h" />
     <ClInclude Include="..\engine\mywow.h" />
+    <ClInclude Include="..\engine\CRenderSetting.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp" />
