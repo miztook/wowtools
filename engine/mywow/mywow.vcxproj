@@ -33,6 +33,7 @@
     <ClInclude Include="..\common\plane3d.h" />
     <ClInclude Include="..\common\predefine.h" />
     <ClInclude Include="..\common\quaternion.h" />
+    <ClInclude Include="..\common\rect.h" />
     <ClInclude Include="..\common\S3DVertex.h" />
     <ClInclude Include="..\common\SColor.h" />
     <ClInclude Include="..\common\stringext.h" />
@@ -51,11 +52,12 @@
     <ClInclude Include="..\engine\CCamera.h" />
     <ClInclude Include="..\engine\CGeometryCreator.h" />
     <ClInclude Include="..\engine\CGraphics.h" />
-    <ClInclude Include="..\engine\CImage.h" />
+    <ClInclude Include="..\engine\CCImage.h" />
     <ClInclude Include="..\engine\CInputReader.h" />
     <ClInclude Include="..\engine\COSInfo.h" />
     <ClInclude Include="..\engine\CRenderScene.h" />
     <ClInclude Include="..\engine\CSceneEnvironment.h" />
+    <ClInclude Include="..\engine\IImage.h" />
     <ClInclude Include="..\engine\ISceneNode.h" />
     <ClInclude Include="..\engine\CSysUtil.h" />
     <ClInclude Include="..\engine\CTimer.h" />

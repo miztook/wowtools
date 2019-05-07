@@ -140,9 +140,6 @@
     <ClInclude Include="..\engine\ITexture.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\CImage.h">
-      <Filter>engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\engine\CGraphics.h">
       <Filter>engine</Filter>
     </ClInclude>
@@ -157,6 +154,15 @@
     </ClInclude>
     <ClInclude Include="..\engine\ISceneNode.h">
       <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CCImage.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\IImage.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\rect.h">
+      <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

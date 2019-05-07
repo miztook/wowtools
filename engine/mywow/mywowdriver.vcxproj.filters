@@ -8,6 +8,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\renderer\mywowdriver.h" />
+    <ClInclude Include="..\renderer\COpenGLPCH.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\renderer\mywowdriver.cpp" />

@@ -95,3 +95,4 @@ public:
 
 typedef vector2d<float> vector2df;
 typedef vector2d<int32_t> vector2di;
+typedef vector2d<uint32_t> vector2du;

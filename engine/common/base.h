@@ -135,3 +135,72 @@ enum E_INDEX_TYPE : int
 	EIT_32BIT,
 	EIT_COUNT,
 };
+
+enum ECOLOR_FORMAT : int
+{
+	ECF_UNKNOWN = 0,
+
+	//8
+	ECF_A8,
+	//16
+	ECF_A8L8,
+
+	ECF_A1R5G5B5,			//argb in dx9 and abgr in gl and dx11
+	ECF_R5G6B5,
+
+	//24
+	ECF_R8G8B8,
+
+	//32
+	//ECF_A8B8G8R8,
+	ECF_A8R8G8B8,			//argb in dx9 and abgr in gl and dx11
+
+	//float for RenderTarget Buffer
+	ECF_ARGB32F,
+
+	//DXT
+	ECF_DXT1,
+	ECF_DXT3,
+	ECF_DXT5,
+
+	//PVR
+	ECF_PVRTC1_RGB_2BPP,
+	ECF_PVRTC1_RGBA_2BPP,
+	ECF_PVRTC1_RGB_4BPP,
+	ECF_PVRTC1_RGBA_4BPP,
+
+	//ETC
+	ECF_ETC1_RGB,
+	ECF_ETC1_RGBA,
+
+	//ATC
+	ECF_ATC_RGB,
+	ECF_ATC_RGBA_EXPLICIT,
+	ECF_ATC_RGBA_INTERPOLATED,
+
+	//DEPTH
+	ECF_D16,
+	ECF_D24,
+	ECF_D24S8,
+	ECF_D32,
+	ECF_INTZ,			//dx
+};
+
+enum E_IMAGE_TYPE : int
+{
+	EIT_NONE = 0,
+	EIT_IMAGE,
+	EIT_DDS,
+};
+
+enum E_TRANSFORMATION_STATE : int
+{
+	ETS_VIEW = 0,
+	ETS_WORLD,
+	ETS_PROJECTION,
+	ETS_TEXTURE_0,
+	ETS_TEXTURE_1,
+	ETS_TEXTURE_2,
+	ETS_TEXTURE_3,
+	ETS_COUNT,
+};
