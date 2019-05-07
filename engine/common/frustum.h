@@ -77,7 +77,7 @@ private:
 inline void frustum::transform(const matrix4& mat)
 {
 	for (uint32_t i = 0; i < VF_PLANE_COUNT; ++i)
-		mat.transformPlane(planes[i]);
+		planes[i] = mat.transformPlane(planes[i]);
 }
 
 inline void frustum::setFrom(const matrix4& mat)

@@ -11,7 +11,7 @@ public:
 	 quaternion(float x, float y, float z, float w) : X(x), Y(y), Z(z), W(w) { }
 	 quaternion(float pitch, float yaw, float roll) { fromEuler( pitch, yaw, roll ); }
 	 explicit quaternion(const vector3df& vec) { fromEuler( vec ); }
-	 quaternion(float angle, const vector3df& axis) { fromAngleAxis( angle, axis ); }
+	 quaternion(const vector3df& axis, float angle) { fromAngleAxis( angle, axis ); }
 	 quaternion(const quaternion& other) { *this = other; }
 	//
 	quaternion& operator=(const quaternion& other)

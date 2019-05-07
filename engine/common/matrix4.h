@@ -60,13 +60,13 @@ public:
 	bool isIdentity() const;
 	bool isZero() const;
 	//
-	void transformVect(vector3df& vect, float& z) const;
-	void transformVect(vector3df& vect) const;
-	void transformForClipPlane(plane3df& plane) const;
-	void transformPlane(plane3df& plane) const;
-	void transformBox(aabbox3df& box) const;
-	void rotateVect(vector3df& vect) const;
-	void inverseRotateVect(vector3df& vect) const;
+	vector3df transformVect(const vector3df& vect, float& z) const;
+	vector3df transformVect(const vector3df& vect) const;
+	plane3df transformForClipPlane(const plane3df& plane) const;
+	plane3df transformPlane(const plane3df& plane) const;
+	aabbox3df transformBox(const aabbox3df& box) const;
+	vector3df rotateVect(const vector3df& vect) const;
+	vector3df inverseRotateVect(const vector3df& vect) const;
 
 	vector3df getRow(int i) const { return vector3df(m[i][0], m[i][1], m[i][2]); }
 	vector3df getCol(int i) const { return vector3df(m[0][i], m[1][i], m[2][i]); }
@@ -621,52 +621,46 @@ bool CMatrix4<T>::isZero() const
 }
 
 template <class T>
-inline void CMatrix4<T>::transformVect(vector3df& vect, float& z) const
+inline vector3df CMatrix4<T>::transformVect(const vector3df& vect, float& z) const
 {
-	float vector[3];
+	vector3df vector;
 
-	vector[0] = vect.x*M[0] + vect.y*M[4] + vect.z*M[8] + M[12];
-	vector[1] = vect.x*M[1] + vect.y*M[5] + vect.z*M[9] + M[13];
-	vector[2] = vect.x*M[2] + vect.y*M[6] + vect.z*M[10] + M[14];
+	vector.x = vect.x*M[0] + vect.y*M[4] + vect.z*M[8] + M[12];
+	vector.y = vect.x*M[1] + vect.y*M[5] + vect.z*M[9] + M[13];
+	vector.z = vect.x*M[2] + vect.y*M[6] + vect.z*M[10] + M[14];
 	z = vect.x*M[3] + vect.y*M[7] + vect.z*M[11] + M[15];
 
-	vect.x = vector[0];
-	vect.y = vector[1];
-	vect.z = vector[2];
+	return vector;
 }
 
 template <class T>
-inline void CMatrix4<T>::transformVect(vector3df& vect) const
+inline vector3df CMatrix4<T>::transformVect(const vector3df& vect) const
 {
-	float vector[3];
+	vector3df vector;
 
-	vector[0] = vect.x*M[0] + vect.y*M[4] + vect.z*M[8] + M[12];
-	vector[1] = vect.x*M[1] + vect.y*M[5] + vect.z*M[9] + M[13];
-	vector[2] = vect.x*M[2] + vect.y*M[6] + vect.z*M[10] + M[14];
+	vector.x = vect.x*M[0] + vect.y*M[4] + vect.z*M[8] + M[12];
+	vector.y = vect.x*M[1] + vect.y*M[5] + vect.z*M[9] + M[13];
+	vector.z = vect.x*M[2] + vect.y*M[6] + vect.z*M[10] + M[14];
 
-	vect.x = vector[0];
-	vect.y = vector[1];
-	vect.z = vector[2];
+	return vector;
 }
 
 template <class T>
-inline void CMatrix4<T>::transformPlane(plane3df& plane) const
+inline plane3df CMatrix4<T>::transformPlane(const plane3df& plane) const
 {
-	vector3df point = plane.getMemberPoint();
-	transformVect(point);
+	vector3df point = transformVect(plane.getMemberPoint());
 
 	CMatrix4<T> m = *this;
 	m.makeInverse();
 	m.transpose();
 
-	vector3df normal = plane.Normal;
-	m.transformVect(normal);
+	vector3df normal = m.transformVect(plane.Normal);
 
-	plane.setPlane(point, normal);
+	return plane3df(point, normal);
 }
 
 template <class T>
-inline void CMatrix4<T>::transformForClipPlane(plane3df& plane) const
+inline plane3df CMatrix4<T>::transformForClipPlane(const plane3df& plane) const
 {
 	CMatrix4<T> m = *this;
 	m.makeInverse();
@@ -687,45 +681,47 @@ inline void CMatrix4<T>::transformForClipPlane(plane3df& plane) const
 	normal.z = x * m.M[2] + y * m.M[6] + z * m.M[10] + d * m.M[14];
 	D = x * m.M[3] + y * m.M[7] + z * m.M[11] + d * m.M[15];
 
-	plane.setPlane(normal, D);
+	return plane3df(point, normal);
 }
 
 template <class T>
-inline void CMatrix4<T>::transformBox(aabbox3df& box) const
+inline aabbox3df CMatrix4<T>::transformBox(const aabbox3df& box) const
 {
-	aabbox3df BoundingBox;
-	vector3df points[8];
-	box.makePoints(points);
+	vector3df vCenter = mat.transformVect(box.getCenter());
 
-	vector3df point = points[0];
-	transformVect(point);
-	BoundingBox.reset(point);
-	for (uint32_t i = 1; i < 8; ++i)
-	{
-		point = points[i];
-		transformVect(point);
-		BoundingBox.addInternalPoint(point);
-	}
+	const vector3df& ext = box.getExtent();
+	vector3df vAxisX = mat.rotateVect(vector3df(ext.x, 0, 0));
+	vector3df vAxisY = mat.rotateVect(vector3df(0, ext.y, 0));
+	vector3df vAxisZ = mat.rotateVect(vector3df(0, 0, ext.z));
 
-	box = BoundingBox;
+	vector3df vExtends;
+	vExtends.x = fabs(vAxisX.x) + fabs(vAxisY.x) + fabs(vAxisZ.x);
+	vExtends.y = fabs(vAxisX.y) + fabs(vAxisY.y) + fabs(vAxisZ.y);
+	vExtends.z = fabs(vAxisX.z) + fabs(vAxisY.z) + fabs(vAxisZ.z);
+
+	aabbox3df aabbNew;
+	aabbNew.setByCenterExtent(vCenter, vExtends);
+
+	return aabbNew;
 }
 
 template <class T>
-inline void CMatrix4<T>::rotateVect(vector3df& vect) const
+inline vector3df CMatrix4<T>::rotateVect(const vector3df& vect) const
 {
-	vector3df tmp = vect;
-	vect.x = tmp.x*M[0] + tmp.y*M[4] + tmp.z*M[8];
-	vect.y = tmp.x*M[1] + tmp.y*M[5] + tmp.z*M[9];
-	vect.z = tmp.x*M[2] + tmp.y*M[6] + tmp.z*M[10];
+	vector3df tmp;
+	tmp.x = vect.x*M[0] + vect.y*M[4] + vect.z*M[8];
+	tmp.y = vect.x*M[1] + vect.y*M[5] + vect.z*M[9];
+	tmp.z = vect.x*M[2] + vect.y*M[6] + vect.z*M[10];
+	return tmp;
 }
 
 template <class T>
-inline  void CMatrix4<T>::inverseRotateVect(vector3df& vect) const
+inline  vector3df CMatrix4<T>::inverseRotateVect(const vector3df& vect) const
 {
-	vector3df tmp = vect;
-	vect.x = tmp.x*M[0] + tmp.y*M[1] + tmp.z*M[2];
-	vect.y = tmp.x*M[4] + tmp.y*M[5] + tmp.z*M[6];
-	vect.z = tmp.x*M[8] + tmp.y*M[9] + tmp.z*M[10];
+	vector3df tmp;
+	tmp.x = vect.x*M[0] + vect.y*M[1] + vect.z*M[2];
+	tmp.y = vect.x*M[4] + vect.y*M[5] + vect.z*M[6];
+	tmp.z = vect.x*M[8] + vect.y*M[9] + vect.z*M[10];
 }
 
 template <class T>

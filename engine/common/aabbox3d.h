@@ -12,7 +12,7 @@ template <class T>
 class aabbox3d
 {
 public:
-	 aabbox3d(){ MinEdge.clear(); MaxEdge.clear(); }	
+	 aabbox3d() { clear(); }
 	 aabbox3d(const vector3d<T>& min, const vector3d<T>& max): MinEdge(min), MaxEdge(max) { }	
 	 explicit aabbox3d(const vector3d<T>& init): MinEdge(init), MaxEdge(init) { }
 	 aabbox3d(T minx, T miny, T minz, T maxx, T maxy, T maxz): MinEdge(minx, miny, minz), MaxEdge(maxx, maxy, maxz) { }
@@ -34,8 +34,12 @@ public:
 	//intersection
 	 EIntersectionRelation3D classifyPlaneRelation(const plane3d<T>& plane) const;
 			
-	 void set(const vector3d<T>& min, const vector3d<T>& max) { MinEdge=min; MaxEdge=max; }
-	 void reset( const vector3d<T>& v ) { MaxEdge = MinEdge = v; }
+	 void setByMinMax(const vector3d<T>& min, const vector3d<T>& max) { MinEdge=min; MaxEdge=max; }
+	 void setByCenterExtent(const vector3d<T>& center, const vector3d<T>& ext) { MinEdge = center - ext; MaxEdge = center + ext; }
+	 void clear() {
+		 MinEdge.set(999999.0f, 999999.0f, 999999.0f);
+		 MaxEdge.set(-999999.0f, -999999.0f, -999999.0f);
+	 }
 	 void addInternalPoint( const vector3d<T>& p );
 	 void addInternalBox( const aabbox3d<T>& b );
 

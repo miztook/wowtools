@@ -56,7 +56,7 @@
     <ClInclude Include="..\engine\COSInfo.h" />
     <ClInclude Include="..\engine\CRenderScene.h" />
     <ClInclude Include="..\engine\CSceneEnvironment.h" />
-    <ClInclude Include="..\engine\CSceneNode.h" />
+    <ClInclude Include="..\engine\ISceneNode.h" />
     <ClInclude Include="..\engine\CSysUtil.h" />
     <ClInclude Include="..\engine\CTimer.h" />
     <ClInclude Include="..\engine\CTransform.h" />

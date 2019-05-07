@@ -149,13 +149,13 @@
     <ClInclude Include="..\engine\CGeometryCreator.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\CSceneNode.h">
-      <Filter>engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\engine\CRenderScene.h">
       <Filter>engine</Filter>
     </ClInclude>
     <ClInclude Include="..\engine\CCamera.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\ISceneNode.h">
       <Filter>engine</Filter>
     </ClInclude>
   </ItemGroup>

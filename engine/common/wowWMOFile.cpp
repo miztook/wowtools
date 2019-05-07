@@ -97,7 +97,7 @@ bool wowWMOFile::loadFile(const char* filename)
 				memFile->read(&g, sizeof(WMO::wmoGroupInfo));
 				GroupList[i].index = i;
 				GroupList[i].flags = g.flags;
-				GroupList[i].box.set(WMO::fixCoordinate(g.min), WMO::fixCoordinate(g.max));
+				GroupList[i].box.setByMinMax(WMO::fixCoordinate(g.min), WMO::fixCoordinate(g.max));
 				if (g.nameIndex >= 0 && g.nameIndex < (int32_t)GroupNameBlock.size())
 					GroupList[i].name = (const char*)&GroupNameBlock[g.nameIndex];
 			}
@@ -189,7 +189,7 @@ bool wowWMOFile::loadFile(const char* filename)
 	}
 
 	//load groups and bounding box
-	Box.set(vector3df(999999.9f), vector3df(-999999.9f));
+	Box.clear();
 	for (SWMOGroup& group : GroupList)
 	{
 		if (!loadGroupFile(memFile, group))
@@ -202,7 +202,7 @@ bool wowWMOFile::loadFile(const char* filename)
 		//group box
 		for (auto& batch : group.batchList)
 		{
-			batch.box.set(vector3df(999999.9f), vector3df(-999999.9f));
+			batch.box.clear();
 			for (uint32_t k = batch.vertexStart; k <= batch.vertexEnd; ++k)
 			{
 				batch.box.addInternalPoint(group.vertices[k].Pos);
