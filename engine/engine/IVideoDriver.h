@@ -1,6 +1,9 @@
 #pragma once
 
 #include "base.h"
+#include "rect.h"
+#include "vector2d.h"
+#include "matrix4.h"
 #include <string>
 #include <list>
 
@@ -99,6 +102,31 @@ private:
 	DISALLOW_COPY_AND_ASSIGN(IVideoDriver);
 
 public:
+	explicit IVideoDriver(E_DRIVER_TYPE type)
+		: DriverType(type)
+	{
+	}
 
+protected:
+	const E_DRIVER_TYPE	DriverType;
 
+	
+	matrix4		WVP;
+	matrix4		WV;
+	matrix4		Matrices[ETS_COUNT];
+	matrix4		View2DTM;
+	matrix4		Project2DTM;
+	matrix4		VPScaleMatrix;
+	matrix4		InvVPScaleMatrix;
+
+	recti			Viewport;
+	vector2df		ScreenSize;
+	SDriverSetting	DriverSetting;
+
+	bool	IsMultiSampleEnabled;
+	bool	IsSupportDepthTexture;
+	bool	IsSupportA8L8;
+
+	uint32_t		PrimitivesDrawn;
+	uint32_t		DrawCall;
 };

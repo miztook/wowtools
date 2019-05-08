@@ -70,6 +70,7 @@
     <ClInclude Include="..\engine\IVideoDriver.h" />
     <ClInclude Include="..\engine\mywow.h" />
     <ClInclude Include="..\engine\CRenderSetting.h" />
+    <ClInclude Include="..\engine\SMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp" />
