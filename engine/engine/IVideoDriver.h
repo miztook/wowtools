@@ -92,3 +92,13 @@ public:
 		return ret;
 	}
 };
+
+class IVideoDriver
+{
+private:
+	DISALLOW_COPY_AND_ASSIGN(IVideoDriver);
+
+public:
+
+
+};
