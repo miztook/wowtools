@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\renderer\COpenGLPCH.h" />
     <ClInclude Include="..\renderer\mywowdriver.h" />
+    <ClInclude Include="..\renderer\opengl\COpenGLPCH.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\renderer\mywowdriver.cpp" />
