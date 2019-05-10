@@ -59,23 +59,23 @@ public:
 	 T getDistanceFromSQ(const vector2d<T>& other) const { return vector2d<T>(x - other.x, y - other.y).squareMagnitude(); }
 
 	 vector2d<T>& normalize()
-	{
-		float length = (float)(x*x + y*y);
-		if (equals_(length, 0.f))
-			return *this;
-		length = reciprocal_squareroot_( length );
-		x = (T)(x * length);
-		y = (T)(y * length);
-		return *this;
-	}
+	 {
+		 float length = (float)(x*x + y*y);
+		 if (equals_(length, 0.f))
+			 return *this;
+		 length = reciprocal_squareroot_(length);
+		 x = (T)(x * length);
+		 y = (T)(y * length);
+		 return *this;
+	 }
 
-	 static vector2d<T> interpolate(const vector2d<T>& a, const vector2d<T>& b, float d)
+	static vector2d<T> interpolate(const vector2d<T>& a, const vector2d<T>& b, float d)
 	{
 		float inv = 1.0f - d;
 		return vector2d<T>((a.x*inv + b.x*d), (a.y*inv + b.y*d));
 	}
 
-	 vector2d<T> getInterpolated_quadratic(const vector2d<T>& v2, const vector2d<T>& v3, float d) const
+	vector2d<T> getInterpolated_quadratic(const vector2d<T>& v2, const vector2d<T>& v3, float d) const
 	{
 		// this*(1-d)*(1-d) + 2 * v2 * (1-d) + v3 * d * d;
 		const float inv = 1.0f - d;

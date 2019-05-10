@@ -11,8 +11,23 @@
     <ClInclude Include="..\renderer\opengl\COpenGLPCH.h">
       <Filter>OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="..\renderer\OpenGL\COpenGLMaterialRenderComponent.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\renderer\OpenGL\COpenGLDriver.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\renderer\mywowdriver.cpp" />
+    <ClCompile Include="..\renderer\OpenGL\COpenGLMaterialRenderComponent.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\renderer\OpenGL\COpenGLDriver_base.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\renderer\OpenGL\COpenGLDriver_draw.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

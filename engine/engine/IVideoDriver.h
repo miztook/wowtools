@@ -4,6 +4,7 @@
 #include "rect.h"
 #include "vector2d.h"
 #include "matrix4.h"
+#include "SMaterial.h"
 #include <string>
 #include <list>
 
@@ -105,12 +106,36 @@ public:
 	explicit IVideoDriver(E_DRIVER_TYPE type)
 		: DriverType(type)
 	{
+		IsSupportDepthTexture = false;
+		IsMultiSampleEnabled = false;
+		IsSupportA8L8 = false;
+
+		PrimitivesDrawn = 0;
+		DrawCall = 0;
+
+		OrthoCenterOffset.set(0, 0);
+		InitMaterial2D.RasterizerDesc.Cull = E_CULL_MODE::Back;
+		InitMaterial2D.Lighting = false;
+		InitMaterial2D.DepthStencilDesc.ZWriteEnable = false;
+		InitMaterial2D.DepthStencilDesc.ZBuffer = E_COMPARISON_FUNC::Never;
+		InitGlobalMaterial2D.TextureFilter = E_TEXTURE_FILTER::Bilinear;
 	}
+
+	virtual ~IVideoDriver() {}
+
+protected:
+	void makeVPScaleMatrix(const recti& vpRect);
 
 protected:
 	const E_DRIVER_TYPE	DriverType;
 
-	
+	SMaterial	Material;
+	SGlobalMaterial		GlobalMaterial;
+
+	vector2df	OrthoCenterOffset;		//dx9ÓÐ0.5ÏñËØµÄÆ«ÒÆ
+	SMaterial	InitMaterial2D;
+	SGlobalMaterial		InitGlobalMaterial2D;
+
 	matrix4		WVP;
 	matrix4		WV;
 	matrix4		Matrices[ETS_COUNT];
@@ -130,3 +155,16 @@ protected:
 	uint32_t		PrimitivesDrawn;
 	uint32_t		DrawCall;
 };
+
+inline void IVideoDriver::makeVPScaleMatrix(const recti& vpRect)
+{
+	VPScaleMatrix.makeIdentity();
+	VPScaleMatrix._11 = (float)vpRect.getWidth() * 0.5f;
+	VPScaleMatrix._22 = -(float)vpRect.getHeight() * 0.5f;
+	VPScaleMatrix._33 = 1.0f;
+	VPScaleMatrix._41 = /* (float)vpRect.left + */ (float)vpRect.getWidth() * 0.5f;
+	VPScaleMatrix._42 = /* (float)vpRect.top + */ (float)vpRect.getHeight() * 0.5f;
+	VPScaleMatrix._43 = 0.0f;
+
+	InvVPScaleMatrix = VPScaleMatrix.getInverse();
+}

@@ -10,7 +10,6 @@ enum class E_MATERIAL_TYPE : int
 
 	AlphaTest,
 
-	Transparent_AlphaBlend_Test,
 	Transparent_AlphaBlend,
 	Transparent_One_Alpha,
 	Transparent_Add_Alpha,
@@ -48,7 +47,7 @@ enum E_COLOR_WRITE : uint8_t
 	COLORWRITE_GREEN = 2,
 	COLORWRITE_BLUE = 4,
 	COLORWRITE_ALPHA = 8,
-	COLORWRITE_RGBA = 0xf,
+	COLORWRITE_ALL = 0xf,
 };
 
 enum class E_BLEND_OP : int
@@ -145,7 +144,6 @@ struct SMDepthStencilDesc
 
 struct SMRenderTargetBlendDesc
 {
-	E_COLOR_WRITE	colorWrite;
 	E_BLEND_OP		blendOp;
 	E_BLEND_FACTOR	srcBlend;
 	E_BLEND_FACTOR	destBlend;
@@ -155,19 +153,17 @@ struct SMRenderTargetBlendDesc
 
 	void Default()
 	{
-		colorWrite = COLORWRITE_RGBA;
 		blendOp = E_BLEND_OP::Add;
 		srcBlend = E_BLEND_FACTOR::One;
 		destBlend = E_BLEND_FACTOR::Zero;
 		alphaBlendEnabled = false;
-		alphaTestRef = 1.0f;
+		alphaTestRef = 0;
 		alphaTestEnabled = false;
 	}
 
 	bool operator!=(const SMRenderTargetBlendDesc& b) const
 	{
-		bool equal = (colorWrite == b.colorWrite &&
-			blendOp == b.blendOp &&
+		bool equal = (blendOp == b.blendOp &&
 			srcBlend == b.srcBlend &&
 			destBlend == b.destBlend &&
 			alphaBlendEnabled == b.alphaBlendEnabled);
@@ -176,8 +172,7 @@ struct SMRenderTargetBlendDesc
 
 	bool operator==(const SMRenderTargetBlendDesc& b) const
 	{
-		bool equal = (colorWrite == b.colorWrite &&
-			blendOp == b.blendOp &&
+		bool equal = (blendOp == b.blendOp &&
 			srcBlend == b.srcBlend &&
 			destBlend == b.destBlend &&
 			alphaBlendEnabled == b.alphaBlendEnabled);
@@ -204,7 +199,38 @@ struct SMaterial
 	bool		Lighting;
 	bool		FogEnable;
 
+	E_COLOR_WRITE	colorWrite;
 	float		AlphaTestRef;
+
+	SMaterial()
+		: AmbientColor(1.0f, 1.0f, 1.0f, 1.0f),
+		DiffuseColor(1.0f, 1.0f, 1.0f, 1.0f),
+		EmissiveColor(1.0f, 1.0f, 1.0f, 1.0f),
+		MaterialType(E_MATERIAL_TYPE::Solid),
+		Lighting(true),
+		FogEnable(false),
+		colorWrite(COLORWRITE_ALL),
+		AlphaTestRef(0)
+	{
+		RasterizerDesc.Default();
+		DepthStencilDesc.Default();
+	}
+
+	float getMaterialAlpha() const
+	{
+		if (Lighting)
+			return DiffuseColor.a;
+		else
+			return EmissiveColor.a;
+	}
+
+	void setMaterialAlpha(float alpha)
+	{
+		if (Lighting)
+			DiffuseColor.a = (DiffuseColor.a * alpha);
+		else
+			EmissiveColor.a = (EmissiveColor.a * alpha);
+	}
 
 	SMRenderTargetBlendDesc getRenderTargetBlendDesc() const;
 };
@@ -221,7 +247,56 @@ struct SGlobalMaterial
 	int MipMapLodBias;
 };
 
-SMRenderTargetBlendDesc SMaterial::getRenderTargetBlendDesc() const
+inline SMRenderTargetBlendDesc SMaterial::getRenderTargetBlendDesc() const
 {
+	SMRenderTargetBlendDesc desc;
+	desc.Default();
 
+	switch (MaterialType)
+	{
+	case E_MATERIAL_TYPE::Solid:
+		break;
+	case E_MATERIAL_TYPE::AlphaTest:
+		desc.alphaTestEnabled = true;
+		desc.alphaTestRef = AlphaTestRef * getMaterialAlpha();
+		break;
+	case E_MATERIAL_TYPE::Transparent_AlphaBlend:
+		desc.srcBlend = E_BLEND_FACTOR::Src_Alpha;
+		desc.destBlend = E_BLEND_FACTOR::One_Minus_Src_Alpha;
+		desc.alphaBlendEnabled = true;
+		break;
+	case E_MATERIAL_TYPE::Transparent_One_Alpha:
+		desc.srcBlend = E_BLEND_FACTOR::One;
+		desc.destBlend = E_BLEND_FACTOR::One_Minus_Src_Alpha;
+		desc.alphaBlendEnabled = true;
+		break;
+	case E_MATERIAL_TYPE::Transparent_Add_Alpha:
+		desc.srcBlend = E_BLEND_FACTOR::Src_Alpha;
+		desc.destBlend = E_BLEND_FACTOR::One;
+		desc.alphaBlendEnabled = true;
+		break;
+	case E_MATERIAL_TYPE::Transparent_Add_Color:
+		desc.srcBlend = E_BLEND_FACTOR::Src_Color;
+		desc.destBlend = E_BLEND_FACTOR::One;
+		desc.alphaBlendEnabled = true;
+		break;
+	case E_MATERIAL_TYPE::Transparent_Modulate:
+		desc.srcBlend = E_BLEND_FACTOR::Zero;
+		desc.destBlend = E_BLEND_FACTOR::Src_Color;
+		desc.alphaBlendEnabled = true;
+		break;
+	case E_MATERIAL_TYPE::Transparent_Modulate_X2:
+		desc.srcBlend = E_BLEND_FACTOR::Dst_Color;
+		desc.destBlend = E_BLEND_FACTOR::Src_Color;
+		desc.alphaBlendEnabled = true;
+		break;
+	case E_MATERIAL_TYPE::Transparent_One_One:
+		desc.srcBlend = E_BLEND_FACTOR::One;
+		desc.destBlend = E_BLEND_FACTOR::One;
+		desc.alphaBlendEnabled = true;
+		break;
+	default:
+		break;
+	}
+	return desc;
 }

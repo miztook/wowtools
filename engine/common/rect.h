@@ -15,7 +15,7 @@ public:
 	 void set(T x, T y, T x2, T y2) { UpperLeftCorner.set(x, y); LowerRightCorner.set(x2, y2); }
 	 void set(const vector2d<T>& upperLeft, const vector2d<T>& lowerRight) { UpperLeftCorner = upperLeft; LowerRightCorner = lowerRight; };
 
-	 bool isEmpty() const { return UpperLeftCorner.X >= LowerRightCorner.X || UpperLeftCorner.Y >= LowerRightCorner.Y; }
+	 bool isEmpty() const { return UpperLeftCorner.x >= LowerRightCorner.x || UpperLeftCorner.y >= LowerRightCorner.y; }
 
 	//
 	 rect& operator=(const rect<T>& other)
@@ -25,18 +25,18 @@ public:
 		 LowerRightCorner = other.LowerRightCorner;
 		 return *this;
 	 }
-	 T getWidth() const { return LowerRightCorner.X - UpperLeftCorner.X; }
-	 T getHeight() const { return LowerRightCorner.Y - UpperLeftCorner.Y; }
+	 T getWidth() const { return LowerRightCorner.x - UpperLeftCorner.x; }
+	 T getHeight() const { return LowerRightCorner.y - UpperLeftCorner.y; }
 	 vector2d<T> getSize() const { return vector2d<T>(getWidth(), getHeight()); }
 
 	void clipAgainst(const rect<T>& other);
 	bool contains(const rect<T>& other) const;
 	bool intersectsWithRect(const rect<T>& other) const;
 
-	T left() const { return UpperLeftCorner.X; }
-	T top() const { return UpperLeftCorner.Y; }
-	T right() const { return LowerRightCorner.X; }
-	T bottom() const { return LowerRightCorner.Y; }
+	T left() const { return UpperLeftCorner.x; }
+	T top() const { return UpperLeftCorner.y; }
+	T right() const { return LowerRightCorner.x; }
+	T bottom() const { return LowerRightCorner.y; }
 
 	bool operator==(const rect<T>& other) const
 	{
@@ -59,39 +59,39 @@ public:
 template <class T>
 inline bool rect<T>::contains( const rect<T>& other ) const
 {
-	return (other.LowerRightCorner.X <= LowerRightCorner.X && 
-		other.LowerRightCorner.Y <= LowerRightCorner.Y &&
-		other.UpperLeftCorner.X >= UpperLeftCorner.X &&
-		other.UpperLeftCorner.Y >= UpperLeftCorner.Y );
+	return (other.LowerRightCorner.x <= LowerRightCorner.x && 
+		other.LowerRightCorner.y <= LowerRightCorner.y &&
+		other.UpperLeftCorner.x >= UpperLeftCorner.x &&
+		other.UpperLeftCorner.y >= UpperLeftCorner.y );
 }
 
 template <class T>
 inline bool rect<T>::intersectsWithRect( const rect<T>& other ) const
 {
-	return ( UpperLeftCorner.X < other.LowerRightCorner.X && 
-		UpperLeftCorner.Y < other.LowerRightCorner.Y &&
-		LowerRightCorner.X > other.UpperLeftCorner.X &&
-		LowerRightCorner.Y > other.UpperLeftCorner.Y );
+	return ( UpperLeftCorner.x < other.LowerRightCorner.x && 
+		UpperLeftCorner.y < other.LowerRightCorner.y &&
+		LowerRightCorner.x > other.UpperLeftCorner.x &&
+		LowerRightCorner.y > other.UpperLeftCorner.y );
 }
 
 template <class T>
 inline void rect<T>::clipAgainst(const rect<T>& other)
 {
-	if (other.LowerRightCorner.X < LowerRightCorner.X)
-		LowerRightCorner.X = other.LowerRightCorner.X;
-	if (other.LowerRightCorner.Y < LowerRightCorner.Y)
-		LowerRightCorner.Y = other.LowerRightCorner.Y;
+	if (other.LowerRightCorner.x < LowerRightCorner.x)
+		LowerRightCorner.x = other.LowerRightCorner.x;
+	if (other.LowerRightCorner.y < LowerRightCorner.y)
+		LowerRightCorner.y = other.LowerRightCorner.y;
 
-	if (other.UpperLeftCorner.X > UpperLeftCorner.X)
-		UpperLeftCorner.X = other.UpperLeftCorner.X;
-	if (other.UpperLeftCorner.Y > UpperLeftCorner.Y)
-		UpperLeftCorner.Y = other.UpperLeftCorner.Y;
+	if (other.UpperLeftCorner.x > UpperLeftCorner.x)
+		UpperLeftCorner.x = other.UpperLeftCorner.x;
+	if (other.UpperLeftCorner.y > UpperLeftCorner.y)
+		UpperLeftCorner.y = other.UpperLeftCorner.y;
 
 	// correct possible invalid rect resulting from clipping
-	if (UpperLeftCorner.Y > LowerRightCorner.Y)
-		UpperLeftCorner.Y = LowerRightCorner.Y;
-	if (UpperLeftCorner.X > LowerRightCorner.X)
-		UpperLeftCorner.X = LowerRightCorner.X;
+	if (UpperLeftCorner.y > LowerRightCorner.y)
+		UpperLeftCorner.y = LowerRightCorner.y;
+	if (UpperLeftCorner.x > LowerRightCorner.x)
+		UpperLeftCorner.x = LowerRightCorner.x;
 }
 
 typedef rect<float> rectf;

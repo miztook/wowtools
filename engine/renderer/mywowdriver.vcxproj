@@ -20,10 +20,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\renderer\mywowdriver.h" />
+    <ClInclude Include="..\renderer\OpenGL\COpenGLDriver.h" />
+    <ClInclude Include="..\renderer\OpenGL\COpenGLMaterialRenderComponent.h" />
     <ClInclude Include="..\renderer\opengl\COpenGLPCH.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\renderer\mywowdriver.cpp" />
+    <ClCompile Include="..\renderer\OpenGL\COpenGLDriver_base.cpp" />
+    <ClCompile Include="..\renderer\OpenGL\COpenGLDriver_draw.cpp" />
+    <ClCompile Include="..\renderer\OpenGL\COpenGLMaterialRenderComponent.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{470A0D65-E445-4F68-9955-89BDE415A17A}</ProjectGuid>
@@ -127,7 +132,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\common;..\engine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\common;..\engine;.\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -144,7 +149,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\common;..\engine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\common;..\engine;.\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
