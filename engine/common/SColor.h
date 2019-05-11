@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include "function.h"
+#include "vector3d.h"
 
 #define R32(color) (uint32_t)((color>>16) & 0xff)
 #define G32(color) (uint32_t)((color>>8) & 0xff);

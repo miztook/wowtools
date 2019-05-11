@@ -23,6 +23,7 @@
     <ClInclude Include="..\renderer\OpenGL\COpenGLDriver.h" />
     <ClInclude Include="..\renderer\OpenGL\COpenGLMaterialRenderComponent.h" />
     <ClInclude Include="..\renderer\opengl\COpenGLPCH.h" />
+    <ClInclude Include="OpenGL\COpenGLHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\renderer\mywowdriver.cpp" />

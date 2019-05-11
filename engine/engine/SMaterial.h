@@ -1,87 +1,9 @@
 #pragma once
 
 #include "SColor.h"
+#include "base.h"
 #include <string>
 #include <set>
-
-enum class E_MATERIAL_TYPE : int
-{
-	Solid = 0,
-
-	AlphaTest,
-
-	Transparent_AlphaBlend,
-	Transparent_One_Alpha,
-	Transparent_Add_Alpha,
-	Transparent_Add_Color,
-
-	Transparent_Modulate,
-	Transparent_Modulate_X2,
-	Transparent_One_One,
-
-	MAX,
-};
-
-enum class E_CULL_MODE : int
-{
-	None,
-	Front,
-	Back,
-};
-
-enum class E_COMPARISON_FUNC : int
-{
-	Never = 0,
-	LessEqual,
-	Equal ,
-	Less,
-	NotEqual,
-	GreatEqual,
-	Greater,
-	Always,
-};
-
-enum E_COLOR_WRITE : uint8_t
-{
-	COLORWRITE_RED = 1,
-	COLORWRITE_GREEN = 2,
-	COLORWRITE_BLUE = 4,
-	COLORWRITE_ALPHA = 8,
-	COLORWRITE_ALL = 0xf,
-};
-
-enum class E_BLEND_OP : int
-{
-	Add = 0,
-	Substract,
-};
-
-enum class E_BLEND_FACTOR : int
-{
-	Zero = 0,
-	One,
-	Dst_Color,
-	One_Minus_Dst_Color,
-	Src_Color,
-	One_Minus_Src_Color,
-	Src_Alpha,
-	One_Minus_Src_Alpha,
-	Dst_Alpha,
-	One_Minus_Dst_Alpha,
-	Src_Alpha_Saturate,
-};
-
-enum class E_TEXTURE_FILTER : int
-{
-	None = 0,
-	Bilinear,
-	Trilinear,
-	Anisotropic_x1,
-	Anisotropic_x2,
-	Anisotropic_x4,
-	Anisotropic_x8,
-	Anisotropic_x16,
-};
 
 struct SMRasterizerDesc
 {
@@ -91,7 +13,7 @@ struct SMRasterizerDesc
 
 	void Default()
 	{
-		Cull = E_CULL_MODE::None;
+		Cull = ECM_NONE;
 		Wireframe = false;
 		ScissorEnable = false;
 	}
@@ -120,7 +42,7 @@ struct SMDepthStencilDesc
 
 	void Default()
 	{
-		ZBuffer = E_COMPARISON_FUNC::LessEqual;
+		ZBuffer = ECFN_LESSEQUAL;
 		ZWriteEnable = true;
 		StencilEnable = false;
 	}
@@ -144,7 +66,6 @@ struct SMDepthStencilDesc
 
 struct SMRenderTargetBlendDesc
 {
-	E_BLEND_OP		blendOp;
 	E_BLEND_FACTOR	srcBlend;
 	E_BLEND_FACTOR	destBlend;
 	bool	alphaBlendEnabled;
@@ -153,7 +74,6 @@ struct SMRenderTargetBlendDesc
 
 	void Default()
 	{
-		blendOp = E_BLEND_OP::Add;
 		srcBlend = E_BLEND_FACTOR::One;
 		destBlend = E_BLEND_FACTOR::Zero;
 		alphaBlendEnabled = false;
@@ -163,8 +83,7 @@ struct SMRenderTargetBlendDesc
 
 	bool operator!=(const SMRenderTargetBlendDesc& b) const
 	{
-		bool equal = (blendOp == b.blendOp &&
-			srcBlend == b.srcBlend &&
+		bool equal = (srcBlend == b.srcBlend &&
 			destBlend == b.destBlend &&
 			alphaBlendEnabled == b.alphaBlendEnabled);
 		return !equal;
@@ -172,8 +91,7 @@ struct SMRenderTargetBlendDesc
 
 	bool operator==(const SMRenderTargetBlendDesc& b) const
 	{
-		bool equal = (blendOp == b.blendOp &&
-			srcBlend == b.srcBlend &&
+		bool equal = (srcBlend == b.srcBlend &&
 			destBlend == b.destBlend &&
 			alphaBlendEnabled == b.alphaBlendEnabled);
 		return equal;
@@ -239,7 +157,7 @@ struct SGlobalMaterial
 {
 	SGlobalMaterial()
 	{
-		TextureFilter = E_TEXTURE_FILTER::Trilinear;
+		TextureFilter = ETF_TRILINEAR;
 		MipMapLodBias = 0;
 	}
 

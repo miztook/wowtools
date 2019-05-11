@@ -114,11 +114,11 @@ public:
 		DrawCall = 0;
 
 		OrthoCenterOffset.set(0, 0);
-		InitMaterial2D.RasterizerDesc.Cull = E_CULL_MODE::Back;
+		InitMaterial2D.RasterizerDesc.Cull = ECM_BACK;
 		InitMaterial2D.Lighting = false;
 		InitMaterial2D.DepthStencilDesc.ZWriteEnable = false;
-		InitMaterial2D.DepthStencilDesc.ZBuffer = E_COMPARISON_FUNC::Never;
-		InitGlobalMaterial2D.TextureFilter = E_TEXTURE_FILTER::Bilinear;
+		InitMaterial2D.DepthStencilDesc.ZBuffer = ECFN_NEVER;
+		InitGlobalMaterial2D.TextureFilter = ETF_BILINEAR;
 	}
 
 	virtual ~IVideoDriver() {}

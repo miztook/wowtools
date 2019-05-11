@@ -203,3 +203,109 @@ enum E_TRANSFORMATION_STATE : int
 	ETS_TEXTURE_3,
 	ETS_COUNT,
 };
+
+enum class E_MATERIAL_TYPE : int
+{
+	Solid = 0,
+
+	AlphaTest,
+
+	Transparent_AlphaBlend,
+	Transparent_One_Alpha,
+	Transparent_Add_Alpha,
+	Transparent_Add_Color,
+
+	Transparent_Modulate,
+	Transparent_Modulate_X2,
+	Transparent_One_One,
+
+	MAX,
+};
+
+enum E_CULL_MODE : int
+{
+	ECM_NONE = 0,
+	ECM_FRONT,
+	ECM_BACK,
+};
+
+enum E_COMPARISON_FUNC : int
+{
+	ECFN_NEVER = 0,
+	ECFN_LESSEQUAL,
+	ECFN_EQUAL,
+	ECFN_LESS,
+	ECFN_NOTEQUAL,
+	ECFN_GREATEREQUAL,
+	ECFN_GREATER,
+	ECFN_ALWAYS,
+};
+
+enum E_COLOR_WRITE : uint8_t
+{
+	COLORWRITE_RED = 1,
+	COLORWRITE_GREEN = 2,
+	COLORWRITE_BLUE = 4,
+	COLORWRITE_ALPHA = 8,
+	COLORWRITE_ALL = 0xf,
+};
+
+enum class E_BLEND_FACTOR : int
+{
+	Zero = 0,
+	One,
+	Dst_Color,
+	One_Minus_Dst_Color,
+	Src_Color,
+	One_Minus_Src_Color,
+	Src_Alpha,
+	One_Minus_Src_Alpha,
+	Dst_Alpha,
+	One_Minus_Dst_Alpha,
+	Src_Alpha_Saturate,
+};
+
+enum E_TEXTURE_FILTER : int
+{
+	ETF_NONE = 0,
+	ETF_BILINEAR,
+	ETF_TRILINEAR,
+	ETF_ANISOTROPIC_X1,
+	ETF_ANISOTROPIC_X2,
+	ETF_ANISOTROPIC_X4,
+	ETF_ANISOTROPIC_X8,
+	ETF_ANISOTROPIC_X16,
+};
+
+enum E_TEXTURE_CLAMP : int
+{
+	ETC_REPEAT = 0,
+	ETC_CLAMP,
+	ETC_MIRROR,
+};
+
+enum E_PRIMITIVE_TYPE : int
+{
+	EPT_POINTS = 0,
+	EPT_LINE_STRIP,
+	EPT_LINES,
+	EPT_TRIANGLE_STRIP,
+	EPT_TRIANGLES,
+	EPT_COUNT,
+};
+
+enum E_UNIFORM_TYPE : int
+{
+	EUT_FLOAT = 0,
+	EUT_VEC2,
+	EUT_VEC3,
+	EUT_VEC4,
+	EUT_MAT2,
+	EUT_MAT3,
+	EUT_MAT4,
+	EUT_SAMPLER1D,
+	EUT_SAMPLER2D,
+	EUT_SAMPLER3D,
+
+	EUT_COUNT,
+};

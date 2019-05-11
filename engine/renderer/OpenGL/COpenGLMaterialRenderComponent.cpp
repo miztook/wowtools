@@ -1,3 +1,3 @@
 #include "COpenGLMaterialRenderComponent.h"
 
-#include "COpenGLPCH.h"
+#include "COpenGLHelper.h"
