@@ -20,6 +20,12 @@
     <ClInclude Include="OpenGL\COpenGLHelper.h">
       <Filter>OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="OpenGL\COpenGLExtension.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGL\COpenGLTextureWriteComponent.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\renderer\mywowdriver.cpp" />
@@ -30,6 +36,12 @@
       <Filter>OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="..\renderer\OpenGL\COpenGLDriver_draw.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\COpenGLExtension.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\COpenGLTextureWriteComponent.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
   </ItemGroup>

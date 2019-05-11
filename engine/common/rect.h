@@ -20,7 +20,7 @@ public:
 	//
 	 rect& operator=(const rect<T>& other)
 	 {
-		 ASSERT(this != &other);
+		 assert(this != &other);
 		 UpperLeftCorner = other.UpperLeftCorner;
 		 LowerRightCorner = other.LowerRightCorner;
 		 return *this;

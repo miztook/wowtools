@@ -23,13 +23,17 @@
     <ClInclude Include="..\renderer\OpenGL\COpenGLDriver.h" />
     <ClInclude Include="..\renderer\OpenGL\COpenGLMaterialRenderComponent.h" />
     <ClInclude Include="..\renderer\opengl\COpenGLPCH.h" />
+    <ClInclude Include="OpenGL\COpenGLExtension.h" />
     <ClInclude Include="OpenGL\COpenGLHelper.h" />
+    <ClInclude Include="OpenGL\COpenGLTextureWriteComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\renderer\mywowdriver.cpp" />
     <ClCompile Include="..\renderer\OpenGL\COpenGLDriver_base.cpp" />
     <ClCompile Include="..\renderer\OpenGL\COpenGLDriver_draw.cpp" />
     <ClCompile Include="..\renderer\OpenGL\COpenGLMaterialRenderComponent.cpp" />
+    <ClCompile Include="OpenGL\COpenGLExtension.cpp" />
+    <ClCompile Include="OpenGL\COpenGLTextureWriteComponent.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{470A0D65-E445-4F68-9955-89BDE415A17A}</ProjectGuid>

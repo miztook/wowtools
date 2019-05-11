@@ -8,6 +8,10 @@
 #include <string>
 #include <list>
 
+class IRenderTarget;
+class ITexture;
+class ITextureWriter;
+
 enum E_RENDER_MODE : int32_t
 {
 	ERM_NONE = 0,
@@ -122,6 +126,46 @@ public:
 	}
 
 	virtual ~IVideoDriver() {}
+
+public:
+	E_DRIVER_TYPE getDriverType() const { return DriverType; }
+
+	const vector2df& getOrthoCenterOffset() const { return OrthoCenterOffset; }
+	SGlobalMaterial& getOverrideMaterial() { return GlobalMaterial; }
+	const matrix4& getTransform(E_TRANSFORMATION_STATE state) const { return Matrices[state]; }
+	const recti& getViewPort() const { return Viewport; }
+	const vector2df& getDisplayMode() const { return ScreenSize; }
+	const SDriverSetting& getDriverSetting() const { return DriverSetting; }
+
+	void setMaterial(const SMaterial& material) { Material = material; }
+	const SMaterial& getMaterial() const { return Material; }
+
+	const matrix4& getWVPMatrix() const { return WVP; }
+	const matrix4& getWVMatrix() const { return WV; }
+	const matrix4& getWMatrix() const { return getTransform(ETS_WORLD); }
+	const matrix4& getView2DTM() const { return View2DTM; }
+	const matrix4& getProject2DTM() const { return Project2DTM; }
+	const matrix4& getVPScaleTM() const { return VPScaleMatrix; }
+	const matrix4& getInvVPScaleTM() const { return InvVPScaleMatrix; }
+
+public:
+	virtual bool beginScene() = 0;
+	virtual bool endScene() = 0;
+	virtual bool clear(bool renderTarget, bool zBuffer, bool stencil, SColor color) = 0;
+
+	virtual bool checkValid() = 0;
+	virtual bool setRenderTarget(const IRenderTarget* texture, bool bindDepth = true) = 0;
+
+	virtual void setTransform(E_TRANSFORMATION_STATE state, const matrix4& mat) = 0;
+	virtual void setTexture(int index, const ITexture* tex) = 0;
+
+	virtual void setViewPort(const recti& area) = 0;
+	virtual void setDisplayMode(const vector2di& size) = 0;
+	virtual bool setDriverSetting(const SDriverSetting& setting) = 0;
+
+	//
+	virtual ITextureWriter* createTextureWriter(ITexture* texture, bool temp) = 0;
+	virtual bool removeTextureWriter(ITexture* texture) = 0;
 
 protected:
 	void makeVPScaleMatrix(const recti& vpRect);

@@ -34,7 +34,7 @@ public:
 	bool operator!=(const plane3d<T>& other) const { return !(*this == other); }
 	plane3d& operator=(const plane3d<T>& other)
 	{
-		ASSERT(this != &other);
+		assert(this != &other);
 		Normal = other.Normal;
 		D = other.D;
 		return *this;

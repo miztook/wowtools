@@ -2,6 +2,8 @@
 
 #include "predefine.h"
 #include <stdint.h>
+#include <memory>
+#include <cassert>
 
 #ifdef A_PLATFORM_WIN_DESKTOP
 
@@ -17,6 +19,20 @@ typedef		void*				dc_type;
 typedef		void*				glcontext_type;
 
 //	typedef	double	f64;
+#endif
+
+#define ROUND_N_BYTES(x, n) ((x+(n-1)) & ~(n-1))
+#define ROUND_4BYTES(x) ((x+3) & ~3)
+#define ROUND_8BYTES(x) ((x+7) & ~7)
+#define ROUND_16BYTES(x) ((x+15) & ~15)
+#define ROUND_32BYTES(x) ((x+31) & ~31)
+
+#ifndef ARRAY_COUNT
+#define ARRAY_COUNT(a)		(sizeof(a)/sizeof(*a))
+#endif
+
+#ifndef MAX
+#define MAX(a,b) (a < b ? b : a)
 #endif
 
 struct SWindowInfo
@@ -47,6 +63,8 @@ public:
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
 TypeName(const TypeName&) = delete;               \
 TypeName& operator=(const TypeName&) = delete;
+
+#define  MATERIAL_MAX_TEXTURES		7
 
 enum E_INPUT_DEVICE : int32_t
 {
@@ -185,6 +203,110 @@ enum ECOLOR_FORMAT : int
 	ECF_INTZ,			//dx
 };
 
+struct STexFormatDesc
+{
+	ECOLOR_FORMAT format;
+	uint32_t blockBytes;
+	uint32_t blockWidth;
+	uint32_t blockHeight;
+	uint32_t minWidth;
+	uint32_t minHeight;
+	char text[32];
+	bool hasAlpha;
+};
+
+static STexFormatDesc g_FormatDesc[] =
+{
+	{ ECF_UNKNOWN, 0, 0, 0, 0, 0, "UNKNOWN", false, },
+	{ ECF_A8, 1, 1, 1, 1, 1, "A8", true, },
+	{ ECF_A8L8, 2, 1, 1, 1, 1, "A8L8", true, },
+	{ ECF_A1R5G5B5, 2, 1, 1, 1, 1, "A1R5G5B5", false, },
+	{ ECF_R5G6B5, 2, 1, 1, 1, 1, "R5G6B5", false, },
+	{ ECF_R8G8B8, 3, 1, 1, 1, 1, "R8G8B8", false, },
+	{ ECF_A8R8G8B8, 4, 1, 1, 1, 1, "A8R8G8B8", true, },
+	{ ECF_ARGB32F, 16, 1, 1, 1, 1, "ARGB32F", true },
+	{ ECF_DXT1, 8, 4, 4, 4, 4, "DXT1", false, },
+	{ ECF_DXT3, 16, 4, 4, 4, 4, "DXT3", true, },
+	{ ECF_DXT5, 16, 4, 4, 4, 4, "DXT5", true, },
+	{ ECF_PVRTC1_RGB_2BPP, 8, 8, 4, 16, 8, "PVRTC1_RGB_2BPP", false, },
+	{ ECF_PVRTC1_RGBA_2BPP, 8, 8, 4, 16, 8, "PVRTC1_RGBA_2BPP", true, },
+	{ ECF_PVRTC1_RGB_4BPP, 8, 4, 4, 8, 8, "PVRTC1_RGB_4BPP", false, },
+	{ ECF_PVRTC1_RGBA_4BPP, 8, 4, 4, 8, 8, "PVRTC1_RGBA_4BPP", true, },
+	{ ECF_ETC1_RGB, 8, 4, 4, 4, 4, "ETC1_RGB", false, },
+	{ ECF_ETC1_RGBA, 8, 4, 4, 4, 4, "ETC1_RGBA", true, },
+	{ ECF_ATC_RGB, 8, 4, 4, 4, 4, "ATC_RGB", false, },
+	{ ECF_ATC_RGBA_EXPLICIT, 16, 4, 4, 4, 4, "ATC_RGBA_EXPLICIT", true, },
+	{ ECF_ATC_RGBA_INTERPOLATED, 16, 4, 4, 4, 4, "ATC_RGBA_INTERPOLATED", true, },
+
+	{ ECF_D16, 2, 1, 1, 1, 1, "DEPTH16", false, },
+	{ ECF_D24, 4, 1, 1, 1, 1, "DEPTH24", false, },
+	{ ECF_D24S8, 4, 1, 1, 1, 1, "DEPTH24STENCIL8", false, },
+	{ ECF_D32, 4, 1, 1, 1, 1, "DEPTH32", false, },
+	{ ECF_INTZ, 4, 1, 1, 1, 1, "DEPTHINTZ", false },
+};
+
+inline bool hasAlpha(ECOLOR_FORMAT format)
+{
+	assert(static_cast<uint32_t>(format) < ARRAY_COUNT(g_FormatDesc));
+	return g_FormatDesc[format].hasAlpha;
+}
+
+inline uint32_t getBytesPerPixelFromFormat(ECOLOR_FORMAT format)
+{
+	assert(static_cast<uint32_t>(format) < ARRAY_COUNT(g_FormatDesc));
+	return g_FormatDesc[format].blockBytes;
+}
+
+inline bool isCompressedFormat(ECOLOR_FORMAT format)
+{
+	assert(static_cast<uint32_t>(format) < ARRAY_COUNT(g_FormatDesc));
+	return g_FormatDesc[format].blockWidth > 1;
+}
+
+inline bool isCompressedWithAlphaFormat(ECOLOR_FORMAT format)
+{
+	return format == ECF_ETC1_RGBA;
+}
+
+inline const char* getColorFormatString(ECOLOR_FORMAT format)
+{
+	assert(static_cast<uint32_t>(format) < ARRAY_COUNT(g_FormatDesc));
+	return g_FormatDesc[format].text;
+}
+
+inline void getImageSize(ECOLOR_FORMAT format, uint32_t width, uint32_t height, uint32_t& w, uint32_t& h)
+{
+	assert(static_cast<uint32_t>(format) < ARRAY_COUNT(g_FormatDesc));
+
+	uint32_t bw = g_FormatDesc[format].blockWidth;
+	uint32_t bh = g_FormatDesc[format].blockHeight;
+
+	uint32_t mw = g_FormatDesc[format].minWidth;
+	uint32_t mh = g_FormatDesc[format].minHeight;
+
+	if (bw > 1)			//compressed
+	{
+		w = MAX(mw, (width + (bw - 1))) / bw;
+		h = MAX(mh, (height + (bh - 1))) / bh;
+	}
+	else
+	{
+		w = width;
+		h = height;
+	}
+}
+
+inline void getImagePitchAndBytes(ECOLOR_FORMAT format, uint32_t width, uint32_t height, uint32_t& pitch, uint32_t& bytes)
+{
+	uint32_t bpp = getBytesPerPixelFromFormat(format);
+
+	uint32_t w, h;
+	getImageSize(format, width, height, w, h);
+
+	pitch = w * bpp;
+	bytes = pitch * h;
+}
+
 enum E_IMAGE_TYPE : int
 {
 	EIT_NONE = 0,
@@ -277,6 +399,32 @@ enum E_TEXTURE_FILTER : int
 	ETF_ANISOTROPIC_X16,
 };
 
+inline uint8_t getAnisotropic(E_TEXTURE_FILTER filter)
+{
+	switch (filter)
+	{
+	case ETF_ANISOTROPIC_X1:
+		return 1;
+	case ETF_ANISOTROPIC_X2:
+		return 2;
+	case ETF_ANISOTROPIC_X4:
+		return 4;
+	case ETF_ANISOTROPIC_X8:
+		return 8;
+	case ETF_ANISOTROPIC_X16:
+		return 16;
+	default:
+		return 1;
+	}
+}
+
+enum E_TEXTURE_ADDRESS : int
+{
+	ETA_U = 0,
+	ETA_V,
+	ETA_COUNT,
+};
+
 enum E_TEXTURE_CLAMP : int
 {
 	ETC_REPEAT = 0,
@@ -308,4 +456,53 @@ enum E_UNIFORM_TYPE : int
 	EUT_SAMPLER3D,
 
 	EUT_COUNT,
+};
+
+enum E_VIDEO_DRIVER_FEATURE : int
+{
+	EVDF_RENDER_TO_TARGET = 0,
+	EVDF_HARDWARE_TL,
+	EVDF_TEXTURE_ADDRESS,
+	EVDF_SEPARATE_UVWRAP,
+	EVDF_MIP_MAP,
+	EVDF_STENCIL_BUFFER,
+	EVDF_VERTEX_SHADER_2_0,
+	EVDF_VERTEX_SHADER_3_0,
+	EVDF_PIXEL_SHADER_2_0,
+	EVDF_PIXEL_SHADER_3_0,
+	EVDF_TEXTURE_NSQUARE,
+	EVDF_TEXTURE_NPOT,
+	EVDF_COLOR_MASK,
+	EVDF_MULTIPLE_RENDER_TARGETS,
+	EVDF_MRT_COLOR_MASK,
+	EVDF_MRT_BLEND_FUNC,
+	EVDF_MRT_BLEND,
+	EVDF_STREAM_OFFSET,
+	EVDF_W_BUFFER,
+
+	//! Supports Shader model 4
+	EVDF_VERTEX_SHADER_4_0,
+	EVDF_PIXEL_SHADER_4_0,
+	EVDF_GEOMETRY_SHADER_4_0,
+	EVDF_STREAM_OUTPUT_4_0,
+	EVDF_COMPUTING_SHADER_4_0,
+
+	//! Supports Shader model 4.1
+	EVDF_VERTEX_SHADER_4_1,
+	EVDF_PIXEL_SHADER_4_1,
+	EVDF_GEOMETRY_SHADER_4_1,
+	EVDF_STREAM_OUTPUT_4_1,
+	EVDF_COMPUTING_SHADER_4_1,
+
+	//! Supports Shader model 5.0
+	EVDF_VERTEX_SHADER_5_0,
+	EVDF_PIXEL_SHADER_5_0,
+	EVDF_GEOMETRY_SHADER_5_0,
+	EVDF_STREAM_OUTPUT_5_0,
+	EVDF_TESSELATION_SHADER_5_0,
+	EVDF_COMPUTING_SHADER_5_0,
+
+	//! Supports texture multisampling
+	EVDF_TEXTURE_MULTISAMPLING,
+	EVDF_COUNT,
 };

@@ -128,9 +128,6 @@
     <ClInclude Include="..\engine\CSceneEnvironment.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\IMaterialRenderServices.h">
-      <Filter>engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\engine\ITextureWriter.h">
       <Filter>engine</Filter>
     </ClInclude>
@@ -165,6 +162,12 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\engine\SMaterial.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\IVideoResource.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CBlit.h">
       <Filter>engine</Filter>
     </ClInclude>
   </ItemGroup>
@@ -215,6 +218,12 @@
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\CTimer.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CCImage.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CBlit.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

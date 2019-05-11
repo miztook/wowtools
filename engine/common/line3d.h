@@ -14,7 +14,7 @@ public:
 
 	 line3d& operator=(const line3d<T>& other)
 	{
-		ASSERT(this != &other);
+		assert(this != &other);
 		start = other.start;
 		end = other.end;
 		return *this;

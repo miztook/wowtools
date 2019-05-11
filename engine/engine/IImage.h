@@ -1,16 +1,17 @@
 #pragma once
 
 #include "base.h"
+#include "vector2d.h"
 
 class IImage
 {
 public:
-	IImage(E_IMAGE_TYPE type) : m_ImageType(type) {}
+	explicit IImage(E_IMAGE_TYPE type) : m_ImageType(type) {}
 	virtual ~IImage() = default;
 
 public:
 	virtual ECOLOR_FORMAT getColorFormat() const = 0;
-	virtual const vector2du& getDimension() const = 0;
+	virtual const vector2di& getDimension() const = 0;
 	virtual uint32_t getNumMipLevels() const = 0;
 
 	virtual bool isCube() const = 0;

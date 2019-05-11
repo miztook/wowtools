@@ -15,10 +15,10 @@ public:
 	//
 	 vector2d<T> operator-() const { return vector2d<T>(-x, -y); }
 	 vector2d<T>& operator=(const vector2d<T>& other)
-	{ 
+	 { 
 		x = other.x; y = other.y;
-		 return *this;
-	}
+			return *this;
+	 }
 
 	 vector2d<T> operator+(const vector2d<T>& other) const { return vector2d<T>(x + other.x, y + other.y); }
 	 vector2d<T>& operator+=(const vector2d<T>& other) { x+=other.x; y+=other.y; return *this; }
@@ -87,12 +87,41 @@ public:
 			(T)(y * mul0 + v2.y * mul1 + v3.y * mul2));
 	}
 
+	T getArea() const { return x * y; }
+
+	vector2d<T> GetMipLevelSize(uint32_t level) const
+	{
+		return vector2d<T>(max_(1, x >> level), max_(1, y >> level));
+	}
+
+	uint32_t GetNumMipLevels() const
+	{
+		uint32_t mip = 0;
+		uint32_t len = min_(x, y);
+		while (len)
+		{
+			len >>= 1;
+			++mip;
+		}
+
+		return mip;
+	}
 
 public:
-	T x;
-	T y;
+	union
+	{
+		struct
+		{
+			T x, y;
+		};
+
+		struct
+		{
+			T width, height;
+		};
+	};
 };
 
 typedef vector2d<float> vector2df;
 typedef vector2d<int32_t> vector2di;
-typedef vector2d<uint32_t> vector2du;
+

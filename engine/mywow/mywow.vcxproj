@@ -63,11 +63,12 @@
     <ClInclude Include="..\engine\CTimer.h" />
     <ClInclude Include="..\engine\CTransform.h" />
     <ClInclude Include="..\engine\Engine.h" />
-    <ClInclude Include="..\engine\IMaterialRenderServices.h" />
+    <ClInclude Include="..\engine\CBlit.h" />
     <ClInclude Include="..\engine\IRenderTarget.h" />
     <ClInclude Include="..\engine\ITexture.h" />
     <ClInclude Include="..\engine\ITextureWriter.h" />
     <ClInclude Include="..\engine\IVideoDriver.h" />
+    <ClInclude Include="..\engine\IVideoResource.h" />
     <ClInclude Include="..\engine\mywow.h" />
     <ClInclude Include="..\engine\CRenderSetting.h" />
     <ClInclude Include="..\engine\SMaterial.h" />
@@ -84,6 +85,8 @@
     <ClCompile Include="..\common\wowWDB5File.cpp" />
     <ClCompile Include="..\common\wowWDC3File.cpp" />
     <ClCompile Include="..\common\wowWMOFile.cpp" />
+    <ClCompile Include="..\engine\CBlit.cpp" />
+    <ClCompile Include="..\engine\CCImage.cpp" />
     <ClCompile Include="..\engine\CInputReader.cpp" />
     <ClCompile Include="..\engine\COSInfo.cpp" />
     <ClCompile Include="..\engine\CSysUtil.cpp" />
