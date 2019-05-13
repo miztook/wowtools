@@ -112,7 +112,7 @@ inline float reciprocal_squareroot_(const float f)
 {
 	if (iszero_(f))
 	{
-		assert(false);
+		ASSERT(false);
 		return FLT_MAX;
 	}
 	else
@@ -123,7 +123,7 @@ inline float reciprocal_(const float f)
 {
 	if (iszero_(f))
 	{
-		assert(false);
+		ASSERT(false);
 		return FLT_MAX;
 	}
 	else
@@ -252,7 +252,7 @@ inline void Q_strncpy(char * dest,
 	const char * source,
 	size_t count)
 {
-	assert(bytes >= count + 1);
+	ASSERT(bytes >= count + 1);
 #ifdef A_PLATFORM_WIN_DESKTOP
 	strncpy_s(dest, bytes, source, count);
 #else
@@ -376,7 +376,7 @@ inline void Q_fullpath(const char* filename, char* outfilename, size_t size)
 #ifdef A_PLATFORM_WIN_DESKTOP
 	if (!_fullpath(outfilename, filename, size))
 	{
-		assert(false);
+		ASSERT(false);
 	}
 #else
 	if (!realpath(filename, outfilename))
@@ -419,7 +419,7 @@ inline bool isAbsoluteFileName(const char* filename)
 
 inline void normalizeFileName(const char* filename, char* outfilename, unsigned int size)
 {
-	assert(size >= strlen(filename) + 1);
+	ASSERT(size >= strlen(filename) + 1);
 	unsigned int len = (unsigned int)strlen(filename);
 	for (unsigned int i = 0; i < len; ++i)
 	{

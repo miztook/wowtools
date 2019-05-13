@@ -2,8 +2,9 @@
 
 #include "COpenGLDriver.h"
 #include "COpenGLHelper.h"
+#include "ITexture.h"
 
-COpenGLTextureWriter::COpenGLTextureWriter(COpenGLDriver* driver, const vector2di& size, ECOLOR_FORMAT format, uint32_t numMipmap, bool cube)
+COpenGLTextureWriter::COpenGLTextureWriter(COpenGLDriver* driver, const dimension2d& size, ECOLOR_FORMAT format, uint32_t numMipmap, bool cube)
 	: ITextureWriter(size, format, numMipmap, cube), Driver(driver)
 {
 	uint32_t numFaces = getNumFaces();
@@ -13,7 +14,7 @@ COpenGLTextureWriter::COpenGLTextureWriter(COpenGLDriver* driver, const vector2d
 	{
 		for (uint32_t i = 0; i < NumMipmaps; ++i)
 		{
-			vector2di mipsize = size.getMipLevelSize(i);
+			dimension2d mipsize = size.getMipLevelSize(i);
 
 			uint32_t pitch, bytes;
 			getImagePitchAndBytes(ColorFormat, mipsize.width, mipsize.height, pitch, bytes);
@@ -50,6 +51,11 @@ void COpenGLTextureWriter::unlock(uint32_t face, uint32_t level) const
 {
 }
 
+bool COpenGLTextureWriter::copyToTexture(ITexture * texture, const recti * descRect) const
+{
+	return false;
+}
+
 void COpenGLTextureWriter::initEmptyData()
 {
 	uint32_t numFaces = getNumFaces();
@@ -59,7 +65,7 @@ void COpenGLTextureWriter::initEmptyData()
 		void* dest = lock(face, 0, pitch);
 		if (!dest)
 		{
-			assert(false);
+			ASSERT(false);
 			continue;
 		}
 		memset(dest, 0, pitch * TextureSize.height);
@@ -70,4 +76,52 @@ void COpenGLTextureWriter::initEmptyData()
 const COpenGLTextureWriter::SMipData* COpenGLTextureWriter::getMipData(uint32_t face, uint32_t mipLevel) const
 {
 	return &MipData[face * NumMipmaps + mipLevel];
+}
+
+COpenGLTextureWriteComponent::COpenGLTextureWriteComponent(COpenGLDriver* driver)
+	: Driver(driver)
+{
+
+}
+
+COpenGLTextureWriteComponent::~COpenGLTextureWriteComponent()
+{
+	for (const auto& kv : TextureWriterMap)
+	{
+		delete kv.second;
+	}
+	TextureWriterMap.clear();
+}
+
+ITextureWriter* COpenGLTextureWriteComponent::createTextureWriter(ITexture* texture)
+{
+	ECOLOR_FORMAT format = texture->getColorFormat();
+	dimension2d size = texture->getSize();
+	uint32_t numMipmap = texture->getNumMipmaps();
+	bool cube = texture->isCube();
+
+	auto itr = TextureWriterMap.find(texture);
+	if (itr != TextureWriterMap.end())
+	{
+		return itr->second;
+	}
+
+	//not found, create
+	COpenGLTextureWriter* writer = new COpenGLTextureWriter(Driver, size, format, numMipmap, cube);
+	TextureWriterMap[texture] = writer;
+
+	return writer;
+}
+
+bool COpenGLTextureWriteComponent::removeTextureWriter(ITexture* texture)
+{
+	auto itr = TextureWriterMap.find(texture);
+	if (itr != TextureWriterMap.end())
+	{
+		delete itr->second;
+		TextureWriterMap.erase(itr);
+		return true;
+	}
+
+	return false;
 }

@@ -45,11 +45,11 @@ bool wowWMOFile::loadFile(const char* filename)
 		{
 			uint32_t version;
 			memFile->read(&version, size);
-			assert(version == 17);
+			ASSERT(version == 17);
 		}
 		else if (strcmp(fourcc, "MOHD") == 0)
 		{
-			assert(size == sizeof(Header));
+			ASSERT(size == sizeof(Header));
 			memFile->read(&Header, sizeof(Header));
 
 			MaterialList.resize(Header.nMaterials);
@@ -64,7 +64,7 @@ bool wowWMOFile::loadFile(const char* filename)
 		}
 		else if (strcmp(fourcc, "MOMT") == 0)
 		{
-			assert(size == Header.nMaterials * sizeof(WMO::wmoMaterial));
+			ASSERT(size == Header.nMaterials * sizeof(WMO::wmoMaterial));
 			MaterialList.resize(Header.nMaterials);
 			for (uint32_t i = 0; i < Header.nMaterials; ++i)
 			{
@@ -120,7 +120,7 @@ bool wowWMOFile::loadFile(const char* filename)
 		}
 		else if (strcmp(fourcc, "MOLT") == 0)
 		{
-			assert(size == Header.nLights * sizeof(WMO::wmoLight));
+			ASSERT(size == Header.nLights * sizeof(WMO::wmoLight));
 			LightList.resize(Header.nLights);
 			for (uint32_t i = 0; i < Header.nLights; ++i)
 			{
@@ -182,7 +182,7 @@ bool wowWMOFile::loadFile(const char* filename)
 		}
 		else
 		{
-			assert(false);
+			ASSERT(false);
 		}
 
 		memFile->seek((int32_t)nextpos);
@@ -194,7 +194,7 @@ bool wowWMOFile::loadFile(const char* filename)
 	{
 		if (!loadGroupFile(memFile, group))
 		{
-			assert(false);
+			ASSERT(false);
 			return false;
 		}
 		Box.addInternalBox(group.box);
@@ -251,7 +251,7 @@ bool wowWMOFile::loadGroupFile(CMemFile* pMemFile, SWMOGroup& group)
 		{
 			uint32_t version;
 			file->read(&version, size);
-			assert(version == 17);
+			ASSERT(version == 17);
 		}
 		else if (strcmp(fourcc, "MOGP") == 0)
 		{
@@ -283,7 +283,7 @@ bool wowWMOFile::loadGroupFile(CMemFile* pMemFile, SWMOGroup& group)
 		else if (strcmp(fourcc, "MONR") == 0)
 		{
 			uint32_t vcount = (uint32_t)group.vertices.size();
-			assert(size == vcount * sizeof(vector3df));
+			ASSERT(size == vcount * sizeof(vector3df));
 			for (uint32_t i = 0; i < vcount; ++i)
 			{
 				vector3df tmp;
@@ -295,7 +295,7 @@ bool wowWMOFile::loadGroupFile(CMemFile* pMemFile, SWMOGroup& group)
 		else if (strcmp(fourcc, "MOTV") == 0)
 		{
 			uint32_t vcount = (uint32_t)group.vertices.size();
-			assert(size == vcount * sizeof(vector2df));
+			ASSERT(size == vcount * sizeof(vector2df));
 			if (nTcoords == 0)
 			{
 				for (uint32_t i = 0; i < vcount; ++i)
@@ -315,13 +315,13 @@ bool wowWMOFile::loadGroupFile(CMemFile* pMemFile, SWMOGroup& group)
 				}
 			}
 			++nTcoords;
-			assert(nTcoords <= 2);
+			ASSERT(nTcoords <= 2);
 		}
 		else if (strcmp(fourcc, "MOCV") == 0)
 		{
 			group.hasVertexColor = true;
 			uint32_t vcount = (uint32_t)group.vertices.size();
-			assert(size == vcount * sizeof(SColor));
+			ASSERT(size == vcount * sizeof(SColor));
 			for (uint32_t i = 0; i < vcount; ++i)
 			{
 				SColor color;
@@ -344,7 +344,7 @@ bool wowWMOFile::loadGroupFile(CMemFile* pMemFile, SWMOGroup& group)
 				group.batchList[i].vertexEnd = batch.vertexEnd;
 				group.batchList[i].matId = batch.matId;
 
-				assert(batch.matId < Header.nMaterials);
+				ASSERT(batch.matId < Header.nMaterials);
 			}
 		}
 		else if (strcmp(fourcc, "MOLR") == 0)
@@ -385,7 +385,7 @@ bool wowWMOFile::loadGroupFile(CMemFile* pMemFile, SWMOGroup& group)
 		else
 		{
 			//MessageBoxA(nullptr, fourcc, "", 0);
-			assert(false);
+			ASSERT(false);
 		}
 
 		file->seek((int32_t)nextpos);

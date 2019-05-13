@@ -40,7 +40,7 @@ inline matrix4 transformMatrix(const vector3df& vecDir, const vector3df& vecUp, 
 	vecYAxis = normalize(vecUp);
 	vecXAxis = normalize(crossProduct(vecYAxis, vecZAxis));
 
-	assert(vecXAxis.magnitude() > 1e-3);
+	ASSERT(vecXAxis.magnitude() > 1e-3);
 
 	memset(&mat, 0, sizeof(mat));
 	mat.M[0][0] = vecXAxis.x;

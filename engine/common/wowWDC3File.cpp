@@ -15,7 +15,7 @@ bool WDC3File::open()
 {
 	if (!m_pMemFile)
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
@@ -115,7 +115,7 @@ bool WDC3File::open()
 	// 6. relationship map 
 	// 7. offset map id list 
 
-	assert(m_pMemFile->getPos() == m_sectionHeaders[0].file_offset);
+	ASSERT(m_pMemFile->getPos() == m_sectionHeaders[0].file_offset);
 
 	uint32_t sectionSize = 0;
 	if (m_header.section_count == 1)
@@ -187,7 +187,7 @@ bool WDC3File::open()
 				}
 				break;
 				case FIELD_COMPRESSION::COMMON_DATA:
-					assert(false);
+					ASSERT(false);
 					return false;
 				case FIELD_COMPRESSION::BITPACKED_INDEXED:
 				case FIELD_COMPRESSION::BITPACKED_SIGNED:
@@ -197,10 +197,10 @@ bool WDC3File::open()
 					break;
 				}
 				case FIELD_COMPRESSION::BITPACKED_INDEXED_ARRAY:
-					assert(false);
+					ASSERT(false);
 					return false;
 			default:
-				assert(false);
+				ASSERT(false);
 				return false;
 			}
 		}
@@ -286,7 +286,7 @@ bool WDC3File::open()
 		recordCount += nbEntries;
 	}
 
-	assert(curPtr - sectionData == sectionSize);			//read section finished
+	ASSERT(curPtr - sectionData == sectionSize);			//read section finished
 
 	return true;
 }
@@ -471,7 +471,7 @@ bool WDC3File::readFieldValue(uint32_t recordIndex, uint32_t fieldIndex, uint32_
 	}
 	break;
 	default:
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 	return true;

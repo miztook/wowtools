@@ -529,7 +529,7 @@ bool COpenGLExtension::initExtensions()
 		const char* t = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
 		if (!t)
 		{
-			assert(false);
+			ASSERT(false);
 			return false;
 		}
 		uint32_t len = (uint32_t)strlen(t);
@@ -1227,7 +1227,7 @@ void* COpenGLExtension::getProcAddress(const char* funcname)
 	PROC p = wglGetProcAddress(funcname);
 	if (!p)
 	{
-		assert(false);
+		ASSERT(false);
 	}
 	return p;
 }
@@ -1251,39 +1251,39 @@ bool COpenGLExtension::checkFBOStatus()
 		return true;
 
 	case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
-		assert(false);
+		ASSERT(false);
 		break;
 
 	case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
-		assert(false);
+		ASSERT(false);
 		break;
 
 	case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
-		assert(false);
+		ASSERT(false);
 		break;
 
 	case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
-		assert(false);
+		ASSERT(false);
 		break;
 
 	case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
-		assert(false);
+		ASSERT(false);
 		break;
 
 	case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
-		assert(false);
+		ASSERT(false);
 		break;
 
 	case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT:
-		assert(false);
+		ASSERT(false);
 		break;
 
 	case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
-		assert(false);
+		ASSERT(false);
 		break;
 
 	default:
-		assert(false);
+		ASSERT(false);
 		break;
 	}
 

@@ -53,3 +53,8 @@ private:
 
 	lock_type	LogCS;
 };
+
+bool createFileSystem(const char* baseDir, const char* wowDir);
+void destroyFileSystem();
+
+extern CFileSystem* g_FileSystem;

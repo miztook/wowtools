@@ -91,7 +91,7 @@ public:
 
 	vector2d<T> getMipLevelSize(uint32_t level) const
 	{
-		return vector2d<T>(max_(1, x >> level), max_(1, y >> level));
+		return vector2d<T>(max_(1u, x >> level), max_(1u, y >> level));
 	}
 
 	uint32_t getNumMipLevels() const
@@ -124,4 +124,5 @@ public:
 
 typedef vector2d<float> vector2df;
 typedef vector2d<int32_t> vector2di;
+typedef vector2d<uint32_t> dimension2d;
 

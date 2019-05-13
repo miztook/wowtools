@@ -3,7 +3,6 @@
 #include "predefine.h"
 #include <stdint.h>
 #include <memory>
-#include <cassert>
 
 #ifdef A_PLATFORM_WIN_DESKTOP
 
@@ -19,24 +18,6 @@ typedef		void*				dc_type;
 typedef		void*				glcontext_type;
 
 //	typedef	double	f64;
-#endif
-
-#define ROUND_N_BYTES(x, n) ((x+(n-1)) & ~(n-1))
-#define ROUND_4BYTES(x) ((x+3) & ~3)
-#define ROUND_8BYTES(x) ((x+7) & ~7)
-#define ROUND_16BYTES(x) ((x+15) & ~15)
-#define ROUND_32BYTES(x) ((x+31) & ~31)
-
-#ifndef ARRAY_COUNT
-#define ARRAY_COUNT(a)		(sizeof(a)/sizeof(*a))
-#endif
-
-#ifndef MAX
-#define MAX(a,b) (a < b ? b : a)
-#endif
-
-#ifndef FOURCC
-#define FOURCC(c0, c1, c2, c3) (c0 | (c1 << 8) | (c2 << 16) | (c3 << 24))
 #endif
 
 struct SWindowInfo
@@ -63,12 +44,6 @@ public:
 	virtual void onExit(window_type hwnd) = 0;
 	virtual void onSize(window_type hwnd, int width, int height) = 0;
 };
-
-#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
-TypeName(const TypeName&) = delete;               \
-TypeName& operator=(const TypeName&) = delete;
-
-#define  MATERIAL_MAX_TEXTURES		7
 
 enum E_INPUT_DEVICE : int32_t
 {
@@ -251,19 +226,19 @@ static STexFormatDesc g_FormatDesc[] =
 
 inline bool hasAlpha(ECOLOR_FORMAT format)
 {
-	assert(static_cast<uint32_t>(format) < ARRAY_COUNT(g_FormatDesc));
+	ASSERT(static_cast<uint32_t>(format) < ARRAY_COUNT(g_FormatDesc));
 	return g_FormatDesc[format].hasAlpha;
 }
 
 inline uint32_t getBytesPerPixelFromFormat(ECOLOR_FORMAT format)
 {
-	assert(static_cast<uint32_t>(format) < ARRAY_COUNT(g_FormatDesc));
+	ASSERT(static_cast<uint32_t>(format) < ARRAY_COUNT(g_FormatDesc));
 	return g_FormatDesc[format].blockBytes;
 }
 
 inline bool isCompressedFormat(ECOLOR_FORMAT format)
 {
-	assert(static_cast<uint32_t>(format) < ARRAY_COUNT(g_FormatDesc));
+	ASSERT(static_cast<uint32_t>(format) < ARRAY_COUNT(g_FormatDesc));
 	return g_FormatDesc[format].blockWidth > 1;
 }
 
@@ -274,13 +249,13 @@ inline bool isCompressedWithAlphaFormat(ECOLOR_FORMAT format)
 
 inline const char* getColorFormatString(ECOLOR_FORMAT format)
 {
-	assert(static_cast<uint32_t>(format) < ARRAY_COUNT(g_FormatDesc));
+	ASSERT(static_cast<uint32_t>(format) < ARRAY_COUNT(g_FormatDesc));
 	return g_FormatDesc[format].text;
 }
 
 inline void getImageSize(ECOLOR_FORMAT format, uint32_t width, uint32_t height, uint32_t& w, uint32_t& h)
 {
-	assert(static_cast<uint32_t>(format) < ARRAY_COUNT(g_FormatDesc));
+	ASSERT(static_cast<uint32_t>(format) < ARRAY_COUNT(g_FormatDesc));
 
 	uint32_t bw = g_FormatDesc[format].blockWidth;
 	uint32_t bh = g_FormatDesc[format].blockHeight;

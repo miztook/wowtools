@@ -11,7 +11,7 @@ public:
 
 public:
 	virtual ECOLOR_FORMAT getColorFormat() const = 0;
-	virtual const vector2di& getDimension() const = 0;
+	virtual const dimension2d& getDimension() const = 0;
 	virtual uint32_t getNumMipLevels() const = 0;
 
 	virtual bool isCube() const = 0;

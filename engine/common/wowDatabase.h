@@ -98,3 +98,8 @@ private:
 	const wowEnvironment*		Environment;
 	std::map<std::string, CTableStruct>		DbStructureMap;
 };
+
+bool createWowDatabase(const wowEnvironment* wowEnv);
+void destroyWowDatabase();
+
+extern wowDatabase* g_WowDatabase;

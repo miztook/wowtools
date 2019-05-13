@@ -8,10 +8,10 @@ class COpenGLDriver;
 class COpenGLTextureWriter : public ITextureWriter
 {
 private:
-	COpenGLTextureWriter(COpenGLDriver* driver, const vector2di& size, ECOLOR_FORMAT format, uint32_t numMipmap, bool cube);
+	COpenGLTextureWriter(COpenGLDriver* driver, const dimension2d& size, ECOLOR_FORMAT format, uint32_t numMipmap, bool cube);
 	~COpenGLTextureWriter();
 
-	friend class COpenGLTextureWriteServices;
+	friend class COpenGLTextureWriteComponent;
 
 public:
 	virtual void* lock(uint32_t face, uint32_t level, uint32_t& pitch) const;
@@ -44,7 +44,7 @@ public:
 	~COpenGLTextureWriteComponent();
 
 public:
-	ITextureWriter* createTextureWriter(ITexture* texture, bool temp);
+	ITextureWriter* createTextureWriter(ITexture* texture);
 	bool removeTextureWriter(ITexture* texture);
 
 private:

@@ -23,7 +23,7 @@ struct SBlitJob
 class CBlit
 {
 public:
-	static bool Blit(CCImage* dest, const vector2di& destPos, const vector2di& destDimension, const CCImage* src, const vector2di& srcPos = vector2di(0, 0));
+	static bool Blit(CCImage* dest, const vector2di& destPos, const dimension2d& destDimension, const CCImage* src, const vector2di& srcPos = vector2di(0, 0));
 
 	static void convert_viaFormat(const void* sP, ECOLOR_FORMAT sF, int32_t sN, void* dP, ECOLOR_FORMAT dF);
 

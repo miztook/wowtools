@@ -146,7 +146,7 @@ inline void ISceneNode::updateAABB()
 
 inline void ISceneNode::addChild(ISceneNode* child)
 {
-	assert(child && child != this);
+	ASSERT(child && child != this);
 
 	if (child->Parent && child->Parent != this)
 		child->Parent->removeChild(this);
@@ -157,7 +157,7 @@ inline void ISceneNode::addChild(ISceneNode* child)
 
 inline bool ISceneNode::removeChild(ISceneNode* child)
 {
-	assert(child && child != this);
+	ASSERT(child && child != this);
 
 	for (ISceneNode* node : ChildNodeList)
 	{

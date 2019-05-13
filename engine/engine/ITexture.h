@@ -19,7 +19,7 @@ public:
 	virtual ~ITexture() {}
 
 public:
-	explicit ITexture(bool mipmap) : HasMipMaps(mipmap), TextureSize(0, 0), Type(ETT_IMAGE), VideoBuilt(false)
+	explicit ITexture(bool mipmap) : HasMipMaps(mipmap), TextureSize(0, 0), Type(ETT_IMAGE)
 	{
 		ColorFormat = ECF_UNKNOWN;
 		SampleCount = 0;
@@ -30,7 +30,7 @@ public:
 	}
 
 public:
-	const vector2di& getSize() const { return TextureSize; }
+	const dimension2d& getSize() const { return TextureSize; }
 	ECOLOR_FORMAT getColorFormat() const { return ColorFormat; }
 	uint32_t getNumMipmaps() const { return NumMipmaps; }
 	uint8_t getSampleCount() const { return SampleCount; }
@@ -42,14 +42,14 @@ public:
 protected:
 	std::shared_ptr<IImage>		m_pImage;
 
-	vector2di	TextureSize;
+	dimension2d		TextureSize;
 	ECOLOR_FORMAT	ColorFormat;
 	uint32_t		NumMipmaps;
 	uint8_t	Type;
 	uint8_t	SampleCount;
 	const bool	HasMipMaps;
 	bool	IsCube;
-	bool	VideoBuilt;
+	
 };
 
 inline void ITexture::loadImage(std::shared_ptr<IImage> image)
@@ -69,7 +69,7 @@ inline void ITexture::loadImage(std::shared_ptr<IImage> image)
 	else
 	{
 		NumMipmaps = 1;
-		TextureSize = vector2di(1, 1);
+		TextureSize = dimension2d(1, 1);
 		ColorFormat = ECF_UNKNOWN;
 		IsCube = false;
 	}

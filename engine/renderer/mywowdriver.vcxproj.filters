@@ -56,5 +56,8 @@
     <ClCompile Include="OpenGL\COpenGLRenderTarget.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="OpenGL\COpenGLDriver.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -67,7 +67,7 @@ public:
 
 public:
 	const vector2di& getSize() const { return TextureSize; }
-	ECOLOR_FORMAT getColorFormat(int index) const { assert(index >= 0 && index < MAX_COLOR_ATTACHMENTS); return ColorFormats[index]; }
+	ECOLOR_FORMAT getColorFormat(int index) const { ASSERT(index >= 0 && index < MAX_COLOR_ATTACHMENTS); return ColorFormats[index]; }
 	ECOLOR_FORMAT getDepthFormat() const { return DepthFormat; }
 	int getNumColorAttachments() const { return NumColorAttachments; }
 	bool hasDepthAttachment() const { return HasDepthAttachment; }

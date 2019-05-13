@@ -7,6 +7,21 @@
 #define DATA_SUBDIR  "Data/"
 #define LOG_SUBDIR	"Logs/"
 
+CFileSystem* g_FileSystem = nullptr;
+
+bool createFileSystem(const char* baseDir, const char* wowDir)
+{
+	g_FileSystem = new CFileSystem(baseDir, wowDir);
+
+	return true;
+}
+
+void destroyFileSystem()
+{
+	delete g_FileSystem;
+	g_FileSystem = nullptr;
+}
+
 CFileSystem::CFileSystem(const char * baseDir, const char* wowDir)
 {
 	BaseDirectory = baseDir;
@@ -122,7 +137,7 @@ bool CFileSystem::createLogFiles()
 	{
 		if (!createDirectory(LogDirectory.c_str()))
 		{
-			assert(false);
+			ASSERT(false);
 			return false;
 		}
 	}

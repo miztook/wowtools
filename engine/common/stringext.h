@@ -281,7 +281,7 @@ inline void std_string_split(const std::string& _str, char split, std::vector<st
 	retVString.clear();
 
 	char* str = new char[_str.length() + 1];
-	assert(str);
+	ASSERT(str);
 	strcpy(str, _str.data());
 
 	char* pchStart = str;
@@ -307,7 +307,7 @@ inline void std_string_split(const std::string& _str, const char* split, std::ve
 	retVString.clear();
 
 	char* str = new char[_str.length() + 1];
-	assert(str);
+	ASSERT(str);
 	strcpy(str, _str.data());
 
 	char* pchStart = str;

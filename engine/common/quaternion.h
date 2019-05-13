@@ -16,7 +16,7 @@ public:
 	//
 	quaternion& operator=(const quaternion& other)
 	{
-		assert(this != &other);
+		ASSERT(this != &other);
 		X = other.X;
 		Y = other.Y;
 		Z = other.Z;

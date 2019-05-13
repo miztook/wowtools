@@ -197,7 +197,7 @@ inline void frustum::makePlane(const matrix4& mat, VFPLANES side, plane3df& plan
 		plane.D = mat[15] + mat[13];
 		break;
 	default:
-		assert(false);
+		ASSERT(false);
 	}
 
 	plane.normalize();

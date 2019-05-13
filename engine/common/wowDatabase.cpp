@@ -14,6 +14,23 @@
 
 const char* g_szDB_Ext[] = {".db2", ".dbc"};
 
+//
+wowDatabase* g_WowDatabase = nullptr;
+bool createWowDatabase(const wowEnvironment * wowEnv)
+{
+	g_WowDatabase = new wowDatabase(wowEnv);
+	if (!g_WowDatabase->init())
+		return false;
+
+	return true;
+}
+
+void destroyWowDatabase()
+{
+	delete g_WowDatabase;
+	g_WowDatabase = nullptr;
+}
+
 wowDatabase::wowDatabase(const wowEnvironment* env)
 	: Environment(env)
 {
@@ -56,193 +73,193 @@ bool wowDatabase::loadAllTables()
 {
 	if (!m_AnimationDataTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_CharBaseSectionTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_CharComponentTextureLayoutsTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_CharComponentTextureSectionsTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_CharHairGeoSetsTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_CharSectionsTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_CharacterFacialHairStylesTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_ChrClassesTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_ChrCustomizationTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_ChrRacesTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_ComponentModelFileDataTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_ComponentTextureFileDataTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_CreatureDisplayInfoTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_CreatureDisplayInfoExtraTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_CreatureModelDataTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_CreatureTypeTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_HelmetGeosetDataTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_ItemTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_ItemAppearanceTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_ItemClassTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_ItemDisplayInfoTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_ItemDisplayInfoMaterialResTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_ItemModifiedAppearanceTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_ItemSetTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_ItemSparseTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_ItemSubClassTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_ModelFileDataTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_MountTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_MountXDisplayTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_NpcModelItemSlotDisplayInfoTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_ParticleColorTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	if (!m_TextureFileDataTable.loadData(this))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 

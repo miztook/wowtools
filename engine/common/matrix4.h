@@ -306,7 +306,7 @@ inline CMatrix4<T>& CMatrix4<T>::buildTextureTransform(float rotateRad, const ve
 template <class T>
 inline CMatrix4<T>& CMatrix4<T>::operator=(const CMatrix4<T> &other)
 {
-	assert(this != &other);
+	ASSERT(this != &other);
 	memcpy(M, other.M, 16 * sizeof(T));
 	return *this;
 }
@@ -901,10 +901,10 @@ inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixPerspectiveFovLH(
 	float fieldOfViewRadians, float aspectRatio, float zNear, float zFar)
 {
 	const float h = reciprocal_((float)tan(fieldOfViewRadians*0.5f));
-	assert(aspectRatio != 0.f); //divide by zero
+	ASSERT(aspectRatio != 0.f); //divide by zero
 	const float w = (h / aspectRatio);
 
-	assert(zNear != zFar); //divide by zero
+	ASSERT(zNear != zFar); //divide by zero
 	M[0] = w;
 	M[1] = 0;
 	M[2] = 0;
@@ -933,10 +933,10 @@ inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixPerspectiveFovRH(
 	float fieldOfViewRadians, float aspectRatio, float zNear, float zFar)
 {
 	const float h = reciprocal_(tan(fieldOfViewRadians*0.5f));
-	assert(aspectRatio != 0.f); //divide by zero
+	ASSERT(aspectRatio != 0.f); //divide by zero
 	const T w = h / aspectRatio;
 
-	assert(zNear != zFar); //divide by zero
+	ASSERT(zNear != zFar); //divide by zero
 	M[0] = w;
 	M[1] = 0;
 	M[2] = 0;
@@ -966,9 +966,9 @@ template <class T>
 inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixPerspectiveLH(
 	float widthOfViewVolume, float heightOfViewVolume, float zNear, float zFar)
 {
-	assert(widthOfViewVolume != 0.f); //divide by zero
-	assert(heightOfViewVolume != 0.f); //divide by zero
-	assert(zNear != zFar); //divide by zero
+	ASSERT(widthOfViewVolume != 0.f); //divide by zero
+	ASSERT(heightOfViewVolume != 0.f); //divide by zero
+	ASSERT(zNear != zFar); //divide by zero
 	M[0] = (T)(2 * zNear / widthOfViewVolume);
 	M[1] = 0;
 	M[2] = 0;
@@ -996,9 +996,9 @@ template <class T>
 inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixPerspectiveRH(
 	float widthOfViewVolume, float heightOfViewVolume, float zNear, float zFar)
 {
-	assert(widthOfViewVolume != 0.f); //divide by zero
-	assert(heightOfViewVolume != 0.f); //divide by zero
-	assert(zNear != zFar); //divide by zero
+	ASSERT(widthOfViewVolume != 0.f); //divide by zero
+	ASSERT(heightOfViewVolume != 0.f); //divide by zero
+	ASSERT(zNear != zFar); //divide by zero
 	M[0] = (T)(2 * zNear / widthOfViewVolume);
 	M[1] = 0;
 	M[2] = 0;
@@ -1026,11 +1026,11 @@ template <class T>
 inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixOrthoFovLH(float fieldOfViewRadians, float aspectRatio, float zNear, float zFar)
 {
 	const float h = reciprocal_((float)tan(fieldOfViewRadians*0.5));
-	assert(aspectRatio != 0.f); //divide by zero
+	ASSERT(aspectRatio != 0.f); //divide by zero
 	const T w = (T)(h / aspectRatio);
 
-	assert(zNear != zFar); //divide by zero
-	assert(zNear != 0.0f);  //divide by zero
+	ASSERT(zNear != zFar); //divide by zero
+	ASSERT(zNear != 0.0f);  //divide by zero
 
 	M[0] = w / zNear;
 	M[1] = 0;
@@ -1059,11 +1059,11 @@ template <class T>
 inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixOrthoFovRH(float fieldOfViewRadians, float aspectRatio, float zNear, float zFar)
 {
 	const float h = reciprocal_((float)tan(fieldOfViewRadians*0.5));
-	assert(aspectRatio != 0.f); //divide by zero
+	ASSERT(aspectRatio != 0.f); //divide by zero
 	const T w = (T)(h / aspectRatio);
 
-	assert(zNear != zFar); //divide by zero
-	assert(zNear != 0.0f);  //divide by zero
+	ASSERT(zNear != zFar); //divide by zero
+	ASSERT(zNear != 0.0f);  //divide by zero
 
 	M[0] = w / zNear;
 	M[1] = 0;
@@ -1092,9 +1092,9 @@ template <class T>
 inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixOrthoLH(
 	float widthOfViewVolume, float heightOfViewVolume, float zNear, float zFar)
 {
-	assert(widthOfViewVolume != 0.f); //divide by zero
-	assert(heightOfViewVolume != 0.f); //divide by zero
-	assert(zNear != zFar); //divide by zero
+	ASSERT(widthOfViewVolume != 0.f); //divide by zero
+	ASSERT(heightOfViewVolume != 0.f); //divide by zero
+	ASSERT(zNear != zFar); //divide by zero
 	M[0] = (T)(2 / widthOfViewVolume);
 	M[1] = 0;
 	M[2] = 0;
@@ -1122,9 +1122,9 @@ template <class T>
 inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixOrthoRH(
 	float widthOfViewVolume, float heightOfViewVolume, float zNear, float zFar)
 {
-	assert(widthOfViewVolume != 0.f); //divide by zero
-	assert(heightOfViewVolume != 0.f); //divide by zero
-	assert(zNear != zFar); //divide by zero
+	ASSERT(widthOfViewVolume != 0.f); //divide by zero
+	ASSERT(heightOfViewVolume != 0.f); //divide by zero
+	ASSERT(zNear != zFar); //divide by zero
 	M[0] = (T)(2 / widthOfViewVolume);
 	M[1] = 0;
 	M[2] = 0;

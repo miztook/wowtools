@@ -6,7 +6,36 @@
 #include "function.h"
 #include <regex>
 
+#include "CascLib.h"
+#include "CascCommon.h"
+
 #define LISTFILE "listfile.txt"
+
+//
+wowEnvironment* g_WowEnvironment = nullptr;
+bool createWowEnvironment(CFileSystem * fs, bool loadCascFile)
+{
+	g_WowEnvironment = new wowEnvironment(fs);
+	if (!g_WowEnvironment->init())
+	{
+		delete g_WowEnvironment;
+		g_WowEnvironment = nullptr;
+		return false;
+	}
+
+	if (loadCascFile)
+	{
+		if (!g_WowEnvironment->loadCascListFiles())
+			return false;
+	}
+	return true;
+}
+
+void destroyWowEnvironment()
+{
+	delete g_WowEnvironment;
+	g_WowEnvironment = nullptr;
+}
 
 wowEnvironment::wowEnvironment(CFileSystem* fs)
 	: FileSystem(fs), hStorage(nullptr), CascLocale(0)
@@ -279,7 +308,7 @@ bool wowEnvironment::initBuildInfo(std::string& activeLocale)
 		std::vector<std::string> values;
 		std_string_split(std::string(buffer), '|', values);
 
-		assert(values.size() == headers.size());
+		ASSERT(values.size() == headers.size());
 
 		//skip inactive
 		if (values[activeIndex] == "0")

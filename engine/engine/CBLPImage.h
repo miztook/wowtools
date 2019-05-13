@@ -15,7 +15,7 @@ public:
 
 public:
 	virtual ECOLOR_FORMAT getColorFormat() const { return Format; }
-	virtual const vector2di& getDimension() const { return Size; }
+	virtual const dimension2d& getDimension() const { return Size; }
 	virtual uint32_t getNumMipLevels() const { return NumMipMaps; }
 
 	virtual bool isCube() const { return false; }
@@ -25,7 +25,7 @@ public:
 
 public:
 	bool loadFile(CMemFile* file);
-	bool fromImageData(const uint8_t* src, const vector2di& size, ECOLOR_FORMAT format, bool mipmap);
+	bool fromImageData(const uint8_t* src, const dimension2d& size, ECOLOR_FORMAT format, bool mipmap);
 	const void* getMipmapData(uint32_t level) const;
 
 	void copy16BitMipMap(const uint8_t* src, uint8_t* tgt,
@@ -36,7 +36,7 @@ public:
 	uint32_t getAlphaDepth() const { return AlphaDepth; }
 
 private:
-	vector2di	Size;
+	dimension2d		Size;
 	ECOLOR_FORMAT	Format;
 	uint32_t			NumMipMaps;
 	uint32_t			MipmapDataSize[16];

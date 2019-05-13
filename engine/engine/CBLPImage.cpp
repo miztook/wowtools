@@ -21,7 +21,7 @@ bool CBLPImage::copyMipmapData(uint32_t face, uint32_t level, void* dest, uint32
 	const uint8_t* src = static_cast<const uint8_t*>(getMipmapData(level));
 	if (!src || !limit)
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
@@ -33,7 +33,7 @@ bool CBLPImage::copyMipmapData(uint32_t face, uint32_t level, void* dest, uint32
 		uint8_t* target = (uint8_t*)dest;
 		uint32_t blocksize = getBytesPerPixelFromFormat(Format);
 
-		assert(blocksize * xblock >= pitch);
+		ASSERT(blocksize * xblock >= pitch);
 
 		const uint8_t* p = src;
 		for (uint32_t i = 0; i < yblock; ++i)
@@ -109,11 +109,11 @@ bool CBLPImage::loadFile(CMemFile * file)
 
 	if (header->magic != FOURCC('B', 'L', 'P', '2'))
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
-	assert(header->_version == 1);
+	ASSERT(header->_version == 1);
 
 	Size.width = header->_xres;
 	Size.height = header->_yres;
@@ -137,7 +137,7 @@ bool CBLPImage::loadFile(CMemFile * file)
 		}
 		else
 		{
-			assert(false);
+			ASSERT(false);
 		}
 	}
 	else
@@ -156,7 +156,7 @@ bool CBLPImage::loadFile(CMemFile * file)
 	//check mipsize
 	for (uint32_t i = 0; i < NumMipMaps; ++i)
 	{
-		vector2di mipsize = Size.getMipLevelSize(i);
+		dimension2d mipsize = Size.getMipLevelSize(i);
 		uint32_t bytes;
 		getImagePitchAndBytes(Format, mipsize.width, mipsize.height, MipmapPitch[i], bytes);
 
@@ -167,11 +167,11 @@ bool CBLPImage::loadFile(CMemFile * file)
 	return true;
 }
 
-bool CBLPImage::fromImageData(const uint8_t * src, const vector2di & size, ECOLOR_FORMAT format, bool mipmap)
+bool CBLPImage::fromImageData(const uint8_t* src, const dimension2d& size, ECOLOR_FORMAT format, bool mipmap)
 {
 	if (size.width % 4 != 0 || size.height % 4 != 0 || format != ECF_A8R8G8B8)
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
@@ -192,14 +192,14 @@ bool CBLPImage::fromImageData(const uint8_t * src, const vector2di & size, ECOLO
 	NumMipMaps = mipmap ? Size.getNumMipLevels() : 1;
 	if (NumMipMaps > 16)
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
 	uint32_t offset = sizeof(SBLPHeader);
 	for (uint32_t i = 0; i < NumMipMaps; ++i)
 	{
-		vector2di mipsize = Size.getMipLevelSize(i);
+		dimension2d mipsize = Size.getMipLevelSize(i);
 		header._mipmapOfs[i] = offset;
 
 		uint32_t bytes;
@@ -220,14 +220,14 @@ bool CBLPImage::fromImageData(const uint8_t * src, const vector2di & size, ECOLO
 	uint32_t bpp = getBytesPerPixelFromFormat(ECF_R5G6B5);
 	for (uint32_t i = 0; i < NumMipMaps; ++i)
 	{
-		vector2di s = Size.getMipLevelSize(i);
+		dimension2d s = Size.getMipLevelSize(i);
 		mipmapOfs[i] = offset;
 		offset += bpp * s.getArea();
 	}
 
 	if (!offset)
 	{
-		assert(false);
+		ASSERT(false);
 		return false;
 	}
 
@@ -241,15 +241,15 @@ bool CBLPImage::fromImageData(const uint8_t * src, const vector2di & size, ECOLO
 	uint8_t* dst0 = FileData + header._mipmapOfs[0];
 	if (header._mipmapSize[0] != DDSCompressRGB565ToDXT1(tmpdata, Size.width, Size.height, dst0))
 	{
-		assert(false);
+		ASSERT(false);
 		delete[] tmpdata;
 		return false;
 	}
 
 	for (uint32_t i = 1; i < NumMipMaps; ++i)
 	{
-		vector2di upper = Size.getMipLevelSize(i - 1);
-		vector2di lower = Size.getMipLevelSize(i);
+		dimension2d upper = Size.getMipLevelSize(i - 1);
+		dimension2d lower = Size.getMipLevelSize(i);
 		const uint8_t* s = tmpdata + mipmapOfs[i - 1];
 		uint8_t* tgt = tmpdata + mipmapOfs[i];
 
@@ -260,7 +260,7 @@ bool CBLPImage::fromImageData(const uint8_t * src, const vector2di & size, ECOLO
 		uint8_t* dst = FileData + header._mipmapOfs[i];
 		if (header._mipmapSize[i] != DDSCompressRGB565ToDXT1(tgt, lower.width, lower.height, dst))
 		{
-			assert(false);
+			ASSERT(false);
 			delete[] tmpdata;
 			return false;
 		}

@@ -126,7 +126,7 @@ inline uint32_t getStreamPitchFromType(E_VERTEX_TYPE type)
 		return sizeof(SVertex_PNT2WA);
 
 	default:
-		assert(false);
+		ASSERT(false);
 		return 0;
 	}
 }
@@ -171,7 +171,7 @@ inline void deleteVerticesFromType(E_VERTEX_TYPE type, void* vertices)
 		DELETE_ARRAY(SVertex_PNT2WA, vertices);
 		break;
 	default:
-		assert(false);
+		ASSERT(false);
 		break;
 	}
 }
@@ -187,7 +187,7 @@ inline void deleteIndicesFromType(E_INDEX_TYPE type, void* indices)
 		DELETE_ARRAY(uint32_t, indices);
 		break;
 	default:
-		assert(false);
+		ASSERT(false);
 		break;
 	}
 }

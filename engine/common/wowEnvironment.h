@@ -8,8 +8,9 @@
 #include <array>
 #include <functional>
 
-#include "CascLib.h"
-#include "CascCommon.h"
+#ifndef HANDLE
+typedef void* HANDLE;
+#endif
 
 class CFileSystem;
 class CMemFile;
@@ -65,3 +66,8 @@ private:
 	//
 	std::vector<std::string>		WmoFileList;
 };
+
+bool createWowEnvironment(CFileSystem* fs, bool loadCascFile);
+void destroyWowEnvironment();
+
+extern wowEnvironment* g_WowEnvironment;

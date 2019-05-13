@@ -6,13 +6,13 @@
 class CCImage : public IImage
 {
 public:
-	CCImage(ECOLOR_FORMAT format, const vector2di& size, const void* data, bool deletaData);
-	CCImage(ECOLOR_FORMAT format, const vector2di& size);
+	CCImage(ECOLOR_FORMAT format, const dimension2d& size, const void* data, bool deletaData);
+	CCImage(ECOLOR_FORMAT format, const dimension2d& size);
 	virtual ~CCImage();
 
 public:
 	virtual ECOLOR_FORMAT getColorFormat() const override { return Format; }
-	virtual const vector2di& getDimension() const override { return Size; }
+	virtual const dimension2d& getDimension() const override { return Size; }
 	virtual uint32_t getNumMipLevels() const override { return Size.getNumMipLevels(); }
 
 	virtual bool isCube() const override { return false; }
@@ -36,7 +36,7 @@ public:
 
 protected:
 	uint8_t*		Data;
-	vector2di		Size;
+	dimension2d		Size;
 	uint32_t		Pitch;
 	ECOLOR_FORMAT	Format;
 

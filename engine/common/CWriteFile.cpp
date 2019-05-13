@@ -29,11 +29,11 @@ uint32_t CWriteFile::writeText(const char* buffer, uint32_t len /*= MAX_WRITE_NU
 	if (!isOpen() || buffer == nullptr)
 		return 0;
 
-	assert(!IsBinary);
+	ASSERT(!IsBinary);
 
 	if (strlen(buffer) > len)
 	{
-		assert(false);
+		ASSERT(false);
 		return 0;
 	}
 
@@ -49,7 +49,7 @@ uint32_t CWriteFile::writeLine(const char* text)
 	if (!isOpen() || text == nullptr)
 		return 0;
 
-	assert(!IsBinary);
+	ASSERT(!IsBinary);
 
 	int32_t w = fprintf(File, "%s\r\n", text);
 	if (w == EOF)

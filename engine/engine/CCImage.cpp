@@ -1,7 +1,7 @@
 #include "CCImage.h"
 #include "CBlit.h"
 
-CCImage::CCImage(ECOLOR_FORMAT format, const vector2di& size)
+CCImage::CCImage(ECOLOR_FORMAT format, const dimension2d& size)
 	: IImage(EIT_IMAGE), Size(size), Format(format)
 {
 	Pitch = ROUND_4BYTES(getBytesPerPixelFromFormat(Format) * Size.width);
@@ -10,13 +10,13 @@ CCImage::CCImage(ECOLOR_FORMAT format, const vector2di& size)
 	DeleteData = true;
 }
 
-CCImage::CCImage(ECOLOR_FORMAT format, const vector2di& size, const void* data, bool deletaData)
+CCImage::CCImage(ECOLOR_FORMAT format, const dimension2d& size, const void* data, bool deletaData)
 	: IImage(EIT_IMAGE), Size(size), Format(format)
 {
 	Pitch = ROUND_4BYTES(getBytesPerPixelFromFormat(Format) * Size.width);
 	Data = (uint8_t*)data;
 
-	assert(Data);
+	ASSERT(Data);
 
 	DeleteData = deletaData;
 }
@@ -77,7 +77,7 @@ void CCImage::copyToScaling(void* target, uint32_t width, uint32_t height, ECOLO
 			//CBlit::resizeBicubicA8R8G8B8(Data, Size.Width, Size.Height, target, width, height, format);
 			break;
 		default:
-			assert(false);
+			ASSERT(false);
 			break;
 		}
 	}
@@ -88,7 +88,7 @@ void CCImage::copyToScaling(CCImage* target) const
 	if (!target)
 		return;
 
-	const vector2di& targetSize = target->getDimension();
+	const dimension2d& targetSize = target->getDimension();
 
 	if (targetSize == Size)
 	{
@@ -105,7 +105,7 @@ void CCImage::copyTo(CCImage* target, const vector2di& pos /*= core::vector2di(0
 	bool bRes = CBlit::Blit(target, vector2di(0, 0), target->getDimension(),
 		this, pos);
 
-	assert(bRes);
+	ASSERT(bRes);
 }
 
 bool CCImage::checkHasAlpha() const

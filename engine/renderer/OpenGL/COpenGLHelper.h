@@ -14,7 +14,7 @@
 	GLenum err = glGetError(); \
 	if (err != GL_NO_ERROR)		\
 			{								\
-	 assert(false);						\
+	 ASSERT(false);						\
 			}					\
 }
 
@@ -23,7 +23,7 @@
 	GLint err = glGetError(); \
 	if (err != GL_NO_ERROR)		\
 			{				\
-		assert(false);						\
+		ASSERT(false);						\
 			}					\
     }
 
@@ -81,7 +81,7 @@ inline E_TEXTURE_CLAMP COpenGLHelper::getTextureAddressMode(GLint address)
 	case GL_CLAMP_TO_EDGE:
 		return ETC_CLAMP;
 	default:
-		assert(false);
+		ASSERT(false);
 		return ETC_REPEAT;
 	}
 }
@@ -125,7 +125,7 @@ inline GLenum COpenGLHelper::getGLCompare(E_COMPARISON_FUNC comp)
 	case	ECFN_ALWAYS:
 		r = GL_ALWAYS;	break;
 	default:
-		assert(false);
+		ASSERT(false);
 	}
 	return r;
 }
@@ -158,7 +158,7 @@ inline GLint COpenGLHelper::getGLBlend(E_BLEND_FACTOR factor)
 	case E_BLEND_FACTOR::Src_Alpha_Saturate:
 		r = GL_SRC_ALPHA_SATURATE; break;
 	default:
-		assert(false);
+		ASSERT(false);
 	}
 	return r;
 }
@@ -195,7 +195,7 @@ inline void COpenGLHelper::getGLTextureMatrix(GLfloat gl_matrix[16], const matri
 inline bool COpenGLHelper::IsGLError()
 {
 	bool ret = glGetError() != GL_NO_ERROR;
-	assert(!ret);
+	ASSERT(!ret);
 	return ret;
 }
 
@@ -214,7 +214,7 @@ inline GLenum COpenGLHelper::getGLTopology(E_PRIMITIVE_TYPE type)
 	case EPT_TRIANGLES:
 		return GL_TRIANGLES;
 	default:
-		assert(false);
+		ASSERT(false);
 	}
 
 	return GL_TRIANGLES;
@@ -243,7 +243,7 @@ inline E_UNIFORM_TYPE COpenGLHelper::getGLUniformType(GLenum type)
 	case GL_SAMPLER_3D:
 		return EUT_SAMPLER3D;
 	default:
-		assert(false);
+		ASSERT(false);
 		return EUT_VEC4;
 	}
 }
@@ -263,7 +263,7 @@ inline GLint COpenGLHelper::getGLTextureAddress(E_TEXTURE_CLAMP clamp)
 		mode = GL_CLAMP_TO_EDGE;
 		break;
 	default:
-		assert(false);
+		ASSERT(false);
 		break;
 	}
 	return mode;
@@ -319,7 +319,7 @@ inline GLint COpenGLHelper::getGLTextureFormat(ECOLOR_FORMAT format, GLenum& col
 		type = GL_NONE;
 		return GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
 	default:
-		assert(false);
+		ASSERT(false);
 		return GL_RGBA8;
 	}
 }
@@ -341,7 +341,7 @@ inline GLenum COpenGLHelper::getGLDepthFormat(ECOLOR_FORMAT format)
 		return GL_DEPTH_COMPONENT32;
 
 	default:
-		assert(false);
+		ASSERT(false);
 		return GL_DEPTH_COMPONENT;
 	}
 }

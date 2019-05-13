@@ -24,7 +24,7 @@ public:
 
 	aabbox3d& operator=(const aabbox3d<T>& other) 
 	{
-		assert(this != &other);
+		ASSERT(this != &other);
 		MinEdge = other.MinEdge;
 		MaxEdge = other.MaxEdge;
 		return *this;

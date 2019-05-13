@@ -11,7 +11,7 @@ class ITexture;
 class ITextureWriter
 {
 public:
-	ITextureWriter(const vector2di& size, ECOLOR_FORMAT format, uint32_t numMipmap, bool cube)
+	ITextureWriter(const dimension2d& size, ECOLOR_FORMAT format, uint32_t numMipmap, bool cube)
 		: TextureSize(size), ColorFormat(format), NumMipmaps(numMipmap), IsCube(cube)
 	{
 	}
@@ -30,7 +30,7 @@ public:
 	uint32_t getNumFaces() const { return IsCube ? 6 : 1; }
 
 public:
-	vector2di	TextureSize;
+	dimension2d	TextureSize;
 	ECOLOR_FORMAT	ColorFormat;
 	uint32_t		NumMipmaps;
 	bool		IsCube;

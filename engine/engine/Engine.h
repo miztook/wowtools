@@ -5,23 +5,9 @@
 #include "CInputReader.h"
 #include "IVideoDriver.h"
 
-class CFileSystem;
-class wowEnvironment;
-class wowDatabase;
-
 //
-bool createFileSystem(const char* baseDir, const char* wowDir);
-void destroyFileSystem();
-
-bool createWowEnvironment(CFileSystem* fs, bool loadCascFile);
-void destroyWowEnvironment();
-
-bool createWowDatabase(const wowEnvironment* wowEnv);
-void destroyWowDatabase();
-
 bool createEngine(const SWindowInfo& wndInfo, E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode);
 void destroyEngine();
-
 
 class Engine
 {
@@ -50,6 +36,3 @@ private:
 };
 
 extern Engine* g_Engine;
-extern CFileSystem* g_FileSystem;
-extern wowEnvironment* g_WowEnvironment;
-extern wowDatabase* g_WowDatabase;

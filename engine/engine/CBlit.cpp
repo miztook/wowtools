@@ -3,7 +3,7 @@
 #include "CCImage.h"
 #include "SColor.h"
 
-bool CBlit::Blit(CCImage* dest, const vector2di& destPos, const vector2di& destDimension, const CCImage* src, const vector2di& srcPos)
+bool CBlit::Blit(CCImage* dest, const vector2di& destPos, const dimension2d& destDimension, const CCImage* src, const vector2di& srcPos)
 {
 	if (!dest || !src ||
 		dest->getDimension().width < destPos.x + destDimension.width ||
@@ -240,7 +240,7 @@ void CBlit::convert_viaFormat(const void* sP, ECOLOR_FORMAT sF, int32_t sN, void
 			convert_A1R5G5B5toR8G8B8(sP, sN, dP);
 			break;
 		default:
-			assert(false);
+			ASSERT(false);
 			break;
 		}
 		break;
@@ -260,7 +260,7 @@ void CBlit::convert_viaFormat(const void* sP, ECOLOR_FORMAT sF, int32_t sN, void
 			convert_R5G6B5toR8G8B8(sP, sN, dP);
 			break;
 		default:
-			assert(false);
+			ASSERT(false);
 			break;
 		}
 		break;
@@ -280,7 +280,7 @@ void CBlit::convert_viaFormat(const void* sP, ECOLOR_FORMAT sF, int32_t sN, void
 			convert_A8R8G8B8toR8G8B8(sP, sN, dP);
 			break;
 		default:
-			assert(false);
+			ASSERT(false);
 			break;
 		}
 		break;
@@ -300,12 +300,12 @@ void CBlit::convert_viaFormat(const void* sP, ECOLOR_FORMAT sF, int32_t sN, void
 			convert_R8G8B8toR8G8B8(sP, sN, dP);
 			break;
 		default:
-			assert(false);
+			ASSERT(false);
 			break;
 		}
 		break;
 	default:
-		assert(false);
+		ASSERT(false);
 		break;
 	}
 }
@@ -593,7 +593,7 @@ void CBlit::convert1BitTo16Bit(const uint8_t* in, uint16_t* out, int32_t width, 
 {
 	if (!in || !out)
 	{
-		assert(false);
+		ASSERT(false);
 		return;
 	}
 
@@ -630,7 +630,7 @@ void CBlit::convert4BitTo16Bit(const uint8_t* in, uint16_t* out, int32_t width, 
 {
 	if (!in || !out || !palette)
 	{
-		assert(false);
+		ASSERT(false);
 		return;
 	}
 
@@ -669,7 +669,7 @@ void CBlit::convert8BitTo16Bit(const uint8_t* in, uint16_t* out, int32_t width, 
 {
 	if (!in || !out || !palette)
 	{
-		assert(false);
+		ASSERT(false);
 		return;
 	}
 
@@ -730,7 +730,7 @@ void CBlit::convert16BitTo16Bit(const uint16_t* in, uint16_t* out, int32_t width
 {
 	if (!in || !out)
 	{
-		assert(false);
+		ASSERT(false);
 		return;
 	}
 
@@ -755,7 +755,7 @@ void CBlit::convert24BitTo24Bit(const uint8_t* in, uint8_t* out, int32_t width, 
 {
 	if (!in || !out)
 	{
-		assert(false);
+		ASSERT(false);
 		return;
 	}
 
@@ -793,7 +793,7 @@ void CBlit::convert32BitTo32Bit(const int32_t* in, int32_t* out, int32_t width, 
 {
 	if (!in || !out)
 	{
-		assert(false);
+		ASSERT(false);
 		return;
 	}
 
@@ -1119,7 +1119,7 @@ void CBlit::copyA8L8MipMap(const uint8_t* src, uint8_t* tgt, uint32_t width, uin
 
 void CBlit::copy16BitMipMap(const uint8_t* src, uint8_t* tgt, uint32_t width, uint32_t height, uint32_t pitchsrc, uint32_t pitchtgt, ECOLOR_FORMAT format)
 {
-	assert(format == ECF_A1R5G5B5 || format == ECF_R5G6B5);
+	ASSERT(format == ECF_A1R5G5B5 || format == ECF_R5G6B5);
 
 	for (uint32_t y = 0; y < height; ++y)
 	{
@@ -1164,7 +1164,7 @@ void CBlit::copy16BitMipMap(const uint8_t* src, uint8_t* tgt, uint32_t width, ui
 
 void CBlit::copy32BitMipMap(const uint8_t* src, uint8_t* tgt, uint32_t width, uint32_t height, uint32_t pitchsrc, uint32_t pitchtgt, ECOLOR_FORMAT format)
 {
-	assert(format == ECF_A8R8G8B8);
+	ASSERT(format == ECF_A8R8G8B8);
 
 	for (uint32_t y = 0; y < height; ++y)
 	{

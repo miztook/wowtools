@@ -16,19 +16,19 @@ protected:
 public:
 	static bool buildVideoResources(IVideoResource* t)
 	{
-		assert(t);
+		ASSERT(t);
 		return t->buildVideoResources();
 	}
 
 	static void releaseVideoResources(IVideoResource* t)
 	{
-		assert(t);
+		ASSERT(t);
 		t->releaseVideoResources();
 	}
 
 	static bool hasVideoBuilt(const IVideoResource* t)
 	{
-		assert(t);
+		ASSERT(t);
 		return t->hasVideoBuilt();
 	}
 

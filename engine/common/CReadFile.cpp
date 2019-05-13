@@ -29,7 +29,7 @@ uint32_t CReadFile::readText(char* buffer, uint32_t len /*= MAX_READ_NUM */)
 	if (!isOpen() || buffer == nullptr)
 		return 0;
 
-	assert(!IsBinary);
+	ASSERT(!IsBinary);
 
 	char* c = fgets(buffer, len, File);
 	return c ? (uint32_t)strlen(c) : 0;
@@ -40,7 +40,7 @@ uint32_t CReadFile::readLine(char* buffer, uint32_t len /*= MAX_READ_NUM*/)
 	if (!isOpen() || buffer == nullptr)
 		return 0;
 
-	assert(!IsBinary);
+	ASSERT(!IsBinary);
 
 	if (!fgets(buffer, len, File))
 		return false;
@@ -62,7 +62,7 @@ uint32_t CReadFile::readLineSkipSpace(char* buffer, uint32_t len /*= MAX_READ_NU
 
 	memset(buffer, 0, len);
 
-	assert(!IsBinary);
+	ASSERT(!IsBinary);
 
 	int c = fgetc(File);
 	uint32_t count = 0;

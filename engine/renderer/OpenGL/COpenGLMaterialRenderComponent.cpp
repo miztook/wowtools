@@ -1,9 +1,9 @@
 #include "COpenGLMaterialRenderComponent.h"
 
 #include "IVideoResource.h"
-#include "ITexture.h"
 #include "COpenGLHelper.h"
 #include "COpenGLExtension.h"
+#include "COpenGLTexture.h"
 #include "function.h"
 
 #define  DEVICE_SET_CLEARCOLOR(prop, v)	if (RsCache.prop != (v))		\
@@ -135,7 +135,7 @@ void COpenGLMaterialRenderComponent::applyRenderStates()
 
 		IVideoResource::buildVideoResources(texunit.texture);
 
-		assert(texunit.texture->getSampleCount() == 0);
+		ASSERT(texunit.texture->getSampleCount() == 0);
 		bool bCube = texunit.texture->isCube();
 
 		const COpenGLTexture* gltex = static_cast<const COpenGLTexture*>(texunit.texture);
@@ -319,7 +319,7 @@ void COpenGLMaterialRenderComponent::setSamplerTextureMultiSample(uint32_t st, I
 
 void COpenGLMaterialRenderComponent::setTextureWrap(uint32_t st, E_TEXTURE_ADDRESS address, E_TEXTURE_CLAMP wrap, bool isCube)
 {
-	assert(RsCache.TextureUnits[st].texture);
+	ASSERT(RsCache.TextureUnits[st].texture);
 
 	GLint v = COpenGLHelper::getGLTextureAddress(wrap);
 
@@ -334,7 +334,7 @@ void COpenGLMaterialRenderComponent::setTextureWrap(uint32_t st, E_TEXTURE_ADDRE
 			DEVICE_SET_TEXTURE2D_PARAMETER_I(st, addressV, GL_TEXTURE_WRAP_T, v);
 			break;
 		default:
-			assert(false);
+			ASSERT(false);
 		}
 	}
 	else
@@ -348,7 +348,7 @@ void COpenGLMaterialRenderComponent::setTextureWrap(uint32_t st, E_TEXTURE_ADDRE
 			DEVICE_SET_TEXTURECUBE_PARAMETER_I(st, addressV, GL_TEXTURE_WRAP_T, v);
 			break;
 		default:
-			assert(false);
+			ASSERT(false);
 		}
 	}
 }

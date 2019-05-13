@@ -26,10 +26,12 @@ struct SDriverSetting
 	{
 		vsync = true;
 		aaMode = E_AA_MSAA_1;
+		antialias = 1;
 	}
 
-	bool vsync;
 	E_AA_MODE aaMode;
+	bool vsync;
+	uint8_t antialias;
 };
 
 struct SDisplayMode
@@ -134,7 +136,7 @@ public:
 	SGlobalMaterial& getOverrideMaterial() { return GlobalMaterial; }
 	const matrix4& getTransform(E_TRANSFORMATION_STATE state) const { return Matrices[state]; }
 	const recti& getViewPort() const { return Viewport; }
-	const vector2df& getDisplayMode() const { return ScreenSize; }
+	const dimension2d& getDisplayMode() const { return ScreenSize; }
 	const SDriverSetting& getDriverSetting() const { return DriverSetting; }
 
 	void setMaterial(const SMaterial& material) { Material = material; }
@@ -147,6 +149,11 @@ public:
 	const matrix4& getProject2DTM() const { return Project2DTM; }
 	const matrix4& getVPScaleTM() const { return VPScaleMatrix; }
 	const matrix4& getInvVPScaleTM() const { return InvVPScaleMatrix; }
+
+	bool isFXAAEnabled() const { return DriverSetting.aaMode >= E_AA_FXAA && DriverSetting.aaMode <= E_AA_FXAA; }
+	bool isMultiSampleEnabled() const { return IsMultiSampleEnabled; }
+	bool isSupportDepthTexture() const { return IsSupportDepthTexture; }
+	bool isSupportA8L8() const { return IsSupportA8L8; }
 
 public:
 	virtual bool beginScene() = 0;
@@ -189,7 +196,7 @@ protected:
 	matrix4		InvVPScaleMatrix;
 
 	recti			Viewport;
-	vector2df		ScreenSize;
+	dimension2d		ScreenSize;
 	SDriverSetting	DriverSetting;
 
 	bool	IsMultiSampleEnabled;

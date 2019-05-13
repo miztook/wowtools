@@ -4,3 +4,4 @@
 
 #include <GL/GL.h>
 #include "GL/glext.h"
+#include "GL/wglext.h"

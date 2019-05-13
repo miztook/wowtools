@@ -3,6 +3,9 @@
 #include "IVideoDriver.h"
 #include "COpenGLExtension.h"
 
+class COpenGLMaterialRenderComponent;
+class COpenGLTextureWriteComponent;
+
 class COpenGLDriver : public IVideoDriver
 {
 private:
@@ -27,8 +30,17 @@ public:
 	virtual void setTexture(int index, const ITexture* tex);
 
 	virtual void setViewPort(const recti& area);
-	virtual void setDisplayMode(const vector2di& size);
+	virtual void setDisplayMode(const dimension2d& size);
 	virtual bool setDriverSetting(const SDriverSetting& setting);
+
+public:
+	COpenGLMaterialRenderComponent* getMaterialRenderComponent() const { return MaterialRenderComponent.get();}
+	COpenGLTextureWriteComponent* getTextureWriteComponent() const { return TextureWriteComponent.get(); }
+
+private:
+	dimension2d getWindowSize() const;
+	void logCaps();
+	bool queryFeature(E_VIDEO_DRIVER_FEATURE feature) const;
 
 public:
 	//device settings
@@ -41,9 +53,12 @@ public:
 	GLint		DefaultFrameBuffer;
 
 	CAdapterInfo	AdapterInfo;
+	COpenGLExtension	GLExtension;
 
 private:
 	E_RENDER_MODE		CurrentRenderMode;
 
-	COpenGLExtension	GLExtension;
+	//component
+	std::unique_ptr<COpenGLMaterialRenderComponent>  MaterialRenderComponent;
+	std::unique_ptr<COpenGLTextureWriteComponent> TextureWriteComponent;
 };

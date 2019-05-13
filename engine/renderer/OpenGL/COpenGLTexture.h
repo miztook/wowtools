@@ -21,15 +21,15 @@ protected:
 
 public:
 	//ITexture
-	bool createEmptyTexture(const vector2di& size, ECOLOR_FORMAT format);
+	bool createEmptyTexture(const dimension2d& size, ECOLOR_FORMAT format);
 	bool createFromImage(std::shared_ptr<IImage> image);
-	bool createRTTexture(const vector2di& size, ECOLOR_FORMAT format, int nSamples);
-	bool createDSTexture_INTZ(const vector2di& size, int nSamples);
+	bool createRTTexture(const dimension2d& size, ECOLOR_FORMAT format, int nSamples);
+	bool createDSTexture_INTZ(const dimension2d& size, int nSamples);
 
 	GLuint getGLTexture() const { return GLTexture; }
 
 private:
-	bool createGLTexture(const vector2di& size, ECOLOR_FORMAT format, bool mipmap, bool cube);
+	bool createGLTexture(const dimension2d& size, ECOLOR_FORMAT format, bool mipmap, bool cube);
 
 	bool internalCreateFromImage(const IImage* image);
 
@@ -40,4 +40,5 @@ private:
 private:
 	COpenGLDriver*	Driver;
 	GLuint		GLTexture;
+	bool	VideoBuilt;
 };
