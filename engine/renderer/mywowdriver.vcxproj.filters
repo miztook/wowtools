@@ -26,6 +26,12 @@
     <ClInclude Include="OpenGL\COpenGLTextureWriteComponent.h">
       <Filter>OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="OpenGL\COpenGLTexture.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGL\COpenGLRenderTarget.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\renderer\mywowdriver.cpp" />
@@ -42,6 +48,12 @@
       <Filter>OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="OpenGL\COpenGLTextureWriteComponent.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\COpenGLTexture.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\COpenGLRenderTarget.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
   </ItemGroup>

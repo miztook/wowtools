@@ -125,3 +125,21 @@ SWindowInfo CSysUtil::createWindow(const char * caption, uint32_t width, uint32_
 
 	return windowInfo;
 }
+
+void CSysUtil::outputDebug(const char * format, ...)
+{
+	char str[2048];
+
+	va_list va;
+	va_start(va, format);
+	Q_vsprintf(str, 2048, format, va);
+	va_end(va);
+
+	Q_strcat(str, 2048, "\n");
+	OutputDebugStringA(str);
+}
+
+void CSysUtil::exitProcess(int ret)
+{
+	::ExitProcess(ret);
+}

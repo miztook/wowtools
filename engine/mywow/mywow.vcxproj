@@ -24,6 +24,7 @@
     <ClInclude Include="..\common\CFileSystem.h" />
     <ClInclude Include="..\common\CMemFile.h" />
     <ClInclude Include="..\common\CReadFile.h" />
+    <ClInclude Include="..\common\CSysSync.h" />
     <ClInclude Include="..\common\CWriteFile.h" />
     <ClInclude Include="..\common\frustum.h" />
     <ClInclude Include="..\common\function.h" />
@@ -66,6 +67,7 @@
     <ClInclude Include="..\engine\Engine.h" />
     <ClInclude Include="..\engine\CBlit.h" />
     <ClInclude Include="..\engine\IRenderTarget.h" />
+    <ClInclude Include="..\engine\IShaderFile.h" />
     <ClInclude Include="..\engine\ITexture.h" />
     <ClInclude Include="..\engine\ITextureWriter.h" />
     <ClInclude Include="..\engine\IVideoDriver.h" />

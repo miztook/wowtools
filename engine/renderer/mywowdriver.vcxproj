@@ -25,6 +25,8 @@
     <ClInclude Include="..\renderer\opengl\COpenGLPCH.h" />
     <ClInclude Include="OpenGL\COpenGLExtension.h" />
     <ClInclude Include="OpenGL\COpenGLHelper.h" />
+    <ClInclude Include="OpenGL\COpenGLRenderTarget.h" />
+    <ClInclude Include="OpenGL\COpenGLTexture.h" />
     <ClInclude Include="OpenGL\COpenGLTextureWriteComponent.h" />
   </ItemGroup>
   <ItemGroup>
@@ -33,6 +35,8 @@
     <ClCompile Include="..\renderer\OpenGL\COpenGLDriver_draw.cpp" />
     <ClCompile Include="..\renderer\OpenGL\COpenGLMaterialRenderComponent.cpp" />
     <ClCompile Include="OpenGL\COpenGLExtension.cpp" />
+    <ClCompile Include="OpenGL\COpenGLRenderTarget.cpp" />
+    <ClCompile Include="OpenGL\COpenGLTexture.cpp" />
     <ClCompile Include="OpenGL\COpenGLTextureWriteComponent.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

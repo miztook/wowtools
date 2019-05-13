@@ -13,7 +13,7 @@ COpenGLTextureWriter::COpenGLTextureWriter(COpenGLDriver* driver, const vector2d
 	{
 		for (uint32_t i = 0; i < NumMipmaps; ++i)
 		{
-			vector2di mipsize = size.GetMipLevelSize(i);
+			vector2di mipsize = size.getMipLevelSize(i);
 
 			uint32_t pitch, bytes;
 			getImagePitchAndBytes(ColorFormat, mipsize.width, mipsize.height, pitch, bytes);
@@ -62,7 +62,7 @@ void COpenGLTextureWriter::initEmptyData()
 			assert(false);
 			continue;
 		}
-		memset(dest, 0, pitch * TextureSize.getHeight());
+		memset(dest, 0, pitch * TextureSize.height);
 		unlock(face, 0);
 	}
 }

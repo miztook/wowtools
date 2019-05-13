@@ -173,6 +173,12 @@
     <ClInclude Include="..\engine\CBLPImage.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\engine\IShaderFile.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CSysSync.h">
+      <Filter>common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">

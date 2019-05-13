@@ -5,6 +5,7 @@
 #include "CReadFile.h"
 
 #define DATA_SUBDIR  "Data/"
+#define LOG_SUBDIR	"Logs/"
 
 CFileSystem::CFileSystem(const char * baseDir, const char* wowDir)
 {
@@ -19,11 +20,18 @@ CFileSystem::CFileSystem(const char * baseDir, const char* wowDir)
 
 	WowDataDirectory = WowBaseDirectory + DATA_SUBDIR;
 	normalizeDirName(WowDataDirectory);
+
+	createLogFiles();
+
+	INIT_LOCK(&LogCS);
 }
 
 CFileSystem::~CFileSystem()
 {
+	DESTROY_LOCK(&LogCS);
 
+	delete LogResFile;
+	delete LogGxFile;
 }
 
 CReadFile * CFileSystem::createAndOpenFile(const char * filename, bool binary)
@@ -70,4 +78,81 @@ bool CFileSystem::isFileExists(const char* filename)
 	if (strlen(filename) == 0)
 		return false;
 	return Q_access(filename, 0) == 0;
+}
+
+void CFileSystem::writeLog(E_LOG_TYPE type, const char * format, ...)
+{
+	CLock lock(LogCS);
+
+	va_list va;
+	va_start(va, format);
+	Q_vsprintf(LogString, 1024, format, va);
+	va_end(va);
+
+	char timebuf[64];
+	Q_getLocalTime(timebuf, 64);
+
+	std::string text = timebuf;
+	text.append(LogString);
+	text.append("\n");
+	switch (type)
+	{
+	case ELOG_GX:
+		if (LogGxFile)
+		{
+			LogGxFile->writeText(text.c_str(), 1024);
+			LogGxFile->flush();
+		}
+		break;
+	case ELOG_RES:
+		if (LogResFile)
+		{
+			LogResFile->writeText(text.c_str(), 1024);
+			LogResFile->flush();
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+bool CFileSystem::createLogFiles()
+{
+	if (!isFileExists(LogDirectory.c_str()))
+	{
+		if (!createDirectory(LogDirectory.c_str()))
+		{
+			assert(false);
+			return false;
+		}
+	}
+
+	{
+		std::string  path = LogDirectory;
+		normalizeDirName(path);
+		path.append(getLogFileName(ELOG_RES));
+		LogResFile = createAndWriteFile(path.c_str(), false, false);
+	}
+	//gx log
+	{
+		std::string path = LogDirectory;
+		normalizeDirName(path);
+		path.append(getLogFileName(ELOG_GX));
+		LogGxFile = createAndWriteFile(path.c_str(), false, false);
+	}
+
+	return true;
+}
+
+const char* CFileSystem::getLogFileName(E_LOG_TYPE type) const
+{
+	switch (type)
+	{
+	case ELOG_GX:
+		return "gx.log";
+	case ELOG_RES:
+		return "resource.log";
+	default:
+		return "";
+	}
 }
