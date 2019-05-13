@@ -13,7 +13,7 @@ public:
 public:
 	virtual ECOLOR_FORMAT getColorFormat() const override { return Format; }
 	virtual const vector2di& getDimension() const override { return Size; }
-	virtual uint32_t getNumMipLevels() const override { return Size.GetNumMipLevels(); }
+	virtual uint32_t getNumMipLevels() const override { return Size.getNumMipLevels(); }
 
 	virtual bool isCube() const override { return false; }
 	virtual uint32_t	 getNumFaces() const override { return 1; }

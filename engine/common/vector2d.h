@@ -89,12 +89,12 @@ public:
 
 	T getArea() const { return x * y; }
 
-	vector2d<T> GetMipLevelSize(uint32_t level) const
+	vector2d<T> getMipLevelSize(uint32_t level) const
 	{
 		return vector2d<T>(max_(1, x >> level), max_(1, y >> level));
 	}
 
-	uint32_t GetNumMipLevels() const
+	uint32_t getNumMipLevels() const
 	{
 		uint32_t mip = 0;
 		uint32_t len = min_(x, y);

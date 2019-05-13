@@ -170,6 +170,9 @@
     <ClInclude Include="..\engine\CBlit.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\engine\CBLPImage.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">
@@ -224,6 +227,12 @@
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\CBlit.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CBLPImage.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\ddslib.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

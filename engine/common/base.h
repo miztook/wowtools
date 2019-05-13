@@ -35,6 +35,10 @@ typedef		void*				glcontext_type;
 #define MAX(a,b) (a < b ? b : a)
 #endif
 
+#ifndef FOURCC
+#define FOURCC(c0, c1, c2, c3) (c0 | (c1 << 8) | (c2 << 16) | (c3 << 24))
+#endif
+
 struct SWindowInfo
 {
 	SWindowInfo() : hwnd(nullptr), width(0), height(0) {}
@@ -311,7 +315,7 @@ enum E_IMAGE_TYPE : int
 {
 	EIT_NONE = 0,
 	EIT_IMAGE,
-	EIT_DDS,
+	EIT_BLP,
 };
 
 enum E_TRANSFORMATION_STATE : int
