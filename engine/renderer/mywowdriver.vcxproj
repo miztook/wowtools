@@ -34,7 +34,6 @@
     <ClCompile Include="OpenGL\COpenGLDriver.cpp" />
     <ClCompile Include="..\renderer\OpenGL\COpenGLDriver_draw.cpp" />
     <ClCompile Include="..\renderer\OpenGL\COpenGLMaterialRenderComponent.cpp" />
-    <ClCompile Include="OpenGL\COpenGLDriver.cpp" />
     <ClCompile Include="OpenGL\COpenGLExtension.cpp" />
     <ClCompile Include="OpenGL\COpenGLRenderTarget.cpp" />
     <ClCompile Include="OpenGL\COpenGLTexture.cpp" />

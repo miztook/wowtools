@@ -66,7 +66,7 @@ public:
 	virtual ~IRenderTarget() { }
 
 public:
-	const vector2di& getSize() const { return TextureSize; }
+	const dimension2d& getSize() const { return TextureSize; }
 	ECOLOR_FORMAT getColorFormat(int index) const { ASSERT(index >= 0 && index < MAX_COLOR_ATTACHMENTS); return ColorFormats[index]; }
 	ECOLOR_FORMAT getDepthFormat() const { return DepthFormat; }
 	int getNumColorAttachments() const { return NumColorAttachments; }
@@ -78,7 +78,7 @@ public:
 	virtual bool writeToRTTexture() = 0;
 
 protected:
-	vector2di	TextureSize;
+	dimension2d	TextureSize;
 	ECOLOR_FORMAT	ColorFormats[MAX_COLOR_ATTACHMENTS];
 	ECOLOR_FORMAT	DepthFormat;
 	const int		NumColorAttachments;
