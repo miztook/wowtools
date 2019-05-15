@@ -6,7 +6,7 @@
 #include "COpenGLTextureWriteComponent.h"
 #include "CFileSystem.h"
 
-COpenGLTexture::COpenGLTexture(COpenGLDriver* driver, bool mipmap)
+COpenGLTexture::COpenGLTexture(const COpenGLDriver* driver, bool mipmap)
 	: ITexture(mipmap), Driver(driver), GLTexture(0)
 {
 	VideoBuilt = false;

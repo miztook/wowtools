@@ -3,11 +3,20 @@
 
 Engine* g_Engine = nullptr;
 
-bool createEngine(const SWindowInfo& wndInfo, E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode)
+bool createEngine(const SWindowInfo& wndInfo, E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode, driverInitFunc initFunc)
 {
 	g_Engine = new Engine(wndInfo);
 
+	if (!g_Engine->init(driverType, vsync, aaMode, initFunc))
+	{
+		goto fail;
+	}
+
 	return true;
+
+fail:
+	ASSERT(false);
+	return false;
 }
 
 void destroyEngine()
@@ -24,4 +33,24 @@ Engine::Engine(const SWindowInfo& wndInfo)
 
 Engine::~Engine()
 {
+}
+
+bool Engine::init(E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode, driverInitFunc initFunc)
+{
+	if (WindowInfo.width == 0 || WindowInfo.height == 0 || !initFunc)
+	{
+		goto fail;
+	}
+
+	Driver = initFunc(WindowInfo, driverType, vsync, aaMode);
+	if (!Driver)
+	{
+		goto fail;
+	}
+
+	return true;
+
+fail:
+	ASSERT(false);
+	return false;
 }

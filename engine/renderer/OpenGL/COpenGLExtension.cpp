@@ -880,7 +880,7 @@ CHECK_OPENGL_ERROR("extGlDeletePrograms");
 }
 */
 
-GLhandleARB COpenGLExtension::extGlCreateShaderObject(GLenum shaderType)
+GLhandleARB COpenGLExtension::extGlCreateShaderObject(GLenum shaderType) const
 {
 	GLhandleARB ret = 0;
 	ret = pGlCreateShaderObjectARB(shaderType);
@@ -889,19 +889,19 @@ GLhandleARB COpenGLExtension::extGlCreateShaderObject(GLenum shaderType)
 	return ret;
 }
 
-void COpenGLExtension::extGlShaderSourceARB(GLhandleARB shader, int numOfStrings, const char **strings, int *lenOfStrings)
+void COpenGLExtension::extGlShaderSourceARB(GLhandleARB shader, int numOfStrings, const char **strings, int *lenOfStrings) const
 {
 	pGlShaderSourceARB(shader, numOfStrings, strings, lenOfStrings);
 	CHECK_OPENGL_ERROR("extGlShaderSourceARB");
 }
 
-void COpenGLExtension::extGlCompileShaderARB(GLhandleARB shader)
+void COpenGLExtension::extGlCompileShaderARB(GLhandleARB shader) const
 {
 	pGlCompileShaderARB(shader);
 	CHECK_OPENGL_ERROR("extGlCompileShaderARB");
 }
 
-GLhandleARB COpenGLExtension::extGlCreateProgramObject(void)
+GLhandleARB COpenGLExtension::extGlCreateProgramObject(void) const
 {
 	GLhandleARB ret = 0;
 	ret = pGlCreateProgramObjectARB();
@@ -911,56 +911,56 @@ GLhandleARB COpenGLExtension::extGlCreateProgramObject(void)
 	return ret;
 }
 
-void COpenGLExtension::extGlBindFragDataLocation(GLuint program, GLuint color, const char *name)
+void COpenGLExtension::extGlBindFragDataLocation(GLuint program, GLuint color, const char *name) const
 {
 	pGlBindFragDataLocation(program, color, name);
 
 	CHECK_OPENGL_ERROR("extBindFragDataLocation");
 }
 
-void COpenGLExtension::extGlAttachObject(GLhandleARB program, GLhandleARB shader)
+void COpenGLExtension::extGlAttachObject(GLhandleARB program, GLhandleARB shader) const
 {
 	pGlAttachObjectARB(program, shader);
 	CHECK_OPENGL_ERROR("extGlAttachObject");
 }
 
-void COpenGLExtension::extGlLinkProgramARB(GLhandleARB program)
+void COpenGLExtension::extGlLinkProgramARB(GLhandleARB program) const
 {
 	pGlLinkProgramARB(program);
 	CHECK_OPENGL_ERROR("extGlLinkProgramARB");
 }
-
-void COpenGLExtension::extGlUseProgramObject(GLhandleARB prog)
+ 
+void COpenGLExtension::extGlUseProgramObject(GLhandleARB prog) const
 {
 	pGlUseProgramObjectARB(prog);
 	CHECK_OPENGL_ERROR("extGlUseProgramObject");
 }
 
-void COpenGLExtension::extGlDeleteObject(GLhandleARB object)
+void COpenGLExtension::extGlDeleteObject(GLhandleARB object) const
 {
 	pGlDeleteObjectARB(object);
 	CHECK_OPENGL_ERROR("extGlDeleteObject");
 }
 
-void COpenGLExtension::extGlGetAttachedObjects(GLhandleARB program, GLsizei maxcount, GLsizei* count, GLhandleARB* shaders)
+void COpenGLExtension::extGlGetAttachedObjects(GLhandleARB program, GLsizei maxcount, GLsizei* count, GLhandleARB* shaders) const
 {
 	pGlGetAttachedObjectsARB(program, maxcount, count, shaders);
 	CHECK_OPENGL_ERROR("extGlGetAttachedObjects");
 }
 
-void COpenGLExtension::extGlGetInfoLog(GLhandleARB object, GLsizei maxLength, GLsizei *length, GLcharARB *infoLog)
+void COpenGLExtension::extGlGetInfoLog(GLhandleARB object, GLsizei maxLength, GLsizei *length, GLcharARB *infoLog) const
 {
 	pGlGetInfoLogARB(object, maxLength, length, infoLog);
 	CHECK_OPENGL_ERROR("extGlGetInfoLog");
 }
 
-void COpenGLExtension::extGlGetObjectParameteriv(GLhandleARB object, GLenum type, GLint *param)
+void COpenGLExtension::extGlGetObjectParameteriv(GLhandleARB object, GLenum type, GLint *param) const
 {
 	pGlGetObjectParameterivARB(object, type, param);
 	CHECK_OPENGL_ERROR("extGlGetObjectParameteriv");
 }
 
-GLint COpenGLExtension::extGlGetUniformLocationARB(GLhandleARB program, const char *name)
+GLint COpenGLExtension::extGlGetUniformLocationARB(GLhandleARB program, const char *name) const
 {
 	GLint ret = 0;
 	ret = pGlGetUniformLocationARB(program, name);
@@ -969,79 +969,79 @@ GLint COpenGLExtension::extGlGetUniformLocationARB(GLhandleARB program, const ch
 	return ret;
 }
 
-void COpenGLExtension::extGlUniform4fv(GLint location, GLsizei count, const GLfloat *v)
+void COpenGLExtension::extGlUniform4fv(GLint location, GLsizei count, const GLfloat *v) const
 {
 	pGlUniform4fvARB(location, count, v);
 	CHECK_OPENGL_ERROR("extGlUniform4fv");
 }
 
-void COpenGLExtension::extGlUniform1iv(GLint loc, GLsizei count, const GLint *v)
+void COpenGLExtension::extGlUniform1iv(GLint loc, GLsizei count, const GLint *v) const
 {
 	pGlUniform1ivARB(loc, count, v);
 	CHECK_OPENGL_ERROR("extGlUniform1iv");
 }
 
-void COpenGLExtension::extGlUniform1fv(GLint loc, GLsizei count, const GLfloat *v)
+void COpenGLExtension::extGlUniform1fv(GLint loc, GLsizei count, const GLfloat *v) const
 {
 	pGlUniform1fvARB(loc, count, v);
 	CHECK_OPENGL_ERROR("extGlUniform1fv");
 }
 
-void COpenGLExtension::extGlUniform2fv(GLint loc, GLsizei count, const GLfloat *v)
+void COpenGLExtension::extGlUniform2fv(GLint loc, GLsizei count, const GLfloat *v) const
 {
 	pGlUniform2fvARB(loc, count, v);
 	CHECK_OPENGL_ERROR("extGlUniform2fv");
 }
 
-void COpenGLExtension::extGlUniform3fv(GLint loc, GLsizei count, const GLfloat *v)
+void COpenGLExtension::extGlUniform3fv(GLint loc, GLsizei count, const GLfloat *v) const
 {
 	pGlUniform3fvARB(loc, count, v);
 	CHECK_OPENGL_ERROR("extGlUniform3fv");
 }
 
-void COpenGLExtension::extGlUniformMatrix2fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v)
+void COpenGLExtension::extGlUniformMatrix2fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v) const
 {
 	pGlUniformMatrix2fvARB(loc, count, transpose, v);
 	CHECK_OPENGL_ERROR("extGlUniformMatrix2fv");
 }
 
-void COpenGLExtension::extGlUniformMatrix3fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v)
+void COpenGLExtension::extGlUniformMatrix3fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v) const
 {
 	pGlUniformMatrix3fvARB(loc, count, transpose, v);
 	CHECK_OPENGL_ERROR("extGlUniformMatrix3fv");
 }
 
-void COpenGLExtension::extGlUniformMatrix4fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v)
+void COpenGLExtension::extGlUniformMatrix4fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v) const
 {
 	pGlUniformMatrix4fvARB(loc, count, transpose, v);
 	CHECK_OPENGL_ERROR("extGlUniformMatrix4fv");
 }
 
-void COpenGLExtension::extGlGetActiveUniformARB(GLhandleARB program, GLuint index, GLsizei maxlength, GLsizei *length, GLint *size, GLenum *type, GLcharARB *name)
+void COpenGLExtension::extGlGetActiveUniformARB(GLhandleARB program, GLuint index, GLsizei maxlength, GLsizei *length, GLint *size, GLenum *type, GLcharARB *name) const
 {
 	pGlGetActiveUniformARB(program, index, maxlength, length, size, type, name);
 	CHECK_OPENGL_ERROR("extGlGetActiveUniformARB");
 }
 
-void COpenGLExtension::extGlBindFramebuffer(GLenum target, GLuint framebuffer)
+void COpenGLExtension::extGlBindFramebuffer(GLenum target, GLuint framebuffer) const
 {
 	pGlBindFramebufferEXT(target, framebuffer);
 	CHECK_OPENGL_ERROR("extGlBindFramebuffer");
 }
 
-void COpenGLExtension::extGlDeleteFramebuffers(GLsizei n, const GLuint *framebuffers)
+void COpenGLExtension::extGlDeleteFramebuffers(GLsizei n, const GLuint *framebuffers) const
 {
 	pGlDeleteFramebuffersEXT(n, framebuffers);
 	CHECK_OPENGL_ERROR("extGlDeleteFramebuffers");
 }
 
-void COpenGLExtension::extGlGenFramebuffers(GLsizei n, GLuint *framebuffers)
+void COpenGLExtension::extGlGenFramebuffers(GLsizei n, GLuint *framebuffers) const
 {
 	pGlGenFramebuffersEXT(n, framebuffers);
 	CHECK_OPENGL_ERROR("extGlGenFramebuffers");
 }
 
-GLenum COpenGLExtension::extGlCheckFramebufferStatus(GLenum target)
+GLenum COpenGLExtension::extGlCheckFramebufferStatus(GLenum target) const
 {
 	GLenum ret = 0;
 	ret = pGlCheckFramebufferStatusEXT(target);
@@ -1050,67 +1050,67 @@ GLenum COpenGLExtension::extGlCheckFramebufferStatus(GLenum target)
 	return ret;
 }
 
-void COpenGLExtension::extGlFramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)
+void COpenGLExtension::extGlFramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level) const
 {
 	pGlFramebufferTexture2DEXT(target, attachment, textarget, texture, level);
 	CHECK_OPENGL_ERROR("extGlFramebufferTexture2D");
 }
 
-void COpenGLExtension::extGlBlitFramebufferEXT(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)
+void COpenGLExtension::extGlBlitFramebufferEXT(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) const
 {
 	pGlBlitFramebufferEXT(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 	CHECK_OPENGL_ERROR("extGlBlitFramebufferEXT");
 }
 
-void COpenGLExtension::extGlBindRenderbuffer(GLenum target, GLuint renderbuffer)
+void COpenGLExtension::extGlBindRenderbuffer(GLenum target, GLuint renderbuffer) const
 {
 	pGlBindRenderbufferEXT(target, renderbuffer);
 	CHECK_OPENGL_ERROR("extGlBindRenderbuffer");
 }
 
-void COpenGLExtension::extGlDeleteRenderbuffers(GLsizei n, const GLuint *renderbuffers)
+void COpenGLExtension::extGlDeleteRenderbuffers(GLsizei n, const GLuint *renderbuffers) const
 {
 	pGlDeleteRenderbuffersEXT(n, renderbuffers);
 	CHECK_OPENGL_ERROR("extGlDeleteRenderbuffers");
 }
 
-void COpenGLExtension::extGlGenRenderbuffers(GLsizei n, GLuint *renderbuffers)
+void COpenGLExtension::extGlGenRenderbuffers(GLsizei n, GLuint *renderbuffers) const
 {
 	pGlGenRenderbuffersEXT(n, renderbuffers);
 	CHECK_OPENGL_ERROR("extGlGenRenderbuffers");
 }
 
-void COpenGLExtension::extGlRenderbufferStorage(GLenum target, GLenum internalformat, GLsizei width, GLsizei height)
+void COpenGLExtension::extGlRenderbufferStorage(GLenum target, GLenum internalformat, GLsizei width, GLsizei height) const
 {
 	pGlRenderbufferStorageEXT(target, internalformat, width, height);
 	CHECK_OPENGL_ERROR("extGlRenderbufferStorage");
 }
 
-void COpenGLExtension::extGlRenderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height)
+void COpenGLExtension::extGlRenderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height) const
 {
 	pGlRenderBufferStorageMultisampleEXT(target, samples, internalformat, width, height);
 	CHECK_OPENGL_ERROR("extGlRenderbufferStorageMultisample");
 }
 
-void COpenGLExtension::extGlGetRenderbufferParameteriv(GLenum target, GLenum pname, GLint *params)
+void COpenGLExtension::extGlGetRenderbufferParameteriv(GLenum target, GLenum pname, GLint *params) const
 {
 	pGlGetRenderBufferParameterivEXT(target, pname, params);
 	CHECK_OPENGL_ERROR("extGlGetRenderbufferParameteriv");
 }
 
-void COpenGLExtension::extGlFramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer)
+void COpenGLExtension::extGlFramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer) const
 {
 	pGlFramebufferRenderbufferEXT(target, attachment, renderbuffertarget, renderbuffer);
 	CHECK_OPENGL_ERROR("extGlFramebufferRenderbuffer");
 }
 
-void COpenGLExtension::extGlInvalidateFramebuffer(GLenum target, GLsizei numAttachments, const GLenum *attachments)
+void COpenGLExtension::extGlInvalidateFramebuffer(GLenum target, GLsizei numAttachments, const GLenum *attachments) const
 {
 	pGlInvalidateFramebuffer(target, numAttachments, attachments);
 	CHECK_OPENGL_ERROR("extGlInvalidateFrameBuffer");
 }
 
-void COpenGLExtension::extGlDrawBuffers(GLsizei n, const GLenum *bufs)
+void COpenGLExtension::extGlDrawBuffers(GLsizei n, const GLenum *bufs) const
 {
 	if (pGlDrawBuffersARB)
 		pGlDrawBuffersARB(n, bufs);
@@ -1119,110 +1119,110 @@ void COpenGLExtension::extGlDrawBuffers(GLsizei n, const GLenum *bufs)
 	CHECK_OPENGL_ERROR("extGlDrawBuffers");
 }
 
-void COpenGLExtension::extGlGenBuffers(GLsizei n, GLuint *buffers)
+void COpenGLExtension::extGlGenBuffers(GLsizei n, GLuint *buffers) const
 {
 	pGlGenBuffersARB(n, buffers);
 	CHECK_OPENGL_ERROR("extGlGenBuffers");
 }
 
-void COpenGLExtension::extGlBindBuffer(GLenum target, GLuint buffer)
+void COpenGLExtension::extGlBindBuffer(GLenum target, GLuint buffer) const
 {
 	pGlBindBufferARB(target, buffer);
 	CHECK_OPENGL_ERROR("extGlBindBuffer");
 }
 
-void COpenGLExtension::extGlBufferData(GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage)
+void COpenGLExtension::extGlBufferData(GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage) const 
 {
 	pGlBufferDataARB(target, size, data, usage);
 	CHECK_OPENGL_ERROR("extGlBufferData");
 }
 
-void COpenGLExtension::extGlDeleteBuffers(GLsizei n, const GLuint *buffers)
+void COpenGLExtension::extGlDeleteBuffers(GLsizei n, const GLuint *buffers) const
 {
 	pGlDeleteBuffersARB(n, buffers);
 	CHECK_OPENGL_ERROR("extGlDeleteBuffers");
 }
 
-void COpenGLExtension::extGlBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data)
+void COpenGLExtension::extGlBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data) const
 {
 	pGlBufferSubDataARB(target, offset, size, data);
 	CHECK_OPENGL_ERROR("extGlBufferSubData");
 }
 
-void COpenGLExtension::extGlDrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices)
+void COpenGLExtension::extGlDrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices) const
 {
 	glDrawElements(mode, count, type, indices);
 	CHECK_OPENGL_ERROR("extGlDrawElements");
 }
 
-void COpenGLExtension::extGlDrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices)
+void COpenGLExtension::extGlDrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices) const
 {
 	pGlDrawRangeElements(mode, start, end, count, type, indices);
 	CHECK_OPENGL_ERROR("extGlDrawRangeElements");
 }
 
-void COpenGLExtension::extGlDrawElementsBaseVertex(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices, GLint basevertex)
+void COpenGLExtension::extGlDrawElementsBaseVertex(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices, GLint basevertex) const
 {
 	pGlDrawElementsBaseVertex(mode, count, type, indices, basevertex);
 	CHECK_OPENGL_ERROR("extGlDrawElementsBaseVertex");
 }
 
-void COpenGLExtension::extGlDrawRangeElementsBaseVertex(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices, GLint basevertex)
+void COpenGLExtension::extGlDrawRangeElementsBaseVertex(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices, GLint basevertex) const
 {
 	pGlDrawRangeElementsBaseVertex(mode, start, end, count, type, indices, basevertex);
 	CHECK_OPENGL_ERROR("extGlDrawRangeElementsBaseVertex");
 }
 
-void COpenGLExtension::extGlGenVertexArrays(GLsizei n, GLuint *arrays)
+void COpenGLExtension::extGlGenVertexArrays(GLsizei n, GLuint *arrays) const
 {
 	pGlGenVertexArrays(n, arrays);
 	CHECK_OPENGL_ERROR("extGlGenVertexArrays");
 }
 
-void COpenGLExtension::extGlDeleteVertexArrays(GLsizei n, const GLuint *arrays)
+void COpenGLExtension::extGlDeleteVertexArrays(GLsizei n, const GLuint *arrays) const
 {
 	pGlDeleteVertexArrays(n, arrays);
 	CHECK_OPENGL_ERROR("extGlDeleteVertexArrays");
 }
 
-void COpenGLExtension::extGlBindVertexArray(GLuint array)
+void COpenGLExtension::extGlBindVertexArray(GLuint array) const
 {
 	pGlBindVertexArray(array);
 	CHECK_OPENGL_ERROR("extGlBindVertexArray");
 }
 
-void COpenGLExtension::extGlEnableVertexAttribArrayARB(GLuint index)
+void COpenGLExtension::extGlEnableVertexAttribArrayARB(GLuint index) const
 {
 	pGlEnableVertexAttribArrayARB(index);
 	CHECK_OPENGL_ERROR("extGlEnableVertexAttribArrayARB");
 }
 
-void COpenGLExtension::extGlDisableVertexAttribArrayARB(GLuint index)
+void COpenGLExtension::extGlDisableVertexAttribArrayARB(GLuint index) const
 {
 	pGlDisableVertexAttribArrayARB(index);
 	CHECK_OPENGL_ERROR("extGlDisableVertexAttribArrayARB");
 }
 
-void COpenGLExtension::extGlVertexAttribPointerARB(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer)
+void COpenGLExtension::extGlVertexAttribPointerARB(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) const
 {
 	pGlVertexAttribPointerARB(index, size, type, normalized, stride, pointer);
 	CHECK_OPENGL_ERROR("extGlVertexAttribPointerARB");
 }
 
-GLint COpenGLExtension::extGlGetAttribLocationARB(GLhandleARB programObj, const GLcharARB *name)
+GLint COpenGLExtension::extGlGetAttribLocationARB(GLhandleARB programObj, const GLcharARB *name) const
 {
 	GLint v = pGlGetAttribLocationARB(programObj, name);
 	CHECK_OPENGL_ERROR("extGlGetAttribLocationARB");
 	return v;
 }
 
-void COpenGLExtension::extGlTexImage2DMultisample(GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations)
+void COpenGLExtension::extGlTexImage2DMultisample(GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations) const
 {
 	pGlTexImage2DMultisample(target, samples, internalformat, width, height, fixedsamplelocations);
 	CHECK_OPENGL_ERROR("extGlTexImage2DMultisample");
 }
 
-void* COpenGLExtension::getProcAddress(const char* funcname)
+void* COpenGLExtension::getProcAddress(const char* funcname) const
 {
 	PROC p = wglGetProcAddress(funcname);
 	if (!p)
@@ -1237,7 +1237,7 @@ bool COpenGLExtension::canUseVAO() const
 	return ShaderLanguageVersion >= 303 && queryOpenGLFeature(IRR_ARB_vertex_array_object);
 }
 
-bool COpenGLExtension::checkFBOStatus()
+bool COpenGLExtension::checkFBOStatus() const
 {
 	if (!queryOpenGLFeature(IRR_EXT_framebuffer_object))
 		return false;

@@ -23,7 +23,7 @@ public:
 	virtual bool endScene();
 	virtual bool clear(bool renderTarget, bool zBuffer, bool stencil, SColor color);
 
-	virtual bool checkValid();
+	virtual bool checkValid() { return true; }
 	virtual bool setRenderTarget(const IRenderTarget* texture, bool bindDepth = true);
 
 	virtual void setTransform(E_TRANSFORMATION_STATE state, const matrix4& mat);
@@ -41,6 +41,7 @@ private:
 	dimension2d getWindowSize() const;
 	void logCaps();
 	bool queryFeature(E_VIDEO_DRIVER_FEATURE feature) const;
+	void reset();
 
 public:
 	//device settings

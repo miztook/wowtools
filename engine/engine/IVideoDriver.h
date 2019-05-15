@@ -5,10 +5,10 @@
 #include "vector2d.h"
 #include "matrix4.h"
 #include "SMaterial.h"
+#include "IRenderTarget.h"
 #include <string>
 #include <list>
 
-class IRenderTarget;
 class ITexture;
 class ITextureWriter;
 
@@ -112,6 +112,8 @@ public:
 	explicit IVideoDriver(E_DRIVER_TYPE type)
 		: DriverType(type)
 	{
+		CurrentRenderTarget = nullptr;
+
 		IsSupportDepthTexture = false;
 		IsMultiSampleEnabled = false;
 		IsSupportA8L8 = false;
@@ -150,6 +152,8 @@ public:
 	const matrix4& getVPScaleTM() const { return VPScaleMatrix; }
 	const matrix4& getInvVPScaleTM() const { return InvVPScaleMatrix; }
 
+	IRenderTarget* getFrameBufferRT() const { return FrameBufferRT.get(); }
+
 	bool isFXAAEnabled() const { return DriverSetting.aaMode >= E_AA_FXAA && DriverSetting.aaMode <= E_AA_FXAA; }
 	bool isMultiSampleEnabled() const { return IsMultiSampleEnabled; }
 	bool isSupportDepthTexture() const { return IsSupportDepthTexture; }
@@ -186,6 +190,9 @@ protected:
 	vector2df	OrthoCenterOffset;		//dx9有0.5像素的偏移
 	SMaterial	InitMaterial2D;
 	SGlobalMaterial		InitGlobalMaterial2D;
+
+	const IRenderTarget*		CurrentRenderTarget;		//当前render target, 若为nullptr则表示frame buffer
+	std::unique_ptr<IRenderTarget>		FrameBufferRT;
 
 	matrix4		WVP;
 	matrix4		WV;

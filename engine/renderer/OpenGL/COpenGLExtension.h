@@ -378,7 +378,7 @@ public:
 
 	bool canUseVAO() const;
 
-	bool checkFBOStatus();
+	bool checkFBOStatus() const;
 
 public:
 	//general
@@ -398,75 +398,75 @@ public:
 	void extGlDeletePrograms(GLsizei n, const GLuint *programs);
 	*/
 
-	GLhandleARB extGlCreateShaderObject(GLenum shaderType);
-	void extGlShaderSourceARB(GLhandleARB shader, int numOfStrings, const char **strings, int *lenOfStrings);
-	void extGlCompileShaderARB(GLhandleARB shader);
-	void extGlGetObjectParameteriv(GLhandleARB object, GLenum type, GLint *param);
-	void extGlGetInfoLog(GLhandleARB object, GLsizei maxLength, GLsizei *length, GLcharARB *infoLog);
+	GLhandleARB extGlCreateShaderObject(GLenum shaderType) const;
+	void extGlShaderSourceARB(GLhandleARB shader, int numOfStrings, const char **strings, int *lenOfStrings) const;
+	void extGlCompileShaderARB(GLhandleARB shader) const;
+	void extGlGetObjectParameteriv(GLhandleARB object, GLenum type, GLint *param) const;
+	void extGlGetInfoLog(GLhandleARB object, GLsizei maxLength, GLsizei *length, GLcharARB *infoLog) const;
 
-	GLhandleARB extGlCreateProgramObject(void);
-	void extGlAttachObject(GLhandleARB program, GLhandleARB shader);
-	void extGlBindFragDataLocation(GLuint program, GLuint color, const char *name);
-	void extGlLinkProgramARB(GLhandleARB program);
-	void extGlUseProgramObject(GLhandleARB prog);
-	void extGlDeleteObject(GLhandleARB object);
-	void extGlGetAttachedObjects(GLhandleARB program, GLsizei maxcount, GLsizei* count, GLhandleARB* shaders);
+	GLhandleARB extGlCreateProgramObject(void) const;
+	void extGlAttachObject(GLhandleARB program, GLhandleARB shader) const;
+	void extGlBindFragDataLocation(GLuint program, GLuint color, const char *name) const;
+	void extGlLinkProgramARB(GLhandleARB program) const;
+	void extGlUseProgramObject(GLhandleARB prog) const;
+	void extGlDeleteObject(GLhandleARB object) const;
+	void extGlGetAttachedObjects(GLhandleARB program, GLsizei maxcount, GLsizei* count, GLhandleARB* shaders) const;
 
-	void extGlGetActiveUniformARB(GLhandleARB program, GLuint index, GLsizei maxlength, GLsizei *length, GLint *size, GLenum *type, GLcharARB *name);
-	GLint extGlGetUniformLocationARB(GLhandleARB program, const char *name);
-	void extGlUniform4fv(GLint location, GLsizei count, const GLfloat *v);
-	void extGlUniform1iv(GLint loc, GLsizei count, const GLint *v);
-	void extGlUniform1fv(GLint loc, GLsizei count, const GLfloat *v);
-	void extGlUniform2fv(GLint loc, GLsizei count, const GLfloat *v);
-	void extGlUniform3fv(GLint loc, GLsizei count, const GLfloat *v);
-	void extGlUniformMatrix2fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v);
-	void extGlUniformMatrix3fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v);
-	void extGlUniformMatrix4fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v);
+	void extGlGetActiveUniformARB(GLhandleARB program, GLuint index, GLsizei maxlength, GLsizei *length, GLint *size, GLenum *type, GLcharARB *name) const;
+	GLint extGlGetUniformLocationARB(GLhandleARB program, const char *name) const;
+	void extGlUniform4fv(GLint location, GLsizei count, const GLfloat *v) const;
+	void extGlUniform1iv(GLint loc, GLsizei count, const GLint *v) const;
+	void extGlUniform1fv(GLint loc, GLsizei count, const GLfloat *v) const;
+	void extGlUniform2fv(GLint loc, GLsizei count, const GLfloat *v) const;
+	void extGlUniform3fv(GLint loc, GLsizei count, const GLfloat *v) const;
+	void extGlUniformMatrix2fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v) const;
+	void extGlUniformMatrix3fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v) const;
+	void extGlUniformMatrix4fv(GLint loc, GLsizei count, GLboolean transpose, const GLfloat *v) const;
 
 	// framebuffer objects
-	void extGlBindFramebuffer(GLenum target, GLuint framebuffer);
-	void extGlDeleteFramebuffers(GLsizei n, const GLuint *framebuffers);
-	void extGlGenFramebuffers(GLsizei n, GLuint *framebuffers);
-	GLenum extGlCheckFramebufferStatus(GLenum target);
-	void extGlFramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
-	void extGlBlitFramebufferEXT(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
-	void extGlBindRenderbuffer(GLenum target, GLuint renderbuffer);
-	void extGlDeleteRenderbuffers(GLsizei n, const GLuint *renderbuffers);
-	void extGlGenRenderbuffers(GLsizei n, GLuint *renderbuffers);
-	void extGlRenderbufferStorage(GLenum target, GLenum internalformat, GLsizei width, GLsizei height);
-	void extGlRenderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
-	void extGlGetRenderbufferParameteriv(GLenum target, GLenum pname, GLint *params);
-	void extGlFramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer);
-	void extGlInvalidateFramebuffer(GLenum target, GLsizei numAttachments, const GLenum *attachments);
-	void extGlDrawBuffers(GLsizei n, const GLenum *bufs);
+	void extGlBindFramebuffer(GLenum target, GLuint framebuffer) const;
+	void extGlDeleteFramebuffers(GLsizei n, const GLuint *framebuffers) const;
+	void extGlGenFramebuffers(GLsizei n, GLuint *framebuffers) const;
+	GLenum extGlCheckFramebufferStatus(GLenum target) const;
+	void extGlFramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level) const;
+	void extGlBlitFramebufferEXT(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) const;
+	void extGlBindRenderbuffer(GLenum target, GLuint renderbuffer) const;
+	void extGlDeleteRenderbuffers(GLsizei n, const GLuint *renderbuffers) const;
+	void extGlGenRenderbuffers(GLsizei n, GLuint *renderbuffers) const;
+	void extGlRenderbufferStorage(GLenum target, GLenum internalformat, GLsizei width, GLsizei height) const;
+	void extGlRenderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height) const;
+	void extGlGetRenderbufferParameteriv(GLenum target, GLenum pname, GLint *params) const;
+	void extGlFramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer) const;
+	void extGlInvalidateFramebuffer(GLenum target, GLsizei numAttachments, const GLenum *attachments) const;
+	void extGlDrawBuffers(GLsizei n, const GLenum *bufs) const;
 
 	// vertex buffer object
-	void extGlGenBuffers(GLsizei n, GLuint *buffers);
-	void extGlBindBuffer(GLenum target, GLuint buffer);
-	void extGlBufferData(GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage);
-	void extGlDeleteBuffers(GLsizei n, const GLuint *buffers);
-	void extGlBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data);
+	void extGlGenBuffers(GLsizei n, GLuint *buffers) const;
+	void extGlBindBuffer(GLenum target, GLuint buffer) const;
+	void extGlBufferData(GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage) const;
+	void extGlDeleteBuffers(GLsizei n, const GLuint *buffers) const;
+	void extGlBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data) const;
 
 	//
-	void extGlDrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices);
-	void extGlDrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices);
-	void extGlDrawElementsBaseVertex(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices, GLint basevertex);
-	void extGlDrawRangeElementsBaseVertex(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices, GLint basevertex);
+	void extGlDrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices) const;
+	void extGlDrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices) const;
+	void extGlDrawElementsBaseVertex(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices, GLint basevertex) const;
+	void extGlDrawRangeElementsBaseVertex(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices, GLint basevertex) const;
 
-	void extGlGenVertexArrays(GLsizei n, GLuint *arrays);
-	void extGlDeleteVertexArrays(GLsizei n, const GLuint *arrays);
-	void extGlBindVertexArray(GLuint array);
-	void extGlEnableVertexAttribArrayARB(GLuint index);
-	void extGlDisableVertexAttribArrayARB(GLuint index);
-	void extGlVertexAttribPointerARB(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
-	GLint extGlGetAttribLocationARB(GLhandleARB programObj, const GLcharARB *name);
+	void extGlGenVertexArrays(GLsizei n, GLuint *arrays) const;
+	void extGlDeleteVertexArrays(GLsizei n, const GLuint *arrays) const;
+	void extGlBindVertexArray(GLuint array) const;
+	void extGlEnableVertexAttribArrayARB(GLuint index) const;
+	void extGlDisableVertexAttribArrayARB(GLuint index) const;
+	void extGlVertexAttribPointerARB(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) const;
+	GLint extGlGetAttribLocationARB(GLhandleARB programObj, const GLcharARB *name) const;
 
-	void extGlTexImage2DMultisample(GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
+	void extGlTexImage2DMultisample(GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations) const;
 
 private:
 	bool initExtFunctions();
 
-	void* getProcAddress(const char* funcname);
+	void* getProcAddress(const char* funcname) const;
 
 private:
 	PFNGLACTIVETEXTUREARBPROC pGlActiveTextureARB;

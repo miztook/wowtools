@@ -5,8 +5,11 @@
 #include "CInputReader.h"
 #include "IVideoDriver.h"
 
+using driverInitFunc = std::function<IVideoDriver*(const SWindowInfo& wndInfo,
+	E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode)>;
+
 //
-bool createEngine(const SWindowInfo& wndInfo, E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode);
+bool createEngine(const SWindowInfo& wndInfo, E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode, driverInitFunc initFunc);
 void destroyEngine();
 
 class Engine
@@ -16,7 +19,7 @@ public:
 	~Engine();
 
 public:
-	bool initDriver(E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode);
+	bool init(E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode, driverInitFunc initFunc);
 
 	void setMessageHandler(IMessageHandler* messageHandler) { MessageHandler = messageHandler; }
 	IMessageHandler* getMessageHandler() { return MessageHandler; }

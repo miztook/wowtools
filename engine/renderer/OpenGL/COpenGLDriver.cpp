@@ -3,6 +3,7 @@
 #include "COpenGLHelper.h"
 #include "COpenGLMaterialRenderComponent.h"
 #include "COpenGLTextureWriteComponent.h"
+#include "COpenGLRenderTarget.h"
 #include "CFileSystem.h"
 #include "stringext.h"
 
@@ -26,6 +27,8 @@ COpenGLDriver::COpenGLDriver()
 
 COpenGLDriver::~COpenGLDriver()
 {
+	FrameBufferRT.reset();
+
 	//
 	TextureWriteComponent.reset();
 	MaterialRenderComponent.reset();
@@ -238,6 +241,61 @@ bool COpenGLDriver::initDriver(const SWindowInfo& wndInfo, bool vsync, E_AA_MODE
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 	ASSERT_OPENGL_SUCCESS();
 
+
+	FrameBufferRT.reset(new COpenGLRenderTarget(this, windowSize, ColorFormat, DepthFormat, true));
+
+	setDisplayMode(windowSize);
+
+	return true;
+}
+
+bool COpenGLDriver::beginScene()
+{
+	PrimitivesDrawn = 0;
+	DrawCall = 0;
+
+	return true;
+}
+
+bool COpenGLDriver::endScene()
+{
+	if (GLExtension.DiscardFrameSupported)
+	{
+		if (CurrentRenderTarget != nullptr)
+		{
+			const COpenGLRenderTarget* rt = static_cast<const COpenGLRenderTarget*>(CurrentRenderTarget);
+			GLsizei num = rt->getnumAttachments();
+			GLExtension.extGlInvalidateFramebuffer(GL_FRAMEBUFFER, num, rt->getAttachments());
+		}
+	}
+
+	return SwapBuffers(Hdc) != FALSE;
+}
+
+bool COpenGLDriver::clear(bool renderTarget, bool zBuffer, bool stencil, SColor color)
+{
+	GLbitfield mask = 0;
+
+	if (renderTarget)
+		mask |= GL_COLOR_BUFFER_BIT;
+
+	if (zBuffer)
+	{
+		MaterialRenderComponent->setZWriteEnable(true);
+		mask |= GL_DEPTH_BUFFER_BIT;
+	}
+
+	if (stencil)
+		mask |= GL_STENCIL_BUFFER_BIT;
+
+	if (mask)
+	{
+		MaterialRenderComponent->setClearColor(color);
+
+		glClear(mask);
+		ASSERT_OPENGL_SUCCESS();
+	}
+
 	return true;
 }
 
@@ -295,11 +353,22 @@ bool COpenGLDriver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
 	return GLExtension.queryFeature(feature);
 }
 
+void COpenGLDriver::reset()
+{
+	CurrentRenderMode = ERM_NONE;
+
+	MaterialRenderComponent->resetRSCache();
+
+	FrameBufferRT.reset(new COpenGLRenderTarget(this, ScreenSize, ColorFormat, DepthFormat, true));
+
+	g_FileSystem->writeLog(ELOG_GX, "reset... Device Format: %dX%d, %s", ScreenSize.width, ScreenSize.height, getColorFormatString(ColorFormat));
+}
+
 void COpenGLDriver::setDisplayMode(const dimension2d& size)
 {
 	ScreenSize = size;
 
-	//reset();
+	reset();
 
 	setViewPort(recti(0, 0, ScreenSize.width, ScreenSize.height));
 }

@@ -1,3 +1,67 @@
 #pragma once
 
+#include "COpenGLPCH.h"
 #include "IRenderTarget.h"
+
+class COpenGLTexture;
+class COpenGLDriver;
+
+class COpenGLRenderTarget : public IRenderTarget
+{
+public:
+	COpenGLRenderTarget(COpenGLDriver* driver, const dimension2d& size, ECOLOR_FORMAT colorFmt)
+		: COpenGLRenderTarget(driver, size, SRTCreateParam(colorFmt), false)
+	{
+	}
+
+	COpenGLRenderTarget(COpenGLDriver* driver, const dimension2d& size, ECOLOR_FORMAT colorFmt, ECOLOR_FORMAT depthFmt, bool bDepthTexture)
+		: COpenGLRenderTarget(driver, size, SRTCreateParam(colorFmt, depthFmt), bDepthTexture)
+	{
+	}
+
+	COpenGLRenderTarget(COpenGLDriver* driver, const dimension2d& size, ECOLOR_FORMAT colorFmts[3], ECOLOR_FORMAT depthFmt, bool bDepthTexture)
+		: COpenGLRenderTarget(driver, size, SRTCreateParam(colorFmts, depthFmt), bDepthTexture)
+	{
+	}
+
+	COpenGLRenderTarget(const COpenGLDriver* driver, const dimension2d& size, const SRTCreateParam& param, bool bUseTexture);
+	~COpenGLRenderTarget();
+
+public:
+	virtual bool isValid() const { return FrameBuffer != 0; }
+	virtual ITexture* getRTTexture(int index) const;
+	virtual ITexture* getDepthTexture() const;
+	virtual bool writeToRTTexture();
+
+	GLuint getFrameBuffer() const { return FrameBuffer; }
+	const GLenum* getAttachments() const { return Attachments; }
+	GLsizei getnumAttachments() const { return HasDepthAttachment ? NumColorAttachments + 1 : NumColorAttachments; }
+
+	bool bindFrameBuffer(bool bindDepth) const;
+
+private:
+	bool init(const dimension2d& size);
+	void release();
+
+	bool createAsRenderTarget(
+		const dimension2d& size,
+		ECOLOR_FORMAT colorFmts[MAX_COLOR_ATTACHMENTS],
+		ECOLOR_FORMAT depthFmt,
+		uint8_t antialias);
+	void releaseVideoTexture();
+	void bindTexture();
+
+private:
+	const COpenGLDriver*	Driver;
+	GLenum	Attachments[MAX_COLOR_ATTACHMENTS + 1];
+
+	COpenGLTexture*		RTCopyTextures[MAX_COLOR_ATTACHMENTS];
+	GLuint		CopyFrameBuffer;
+
+	GLuint		FrameBuffer;
+	COpenGLTexture*		ColorTextures[MAX_COLOR_ATTACHMENTS];
+	COpenGLTexture*		DepthTexture;
+	GLuint		DepthSurface;
+
+	const bool  MultiSample;
+};

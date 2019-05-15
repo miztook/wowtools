@@ -10,7 +10,7 @@ class COpenGLDriver;
 class COpenGLTexture : public ITexture
 {
 public:
-	COpenGLTexture(COpenGLDriver* driver, bool mipmap);
+	COpenGLTexture(const COpenGLDriver* driver, bool mipmap);
 	~COpenGLTexture();
 
 protected:
@@ -38,7 +38,7 @@ private:
 	bool copyMipMaps(const ITextureWriter* writer, const IImage* image, uint32_t level = 1);
 
 private:
-	COpenGLDriver*	Driver;
+	const COpenGLDriver*	Driver;
 	GLuint		GLTexture;
 	bool	VideoBuilt;
 };

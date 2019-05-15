@@ -1,10 +1,11 @@
 #include "base.h"
 #include "mywow.h"
-#include <crtdbg.h>
+#include "mywowdriver.h"
 
 #include "game.h"
 
 #pragma comment(lib, "mywow.lib")
+#pragma comment(lib, "mywowdriver.lib")
 #pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
 
 int main()
@@ -16,7 +17,7 @@ int main()
 	SWindowInfo wndInfo = CSysUtil::createWindow("app1", 1136, 640, false, false);
 	HWND hwnd = wndInfo.hwnd;
 
-	if (!createEngine(wndInfo, EDT_OPENGL, true, E_AA_MSAA_1))
+	if (!createEngine(wndInfo, EDT_OPENGL, true, E_AA_MSAA_1, mywow_InitDriver))
 	{
 		destroyEngine();
 		return -1;

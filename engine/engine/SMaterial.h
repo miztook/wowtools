@@ -102,17 +102,17 @@ struct SMaterial
 {
 	E_MATERIAL_TYPE	MaterialType;	//blend desc
 
+	std::string		VSFile;
+	std::set<std::string>  VSMacroSet;
+	std::string		PSFile;
+	std::set<std::string>  PSMacroSet;
+
 	SColorf		AmbientColor;
 	SColorf		DiffuseColor;
 	SColorf		EmissiveColor;
 
 	SMRasterizerDesc	RasterizerDesc;
 	SMDepthStencilDesc	DepthStencilDesc;
-
-	std::string		VSFile;
-	std::set<std::string>  VSMacroSet;
-	std::string		PSFile;
-	std::set<std::string>  PSMacroSet;
 
 	bool		Lighting;
 	bool		FogEnable;
