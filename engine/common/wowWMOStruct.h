@@ -18,7 +18,7 @@ namespace WMO
 
 	inline quaternion fixQuat(const quaternion& q)
 	{
-		return quaternion(q.X, q.Z, q.Y, q.W);
+		return quaternion(q.x, q.z, q.y, q.w);
 	}
 
 	//wow模型定义

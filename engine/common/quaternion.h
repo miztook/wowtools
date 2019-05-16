@@ -7,8 +7,8 @@ class quaternion
 {
 public:
 	//
-	 quaternion() : X(0), Y(0), Z(0), W(0) {}
-	 quaternion(float x, float y, float z, float w) : X(x), Y(y), Z(z), W(w) { }
+	 quaternion() : x(0), y(0), z(0), w(0) {}
+	 quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) { }
 	 quaternion(float pitch, float yaw, float roll) { fromEuler( pitch, yaw, roll ); }
 	 explicit quaternion(const vector3df& vec) { fromEuler( vec ); }
 	 quaternion(const vector3df& axis, float angle) { fromAngleAxis( angle, axis ); }
@@ -17,37 +17,37 @@ public:
 	quaternion& operator=(const quaternion& other)
 	{
 		ASSERT(this != &other);
-		X = other.X;
-		Y = other.Y;
-		Z = other.Z;
-		W = other.W;
+		x = other.x;
+		y = other.y;
+		z = other.z;
+		w = other.w;
 		return *this;
 	}
 
-	bool equals(const quaternion& other, const float tolerance=(float)ROUNDING_ERROR_f32) const { return equals_(X, other.X, tolerance) && equals_(Y, other.Y, tolerance) && equals_(Z, other.Z, tolerance) && equals_(W, other.W, tolerance);}
+	bool equals(const quaternion& other, const float tolerance=(float)ROUNDING_ERROR_f32) const { return equals_(x, other.x, tolerance) && equals_(y, other.y, tolerance) && equals_(z, other.z, tolerance) && equals_(w, other.w, tolerance);}
 	bool operator==(const quaternion& other) const 
 	{
 		if ( this == &other ) return true;
 		return memcmp(this, &other, sizeof(quaternion)) == 0;
 	}
 	 bool operator!=(const quaternion& other) const { return !(*this == other ); }
-	 quaternion operator+(const quaternion& other) const { return quaternion(X+other.X, Y+other.Y, Z+other.Z, W+other.W); }
+	 quaternion operator+(const quaternion& other) const { return quaternion(x+other.x, y+other.y, z+other.z, w+other.w); }
 	 quaternion operator*(const quaternion& other) const;
-	 quaternion operator*(float s) const { return quaternion(s*X, s*Y, s*Z, s*W); }
-	 quaternion& operator*=(float s) { X*=s; Y*=s; Z*=s; W*=s; return *this; }
+	 quaternion operator*(float s) const { return quaternion(s*x, s*y, s*z, s*w); }
+	 quaternion& operator*=(float s) { x*=s; y*=s; z*=s; w*=s; return *this; }
 	 vector3df operator*(const vector3df& v) const;
 	 matrix4 operator*(const matrix4& v) const;
 	 quaternion& operator*=(const quaternion& other) { return (*this = other * (*this)); }
 
 	//
-	 quaternion& set(float x, float y, float z, float w) { X = x; Y = y; Z = z; W = w; return *this; }
-	 float dotProduct(const quaternion& other) const { return (X * other.X) + (Y * other.Y) + (Z * other.Z) + (W * other.W); }
+	 quaternion& set(float x, float y, float z, float w) { x = x; y = y; z = z; w = w; return *this; }
+	 float dotProduct(const quaternion& other) const { return (x * other.x) + (y * other.y) + (z * other.z) + (w * other.w); }
 	quaternion& fromAngleAxis (float angle, const vector3df& axis);
 	void toAngleAxis (float &angle, vector3df& axis) const;
 	quaternion& fromEuler( float pitch, float yaw, float roll );
 	 quaternion& fromEuler( const vector3df& vec ) { return fromEuler(vec.x, vec.y, vec.z); }
 	void toEuler(vector3df& euler) const;
-	 quaternion& makeIdentity()	{ W = 1.f; X = 0.f; Y = 0.f; Z = 0.f; return *this; }
+	 quaternion& makeIdentity()	{ w = 1.f; x = 0.f; y = 0.f; z = 0.f; return *this; }
 	quaternion& normalize();
 	quaternion& fromMatrix(const matrix4& m);
 	void getMatrix( matrix4& dest ) const;				//
@@ -56,20 +56,20 @@ public:
 	void transformVect( vector3df& vect) const;
 
 public:
-	float X;		//imaginary
-	float Y;
-	float Z;
-	float W;		//real
+	float x;		//imaginary
+	float y;
+	float z;
+	float w;		//real
 };
 
 inline quaternion quaternion::operator*(const quaternion& other) const
 {
 	quaternion tmp;
 
-	tmp.W = (other.W * W) - (other.X * X) - (other.Y * Y) - (other.Z * Z);
-	tmp.X = (other.W * X) + (other.X * W) + (other.Y * Z) - (other.Z * Y);
-	tmp.Y = (other.W * Y) + (other.Y * W) + (other.Z * X) - (other.X * Z);
-	tmp.Z = (other.W * Z) + (other.Z * W) + (other.X * Y) - (other.Y * X);
+	tmp.w = (other.w * w) - (other.x * x) - (other.y * y) - (other.z * z);
+	tmp.x = (other.w * x) + (other.x * w) + (other.y * z) - (other.z * y);
+	tmp.y = (other.w * y) + (other.y * w) + (other.z * x) - (other.x * z);
+	tmp.z = (other.w * z) + (other.z * w) + (other.x * y) - (other.y * x);
 
 	return tmp;
 }
@@ -77,10 +77,10 @@ inline quaternion quaternion::operator*(const quaternion& other) const
 inline vector3df quaternion::operator*(const vector3df& v) const
 {
 	vector3df uv, uuv;
-	vector3df qvec(X, Y, Z);
+	vector3df qvec(x, y, z);
 	uv = qvec.crossProduct(v);
 	uuv = qvec.crossProduct(uv);
-	uv *= (2.0f * W);
+	uv *= (2.0f * w);
 	uuv *= 2.0f;
 
 	return v + uv + uuv;
@@ -97,18 +97,18 @@ inline quaternion& quaternion::fromAngleAxis (float angle, const vector3df& axis
 {
 	const float fHalfAngle = 0.5f*angle;
 	const float fSin = sinf(fHalfAngle);
-	W = cosf(fHalfAngle);
-	X = fSin*axis.x;
-	Y = fSin*axis.y;
-	Z = fSin*axis.z;
+	w = cosf(fHalfAngle);
+	x = fSin*axis.x;
+	y = fSin*axis.y;
+	z = fSin*axis.z;
 	return *this;
 }
 
 inline void quaternion::toAngleAxis (float &angle, vector3df& axis) const
 {
-	const float scale = sqrtf(X*X + Y*Y + Z*Z);
+	const float scale = sqrtf(x*x + y*y + z*z);
 
-	if (iszero_(scale) || W > 1.0f || W < -1.0f)
+	if (iszero_(scale) || w > 1.0f || w < -1.0f)
 	{
 		angle = 0.0f;
 		axis.x = 0.0f;
@@ -118,10 +118,10 @@ inline void quaternion::toAngleAxis (float &angle, vector3df& axis) const
 	else
 	{
 		const float invscale = reciprocal_(scale);
-		angle = 2.0f * acosf(W);
-		axis.x = X * invscale;
-		axis.y = Y * invscale;
-		axis.z = Z * invscale;
+		angle = 2.0f * acosf(w);
+		axis.x = x * invscale;
+		axis.y = y * invscale;
+		axis.z = z * invscale;
 	}
 }
 
@@ -146,10 +146,10 @@ inline quaternion& quaternion::fromEuler( float pitch, float yaw, float roll )
 	const float cpsy = cp * sy;
 	const float spsy = sp * sy;
 
-	X = (float)(sr * cpcy - cr * spsy);
-	Y = (float)(cr * spcy + sr * cpsy);
-	Z = (float)(cr * cpsy - sr * spcy);
-	W = (float)(cr * cpcy + sr * spsy);
+	x = (float)(sr * cpcy - cr * spsy);
+	y = (float)(cr * spcy + sr * cpsy);
+	z = (float)(cr * cpsy - sr * spcy);
+	w = (float)(cr * cpcy + sr * spsy);
 
 	return normalize();
 }
@@ -157,33 +157,33 @@ inline quaternion& quaternion::fromEuler( float pitch, float yaw, float roll )
 
 inline void quaternion::toEuler( vector3df& euler ) const
 {
-	const float sqw = W*W;
-	const float sqx = X*X;
-	const float sqy = Y*Y;
-	const float sqz = Z*Z;
+	const float sqw = w*w;
+	const float sqx = x*x;
+	const float sqy = y*y;
+	const float sqz = z*z;
 
 	// heading = rotation about z-axis
-	euler.z = (float) (atan2(2.0f * (X*Y +Z*W),(sqx - sqy - sqz + sqw)));
+	euler.z = (float) (atan2(2.0f * (x*y +z*w),(sqx - sqy - sqz + sqw)));
 
 	// bank = rotation about x-axis
-	euler.x = (float) (atan2(2.0f * (Y*Z +X*W),(-sqx - sqy + sqz + sqw)));
+	euler.x = (float) (atan2(2.0f * (y*z +x*w),(-sqx - sqy + sqz + sqw)));
 
 	// attitude = rotation about y-axis
-	euler.y = asinf( clamp_(-2.0f * (X*Z - Y*W), -1.0f, 1.0f) );
+	euler.y = asinf( clamp_(-2.0f * (x*z - y*w), -1.0f, 1.0f) );
 }
 
 
 inline quaternion& quaternion::normalize()
 {
-	const float n = reciprocal_squareroot_( X*X + Y*Y + Z*Z + W*W );
+	const float n = reciprocal_squareroot_( x*x + y*y + z*z + w*w );
 
 	if (n == 1)
 		return *this;
 
-	X *= n;
-	Y *= n;
-	Z *= n;
-	W *= n;
+	x *= n;
+	y *= n;
+	z *= n;
+	w *= n;
 
 	return *this;
 }
@@ -192,19 +192,19 @@ inline void quaternion::getMatrix( matrix4& dest ) const
 {
 	float * m = dest.pointer();
 
-	m[0] = 1.0f - 2.0f*Y*Y - 2.0f*Z*Z;
-	m[1] = 2.0f*X*Y + 2.0f*Z*W;
-	m[2] = 2.0f*X*Z - 2.0f*Y*W;
+	m[0] = 1.0f - 2.0f*y*y - 2.0f*z*z;
+	m[1] = 2.0f*x*y + 2.0f*z*w;
+	m[2] = 2.0f*x*z - 2.0f*y*w;
 	m[3] = 0.0f;
 
-	m[4] = 2.0f*X*Y - 2.0f*Z*W;
-	m[5] = 1.0f - 2.0f*X*X - 2.0f*Z*Z;
-	m[6] = 2.0f*Z*Y + 2.0f*X*W;
+	m[4] = 2.0f*x*y - 2.0f*z*w;
+	m[5] = 1.0f - 2.0f*x*x - 2.0f*z*z;
+	m[6] = 2.0f*z*y + 2.0f*x*w;
 	m[7] = 0.0f;
 
-	m[8] = 2.0f*X*Z + 2.0f*Y*W;
-	m[9] = 2.0f*Z*Y - 2.0f*X*W;
-	m[10] = 1.0f - 2.0f*X*X - 2.0f*Y*Y;
+	m[8] = 2.0f*x*z + 2.0f*y*w;
+	m[9] = 2.0f*z*y - 2.0f*x*w;
+	m[10] = 1.0f - 2.0f*x*x - 2.0f*y*y;
 	m[11] = 0.0f;
 
 	m[12] = 0;
@@ -243,7 +243,7 @@ inline quaternion quaternion::slerp(quaternion q1, quaternion q2, float time)
 	}
 	else
 	{
-		q2.set(-q1.Y, q1.X, -q1.W, q1.Z);
+		q2.set(-q1.y, q1.x, -q1.w, q1.z);
 		scale = sinf(PI * (0.5f - time));
 		invscale = sinf(PI * time);
 	}
@@ -253,55 +253,51 @@ inline quaternion quaternion::slerp(quaternion q1, quaternion q2, float time)
 
 inline quaternion& quaternion::fromMatrix( const matrix4& m )
 {
-	const float diag = m(0,0) + m(1,1) + m(2,2) + 1;
+	float	tr, s;
 
-	if( diag > 0.0f )
+	// calculating the trace of the matrix, it is equal to 4(1 - x*x - y*y - z*z)=4w*w if it is a unit quaternion
+	tr = m._11 + m._22 + m._33 + 1.0f;
+	// check the diagonal
+	if (tr > 0.36f) // we can calculate out w directly
 	{
-		const float scale = sqrtf(diag) * 2.0f; // get scale from diagonal
-
-		X = ( m(2,1) - m(1,2)) / scale;
-		Y = ( m(0,2) - m(2,0)) / scale;
-		Z = ( m(1,0) - m(0,1)) / scale;
-		W = 0.25f * scale;
+		s = (float)sqrt(tr); // s is 2w
+		w = s * 0.5f;
+		s = 0.5f / s;	// now s is 1/4w
+		x = (m._23 - m._32) * s;
+		y = (m._31 - m._13) * s;
+		z = (m._12 - m._21) * s;
 	}
 	else
 	{
-		if ( m(0,0) > m(1,1) && m(0,0) > m(2,2))
+		// we have to calculate x, y or z first
+		if (m._11 >= m._22 && m._11 >= m._33)
 		{
-			// 1st element of diag is greatest value
-			// find scale according to 1st element, and double it
-			const float scale = sqrtf( 1.0f + m(0,0) - m(1,1) - m(2,2)) * 2.0f;
-
-			X = 0.25f * scale;
-			Y = (m(0,1) + m(1,0)) / scale;
-			Z = (m(2,0) + m(0,2)) / scale;
-			W = (m(2,1) - m(1,2)) / scale;
+			s = (float)sqrt(1.0f + m._11 - m._22 - m._33); // s is 2x
+			x = s *0.5f;
+			s = 0.5f / s;
+			y = (m._12 + m._21) * s;
+			z = (m._13 + m._31) * s;
+			w = (m._23 - m._32) * s;
 		}
-		else if ( m(1,1) > m(2,2))
+		else if (m._22 >= m._11 && m._22 >= m._33)
 		{
-			// 2nd element of diag is greatest value
-			// find scale according to 2nd element, and double it
-			const float scale = sqrtf( 1.0f + m(1,1) - m(0,0) - m(2,2)) * 2.0f;
-
-			X = (m(0,1) + m(1,0) ) / scale;
-			Y = 0.25f * scale;
-			Z = (m(1,2) + m(2,1) ) / scale;
-			W = (m(0,2) - m(2,0) ) / scale;
+			s = (float)sqrt(1.0f + m._22 - m._11 - m._33); // s is 2y
+			y = s *0.5f;
+			s = 0.5f / s;
+			x = (m._12 + m._21) * s;
+			z = (m._23 + m._32) * s;
+			w = (m._31 - m._13) * s;
 		}
-		else
+		else // mat._33 is maximum
 		{
-			// 3rd element of diag is greatest value
-			// find scale according to 3rd element, and double it
-			const float scale = sqrtf( 1.0f + m(2,2) - m(0,0) - m(1,1)) * 2.0f;
-
-			X = (m(0,2) + m(2,0)) / scale;
-			Y = (m(1,2) + m(2,1)) / scale;
-			Z = 0.25f * scale;
-			W = (m(1,0) - m(0,1)) / scale;
+			s = (float)sqrt(1.0f + m._33 - m._11 - m._22); // s is 2z
+			z = s *0.5f;
+			s = 0.5f / s;
+			x = (m._13 + m._31) * s;
+			y = (m._23 + m._32) * s;
+			w = (m._12 - m._21) * s;
 		}
 	}
-
-	return normalize();
 }
 
 inline quaternion& quaternion::rotationFromTo( const vector3df& from, const vector3df& to, const vector3df& axisOpposite )
@@ -327,10 +323,10 @@ inline quaternion& quaternion::rotationFromTo( const vector3df& from, const vect
 	const float s = squareroot_( (1+d)*2 ); // optimize inv_sqrt
 	const float invs = 1.f / s;
 	const vector3df c = v0.crossProduct(v1)*invs;
-	X = c.x;
-	Y = c.y;
-	Z = c.z;
-	W = s * 0.5f;
+	x = c.x;
+	y = c.y;
+	z = c.z;
+	w = s * 0.5f;
 
 	return *this;
 }
@@ -338,19 +334,19 @@ inline quaternion& quaternion::rotationFromTo( const vector3df& from, const vect
 inline void quaternion::transformVect( vector3df& vect ) const
 {
 	float m[16];
-	m[0] = 1.0f - 2.0f*Y*Y - 2.0f*Z*Z;
-	m[1] = 2.0f*X*Y + 2.0f*Z*W;
-	m[2] = 2.0f*X*Z - 2.0f*Y*W;
+	m[0] = 1.0f - 2.0f*y*y - 2.0f*z*z;
+	m[1] = 2.0f*x*y + 2.0f*z*w;
+	m[2] = 2.0f*x*z - 2.0f*y*w;
 	m[3] = 0.0f;
 
-	m[4] = 2.0f*X*Y - 2.0f*Z*W;
-	m[5] = 1.0f - 2.0f*X*X - 2.0f*Z*Z;
-	m[6] = 2.0f*Z*Y + 2.0f*X*W;
+	m[4] = 2.0f*x*y - 2.0f*z*w;
+	m[5] = 1.0f - 2.0f*x*x - 2.0f*z*z;
+	m[6] = 2.0f*z*y + 2.0f*x*w;
 	m[7] = 0.0f;
 
-	m[8] = 2.0f*X*Z + 2.0f*Y*W;
-	m[9] = 2.0f*Z*Y - 2.0f*X*W;
-	m[10] = 1.0f - 2.0f*X*X - 2.0f*Y*Y;
+	m[8] = 2.0f*x*z + 2.0f*y*w;
+	m[9] = 2.0f*z*y - 2.0f*x*w;
+	m[10] = 1.0f - 2.0f*x*x - 2.0f*y*y;
 	m[11] = 0.0f;
 
 	m[12] = 0;

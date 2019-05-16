@@ -185,13 +185,11 @@ bool COpenGLTexture::createDSTexture_INTZ(const dimension2d& size, int nSamples)
 	}
 	else
 	{
-		ASSERT(false);	//multisample 的 深度贴图不用
-
 		materialRenderComponent->setSamplerTextureMultiSample(0, this);
 
 		Driver->GLExtension.extGlTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, SampleCount, internalFormat, size.width, size.height, GL_TRUE);
 
-		materialRenderComponent->setSamplerTextureMultiSample(0, 0);
+		materialRenderComponent->setSamplerTextureMultiSample(0, nullptr);
 	}
 
 	VideoBuilt = true;

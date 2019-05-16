@@ -19,19 +19,22 @@ public:
 	bool initDriver(const SWindowInfo& wndInfo, bool vsync, E_AA_MODE aaMode);
 
 public:
-	virtual bool beginScene();
-	virtual bool endScene();
-	virtual bool clear(bool renderTarget, bool zBuffer, bool stencil, SColor color);
+	bool beginScene() override;
+	bool endScene() override;
+	bool clear(bool renderTarget, bool zBuffer, bool stencil, SColor color) override;
 
-	virtual bool checkValid() { return true; }
-	virtual bool setRenderTarget(const IRenderTarget* texture, bool bindDepth = true);
+	bool checkValid() override { return true; }
+	bool setRenderTarget(const IRenderTarget* texture, bool bindDepth = true) override;
 
-	virtual void setTransform(E_TRANSFORMATION_STATE state, const matrix4& mat);
-	virtual void setTexture(int index, const ITexture* tex);
+	void setTransform(E_TRANSFORMATION_STATE state, const matrix4& mat) override;
+	void setTexture(int index, ITexture* tex) override;
 
-	virtual void setViewPort(const recti& area);
-	virtual void setDisplayMode(const dimension2d& size);
-	virtual bool setDriverSetting(const SDriverSetting& setting);
+	void setViewPort(const recti& area) override;
+	void setDisplayMode(const dimension2d& size) override;
+	bool setDriverSetting(const SDriverSetting& setting) override;
+
+	ITextureWriter* createTextureWriter(ITexture* texture) override;
+	bool removeTextureWriter(ITexture* texture) override;
 
 public:
 	COpenGLMaterialRenderComponent* getMaterialRenderComponent() const { return MaterialRenderComponent.get();}
@@ -41,7 +44,7 @@ private:
 	dimension2d getWindowSize() const;
 	void logCaps();
 	bool queryFeature(E_VIDEO_DRIVER_FEATURE feature) const;
-	void reset();
+	bool reset();
 
 public:
 	//device settings

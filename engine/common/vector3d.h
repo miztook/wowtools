@@ -49,11 +49,11 @@ public:
 
 	//
 	 bool equals(const vector3d<T>& other, const T tolerance ) const
-	{
-		return equals_(x, other.x, tolerance) &&
-			equals_(y, other.y, tolerance) &&
-			equals_(z, other.z, tolerance);
-	}
+	 {
+		 return equals_(x, other.x, tolerance) &&
+			 equals_(y, other.y, tolerance) &&
+			 equals_(z, other.z, tolerance);
+	 }
 
 	 void set(const T nx, const T ny, const T nz) {x=nx; y=ny; z=nz;}
 	 void set(const vector3d<T>& p) {x=p.x; y=p.y; z=p.z;}
@@ -77,7 +77,7 @@ public:
 	 static const vector3d<T>& UnitY() { static vector3d<T> m(0,1,0); return m; }
 	 static const vector3d<T>& UnitZ() { static vector3d<T> m(0,0,1); return m; }
 
-	 vector3d<T>& normalize()
+	vector3d<T>& normalize()
 	{
 		float length = x*x + y*y + z*z;
 		if (equals_(length, 0.0) || equals_(length, 1.0)) // this check isn't an optimization but prevents getting NAN in the sqrt.
@@ -91,12 +91,12 @@ public:
 	}
 
 	 static vector3d<T> interpolate(const vector3d<T>& a, const vector3d<T>& b, float d)
-	{
-		float inv = 1.0f - d;
-		return vector3d<T>((a.x*inv + b.x*d), (a.y*inv + b.y*d), (a.z*inv + b.z*d));
-	}
+	 {
+		 float inv = 1.0f - d;
+		 return vector3d<T>((a.x*inv + b.x*d), (a.y*inv + b.y*d), (a.z*inv + b.z*d));
+	 }
 
-	 vector3d<T> getInterpolated_quadratic(const vector3d<T>& v2, const vector3d<T>& v3, float d) const
+	vector3d<T> getInterpolated_quadratic(const vector3d<T>& v2, const vector3d<T>& v3, float d) const
 	{
 		// this*(1-d)*(1-d) + 2 * v2 * (1-d) + v3 * d * d;
 		const float inv = (T) 1.0 - d;

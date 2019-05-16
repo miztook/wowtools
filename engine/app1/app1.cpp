@@ -6,6 +6,7 @@
 
 #pragma comment(lib, "mywow.lib")
 #pragma comment(lib, "mywowdriver.lib")
+#pragma comment(lib, "opengl32.lib")
 #pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
 
 int main()
@@ -16,6 +17,8 @@ int main()
 	
 	SWindowInfo wndInfo = CSysUtil::createWindow("app1", 1136, 640, false, false);
 	HWND hwnd = wndInfo.hwnd;
+
+	createFileSystem(CFileSystem::getWorkingDirectory().c_str(), R"(E:\World Of Warcraft)");
 
 	if (!createEngine(wndInfo, EDT_OPENGL, true, E_AA_MSAA_1, mywow_InitDriver))
 	{
@@ -51,6 +54,8 @@ int main()
 	destroyInput();
 
 	destroyEngine();
+
+	destroyFileSystem();
 
 	return 0;
 }

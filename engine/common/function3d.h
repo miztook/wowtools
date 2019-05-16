@@ -33,7 +33,7 @@ inline vector3df crossProduct(const vector3df& v1, const vector3df& v2)
 
 inline matrix4 transformMatrix(const vector3df& vecDir, const vector3df& vecUp, const vector3df& vecPos)
 {
-	matrix4   mat;
+	matrix4   mat(false);
 	vector3df   vecXAxis, vecYAxis, vecZAxis;
 
 	vecZAxis = normalize(vecDir);
@@ -42,25 +42,123 @@ inline matrix4 transformMatrix(const vector3df& vecDir, const vector3df& vecUp, 
 
 	ASSERT(vecXAxis.magnitude() > 1e-3);
 
-	memset(&mat, 0, sizeof(mat));
-	mat.M[0][0] = vecXAxis.x;
-	mat.M[0][1] = vecXAxis.y;
-	mat.M[0][2] = vecXAxis.z;
+	mat._11 = vecXAxis.x;
+	mat._12 = vecXAxis.y;
+	mat._13 = vecXAxis.z;
 
-	mat.M[1][0] = vecYAxis.x;
-	mat.M[1][1] = vecYAxis.y;
-	mat.M[1][2] = vecYAxis.z;
+	mat._21 = vecYAxis.x;
+	mat._22 = vecYAxis.y;
+	mat._23 = vecYAxis.z;
 
-	mat.M[2][0] = vecZAxis.x;
-	mat.M[2][1] = vecZAxis.y;
-	mat.M[2][2] = vecZAxis.z;
+	mat._31 = vecZAxis.x;
+	mat._32 = vecZAxis.y;
+	mat._33 = vecZAxis.z;
 
-	mat.M[3][0] = vecPos.x;
-	mat.M[3][1] = vecPos.y;
-	mat.M[3][2] = vecPos.z;
-	mat.M[3][3] = 1.0f;
+	mat._41 = vecPos.x;
+	mat._42 = vecPos.y;
+	mat._43 = vecPos.z;
+	mat._44 = 1.0f;
 
 	return mat;
+}
+
+inline matrix4 rotateX(float vRad)
+{
+	matrix4 ret;
+	ret._33 = ret._22 = (float)cos(vRad);
+	ret._23 = (float)sin(vRad);
+	ret._32 = (float)-ret._23;
+
+	return ret;
+}
+
+inline matrix4 rotateY(float vRad)
+{
+	matrix4 ret;
+	ret._33 = ret._11 = (float)cos(vRad);
+	ret._31 = (float)sin(vRad);
+	ret._13 = -ret._31;
+
+	return ret;
+}
+
+inline matrix4 rotateZ(float vRad)
+{
+	matrix4 ret;
+	ret._22 = ret._11 = (float)cos(vRad);
+	ret._12 = (float)sin(vRad);
+	ret._21 = -ret._12;
+
+	return ret;
+}
+
+inline matrix4 makeViewMatrix(const vector3df& from, const vector3df& dir, const vector3df& vecUp, float roll)
+{
+	matrix4 view;
+	vector3df up, right, view_dir;
+
+	view_dir = normalize(dir);
+	right = crossProduct(vecUp, dir);
+	right = normalize(right);
+	up = crossProduct(dir, right);
+	up = normalize(up);
+
+	view._11 = right.x;
+	view._21 = right.y;
+	view._31 = right.z;
+	view._12 = up.x;
+	view._22 = up.y;
+	view._32 = up.z;
+	view._13 = view_dir.x;
+	view._23 = view_dir.y;
+	view._33 = view_dir.z;
+
+	view._41 = -dotProduct(right, from);
+	view._42 = -dotProduct(up, from);
+	view._43 = -dotProduct(view_dir, from);
+
+	// Set roll
+	if (roll != 0.0f)
+		view = rotateZ(-roll) * view;
+
+	return view;
+}
+
+inline matrix4 makeOrthoOffCetnerMatrixLH(float fLeft, float fRight, float fTop, float fBottom, float fZNear, float fZFar)
+{
+	matrix4 m(false);
+	float fWidth = fRight - fLeft;
+	float fHeight = fTop - fBottom;
+	m._11 = 2.0f / fWidth;
+	m._22 = 2.0f / fHeight;
+	m._33 = 1.0f / (fZFar - fZNear);
+	m._43 = -fZNear * m._33;
+	m._44 = 1.0f;
+	m._12 = m._13 = m._14 = 0.0f;
+	m._21 = m._23 = m._24 = 0.0f;
+	m._31 = m._32 = m._34 = 0.0f;
+	m._41 = -(fRight + fLeft) / fWidth;
+	m._42 = -(fTop + fBottom) / fHeight;
+	return m;
+}
+
+inline matrix4 makePerspectiveOffCenterMatrixLH(float fLeft, float fRight, float fBottom, float fTop, float fZNear, float fZFar)
+{
+	matrix4 m(false);
+	float fWidth = fRight - fLeft;
+	float fHeight = fTop - fBottom;
+	float f2ZN = 2.0f * fZNear;
+	m._11 = f2ZN / fWidth;
+	m._22 = f2ZN / fHeight;
+	m._33 = fZFar / (fZFar - fZNear);
+	m._43 = -fZNear * m._33;
+	m._34 = 1.0f;
+	m._12 = m._13 = m._14 = 0.0f;
+	m._21 = m._23 = m._24 = 0.0f;
+	m._31 = -(fRight + fLeft) / fWidth;
+	m._32 = -(fTop + fBottom) / fHeight;
+	m._41 = m._42 = m._44 = 0.0f;
+	return m;
 }
 
 }

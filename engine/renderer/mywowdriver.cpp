@@ -7,19 +7,21 @@ IVideoDriver* COpenGL_Init(const SWindowInfo & wndInfo, E_DRIVER_TYPE driverType
 
 IVideoDriver * mywow_InitDriver(const SWindowInfo & wndInfo, E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode)
 {
+	IVideoDriver* driver = nullptr;
 	switch (driverType)
 	{
 	case EDT_OPENGL:
+		driver = COpenGL_Init(wndInfo, driverType, vsync, aaMode);
 		break;
 	default:
 		break;
 	}
 
-	return nullptr;
+	return driver;
 }
 
 
-IVideoDriver* COpenGL_Init(const SWindowInfo & wndInfo, E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode)
+IVideoDriver* COpenGL_Init(const SWindowInfo& wndInfo, E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode)
 {
 	if (!COpenGLHelper::init())
 		return nullptr;

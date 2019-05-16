@@ -28,10 +28,10 @@ public:
 	~COpenGLRenderTarget();
 
 public:
-	virtual bool isValid() const { return FrameBuffer != 0; }
-	virtual ITexture* getRTTexture(int index) const;
-	virtual ITexture* getDepthTexture() const;
-	virtual bool writeToRTTexture();
+	bool isValid() const override { return FrameBuffer != 0; }
+	ITexture* getRTTexture(int index) const override;
+	ITexture* getDepthTexture() const override;
+	bool writeToRTTexture() override;
 
 	GLuint getFrameBuffer() const { return FrameBuffer; }
 	const GLenum* getAttachments() const { return Attachments; }

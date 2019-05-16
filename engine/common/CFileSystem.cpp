@@ -36,6 +36,9 @@ CFileSystem::CFileSystem(const char * baseDir, const char* wowDir)
 	WowDataDirectory = WowBaseDirectory + DATA_SUBDIR;
 	normalizeDirName(WowDataDirectory);
 
+	LogDirectory = BaseDirectory + LOG_SUBDIR;
+	normalizeDirName(LogDirectory);
+
 	createLogFiles();
 
 	INIT_LOCK(&LogCS);
@@ -86,6 +89,15 @@ bool CFileSystem::deleteDirectory(const char * dirname)
 void CFileSystem::getAbsolutePath(const char* filename, char* outfilename, uint32_t size)
 {
 	Q_fullpath(filename, outfilename, size);
+}
+
+std::string CFileSystem::getWorkingDirectory()
+{
+	char workingDirectory[QMAX_PATH];
+	Q_getcwd(workingDirectory, QMAX_PATH);
+
+	std::string ret = workingDirectory;
+	return ret;
 }
 
 bool CFileSystem::isFileExists(const char* filename)

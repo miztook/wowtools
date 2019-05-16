@@ -168,14 +168,14 @@ public:
 	virtual bool setRenderTarget(const IRenderTarget* texture, bool bindDepth = true) = 0;
 
 	virtual void setTransform(E_TRANSFORMATION_STATE state, const matrix4& mat) = 0;
-	virtual void setTexture(int index, const ITexture* tex) = 0;
+	virtual void setTexture(int index, ITexture* tex) = 0;
 
 	virtual void setViewPort(const recti& area) = 0;
-	virtual void setDisplayMode(const vector2di& size) = 0;
+	virtual void setDisplayMode(const dimension2d& size) = 0;
 	virtual bool setDriverSetting(const SDriverSetting& setting) = 0;
 
 	//
-	virtual ITextureWriter* createTextureWriter(ITexture* texture, bool temp) = 0;
+	virtual ITextureWriter* createTextureWriter(ITexture* texture) = 0;
 	virtual bool removeTextureWriter(ITexture* texture) = 0;
 
 protected:

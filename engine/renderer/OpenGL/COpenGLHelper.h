@@ -171,13 +171,13 @@ inline void COpenGLHelper::getGLMatrixFromD3D(GLfloat gl_matrix[16], const matri
 
 inline void COpenGLHelper::getGLTextureMatrix(GLfloat gl_matrix[16], const matrix4& m)
 {
-	gl_matrix[0] = m[0];
-	gl_matrix[1] = m[1];
+	gl_matrix[0] = m.M[0];
+	gl_matrix[1] = m.M[1];
 	gl_matrix[2] = 0.f;
 	gl_matrix[3] = 0.f;
 
-	gl_matrix[4] = m[4];
-	gl_matrix[5] = m[5];
+	gl_matrix[4] = m.M[4];
+	gl_matrix[5] = m.M[5];
 	gl_matrix[6] = 0.f;
 	gl_matrix[7] = 0.f;
 
@@ -186,8 +186,8 @@ inline void COpenGLHelper::getGLTextureMatrix(GLfloat gl_matrix[16], const matri
 	gl_matrix[10] = 1.f;
 	gl_matrix[11] = 0.f;
 
-	gl_matrix[12] = m[8];
-	gl_matrix[13] = m[9];
+	gl_matrix[12] = m.M[8];
+	gl_matrix[13] = m.M[9];
 	gl_matrix[14] = 0.f;
 	gl_matrix[15] = 1.f;
 }

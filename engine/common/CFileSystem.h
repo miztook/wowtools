@@ -28,6 +28,7 @@ public:
 
 	 void getAbsolutePath(const char* filename, char* outfilename, uint32_t size);
 
+	 static std::string getWorkingDirectory();
 	 const char* getBaseDirectory() const { return BaseDirectory.c_str(); }
 	 const char* getDataDirectory() const { return DataDirectory.c_str(); }
 	 const char* getWowBaseDirectory() const { return WowBaseDirectory.c_str(); }

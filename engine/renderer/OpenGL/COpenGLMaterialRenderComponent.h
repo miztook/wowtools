@@ -23,6 +23,8 @@ public:
 	void setZWriteEnable(bool enable);
 	bool getZWriteEnable() const;
 
+	void setCurrentTexture(uint32_t index, ITexture* tex) { CurrentRenderState.TextureUnits[index].texture = tex; }
+
 	void setTextureFilter(uint32_t st, E_TEXTURE_FILTER filter, bool mipmap, bool isCube);
 	void setTextureMipMap(uint32_t st, bool mipmap, bool isCube);
 	void setSamplerTexture(uint32_t st, ITexture* tex, bool isCube);

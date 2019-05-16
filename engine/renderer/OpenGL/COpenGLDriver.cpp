@@ -6,6 +6,7 @@
 #include "COpenGLRenderTarget.h"
 #include "CFileSystem.h"
 #include "stringext.h"
+#include "function3d.h"
 
 COpenGLDriver::COpenGLDriver()
 	: IVideoDriver(EDT_OPENGL)
@@ -242,7 +243,7 @@ bool COpenGLDriver::initDriver(const SWindowInfo& wndInfo, bool vsync, E_AA_MODE
 	ASSERT_OPENGL_SUCCESS();
 
 
-	FrameBufferRT.reset(new COpenGLRenderTarget(this, windowSize, ColorFormat, DepthFormat, true));
+	FrameBufferRT = std::make_unique<COpenGLRenderTarget>(this, windowSize, ColorFormat, DepthFormat, true);
 
 	setDisplayMode(windowSize);
 
@@ -299,6 +300,75 @@ bool COpenGLDriver::clear(bool renderTarget, bool zBuffer, bool stencil, SColor 
 	return true;
 }
 
+bool COpenGLDriver::setRenderTarget(const IRenderTarget * texture, bool bindDepth)
+{
+	const COpenGLRenderTarget* tex = static_cast<const COpenGLRenderTarget*>(texture);
+
+	if (tex == nullptr)
+	{
+		GLExtension.extGlBindFramebuffer(GL_FRAMEBUFFER, DefaultFrameBuffer);		//restore
+		setViewPort(recti(0, 0, ScreenSize.width, ScreenSize.height));
+	}
+	else
+	{
+		tex->bindFrameBuffer(bindDepth);
+		GLExtension.extGlBindFramebuffer(GL_FRAMEBUFFER, tex->getFrameBuffer());
+		setViewPort(recti(0, 0, tex->getSize().width, tex->getSize().height));
+	}
+
+	bool success = GLExtension.checkFBOStatus();
+	ASSERT(success);
+
+	CurrentRenderTarget = texture;
+
+	return true;
+}
+
+void COpenGLDriver::setTransform(E_TRANSFORMATION_STATE state, const matrix4& mat)
+{
+	ASSERT(0 <= state && state < ETS_COUNT);
+	switch (state)
+	{
+	case ETS_VIEW:
+	{
+		Matrices[ETS_VIEW] = mat;
+
+		WV = Matrices[ETS_WORLD] * Matrices[ETS_VIEW];
+		WVP = WV * Matrices[ETS_PROJECTION];
+
+		CurrentRenderMode = ERM_3D;
+	}
+	break;
+	case ETS_WORLD:
+	{
+		Matrices[ETS_WORLD] = mat;
+
+		WV = Matrices[ETS_WORLD] * Matrices[ETS_VIEW];
+		WVP = WV * Matrices[ETS_PROJECTION];
+
+		CurrentRenderMode = ERM_3D;
+	}
+	break;
+
+	case ETS_PROJECTION:
+	{
+		Matrices[ETS_PROJECTION] = mat;
+
+		WVP = WV * Matrices[ETS_PROJECTION];
+
+		CurrentRenderMode = ERM_3D;
+	}
+	break;
+	default:
+		break;
+	}
+}
+
+void COpenGLDriver::setTexture(int index, ITexture * tex)
+{
+	MaterialRenderComponent->setCurrentTexture(index, tex);
+}
+
 dimension2d COpenGLDriver::getWindowSize() const
 {
 	RECT rc;
@@ -353,15 +423,38 @@ bool COpenGLDriver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
 	return GLExtension.queryFeature(feature);
 }
 
-void COpenGLDriver::reset()
+bool COpenGLDriver::reset()
 {
 	CurrentRenderMode = ERM_NONE;
 
 	MaterialRenderComponent->resetRSCache();
 
-	FrameBufferRT.reset(new COpenGLRenderTarget(this, ScreenSize, ColorFormat, DepthFormat, true));
+	FrameBufferRT = std::make_unique<COpenGLRenderTarget>(this, ScreenSize, ColorFormat, DepthFormat, true);
 
 	g_FileSystem->writeLog(ELOG_GX, "reset... Device Format: %dX%d, %s", ScreenSize.width, ScreenSize.height, getColorFormatString(ColorFormat));
+
+	return true;
+}
+
+void COpenGLDriver::setViewPort(const recti& area)
+{
+	recti vp = area;
+	vp.clipAgainst(recti(0, 0, ScreenSize.width, ScreenSize.height));
+	if (vp.getWidth() <= 0 || vp.getHeight() <= 0)
+		return;
+
+	MaterialRenderComponent->setViewport(vp);
+
+	Viewport = vp;
+
+	makeVPScaleMatrix(vp);
+
+	float fWidth = vp.getWidth() * 0.5f;
+	float fHeight = vp.getHeight() * 0.5f;
+
+	View2DTM = f3d::makeViewMatrix(vector3df(fWidth + OrthoCenterOffset.x, fHeight + OrthoCenterOffset.y, 0),
+		vector3df::UnitZ(), vector3df::UnitY(), 0.0f);
+	Project2DTM = f3d::makeOrthoOffCetnerMatrixLH(-fWidth, fWidth, -fHeight, fHeight, 0.0f, 1.0f);
 }
 
 void COpenGLDriver::setDisplayMode(const dimension2d& size)
@@ -371,4 +464,68 @@ void COpenGLDriver::setDisplayMode(const dimension2d& size)
 	reset();
 
 	setViewPort(recti(0, 0, ScreenSize.width, ScreenSize.height));
+}
+
+bool COpenGLDriver::setDriverSetting(const SDriverSetting & setting)
+{
+	bool vsyncChanged = false;
+	bool antialiasChanged = false;
+
+	bool vsync = setting.vsync;
+	uint8_t antialias = setting.antialias;
+
+	if (vsync != DriverSetting.vsync)
+	{
+#ifdef WGL_EXT_swap_control
+		PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT;
+		// vsync extension
+		wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+		// set vsync
+		if (wglSwapIntervalEXT)
+			wglSwapIntervalEXT(vsync ? 1 : 0);
+#endif
+
+		vsyncChanged = true;
+
+		DriverSetting.vsync = vsync;
+	}
+
+	if (antialias != DriverSetting.antialias)
+	{
+		antialiasChanged = true;
+
+		DriverSetting.antialias = antialias;
+	}
+
+	bool ret = true;
+	if (vsyncChanged || antialiasChanged)
+	{
+		// 		if (beginScene())
+		// 		{
+		// 			clear(true, false, false, SColor(0,0,0));
+		// 			endScene();
+		// 		}
+		ret = reset();
+
+		setViewPort(recti(0, 0, ScreenSize.width, ScreenSize.height));
+
+		if (ret)
+		{
+			g_FileSystem->writeLog(ELOG_GX, "Driver Setting Changed. Vsync: %s, Antialias: %d, %s",
+				DriverSetting.vsync ? "On" : "Off",
+				(int32_t)DriverSetting.antialias,
+				"Window");
+		}
+	}
+	return ret;
+}
+
+ITextureWriter* COpenGLDriver::createTextureWriter(ITexture* texture)
+{
+	return TextureWriteComponent->createTextureWriter(texture);
+}
+
+bool COpenGLDriver::removeTextureWriter(ITexture * texture)
+{
+	return TextureWriteComponent->removeTextureWriter(texture);
 }
