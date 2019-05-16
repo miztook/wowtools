@@ -144,9 +144,9 @@ bool COpenGLDriver::initDriver(const SWindowInfo& wndInfo, bool vsync, E_AA_MODE
 	AdapterInfo.vendorName = str2;
 
 	//log
-	g_FileSystem->writeLog(ELOG_GX, "Adapter Name: %s", AdapterInfo.name);
-	g_FileSystem->writeLog(ELOG_GX, "Adpater Description: %s", AdapterInfo.description);
-	g_FileSystem->writeLog(ELOG_GX, "Adapter Vendor: %s", AdapterInfo.vendorName);
+	g_FileSystem->writeLog(ELOG_GX, "Adapter Name: %s", AdapterInfo.name.c_str());
+	g_FileSystem->writeLog(ELOG_GX, "Adpater Description: %s", AdapterInfo.description.c_str());
+	g_FileSystem->writeLog(ELOG_GX, "Adapter Vendor: %s", AdapterInfo.vendorName.c_str());
 
 	if (!GLExtension.initExtensions())
 	{

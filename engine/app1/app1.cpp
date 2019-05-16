@@ -20,7 +20,7 @@ int main()
 
 	createFileSystem(CFileSystem::getWorkingDirectory().c_str(), R"(E:\World Of Warcraft)");
 
-	if (!createEngine(wndInfo, EDT_OPENGL, true, E_AA_MSAA_1, mywow_InitDriver))
+	if (!createEngine(wndInfo, EDT_OPENGL, true, E_AA_FXAA, mywow_InitDriver))
 	{
 		destroyEngine();
 		return -1;
