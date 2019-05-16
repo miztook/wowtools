@@ -24,7 +24,7 @@ public:
 	{
 	}
 
-	COpenGLRenderTarget(const COpenGLDriver* driver, const dimension2d& size, const SRTCreateParam& param, bool bUseTexture);
+	COpenGLRenderTarget(const COpenGLDriver* driver, const dimension2d& size, const SRTCreateParam& param, bool bUseDepthTexture);
 	~COpenGLRenderTarget();
 
 public:
@@ -39,16 +39,18 @@ public:
 
 	bool bindFrameBuffer(bool bindDepth) const;
 
-private:
-	bool init(const dimension2d& size);
-	void release();
+protected:
+	bool buildVideoResources() override;
+	void releaseVideoResources() override;
+	bool hasVideoBuilt() const override { return VideoBuilt; }
 
+private:
 	bool createAsRenderTarget(
 		const dimension2d& size,
 		ECOLOR_FORMAT colorFmts[MAX_COLOR_ATTACHMENTS],
 		ECOLOR_FORMAT depthFmt,
 		uint8_t antialias);
-	void releaseVideoTexture();
+
 	void bindTexture();
 
 private:
@@ -64,4 +66,5 @@ private:
 	GLuint		DepthSurface;
 
 	const bool  MultiSample;
+	bool	VideoBuilt;
 };

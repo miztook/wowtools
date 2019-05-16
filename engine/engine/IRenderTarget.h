@@ -2,6 +2,7 @@
 
 #include "base.h"
 #include "vector2d.h"
+#include "IVideoResource.h"
 
 class ITexture;
 
@@ -47,23 +48,22 @@ struct SRTCreateParam
 	bool HasDepth;
 };
 
-class IRenderTarget
+class IRenderTarget : public IVideoResource
 {
 private:
 	DISALLOW_COPY_AND_ASSIGN(IRenderTarget);
 
 public:
-	IRenderTarget(const SRTCreateParam& param, bool bUseDepthTexture)
-		: NumColorAttachments(param.NumColors),
-		HasDepthAttachment(param.HasDepth), UseDepthTexture(bUseDepthTexture),
-		VideoBuilt(false)
+	IRenderTarget(const dimension2d& size, const SRTCreateParam& param, bool bUseDepthTexture)
+		: TextureSize(size), NumColorAttachments(param.NumColors),
+		HasDepthAttachment(param.HasDepth), UseDepthTexture(bUseDepthTexture)
 	{
 		DepthFormat = param.DepthFmt;
 		for (int i = 0; i < MAX_COLOR_ATTACHMENTS; ++i)
 			ColorFormats[i] = param.ColorFmts[i];
 	}
 
-	virtual ~IRenderTarget() { }
+	virtual ~IRenderTarget() = default;
 
 public:
 	const dimension2d& getSize() const { return TextureSize; }
@@ -84,5 +84,4 @@ protected:
 	const int		NumColorAttachments;
 	const bool		HasDepthAttachment;
 	bool	UseDepthTexture;			//use depth texture or surface
-	bool	VideoBuilt;
 };

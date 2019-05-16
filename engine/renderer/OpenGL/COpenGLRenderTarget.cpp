@@ -4,9 +4,9 @@
 #include "COpenGLTexture.h"
 #include "COpenGLHelper.h"
 
-COpenGLRenderTarget::COpenGLRenderTarget(const COpenGLDriver* driver, const dimension2d& size, const SRTCreateParam& param, bool bUseTexture)
-	: IRenderTarget(param, bUseTexture), Driver(driver), FrameBuffer(0), CopyFrameBuffer(0), DepthSurface(0),
-	MultiSample(Driver->isMultiSampleEnabled())
+COpenGLRenderTarget::COpenGLRenderTarget(const COpenGLDriver* driver, const dimension2d& size, const SRTCreateParam& param, bool bUseDepthTexture)
+	: IRenderTarget(size, param, bUseDepthTexture), Driver(driver), FrameBuffer(0), CopyFrameBuffer(0), DepthSurface(0),
+	MultiSample(Driver->isMultiSampleEnabled()), VideoBuilt(false)
 {
 	//attachment
 	for (int i = 0; i < NumColorAttachments; ++i)
@@ -18,50 +18,12 @@ COpenGLRenderTarget::COpenGLRenderTarget(const COpenGLDriver* driver, const dime
 	memset(RTCopyTextures, 0, sizeof(RTCopyTextures));
 	DepthTexture = nullptr;
 
-	init(size);
+	buildVideoResources();
 }
 
 COpenGLRenderTarget::~COpenGLRenderTarget()
 {
-	release();
-}
-
-bool COpenGLRenderTarget::init(const dimension2d& size)
-{
-	const SDriverSetting& setting = Driver->getDriverSetting();
-	bool success = createAsRenderTarget(size, ColorFormats, DepthFormat, setting.antialias);
-	ASSERT(success);
-
-	if (MultiSample)
-	{
-		for (int i = 0; i < NumColorAttachments; ++i)
-		{
-			ASSERT(!RTCopyTextures[i]);
-			RTCopyTextures[i] = new COpenGLTexture(Driver, false);
-			success = RTCopyTextures[i]->createEmptyTexture(TextureSize, ColorFormats[i]);
-			ASSERT(success);
-		}
-		bindTexture();
-	}
-
-	return success;
-}
-
-void COpenGLRenderTarget::release()
-{
-	if (MultiSample)
-	{
-		for (int i = 0; i < NumColorAttachments; ++i)
-		{
-			if (RTCopyTextures[i])
-			{
-				delete RTCopyTextures[i];
-				RTCopyTextures[i] = nullptr;
-			}
-		}
-	}
-
-	releaseVideoTexture();
+	releaseVideoResources();
 }
 
 ITexture* COpenGLRenderTarget::getRTTexture(int index) const
@@ -141,90 +103,43 @@ bool COpenGLRenderTarget::bindFrameBuffer(bool bindDepth) const
 	return true;
 }
 
-bool COpenGLRenderTarget::createAsRenderTarget(const dimension2d& size, ECOLOR_FORMAT colorFmts[MAX_COLOR_ATTACHMENTS], ECOLOR_FORMAT depthFmt, uint8_t antialias)
+bool COpenGLRenderTarget::buildVideoResources()
 {
-	if (VideoBuilt)
-		return false;
-
-	TextureSize = size;
-	// 		size.getOptimalSize(!driver->queryFeature(EVDF_TEXTURE_NPOT),
-	// 		!driver->queryFeature(EVDF_TEXTURE_NSQUARE),
-	// 		true,
-	// 		driver->getGLExtension()->MaxTextureSize);
-
-	for (int i = 0; i < NumColorAttachments; ++i)
-	{
-		ColorFormats[i] = (colorFmts[i] == ECF_UNKNOWN ? Driver->ColorFormat : colorFmts[i]);
-	}
-
-	DepthFormat = (depthFmt == ECF_UNKNOWN ? Driver->DepthFormat : depthFmt);
-
-	//
-	ASSERT(!FrameBuffer && !DepthSurface && !CopyFrameBuffer);
-	ASSERT(Driver->GLExtension.MaxMultiSample >= antialias * 2);
-
-	Driver->GLExtension.extGlGenFramebuffers(1, &FrameBuffer);
-	Driver->GLExtension.extGlBindFramebuffer(GL_FRAMEBUFFER, FrameBuffer);
+	const SDriverSetting& setting = Driver->getDriverSetting();
+	bool success = createAsRenderTarget(TextureSize, ColorFormats, DepthFormat, setting.antialias);
+	ASSERT(success);
 
 	if (MultiSample)
-		Driver->GLExtension.extGlGenFramebuffers(1, &CopyFrameBuffer);
-
-	//color
-	for (int i = 0; i < NumColorAttachments; ++i)
 	{
-		ASSERT(!ColorTextures[i]);
-		ColorTextures[i] = new COpenGLTexture(Driver, false);
-		if (MultiSample)
-			ColorTextures[i]->createRTTexture(TextureSize, ColorFormats[i], antialias * 2);
-		else
-			ColorTextures[i]->createRTTexture(TextureSize, ColorFormats[i], 0);
+		for (int i = 0; i < NumColorAttachments; ++i)
+		{
+			ASSERT(!RTCopyTextures[i]);
+			RTCopyTextures[i] = new COpenGLTexture(Driver, false);
+			success = RTCopyTextures[i]->createEmptyTexture(TextureSize, ColorFormats[i]);
+			ASSERT(success);
+		}
+		bindTexture();
 	}
 
-	//depth
-	if (HasDepthAttachment)
-	{
-		if (UseDepthTexture)		//texture
-		{
-			ASSERT(!DepthTexture);
-			DepthTexture = new COpenGLTexture(Driver, false);
-			bool bRet;
-			if (MultiSample)
-				bRet = DepthTexture->createDSTexture_INTZ(TextureSize, antialias * 2);
-			else
-				bRet = DepthTexture->createDSTexture_INTZ(TextureSize, 0);
-			if (!bRet)
-			{
-				delete DepthTexture;
-				DepthTexture = nullptr;
-				UseDepthTexture = false;
-			}
-			else
-			{
-				DepthFormat = ECF_INTZ;
-			}
-		}
-
-		if (!UseDepthTexture)
-		{
-			Driver->GLExtension.extGlGenRenderbuffers(1, &DepthSurface);
-			GLenum dfmt = COpenGLHelper::getGLDepthFormat(DepthFormat);
-			Driver->GLExtension.extGlBindRenderbuffer(GL_RENDERBUFFER, DepthSurface);
-			if (MultiSample)
-				Driver->GLExtension.extGlRenderbufferStorageMultisample(GL_RENDERBUFFER, antialias * 2, dfmt, size.width, size.height);
-			else
-				Driver->GLExtension.extGlRenderbufferStorage(GL_RENDERBUFFER, dfmt, size.width, size.height);
-			Driver->GLExtension.extGlBindRenderbuffer(GL_RENDERBUFFER, 0);
-		}
-	}
-
-	VideoBuilt = true;
-	return true;
+	return success;
 }
 
-void COpenGLRenderTarget::releaseVideoTexture()
+void COpenGLRenderTarget::releaseVideoResources()
 {
 	if (!VideoBuilt)
 		return;
+
+	if (MultiSample)
+	{
+		for (int i = 0; i < NumColorAttachments; ++i)
+		{
+			if (RTCopyTextures[i])
+			{
+				delete RTCopyTextures[i];
+				RTCopyTextures[i] = nullptr;
+			}
+		}
+	}
 
 	if (DepthSurface)
 	{
@@ -260,6 +175,77 @@ void COpenGLRenderTarget::releaseVideoTexture()
 	}
 
 	VideoBuilt = false;
+}
+
+bool COpenGLRenderTarget::createAsRenderTarget(const dimension2d& size, ECOLOR_FORMAT colorFmts[MAX_COLOR_ATTACHMENTS], ECOLOR_FORMAT depthFmt, uint8_t antialias)
+{
+	for (int i = 0; i < NumColorAttachments; ++i)
+	{
+		ColorFormats[i] = (colorFmts[i] == ECF_UNKNOWN ? Driver->ColorFormat : colorFmts[i]);
+	}
+
+	DepthFormat = (depthFmt == ECF_UNKNOWN ? Driver->DepthFormat : depthFmt);
+
+	//
+	ASSERT(!FrameBuffer && !DepthSurface && !CopyFrameBuffer);
+	ASSERT(Driver->GLExtension.MaxMultiSample >= antialias * 2);
+
+	Driver->GLExtension.extGlGenFramebuffers(1, &FrameBuffer);
+	Driver->GLExtension.extGlBindFramebuffer(GL_FRAMEBUFFER, FrameBuffer);
+
+	if (MultiSample)
+		Driver->GLExtension.extGlGenFramebuffers(1, &CopyFrameBuffer);
+
+	//color
+	for (int i = 0; i < NumColorAttachments; ++i)
+	{
+		ASSERT(!ColorTextures[i]);
+		ColorTextures[i] = new COpenGLTexture(Driver, false);
+		if (MultiSample)
+			ColorTextures[i]->createRTTexture(size, ColorFormats[i], antialias * 2);
+		else
+			ColorTextures[i]->createRTTexture(size, ColorFormats[i], 0);
+	}
+
+	//depth
+	if (HasDepthAttachment)
+	{
+		if (UseDepthTexture)		//texture
+		{
+			ASSERT(!DepthTexture);
+			DepthTexture = new COpenGLTexture(Driver, false);
+			bool bRet;
+			if (MultiSample)
+				bRet = DepthTexture->createDSTexture_INTZ(size, antialias * 2);
+			else
+				bRet = DepthTexture->createDSTexture_INTZ(size, 0);
+			if (!bRet)
+			{
+				delete DepthTexture;
+				DepthTexture = nullptr;
+				UseDepthTexture = false;
+			}
+			else
+			{
+				DepthFormat = ECF_INTZ;
+			}
+		}
+
+		if (!UseDepthTexture)
+		{
+			Driver->GLExtension.extGlGenRenderbuffers(1, &DepthSurface);
+			GLenum dfmt = COpenGLHelper::getGLDepthFormat(DepthFormat);
+			Driver->GLExtension.extGlBindRenderbuffer(GL_RENDERBUFFER, DepthSurface);
+			if (MultiSample)
+				Driver->GLExtension.extGlRenderbufferStorageMultisample(GL_RENDERBUFFER, antialias * 2, dfmt, size.width, size.height);
+			else
+				Driver->GLExtension.extGlRenderbufferStorage(GL_RENDERBUFFER, dfmt, size.width, size.height);
+			Driver->GLExtension.extGlBindRenderbuffer(GL_RENDERBUFFER, 0);
+		}
+	}
+
+	VideoBuilt = true;
+	return true;
 }
 
 void COpenGLRenderTarget::bindTexture()

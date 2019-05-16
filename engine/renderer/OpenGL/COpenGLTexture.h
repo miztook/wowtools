@@ -15,9 +15,9 @@ public:
 
 protected:
 	//IVideoResource
-	virtual bool buildVideoResources() override;
-	virtual void releaseVideoResources() override;
-	virtual bool hasVideoBuilt() const override { return VideoBuilt; }
+	bool buildVideoResources() override;
+	void releaseVideoResources() override;
+	bool hasVideoBuilt() const override { return VideoBuilt; }
 
 public:
 	//ITexture
