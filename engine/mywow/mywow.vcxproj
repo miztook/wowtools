@@ -73,6 +73,7 @@
     <ClInclude Include="..\engine\IShaderFile.h" />
     <ClInclude Include="..\engine\ITexture.h" />
     <ClInclude Include="..\engine\ITextureWriter.h" />
+    <ClInclude Include="..\engine\IVertexIndexBuffer.h" />
     <ClInclude Include="..\engine\IVideoDriver.h" />
     <ClInclude Include="..\engine\IVideoResource.h" />
     <ClInclude Include="..\engine\mywow.h" />

@@ -32,13 +32,19 @@
     <ClInclude Include="OpenGL\COpenGLRenderTarget.h">
       <Filter>OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="OpenGL\COpenGLVertexIndexBuffer.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGL\COpenGLShaderManageComponent.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGL\COpenGLVertexDeclaration.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\renderer\mywowdriver.cpp" />
     <ClCompile Include="..\renderer\OpenGL\COpenGLMaterialRenderComponent.cpp">
-      <Filter>OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="..\renderer\OpenGL\COpenGLDriver_base.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="..\renderer\OpenGL\COpenGLDriver_draw.cpp">
@@ -57,6 +63,15 @@
       <Filter>OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="OpenGL\COpenGLDriver.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\COpenGLVertexIndexBuffer.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\COpenGLShaderManageComponent.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\COpenGLVertexDeclaration.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
   </ItemGroup>

@@ -26,8 +26,11 @@
     <ClInclude Include="OpenGL\COpenGLExtension.h" />
     <ClInclude Include="OpenGL\COpenGLHelper.h" />
     <ClInclude Include="OpenGL\COpenGLRenderTarget.h" />
+    <ClInclude Include="OpenGL\COpenGLShaderManageComponent.h" />
     <ClInclude Include="OpenGL\COpenGLTexture.h" />
     <ClInclude Include="OpenGL\COpenGLTextureWriteComponent.h" />
+    <ClInclude Include="OpenGL\COpenGLVertexDeclaration.h" />
+    <ClInclude Include="OpenGL\COpenGLVertexIndexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\renderer\mywowdriver.cpp" />
@@ -36,8 +39,11 @@
     <ClCompile Include="..\renderer\OpenGL\COpenGLMaterialRenderComponent.cpp" />
     <ClCompile Include="OpenGL\COpenGLExtension.cpp" />
     <ClCompile Include="OpenGL\COpenGLRenderTarget.cpp" />
+    <ClCompile Include="OpenGL\COpenGLShaderManageComponent.cpp" />
     <ClCompile Include="OpenGL\COpenGLTexture.cpp" />
     <ClCompile Include="OpenGL\COpenGLTextureWriteComponent.cpp" />
+    <ClCompile Include="OpenGL\COpenGLVertexDeclaration.cpp" />
+    <ClCompile Include="OpenGL\COpenGLVertexIndexBuffer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{470A0D65-E445-4F68-9955-89BDE415A17A}</ProjectGuid>

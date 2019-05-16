@@ -27,7 +27,7 @@ class IShaderFile
 {
 public:
 	IShaderFile() {}
-	virtual ~IShaderFile() {}
+	virtual ~IShaderFile() = default;
 
 public:
 	virtual bool loadFile(CMemFile* file, const SShaderMacro& shaderMacro) = 0;

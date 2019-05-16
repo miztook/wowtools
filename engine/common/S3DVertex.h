@@ -100,7 +100,7 @@ struct SVertex_PNT2WA
 	}
 };
 
-inline uint32_t getStreamPitchFromType(E_VERTEX_TYPE type)
+inline uint32_t getVertexPitchFromType(E_VERTEX_TYPE type)
 {
 	switch (type)
 	{

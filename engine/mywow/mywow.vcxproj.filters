@@ -188,6 +188,9 @@
     <ClInclude Include="..\engine\CFPSCounter.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\engine\IVertexIndexBuffer.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">
