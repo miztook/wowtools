@@ -7,13 +7,11 @@
 #include <list>
 #include <algorithm>
 
-class CRenderScene;
-
 class ISceneNode
 {
 public:
-	ISceneNode(ISceneNode* parent, const CRenderScene* renderScene)
-		: Distance(0), RenderScene(renderScene)
+	ISceneNode(ISceneNode* parent)
+		: Distance(0)
 	{
 		setParent(parent);
 		if (Parent)
@@ -103,7 +101,6 @@ protected:
 private:
 	CTransform		m_Transform;
 	aabbox3df			WorldBoundingBox;
-	const CRenderScene*		RenderScene;
 	ISceneNode*			Parent;
 	uint8_t		Generation;
 

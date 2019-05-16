@@ -24,6 +24,7 @@
     <ClInclude Include="..\common\CFileSystem.h" />
     <ClInclude Include="..\common\CMemFile.h" />
     <ClInclude Include="..\common\CReadFile.h" />
+    <ClInclude Include="..\common\CSysChrono.h" />
     <ClInclude Include="..\common\CSysSync.h" />
     <ClInclude Include="..\common\CWriteFile.h" />
     <ClInclude Include="..\common\frustum.h" />
@@ -52,13 +53,15 @@
     <ClInclude Include="..\common\wowWMOStruct.h" />
     <ClInclude Include="..\engine\CBLPImage.h" />
     <ClInclude Include="..\engine\CCamera.h" />
+    <ClInclude Include="..\engine\CFPSCounter.h" />
     <ClInclude Include="..\engine\CGeometryCreator.h" />
     <ClInclude Include="..\engine\CGraphics.h" />
     <ClInclude Include="..\engine\CCImage.h" />
     <ClInclude Include="..\engine\CInputReader.h" />
     <ClInclude Include="..\engine\COSInfo.h" />
-    <ClInclude Include="..\engine\CRenderScene.h" />
+    <ClInclude Include="..\engine\CScene.h" />
     <ClInclude Include="..\engine\CSceneEnvironment.h" />
+    <ClInclude Include="..\engine\CSceneRenderer.h" />
     <ClInclude Include="..\engine\IImage.h" />
     <ClInclude Include="..\engine\ISceneNode.h" />
     <ClInclude Include="..\engine\CSysUtil.h" />
@@ -93,6 +96,8 @@
     <ClCompile Include="..\engine\CCImage.cpp" />
     <ClCompile Include="..\engine\CInputReader.cpp" />
     <ClCompile Include="..\engine\COSInfo.cpp" />
+    <ClCompile Include="..\engine\CScene.cpp" />
+    <ClCompile Include="..\engine\CSceneRenderer.cpp" />
     <ClCompile Include="..\engine\CSysUtil.cpp" />
     <ClCompile Include="..\engine\CTimer.cpp" />
     <ClCompile Include="..\engine\ddslib.cpp" />

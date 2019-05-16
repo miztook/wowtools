@@ -1,4 +1,5 @@
 #include "game.h"
+#include "Engine.h"
 
 bool g_bExit = false;
 bool g_bBackMode = false;
@@ -14,4 +15,13 @@ void MyMessageHandler::onSize(window_type hwnd, int width, int height)
 		g_bBackMode = false;
 
 	}
+}
+
+void createScene()
+{
+	CScene* scene = g_Engine->getScene();
+}
+
+void destroyScene()
+{
 }

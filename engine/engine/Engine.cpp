@@ -29,10 +29,17 @@ void destroyEngine()
 Engine::Engine(const SWindowInfo& wndInfo)
 {
 	WindowInfo = wndInfo;
+
+	Driver = nullptr;
+
+	DefaultScene = new CScene;
 }
 
 Engine::~Engine()
 {
+	delete Driver;
+
+	delete DefaultScene;
 }
 
 bool Engine::init(E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode, driverInitFunc initFunc)

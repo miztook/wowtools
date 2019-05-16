@@ -16,4 +16,4 @@ void destroyScene();
 
 void createInput();
 void destroyInput();
-void processInput();
+void update();

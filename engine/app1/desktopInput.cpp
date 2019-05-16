@@ -10,9 +10,9 @@ public:
 		LCapture = RCapture = false;
 	}
 public:
-	virtual void onMouseMessage(window_type hwnd, E_INPUT_MESSAGE message, int _x, int _y);
-	virtual void onMouseWheel(window_type hwnd, int zDelta);
-	virtual void onKeyMessage(window_type hwnd, E_INPUT_MESSAGE message, int key);
+	void onMouseMessage(window_type hwnd, E_INPUT_MESSAGE message, int _x, int _y) override;
+	void onMouseWheel(window_type hwnd, int zDelta) override;
+	void onKeyMessage(window_type hwnd, E_INPUT_MESSAGE message, int key) override;
 
 private:
 	float		LastX;
@@ -57,7 +57,7 @@ void destroyInput()
 	inputReader->removeListener(&g_listener);
 }
 
-void processInput()
+void update()
 {
 
 }

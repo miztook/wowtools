@@ -15,6 +15,8 @@ int main()
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 	
+	//_CrtSetBreakAlloc(212);
+
 	SWindowInfo wndInfo = CSysUtil::createWindow("app1", 1136, 640, false, false);
 	HWND hwnd = wndInfo.hwnd;
 
@@ -30,6 +32,9 @@ int main()
 	g_Engine->setMessageHandler(&handler);
 
 	createInput();
+	createScene();
+
+	CSceneRenderer* sceneRenderer = CSceneRenderer::createSceneRenderer();
 
 	MSG msg;
 	while (!g_bExit)
@@ -43,14 +48,17 @@ int main()
 		{
 			bool active = !g_bBackMode && ::GetActiveWindow() == hwnd;
 			if (active)
-			{
-				processInput();
-			}
+				update();
+			
+			sceneRenderer->renderFrame(g_Engine->getScene(), active);
 
 			::Sleep(1);
 		}
 	}
 
+	delete sceneRenderer;
+
+	destroyScene();
 	destroyInput();
 
 	destroyEngine();

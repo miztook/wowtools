@@ -143,9 +143,6 @@
     <ClInclude Include="..\engine\CGeometryCreator.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\CRenderScene.h">
-      <Filter>engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\engine\CCamera.h">
       <Filter>engine</Filter>
     </ClInclude>
@@ -178,6 +175,18 @@
     </ClInclude>
     <ClInclude Include="..\common\CSysSync.h">
       <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CSceneRenderer.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CScene.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CSysChrono.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CFPSCounter.h">
+      <Filter>engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -239,6 +248,12 @@
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\ddslib.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CSceneRenderer.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CScene.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
