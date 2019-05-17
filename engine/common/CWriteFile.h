@@ -19,7 +19,7 @@ public:
 	bool flush();
 	bool seek(int32_t finalPos, bool relativeMovement = false);
 	uint32_t getSize() const { return FileSize; }
-	int32_t getPos() const;
+	uint32_t getPos() const;
 	const char* getFileName() const { return FileName.c_str(); }
 	bool isOpen() const { return File != nullptr; }
 	bool isBinary() const { return IsBinary; }

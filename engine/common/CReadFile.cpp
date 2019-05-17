@@ -43,7 +43,7 @@ uint32_t CReadFile::readLine(char* buffer, uint32_t len /*= MAX_READ_NUM*/)
 	ASSERT(!IsBinary);
 
 	if (!fgets(buffer, len, File))
-		return false;
+		return 0;
 
 	//chop the \n\r
 	if (buffer[0] && (buffer[strlen(buffer) - 1] == '\n' || buffer[strlen(buffer) - 1] == '\r'))
@@ -92,14 +92,14 @@ bool CReadFile::seek(int32_t finalPos, bool relativePos/* = false*/)
 	return fseek(File, finalPos, relativePos ? SEEK_CUR : SEEK_SET) == 0;
 }
 
-int32_t CReadFile::getPos() const
+uint32_t CReadFile::getPos() const
 {
-	return (int32_t)ftell(File);
+	return (uint32_t)ftell(File);
 }
 
 bool CReadFile::isEof() const
 {
-	return getPos() == (int32_t)FileSize;
+	return getPos() == FileSize;
 }
 
 void CReadFile::openFile(bool binary)

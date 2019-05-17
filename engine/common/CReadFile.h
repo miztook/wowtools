@@ -19,7 +19,7 @@ public:
 	 uint32_t readLineSkipSpace(char* buffer, uint32_t len = MAX_READ_NUM);
 	 bool seek(int32_t finalPos, bool relativePos = false);
 	 uint32_t getSize() const { return FileSize; }
-	 int32_t getPos() const;
+	 uint32_t getPos() const;
 	 bool isEof() const;
 	 const char* getFileName() const { return FileName.c_str(); }
 	 bool isOpen() const { return File != nullptr; }

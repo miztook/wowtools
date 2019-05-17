@@ -2,9 +2,12 @@
 
 #include "IVideoDriver.h"
 #include "COpenGLExtension.h"
+#include <array>
 
 class COpenGLMaterialRenderComponent;
 class COpenGLTextureWriteComponent;
+class COpenGLVertexDeclaration;
+class IVertexBuffer;
 
 class COpenGLDriver : public IVideoDriver
 {
@@ -40,6 +43,8 @@ public:
 	COpenGLMaterialRenderComponent* getMaterialRenderComponent() const { return MaterialRenderComponent.get();}
 	COpenGLTextureWriteComponent* getTextureWriteComponent() const { return TextureWriteComponent.get(); }
 
+	void deleteVao(const IVertexBuffer* vbuffer);
+
 private:
 	dimension2d getWindowSize() const;
 	void logCaps();
@@ -65,4 +70,6 @@ private:
 	//component
 	std::unique_ptr<COpenGLMaterialRenderComponent>  MaterialRenderComponent;
 	std::unique_ptr<COpenGLTextureWriteComponent> TextureWriteComponent;
+
+	std::array<std::unique_ptr<COpenGLVertexDeclaration>, EVT_COUNT>		VertexDeclarations;
 };

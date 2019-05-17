@@ -16,9 +16,9 @@ struct SGLUniformInfo
 
 struct SGLProgram
 {
-	SGLProgram() : program(0), key(0), samplerCount(0) {}
+	SGLProgram() : handle(0), key(0), samplerCount(0) {}
 
-	GLhandleARB		program;
+	GLhandleARB		handle;
 	uint32_t key;
 	uint32_t samplerCount;
 

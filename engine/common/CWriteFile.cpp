@@ -75,9 +75,9 @@ bool CWriteFile::seek(int32_t finalPos, bool relativeMovement /*= false*/)
 	return fseek(File, finalPos, relativeMovement ? SEEK_CUR : SEEK_SET) == 0;
 }
 
-int32_t CWriteFile::getPos() const
+uint32_t CWriteFile::getPos() const
 {
-	return (int32_t)ftell(File);
+	return (uint32_t)ftell(File);
 }
 
 void CWriteFile::openFile(bool binary, bool append)

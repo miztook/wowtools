@@ -170,9 +170,6 @@
     <ClInclude Include="..\engine\CBLPImage.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\IShaderFile.h">
-      <Filter>engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\CSysSync.h">
       <Filter>common</Filter>
     </ClInclude>
@@ -189,6 +186,9 @@
       <Filter>engine</Filter>
     </ClInclude>
     <ClInclude Include="..\engine\IVertexIndexBuffer.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CShaderUtil.h">
       <Filter>engine</Filter>
     </ClInclude>
   </ItemGroup>
@@ -257,6 +257,9 @@
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\CScene.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CShaderUtil.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

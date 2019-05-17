@@ -70,7 +70,7 @@
     <ClInclude Include="..\engine\Engine.h" />
     <ClInclude Include="..\engine\CBlit.h" />
     <ClInclude Include="..\engine\IRenderTarget.h" />
-    <ClInclude Include="..\engine\IShaderFile.h" />
+    <ClInclude Include="..\engine\CShaderUtil.h" />
     <ClInclude Include="..\engine\ITexture.h" />
     <ClInclude Include="..\engine\ITextureWriter.h" />
     <ClInclude Include="..\engine\IVertexIndexBuffer.h" />
@@ -99,6 +99,7 @@
     <ClCompile Include="..\engine\COSInfo.cpp" />
     <ClCompile Include="..\engine\CScene.cpp" />
     <ClCompile Include="..\engine\CSceneRenderer.cpp" />
+    <ClCompile Include="..\engine\CShaderUtil.cpp" />
     <ClCompile Include="..\engine\CSysUtil.cpp" />
     <ClCompile Include="..\engine\CTimer.cpp" />
     <ClCompile Include="..\engine\ddslib.cpp" />
