@@ -301,22 +301,20 @@ enum E_TRANSFORMATION_STATE : int
 	ETS_COUNT,
 };
 
-enum class E_MATERIAL_TYPE : int
+enum E_MATERIAL_TYPE : int
 {
-	Solid = 0,
+	EMT_SOLID = 0,
 
-	AlphaTest,
+	EMT_ALPHA_TEST,
+	EMT_TRANSPARENT_ALPHA_BLEND,
+	EMT_TRANSPARENT_ONE_ALPHA,
+	EMT_TRANSPARENT_ADD_ALPHA,
+	EMT_TRANSPARENT_ADD_COLOR,
+	EMT_TRANSPARENT_MODULATE,
+	EMT_TRANSPARENT_MODULATE_X2,
+	EMT_TRANSPARENT_ONE_ONE,
 
-	Transparent_AlphaBlend,
-	Transparent_One_Alpha,
-	Transparent_Add_Alpha,
-	Transparent_Add_Color,
-
-	Transparent_Modulate,
-	Transparent_Modulate_X2,
-	Transparent_One_One,
-
-	MAX,
+	EMT_COUNT,
 };
 
 enum E_CULL_MODE : int

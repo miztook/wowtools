@@ -105,6 +105,9 @@ bool COpenGLRenderTarget::bindFrameBuffer(bool bindDepth) const
 
 bool COpenGLRenderTarget::buildVideoResources()
 {
+	if (VideoBuilt)
+		return false;
+
 	const SDriverSetting& setting = Driver->getDriverSetting();
 	bool success = createAsRenderTarget(TextureSize, ColorFormats, DepthFormat, setting.antialias);
 	ASSERT(success);
@@ -121,6 +124,7 @@ bool COpenGLRenderTarget::buildVideoResources()
 		bindTexture();
 	}
 
+	VideoBuilt = success;
 	return success;
 }
 

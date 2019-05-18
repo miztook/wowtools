@@ -6,6 +6,7 @@
 
 class COpenGLMaterialRenderComponent;
 class COpenGLTextureWriteComponent;
+class COpenGLShaderManageComponent;
 class COpenGLVertexDeclaration;
 class IVertexBuffer;
 
@@ -42,6 +43,7 @@ public:
 public:
 	COpenGLMaterialRenderComponent* getMaterialRenderComponent() const { return MaterialRenderComponent.get();}
 	COpenGLTextureWriteComponent* getTextureWriteComponent() const { return TextureWriteComponent.get(); }
+	COpenGLShaderManageComponent* getShaderManageComponent() const { return ShaderManageComponent.get(); }
 
 	void deleteVao(const IVertexBuffer* vbuffer);
 
@@ -70,6 +72,7 @@ private:
 	//component
 	std::unique_ptr<COpenGLMaterialRenderComponent>  MaterialRenderComponent;
 	std::unique_ptr<COpenGLTextureWriteComponent> TextureWriteComponent;
+	std::unique_ptr<COpenGLShaderManageComponent> ShaderManageComponent;
 
 	std::array<std::unique_ptr<COpenGLVertexDeclaration>, EVT_COUNT>		VertexDeclarations;
 };

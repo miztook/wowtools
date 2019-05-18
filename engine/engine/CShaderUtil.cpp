@@ -3,6 +3,147 @@
 #include "CReadFile.h"
 #include "CFileSystem.h"
 #include "stringext.h"
+#include "function.h"
+
+bool CShaderUtil::loadFile_OpenGL(const char* absFileName, const std::set<std::string>& shaderMacro, SShaderFile& result)
+{
+	CReadFile* rFile = g_FileSystem->createAndOpenFile(absFileName, false);
+	if (!rFile)
+	{
+		ASSERT(false);
+		return false;
+	}
+
+	char szDirInclude[QMAX_PATH];
+	getFileDirA(absFileName, szDirInclude, QMAX_PATH);
+
+	const uint32_t length = rFile->getSize();
+	std::vector<char> buffer;
+	buffer.resize(length + MAX_INCLUDE_FILE_SIZE);
+	rFile->seek(0);
+
+	bool bVersion = false;
+	bool bInclude = false;
+	bool bEnclose = false;
+	bool bMacroAdd = false;
+	char* p = buffer.data();
+	while (rFile->getPos() < length)
+	{
+		uint32_t dwRead;
+		uint32_t dwLimit = length + MAX_INCLUDE_FILE_SIZE - (uint32_t)(p - buffer.data());
+		
+		dwRead = rFile->readLine(p, dwLimit);
+		if (dwRead == 0)
+			break;
+
+		if (dwRead > 1 && !isComment(p))			//skip comment
+		{
+			//¥¶¿Ì/*  */
+			bool bStart = isEnclosedStart(p);
+			bool bEnd = isEnclosedEnd(p);
+			if (bStart)
+			{
+				if (!bEnclose)
+					bEnclose = true;
+			}
+			if (bEnd)
+			{
+				if (bEnclose)
+					bEnclose = false;
+			}
+
+			if (!bEnclose && !bStart && !bEnd)
+			{
+				if (!bVersion)
+				{
+					std::string token;
+					if (getToken(p, token) && token == "#version")
+						bVersion = true;
+				}
+
+				std::string strInclude;
+				if (!bInclude)
+				{
+					std::string token;
+					if (getToken(p, token) && token == "#include")
+					{
+						if (processDirectiveInclude(p + token.length(), szDirInclude, strInclude))
+							bInclude = true;
+					}
+				}
+
+				if (bInclude && !strInclude.empty())		//ÃÌº”include
+				{
+					size_t len = strInclude.length();
+					Q_strcpy(p, len + 1, strInclude.c_str());
+					p[len] = '\n';				//replace '\0' to '\n'		
+					p += (len + 1);
+				}
+				else
+				{
+					p[dwRead - 1] = '\n';		//replace '\0' to '\n'
+					p += dwRead;
+				}
+			}
+		}
+
+		if (bVersion && !bMacroAdd && !shaderMacro.empty())
+		{
+			std::string macroString;
+			for (const auto& macro : shaderMacro)
+			{
+				macroString.append("#define ");
+				macroString.append(macro);
+				macroString.append("\n");
+			}
+
+			Q_strcpy(p, macroString.length() + 1, macroString.c_str());
+			p += macroString.length();
+
+			bMacroAdd = true;
+		}
+	}
+
+	ASSERT(p <= buffer.data() + length + MAX_INCLUDE_FILE_SIZE);
+
+	result.Buffer = buffer;
+	return true;
+}
+
+std::string CShaderUtil::getVSDir(const char * profile)
+{
+	std::string str = g_FileSystem->getDataDirectory();
+	str.append("Shaders/Vertex/");
+	str.append(profile);
+
+	return str;
+}
+
+std::string CShaderUtil::getPSDir(const char * profile)
+{
+	std::string str = g_FileSystem->getDataDirectory();
+	str.append("Shaders/Pixel/");
+	str.append(profile);
+
+	return str;
+}
+
+std::string CShaderUtil::getShaderMacroString(const std::set<std::string>& shaderMacro)
+{
+	std::string str;
+	
+	size_t count = 0;
+	for (const auto& macro : shaderMacro)
+	{
+		str += macro;
+		if (count + 1 < shaderMacro.size())
+		{
+			str += " ";
+		}
+		++count;
+	}
+	return str;
+}
 
 bool CShaderUtil::processDirectiveInclude(const char* pAfterInclude, const char* szDirInclude, std::string& strInclude)
 {

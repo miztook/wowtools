@@ -3,7 +3,9 @@
 #include "COpenGLHelper.h"
 #include "COpenGLMaterialRenderComponent.h"
 #include "COpenGLTextureWriteComponent.h"
+#include "COpenGLShaderManageComponent.h"
 #include "COpenGLRenderTarget.h"
+#include "COpenGLVertexDeclaration.h"
 #include "CFileSystem.h"
 #include "stringext.h"
 #include "function3d.h"
@@ -22,15 +24,22 @@ COpenGLDriver::COpenGLDriver()
 	DefaultFrameBuffer = 0;
 
 	//
-	MaterialRenderComponent.reset(new COpenGLMaterialRenderComponent(GLExtension));
-	TextureWriteComponent.reset(new COpenGLTextureWriteComponent(this));
+	MaterialRenderComponent = std::make_unique<COpenGLMaterialRenderComponent>(GLExtension);
+	TextureWriteComponent = std::make_unique<COpenGLTextureWriteComponent>(this);
+	ShaderManageComponent = std::make_unique<COpenGLShaderManageComponent>(this);
 }
 
 COpenGLDriver::~COpenGLDriver()
 {
 	FrameBufferRT.reset();
 
+	for (int i = 0; i < EVT_COUNT; ++i)
+	{
+		VertexDeclarations[i].reset();
+	}
+
 	//
+	ShaderManageComponent.reset();
 	TextureWriteComponent.reset();
 	MaterialRenderComponent.reset();
 
@@ -242,6 +251,10 @@ bool COpenGLDriver::initDriver(const SWindowInfo& wndInfo, bool vsync, E_AA_MODE
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 	ASSERT_OPENGL_SUCCESS();
 
+	for (int i = 0; i < EVT_COUNT; ++i)
+	{
+		VertexDeclarations[i] = std::make_unique<COpenGLVertexDeclaration>(this, (E_VERTEX_TYPE)i);
+	}
 
 	FrameBufferRT = std::make_unique<COpenGLRenderTarget>(this, windowSize, ColorFormat, DepthFormat, true);
 

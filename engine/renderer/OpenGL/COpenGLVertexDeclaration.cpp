@@ -34,7 +34,7 @@ COpenGLVertexDeclaration::~COpenGLVertexDeclaration()
 	VaoMap.clear();
 }
 
-void COpenGLVertexDeclaration::apply(const SGLProgram* program, const IVertexBuffer* vbuffer0, uint32_t offset0)
+void COpenGLVertexDeclaration::apply(const CGLProgram* program, const IVertexBuffer* vbuffer0, uint32_t offset0)
 {
 	if (Driver->GLExtension.canUseVAO())
 	{
@@ -107,7 +107,7 @@ GLuint COpenGLVertexDeclaration::getVao(const SVAOParam& param)
 	return itr->second;
 }
 
-COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo(const SGLProgram* program)
+COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo(const CGLProgram* program)
 {
 	SVertexInfo vertexInfo;
 	switch (VertexType)
@@ -149,9 +149,9 @@ COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo
 	return vertexInfo;
 }
 
-const COpenGLVertexDeclaration::SVertexInfo& COpenGLVertexDeclaration::getVertexInfo(const SGLProgram * program)
+const COpenGLVertexDeclaration::SVertexInfo& COpenGLVertexDeclaration::getVertexInfo(const CGLProgram * program)
 {
-	const SGLProgram* param = program;
+	const CGLProgram* param = program;
 
 	auto itr = VInfoMap.find(param);
 	if (itr == VInfoMap.end())
@@ -163,7 +163,7 @@ const COpenGLVertexDeclaration::SVertexInfo& COpenGLVertexDeclaration::getVertex
 	return itr->second;
 }
 
-void COpenGLVertexDeclaration::bindVbo(const SGLProgram* program, const IVertexBuffer* vbuffer0, uint32_t offset0)
+void COpenGLVertexDeclaration::bindVbo(const CGLProgram* program, const IVertexBuffer* vbuffer0, uint32_t offset0)
 {
 	ASSERT(vbuffer0);
 	Driver->GLExtension.extGlBindBuffer(GL_ARRAY_BUFFER, static_cast<const COpenGLVertexBuffer*>(vbuffer0)->getHWBuffer());
@@ -175,7 +175,7 @@ void COpenGLVertexDeclaration::bindVbo(const SGLProgram* program, const IVertexB
 	Driver->GLExtension.extGlBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_P(const SGLProgram* program)
+COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_P(const CGLProgram* program)
 {
 	SVertexInfo vertexInfo;
 	vertexInfo.vertexSize = sizeof(SVertex_P);
@@ -188,7 +188,7 @@ COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo
 	return vertexInfo;
 }
 
-COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PC(const SGLProgram * program)
+COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PC(const CGLProgram * program)
 {
 	SVertexInfo vertexInfo;
 	vertexInfo.vertexSize = sizeof(SVertex_PC);
@@ -210,7 +210,7 @@ COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo
 	return vertexInfo;
 }
 
-COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PCT(const SGLProgram * program)
+COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PCT(const CGLProgram * program)
 {
 	SVertexInfo vertexInfo;
 	vertexInfo.vertexSize = sizeof(SVertex_PCT);
@@ -239,7 +239,7 @@ COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo
 	return vertexInfo;
 }
 
-COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PN(const SGLProgram * program)
+COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PN(const CGLProgram * program)
 {
 	SVertexInfo vertexInfo;
 	vertexInfo.vertexSize = sizeof(SVertex_PN);
@@ -261,7 +261,7 @@ COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo
 	return vertexInfo;
 }
 
-COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PNC(const SGLProgram * program)
+COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PNC(const CGLProgram * program)
 {
 	SVertexInfo vertexInfo;
 	vertexInfo.vertexSize = sizeof(SVertex_PNC);
@@ -290,7 +290,7 @@ COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo
 	return vertexInfo;
 }
 
-COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PNT(const SGLProgram * program)
+COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PNT(const CGLProgram * program)
 {
 	SVertexInfo vertexInfo;
 	vertexInfo.vertexSize = sizeof(SVertex_PNT);
@@ -319,7 +319,7 @@ COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo
 	return vertexInfo;
 }
 
-COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PT(const SGLProgram * program)
+COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PT(const CGLProgram * program)
 {
 	SVertexInfo vertexInfo;
 	vertexInfo.vertexSize = sizeof(SVertex_PT);
@@ -341,7 +341,7 @@ COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo
 	return vertexInfo;
 }
 
-COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PNCT(const SGLProgram* program)
+COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PNCT(const CGLProgram* program)
 {
 	SVertexInfo vertexInfo;
 	vertexInfo.vertexSize = sizeof(SVertex_PNCT);
@@ -377,7 +377,7 @@ COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo
 	return vertexInfo;
 }
 
-COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PNCT2(const SGLProgram * program)
+COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PNCT2(const CGLProgram * program)
 {
 	SVertexInfo vertexInfo;
 	vertexInfo.vertexSize = sizeof(SVertex_PNCT2);
@@ -420,7 +420,7 @@ COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo
 	return vertexInfo;
 }
 
-COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PNT2WA(const SGLProgram* program)
+COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PNT2WA(const CGLProgram* program)
 {
 	SVertexInfo vertexInfo;
 	vertexInfo.vertexSize = sizeof(SVertex_PNT2WA);

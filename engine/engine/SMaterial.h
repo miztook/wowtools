@@ -124,7 +124,7 @@ struct SMaterial
 		: AmbientColor(1.0f, 1.0f, 1.0f, 1.0f),
 		DiffuseColor(1.0f, 1.0f, 1.0f, 1.0f),
 		EmissiveColor(1.0f, 1.0f, 1.0f, 1.0f),
-		MaterialType(E_MATERIAL_TYPE::Solid),
+		MaterialType(EMT_SOLID),
 		Lighting(true),
 		FogEnable(false),
 		colorWrite(COLORWRITE_ALL),
@@ -150,6 +150,17 @@ struct SMaterial
 			EmissiveColor.a = (EmissiveColor.a * alpha);
 	}
 
+	bool isTransparent() const
+	{
+		return MaterialType > EMT_ALPHA_TEST &&
+			MaterialType < EMT_COUNT;
+	}
+
+	bool isAlphaTest() const
+	{
+		return MaterialType == EMT_ALPHA_TEST;
+	}
+
 	SMRenderTargetBlendDesc getRenderTargetBlendDesc() const;
 };
 
@@ -172,43 +183,43 @@ inline SMRenderTargetBlendDesc SMaterial::getRenderTargetBlendDesc() const
 
 	switch (MaterialType)
 	{
-	case E_MATERIAL_TYPE::Solid:
+	case EMT_SOLID:
 		break;
-	case E_MATERIAL_TYPE::AlphaTest:
+	case EMT_ALPHA_TEST:
 		desc.alphaTestEnabled = true;
 		desc.alphaTestRef = AlphaTestRef * getMaterialAlpha();
 		break;
-	case E_MATERIAL_TYPE::Transparent_AlphaBlend:
+	case EMT_TRANSPARENT_ALPHA_BLEND:
 		desc.srcBlend = E_BLEND_FACTOR::Src_Alpha;
 		desc.destBlend = E_BLEND_FACTOR::One_Minus_Src_Alpha;
 		desc.alphaBlendEnabled = true;
 		break;
-	case E_MATERIAL_TYPE::Transparent_One_Alpha:
+	case EMT_TRANSPARENT_ONE_ALPHA:
 		desc.srcBlend = E_BLEND_FACTOR::One;
 		desc.destBlend = E_BLEND_FACTOR::One_Minus_Src_Alpha;
 		desc.alphaBlendEnabled = true;
 		break;
-	case E_MATERIAL_TYPE::Transparent_Add_Alpha:
+	case EMT_TRANSPARENT_ADD_ALPHA:
 		desc.srcBlend = E_BLEND_FACTOR::Src_Alpha;
 		desc.destBlend = E_BLEND_FACTOR::One;
 		desc.alphaBlendEnabled = true;
 		break;
-	case E_MATERIAL_TYPE::Transparent_Add_Color:
+	case EMT_TRANSPARENT_ADD_COLOR:
 		desc.srcBlend = E_BLEND_FACTOR::Src_Color;
 		desc.destBlend = E_BLEND_FACTOR::One;
 		desc.alphaBlendEnabled = true;
 		break;
-	case E_MATERIAL_TYPE::Transparent_Modulate:
+	case EMT_TRANSPARENT_MODULATE:
 		desc.srcBlend = E_BLEND_FACTOR::Zero;
 		desc.destBlend = E_BLEND_FACTOR::Src_Color;
 		desc.alphaBlendEnabled = true;
 		break;
-	case E_MATERIAL_TYPE::Transparent_Modulate_X2:
+	case EMT_TRANSPARENT_MODULATE_X2:
 		desc.srcBlend = E_BLEND_FACTOR::Dst_Color;
 		desc.destBlend = E_BLEND_FACTOR::Src_Color;
 		desc.alphaBlendEnabled = true;
 		break;
-	case E_MATERIAL_TYPE::Transparent_One_One:
+	case EMT_TRANSPARENT_ONE_ONE:
 		desc.srcBlend = E_BLEND_FACTOR::One;
 		desc.destBlend = E_BLEND_FACTOR::One;
 		desc.alphaBlendEnabled = true;

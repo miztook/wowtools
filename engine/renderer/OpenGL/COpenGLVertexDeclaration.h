@@ -6,7 +6,7 @@
 #include <map>
 
 class COpenGLDriver;
-struct SGLProgram;
+class CGLProgram;
 class IVertexBuffer;
 
 
@@ -17,7 +17,7 @@ public:
 	~COpenGLVertexDeclaration();
 
 public:
-	void apply(const SGLProgram* program, const IVertexBuffer* vbuffer0, uint32_t offset0);
+	void apply(const CGLProgram* program, const IVertexBuffer* vbuffer0, uint32_t offset0);
 	void unapply();
 
 	void deleteVao(const IVertexBuffer* vbuffer0);
@@ -25,7 +25,7 @@ public:
 private:
 	struct SVAOParam
 	{
-		const SGLProgram* program;
+		const CGLProgram* program;
 		const IVertexBuffer* vbuffer0;
 		uint32_t offset0;
 
@@ -71,23 +71,23 @@ private:
 	GLuint createVao(const SVAOParam& param);
 	GLuint	 getVao(const SVAOParam& param);
 
-	SVertexInfo createVertexInfo(const SGLProgram* program);
-	const SVertexInfo& getVertexInfo(const SGLProgram* program);
+	SVertexInfo createVertexInfo(const CGLProgram* program);
+	const SVertexInfo& getVertexInfo(const CGLProgram* program);
 
 private:
-	void bindVbo(const SGLProgram* program, const IVertexBuffer* vbuffer0, uint32_t offset0);
+	void bindVbo(const CGLProgram* program, const IVertexBuffer* vbuffer0, uint32_t offset0);
 
 private:
-	SVertexInfo createVertexInfo_P(const SGLProgram* program);
-	SVertexInfo createVertexInfo_PC(const SGLProgram* program);
-	SVertexInfo createVertexInfo_PCT(const SGLProgram* program);
-	SVertexInfo createVertexInfo_PN(const SGLProgram* program);
-	SVertexInfo createVertexInfo_PNC(const SGLProgram* program);
-	SVertexInfo createVertexInfo_PNT(const SGLProgram* program);
-	SVertexInfo createVertexInfo_PT(const SGLProgram* program);
-	SVertexInfo createVertexInfo_PNCT(const SGLProgram* program);
-	SVertexInfo createVertexInfo_PNCT2(const SGLProgram* program);
-	SVertexInfo createVertexInfo_PNT2WA(const SGLProgram* program);
+	SVertexInfo createVertexInfo_P(const CGLProgram* program);
+	SVertexInfo createVertexInfo_PC(const CGLProgram* program);
+	SVertexInfo createVertexInfo_PCT(const CGLProgram* program);
+	SVertexInfo createVertexInfo_PN(const CGLProgram* program);
+	SVertexInfo createVertexInfo_PNC(const CGLProgram* program);
+	SVertexInfo createVertexInfo_PNT(const CGLProgram* program);
+	SVertexInfo createVertexInfo_PT(const CGLProgram* program);
+	SVertexInfo createVertexInfo_PNCT(const CGLProgram* program);
+	SVertexInfo createVertexInfo_PNCT2(const CGLProgram* program);
+	SVertexInfo createVertexInfo_PNT2WA(const CGLProgram* program);
 
 	void applyVbo(const SVertexInfo& vertexInfo, uint32_t offset0);
 
@@ -96,6 +96,6 @@ private:
 	COpenGLDriver*		Driver;
 
 	std::map<SVAOParam, GLuint>		VaoMap;
-	std::map<const SGLProgram*, SVertexInfo>		VInfoMap;
+	std::map<const CGLProgram*, SVertexInfo>		VInfoMap;
 
 };
