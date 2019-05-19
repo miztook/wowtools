@@ -50,6 +50,7 @@ int main()
 			if (active)
 				update();
 			
+			//render scene
 			sceneRenderer->renderFrame(g_Engine->getScene(), active);
 
 			::Sleep(1);

@@ -143,13 +143,96 @@ CGLProgram* COpenGLShaderManageComponent::createGLProgram(const COpenGLVertexSha
 		return nullptr;
 	}
 
+	CGLProgram* program = new CGLProgram(p);
+
 	//get uniform info
 	Driver->GLExtension.extGlUseProgramObject(p);
 
+	GLint numUniforms = 0;
+	Driver->GLExtension.extGlGetObjectParameteriv(p, GL_OBJECT_ACTIVE_UNIFORMS_ARB, &numUniforms);
+	GLint maxLen = 0;
+	Driver->GLExtension.extGlGetObjectParameteriv(p, GL_OBJECT_ACTIVE_UNIFORM_MAX_LENGTH_ARB, &maxLen);
+
+	//
+	program->uniformList.resize(numUniforms);
+	std::vector<char> buf;
+	buf.resize(maxLen);
+	for (int i = 0; i < (int)numUniforms; ++i)
+	{
+		SGLUniformInfo info;
+
+		GLenum type;
+		GLint length;
+		GLint size;
+		Driver->GLExtension.extGlGetActiveUniformARB(p, i, maxLen, &length, &size, &type, (GLcharARB*)buf.data());
+		buf[length] = '\0';
+		std::string name = buf.data();
+		info.dimension = (uint8_t)size;
+		info.type = type;
+		info.location = Driver->GLExtension.extGlGetUniformLocationARB(p, name.c_str());
+
+		//delete "[]" in array names
+		std::size_t offset = name.find('[', 0);
+		if (offset != std::string::npos)
+		{
+			name = name.substr(0, offset);
+		}
+
+		ASSERT(type != GL_SAMPLER_1D_ARB && type != GL_SAMPLER_3D_ARB);
+
+		program->uniformList.emplace_back(info);
+		program->uniformNameIndexMap[name] = (uint32_t)program->uniformList.size() - 1;
+		
+		if (info.isTexture())
+		{
+			info.textureIndex = (int)program->textureNameIndexMap.size();
+			program->textureNameIndexMap[name] = (uint32_t)program->uniformList.size() - 1;
+			//
+			Driver->GLExtension.extGlUniform1iv(info.location, info.type, &(GLint)info.textureIndex);
+		}
+		else
+		{
+			info.textureIndex = -1;
+		}
+	}
 
 	Driver->GLExtension.extGlUseProgramObject(0);
 
+	return program;
+}
 
+void COpenGLShaderManageComponent::setShaderUniformF(uint32_t location, GLenum type, const float* srcData, uint32_t size)
+{
+	uint32_t count = size / sizeof(float);
+
+	switch (type)
+	{
+	case GL_FLOAT:
+		Driver->GLExtension.extGlUniform1fv(location, count, srcData);
+		break;
+	case GL_FLOAT_VEC2_ARB:
+		Driver->GLExtension.extGlUniform2fv(location, count / 2, srcData);
+		break;
+	case GL_FLOAT_VEC3_ARB:
+		Driver->GLExtension.extGlUniform3fv(location, count / 3, srcData);
+		break;
+	case GL_FLOAT_VEC4_ARB:
+		Driver->GLExtension.extGlUniform4fv(location, count / 4, srcData);
+		break;
+	case GL_FLOAT_MAT2_ARB:
+		Driver->GLExtension.extGlUniformMatrix2fv(location, count / 4, GL_FALSE, srcData);
+		break;
+	case GL_FLOAT_MAT3_ARB:
+		Driver->GLExtension.extGlUniformMatrix3fv(location, count / 9, GL_FALSE, srcData);
+		break;
+	case GL_FLOAT_MAT4_ARB:
+		Driver->GLExtension.extGlUniformMatrix4fv(location, count / 16, GL_FALSE, srcData);
+		break;
+	default:
+		ASSERT(false);
+		Driver->GLExtension.extGlUniform4fv(location, count / 4, srcData);
+		break;
+	}
 }
 
 COpenGLVertexShader::COpenGLVertexShader(const COpenGLDriver* driver, const char* filename, const std::set<std::string>& macroSet)
@@ -291,3 +374,4 @@ void COpenGLPixelShader::releaseVideoResources()
 
 	VideoBuilt = false;
 }
+

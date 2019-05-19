@@ -15,23 +15,27 @@ struct SGLUniformInfo
 	GLenum type;
 	int location;
 	int dimension;
+	int textureIndex;
+
+	bool isTexture() const {
+		return type == GL_SAMPLER_2D_ARB || type == GL_SAMPLER_CUBE_ARB;
+	}
 };
 
 class CGLProgram
 {
 public:
-	CGLProgram() : handle(0) {}
+	explicit CGLProgram(GLhandleARB h) : handle(h) {}
 
 	GLhandleARB		handle;
 
+	uint32_t getTextureCount() const { return (uint32_t)textureNameIndexMap.size(); }
+
 public:
-
-
-private:
 	//uniform info
-	std::vector<SGLUniformInfo>	uniforms;
-	std::map<std::string, uint32_t>	uniformMap;
-	std::map<std::string, int> textureLocationMap;
+	std::vector<SGLUniformInfo> uniformList;
+	std::map<std::string, uint32_t>	uniformNameIndexMap;
+	std::map<std::string, uint32_t> textureNameIndexMap;
 };
 
 class COpenGLVertexShader : public IVideoResource
@@ -104,6 +108,8 @@ public:
 	CGLProgram* findGLProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader) const;
 	CGLProgram* getGlProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader);
 	CGLProgram* createGLProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader);
+
+	void setShaderUniformF(uint32_t location, GLenum type, const float* srcData, uint32_t size);
 
 private:
 	const COpenGLDriver*	Driver;
