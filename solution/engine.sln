@@ -14,6 +14,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mywowdriver", "..\engine\renderer\mywowdriver.vcxproj", "{470A0D65-E445-4F68-9955-89BDE415A17A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "shader1", "..\engine\shader1\shader1.vcxproj", "{6AAA5037-CAB2-4F6F-8A9B-26F1F35343C5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{470A0D65-E445-4F68-9955-89BDE415A17A} = {470A0D65-E445-4F68-9955-89BDE415A17A}
+		{5FC4A776-9356-4FE9-93BA-F610DEE4E660} = {5FC4A776-9356-4FE9-93BA-F610DEE4E660}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

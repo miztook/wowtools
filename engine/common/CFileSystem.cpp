@@ -127,14 +127,14 @@ void CFileSystem::writeLog(E_LOG_TYPE type, const char * format, ...)
 	case ELOG_GX:
 		if (LogGxFile)
 		{
-			LogGxFile->writeText(text.c_str(), 1024);
+			LogGxFile->writeText(text.c_str());
 			LogGxFile->flush();
 		}
 		break;
 	case ELOG_RES:
 		if (LogResFile)
 		{
-			LogResFile->writeText(text.c_str(), 1024);
+			LogResFile->writeText(text.c_str());
 			LogResFile->flush();
 		}
 		break;

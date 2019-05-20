@@ -1,5 +1,0 @@
-#ifndef GLSL_SUPPORT_INCLUDED
-#define GLSL_SUPPORT_INCLUDED
-
-
-#endif

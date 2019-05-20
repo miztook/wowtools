@@ -24,18 +24,12 @@ uint32_t CWriteFile::write(const void* buffer, uint32_t sizeToWrite)
 	return (uint32_t)fwrite(buffer, 1, sizeToWrite, File);
 }
 
-uint32_t CWriteFile::writeText(const char* buffer, uint32_t len /*= MAX_WRITE_NUM */)
+uint32_t CWriteFile::writeText(const char* buffer)
 {
 	if (!isOpen() || buffer == nullptr)
 		return 0;
 
 	ASSERT(!IsBinary);
-
-	if (strlen(buffer) > len)
-	{
-		ASSERT(false);
-		return 0;
-	}
 
 	int32_t w1 = fputs(buffer, File);
 	if (w1 == EOF)

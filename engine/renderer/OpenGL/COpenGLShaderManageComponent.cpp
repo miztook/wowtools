@@ -8,8 +8,10 @@
 COpenGLShaderManageComponent::COpenGLShaderManageComponent(const COpenGLDriver* driver)
 	: Driver(driver), CurrentProgram(nullptr)
 {
-	VertexShaderDir = CShaderUtil::getVSDir("glvs_15");
-	PixelShaderDir = CShaderUtil::getPSDir("glps_15");
+	VertexShaderDir = g_FileSystem->getDataDirectory();
+	VertexShaderDir.append("Shaders/glvs_15/");
+	PixelShaderDir = g_FileSystem->getDataDirectory();
+	PixelShaderDir.append("Shaders/glps_15/");
 }
 
 COpenGLShaderManageComponent::~COpenGLShaderManageComponent()
@@ -21,6 +23,18 @@ COpenGLShaderManageComponent::~COpenGLShaderManageComponent()
 		const CGLProgram* program = itr.second;
 		Driver->GLExtension.extGlDeleteObject(program->handle);
 		delete program;
+	}
+
+	for (const auto& itr : VertexShaderMap)
+	{
+		const COpenGLVertexShader* vs = itr.second;
+		delete vs;
+	}
+
+	for (const auto& itr : PixelShaderMap)
+	{
+		const COpenGLPixelShader* ps = itr.second;
+		delete ps;
 	}
 }
 
@@ -39,6 +53,7 @@ const COpenGLVertexShader* COpenGLShaderManageComponent::getVertexShader(const c
 	COpenGLVertexShader* vshader = new COpenGLVertexShader(Driver, fileName, macroString);
 	if (!vshader->compile())
 	{
+		ASSERT(false);
 		delete vshader;
 		return nullptr;
 	}
@@ -63,6 +78,7 @@ const COpenGLPixelShader* COpenGLShaderManageComponent::getPixelShader(const cha
 	COpenGLPixelShader* pshader = new COpenGLPixelShader(Driver, fileName, macroString);
 	if (!pshader->compile())
 	{
+		ASSERT(false);
 		delete pshader;
 		return nullptr;
 	}
@@ -103,6 +119,12 @@ const CGLProgram* COpenGLShaderManageComponent::getGlProgram(const COpenGLVertex
 		key.pshader = pshader;
 
 		program = createGLProgram(vshader, pshader);
+
+		if (!program)
+		{
+			ASSERT(false);
+			return nullptr;
+		}
 		ProgramMap[key] = program;
 	}
 
@@ -123,10 +145,10 @@ const CGLProgram* COpenGLShaderManageComponent::createGLProgram(const COpenGLVer
 	Driver->GLExtension.extGlAttachObject(p, (GLhandleARB)pshader->getGLShader());
 
 	//bind ps output
-	Driver->GLExtension.extGlBindFragDataLocation(p, 0, "COLOR0");
-	Driver->GLExtension.extGlBindFragDataLocation(p, 1, "COLOR1");
-	Driver->GLExtension.extGlBindFragDataLocation(p, 2, "COLOR2");
-	Driver->GLExtension.extGlBindFragDataLocation(p, 3, "COLOR3");
+	Driver->GLExtension.extGlBindFragDataLocation(p, 0, "SV_Target0");
+	Driver->GLExtension.extGlBindFragDataLocation(p, 1, "SV_Target1");
+	Driver->GLExtension.extGlBindFragDataLocation(p, 2, "SV_Target2");
+	Driver->GLExtension.extGlBindFragDataLocation(p, 3, "SV_Target3");
 
 	//link
 	Driver->GLExtension.extGlLinkProgramARB(p);
@@ -246,8 +268,9 @@ void COpenGLShaderManageComponent::setShaderUniformF(uint32_t location, GLenum t
 }
 
 COpenGLVertexShader::COpenGLVertexShader(const COpenGLDriver* driver, const char* name, const char* macroString)
-	: Driver(driver), Name(name), MacroString(macroString)
+	: Driver(driver), Name(name), MacroString(macroString), VideoBuilt(false)
 {
+	VertexShader = 0;
 }
 
 COpenGLVertexShader::~COpenGLVertexShader()
@@ -317,8 +340,9 @@ void COpenGLVertexShader::releaseVideoResources()
 }
 
 COpenGLPixelShader::COpenGLPixelShader(const COpenGLDriver* driver, const char* name, const char* macroString)
-	: Driver(driver), Name(name), MacroString(macroString)
+	: Driver(driver), Name(name), MacroString(macroString), VideoBuilt(false)
 {
+	PixelShader = 0;
 }
 
 COpenGLPixelShader::~COpenGLPixelShader()

@@ -4,8 +4,6 @@
 #include <cstdio>
 #include <string>
 
-#define MAX_WRITE_NUM	1024
-
 class CWriteFile
 {
 public:
@@ -14,7 +12,7 @@ public:
 
 public:
 	uint32_t write(const void* buffer, uint32_t sizeToWrite);
-	uint32_t writeText(const char* buffer, uint32_t len = MAX_WRITE_NUM);
+	uint32_t writeText(const char* buffer);
 	uint32_t writeLine(const char* text);
 	bool flush();
 	bool seek(int32_t finalPos, bool relativeMovement = false);

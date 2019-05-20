@@ -95,8 +95,8 @@ public:
 	~COpenGLShaderManageComponent();
 
 public:
-	const COpenGLVertexShader* getVertexShader(const char* fileName, const char* macroString);
-	const COpenGLPixelShader* getPixelShader(const char* fileName, const char* macroString);
+	const COpenGLVertexShader* getVertexShader(const char* fileName, const char* macroString = "");
+	const COpenGLPixelShader* getPixelShader(const char* fileName, const char* macroString = "");
 
 	COpenGLVertexShader* getDefaultVertexShader(E_VERTEX_TYPE vType, const char* macroString);
 	COpenGLPixelShader* getDefaultPixelShader(E_VERTEX_TYPE vType, const char* macroString);
