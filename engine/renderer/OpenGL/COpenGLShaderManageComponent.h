@@ -97,25 +97,54 @@ public:
 	~COpenGLShaderManageComponent();
 
 public:
-	COpenGLVertexShader* getVertexShader(const char* fileName, const std::set<std::string>& shaderMacro);
-	COpenGLPixelShader* getPixelShader(const char* fileName, const std::set<std::string>& shaderMacro);
+	const COpenGLVertexShader* getVertexShader(const char* fileName, const std::set<std::string>& shaderMacro);
+	const COpenGLPixelShader* getPixelShader(const char* fileName, const std::set<std::string>& shaderMacro);
 
 	COpenGLVertexShader* getDefaultVertexShader(E_VERTEX_TYPE vType, const std::set<std::string>& shaderMacro);
 	COpenGLPixelShader* getDefaultPixelShader(E_VERTEX_TYPE vType, const std::set<std::string>& shaderMacro);
 
 	void addMacroByMaterial(const SMaterial& material, std::set<std::string>& shaderMacro) const;
 
-	CGLProgram* findGLProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader) const;
-	CGLProgram* getGlProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader);
-	CGLProgram* createGLProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader);
+	const CGLProgram* findGLProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader) const;
+	const CGLProgram* getGlProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader);
+	const CGLProgram* createGLProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader);
 
 	void setShaderUniformF(uint32_t location, GLenum type, const float* srcData, uint32_t size);
+
+private:
+	struct SShaderKey
+	{
+		std::string fileName;
+		std::string macroString;
+
+		bool operator<(const SShaderKey& other) const
+		{
+			if (fileName != other.fileName)
+				return fileName < other.fileName;
+			else
+				return macroString < other.macroString;
+		}
+	};
+
+	struct SProgramKey
+	{
+		const COpenGLVertexShader* vshader;
+		const COpenGLPixelShader* pshader;
+
+		bool operator<(const SProgramKey& other) const
+		{
+			if (vshader != other.vshader)
+				return vshader < other.vshader;
+			else
+				return pshader < other.pshader;
+		}
+	};
 
 private:
 	const COpenGLDriver*	Driver;
 	const CGLProgram*		CurrentProgram;
 
-	std::map<std::string, std::map<std::string, COpenGLVertexShader*>> VertexShaderMap;
-	std::map<std::string, std::map<std::string, COpenGLPixelShader*>> PixelShaderMap;
-	std::map<const COpenGLVertexShader*, std::map<const COpenGLPixelShader*, CGLProgram*>> ProgramMap;
+	std::map<SShaderKey, const COpenGLVertexShader*> VertexShaderMap;
+	std::map<SShaderKey, const COpenGLPixelShader*> PixelShaderMap;
+	std::map<SProgramKey, const CGLProgram*> ProgramMap;
 };

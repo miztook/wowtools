@@ -327,3 +327,49 @@ inline void std_string_split(const std::string& _str, const char* split, std::ve
 	}
 	delete[] str;
 }
+
+inline std::string getFileNameA(const char* filename)
+{
+	const char* lastSlash = strrchr(filename, '/');
+	const char* lastBackSlash = strrchr(filename, '\\');
+	if (lastSlash < lastBackSlash)
+		lastSlash = lastBackSlash;
+
+	bool noPrefix = (!lastSlash || *(lastSlash + 1) == '\0');
+	if (noPrefix)
+		return std::string(filename);
+	else
+		return std::string(lastSlash + 1);
+}
+
+inline std::string getFileNameNoExtensionA(const char* filename)
+{
+	const char* lastSlash = strrchr(filename, '/');
+	const char* lastBackSlash = strrchr(filename, '\\');
+	if (lastSlash < lastBackSlash)
+		lastSlash = lastBackSlash;
+	const char* p = strrchr(filename, '.');
+	if (p < lastSlash)
+	{
+		return std::string(filename);
+	}
+
+	bool noPrefix = (!lastSlash || *(lastSlash + 1) == '\0');
+	bool noSuffix = (!p || *(p + 1) == '\0');
+	if (noPrefix && noSuffix)
+	{
+		return std::string(filename);
+	}
+	else if (noPrefix)			//suffix
+	{
+		return std::string(filename, size_t(p - filename));
+	}
+	else if (noSuffix)			//prefix
+	{
+		return std::string(lastSlash + 1);
+	}
+	else
+	{
+		return std::string(lastSlash + 1, size_t(p - (lastSlash + 1)));
+	}
+}

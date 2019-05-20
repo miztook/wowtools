@@ -14,19 +14,20 @@ COpenGLShaderManageComponent::COpenGLShaderManageComponent(const COpenGLDriver* 
 COpenGLShaderManageComponent::~COpenGLShaderManageComponent()
 {
 	Driver->GLExtension.extGlUseProgramObject(0);
+
+
 }
 
-COpenGLVertexShader* COpenGLShaderManageComponent::getVertexShader(const char* fileName, const std::set<std::string>& shaderMacro)
+const COpenGLVertexShader* COpenGLShaderManageComponent::getVertexShader(const char* fileName, const std::set<std::string>& shaderMacro)
 {
-	std::string shaderMacroString = CShaderUtil::getShaderMacroString(shaderMacro);
+	SShaderKey key;
+	key.fileName = fileName;
+	key.macroString = CShaderUtil::getShaderMacroString(shaderMacro);
 
-	auto itr = VertexShaderMap.find(fileName);
+	auto itr = VertexShaderMap.find(key);
 	if (itr != VertexShaderMap.end())
 	{
-		const auto& macroMap = itr->second;	
-		auto iter = macroMap.find(shaderMacroString);
-		if (iter != macroMap.end())
-			return iter->second;
+		return itr->second;
 	}
 
 	COpenGLVertexShader* vshader = new COpenGLVertexShader(Driver, fileName, shaderMacro);
@@ -36,22 +37,21 @@ COpenGLVertexShader* COpenGLShaderManageComponent::getVertexShader(const char* f
 		return nullptr;
 	}
 
-	VertexShaderMap[fileName][shaderMacroString] = vshader;
+	VertexShaderMap[key] = vshader;
 
 	return vshader;
 }
 
-COpenGLPixelShader* COpenGLShaderManageComponent::getPixelShader(const char* fileName, const std::set<std::string>& shaderMacro)
+const COpenGLPixelShader* COpenGLShaderManageComponent::getPixelShader(const char* fileName, const std::set<std::string>& shaderMacro)
 {
-	std::string shaderMacroString = CShaderUtil::getShaderMacroString(shaderMacro);
+	SShaderKey key;
+	key.fileName = fileName;
+	key.macroString = CShaderUtil::getShaderMacroString(shaderMacro);
 
-	auto itr = PixelShaderMap.find(fileName);
+	auto itr = PixelShaderMap.find(key);
 	if (itr != PixelShaderMap.end())
 	{
-		const auto& macroMap = itr->second;
-		auto iter = macroMap.find(shaderMacroString);
-		if (iter != macroMap.end())
-			return iter->second;
+		return itr->second;
 	}
 
 	COpenGLPixelShader* pshader = new COpenGLPixelShader(Driver, fileName, shaderMacro);
@@ -61,7 +61,7 @@ COpenGLPixelShader* COpenGLShaderManageComponent::getPixelShader(const char* fil
 		return nullptr;
 	}
 
-	PixelShaderMap[fileName][shaderMacroString] = pshader;
+	PixelShaderMap[key] = pshader;
 
 	return pshader;
 }
@@ -74,32 +74,36 @@ void COpenGLShaderManageComponent::addMacroByMaterial(const SMaterial& material,
 	}
 }
 
-CGLProgram* COpenGLShaderManageComponent::findGLProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader) const
+const CGLProgram* COpenGLShaderManageComponent::findGLProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader) const
 {
+	SProgramKey key;
+	key.vshader = vshader;
+	key.pshader = pshader;
+
 	ASSERT(vshader && pshader);
-	auto itr1 = ProgramMap.find(vshader);
-	if (itr1 != ProgramMap.end())
-	{
-		auto itr2 = itr1->second.find(pshader);
-		if (itr2 != itr1->second.end())
-			return itr2->second;
-	}
+	auto itr = ProgramMap.find(key);
+	if (itr != ProgramMap.end())
+		return itr->second;
 	return nullptr;
 }
 
-CGLProgram* COpenGLShaderManageComponent::getGlProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader)
+const CGLProgram* COpenGLShaderManageComponent::getGlProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader)
 {
-	CGLProgram* program = findGLProgram(vshader, pshader);
+	const CGLProgram* program = findGLProgram(vshader, pshader);
 	if (!program)
 	{
+		SProgramKey key;
+		key.vshader = vshader;
+		key.pshader = pshader;
+
 		program = createGLProgram(vshader, pshader);
-		ProgramMap[vshader][pshader] = program;
+		ProgramMap[key] = program;
 	}
 
 	return program;
 }
 
-CGLProgram* COpenGLShaderManageComponent::createGLProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader)
+const CGLProgram* COpenGLShaderManageComponent::createGLProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader)
 {
 	if (!vshader || !pshader)
 	{
@@ -374,4 +378,3 @@ void COpenGLPixelShader::releaseVideoResources()
 
 	VideoBuilt = false;
 }
-
