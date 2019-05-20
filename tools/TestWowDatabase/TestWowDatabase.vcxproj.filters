@@ -7,81 +7,135 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestWowDatabase.cpp" />
-    <ClCompile Include="..\Common\CFileSystem.cpp">
+    <ClCompile Include="..\..\engine\common\CFileSystem.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\CMemFile.cpp">
+    <ClCompile Include="..\..\engine\common\CMemFile.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\CReadFile.cpp">
+    <ClCompile Include="..\..\engine\common\CReadFile.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\CWriteFile.cpp">
+    <ClCompile Include="..\..\engine\common\CWriteFile.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\wowEnvironment.cpp">
+    <ClCompile Include="..\..\engine\common\wowDatabase.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\wowDatabase.cpp">
+    <ClCompile Include="..\..\engine\common\wowDbFile.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\wowTable.cpp">
+    <ClCompile Include="..\..\engine\common\wowEnvironment.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\wowDbFile.cpp">
+    <ClCompile Include="..\..\engine\common\wowTable.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\wowWDB5File.cpp">
+    <ClCompile Include="..\..\engine\common\wowWDB5File.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\wowWDC3File.cpp">
+    <ClCompile Include="..\..\engine\common\wowWDC3File.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\wowWMOFile.cpp">
       <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Common\CFileSystem.h">
+    <ClInclude Include="..\..\engine\common\aabbox3d.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\CMemFile.h">
+    <ClInclude Include="..\..\engine\common\base.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\CReadFile.h">
+    <ClInclude Include="..\..\engine\common\CFileSystem.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\CWriteFile.h">
+    <ClInclude Include="..\..\engine\common\CMemFile.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\function.h">
+    <ClInclude Include="..\..\engine\common\CReadFile.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\predefine.h">
+    <ClInclude Include="..\..\engine\common\CSysChrono.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\stringext.h">
+    <ClInclude Include="..\..\engine\common\CSysSync.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\wowEnvironment.h">
+    <ClInclude Include="..\..\engine\common\CWriteFile.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\wowDatabase.h">
+    <ClInclude Include="..\..\engine\common\frustum.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\wowDbFile.h">
+    <ClInclude Include="..\..\engine\common\function.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\wowTable.h">
+    <ClInclude Include="..\..\engine\common\function3d.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\varianttype.h">
+    <ClInclude Include="..\..\engine\common\line3d.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\wowEnums.h">
+    <ClInclude Include="..\..\engine\common\matrix4.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\wowWDB5File.h">
+    <ClInclude Include="..\..\engine\common\plane3d.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\wowWDC3File.h">
+    <ClInclude Include="..\..\engine\common\predefine.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\quaternion.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\rect.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\S3DVertex.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\SColor.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\stringext.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\varianttype.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\vector2d.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\vector3d.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowDatabase.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowDbFile.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowEnums.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowEnvironment.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowTable.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowWDB5File.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowWDC3File.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowWMOFile.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowWMOStruct.h">
       <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>

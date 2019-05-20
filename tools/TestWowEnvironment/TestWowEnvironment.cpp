@@ -8,6 +8,7 @@
 #include "function.h"
 
 #pragma comment(lib, "CascLib.lib")
+#pragma comment(lib, "pugixml.lib")
 
 void testWowEnvironment();
 

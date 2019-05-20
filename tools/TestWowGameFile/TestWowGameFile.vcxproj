@@ -95,7 +95,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\Common;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\engine\Common;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
     </ClCompile>
@@ -111,7 +111,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\Common;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\engine\Common;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
     </ClCompile>
@@ -129,7 +129,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\Common;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\engine\Common;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -148,7 +148,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\Common;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\engine\Common;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -160,48 +160,52 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Common\CFileSystem.cpp" />
-    <ClCompile Include="..\Common\CMemFile.cpp" />
-    <ClCompile Include="..\Common\CReadFile.cpp" />
-    <ClCompile Include="..\Common\CWriteFile.cpp" />
-    <ClCompile Include="..\Common\wowDatabase.cpp" />
-    <ClCompile Include="..\Common\wowDbFile.cpp" />
-    <ClCompile Include="..\Common\wowEnvironment.cpp" />
-    <ClCompile Include="..\Common\wowTable.cpp" />
-    <ClCompile Include="..\Common\wowWDB5File.cpp" />
-    <ClCompile Include="..\Common\wowWDC3File.cpp" />
-    <ClCompile Include="..\Common\wowWMOFile.cpp" />
+    <ClCompile Include="..\..\engine\common\CFileSystem.cpp" />
+    <ClCompile Include="..\..\engine\common\CMemFile.cpp" />
+    <ClCompile Include="..\..\engine\common\CReadFile.cpp" />
+    <ClCompile Include="..\..\engine\common\CWriteFile.cpp" />
+    <ClCompile Include="..\..\engine\common\wowDatabase.cpp" />
+    <ClCompile Include="..\..\engine\common\wowDbFile.cpp" />
+    <ClCompile Include="..\..\engine\common\wowEnvironment.cpp" />
+    <ClCompile Include="..\..\engine\common\wowTable.cpp" />
+    <ClCompile Include="..\..\engine\common\wowWDB5File.cpp" />
+    <ClCompile Include="..\..\engine\common\wowWDC3File.cpp" />
+    <ClCompile Include="..\..\engine\common\wowWMOFile.cpp" />
     <ClCompile Include="TestWowGameFile.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Common\aabbox3d.h" />
-    <ClInclude Include="..\Common\base.h" />
-    <ClInclude Include="..\Common\CFileSystem.h" />
-    <ClInclude Include="..\Common\CMemFile.h" />
-    <ClInclude Include="..\Common\CReadFile.h" />
-    <ClInclude Include="..\Common\CWriteFile.h" />
-    <ClInclude Include="..\Common\frustum.h" />
-    <ClInclude Include="..\Common\function.h" />
-    <ClInclude Include="..\Common\line3d.h" />
-    <ClInclude Include="..\Common\matrix4.h" />
-    <ClInclude Include="..\Common\plane3d.h" />
-    <ClInclude Include="..\Common\predefine.h" />
-    <ClInclude Include="..\Common\quaternion.h" />
-    <ClInclude Include="..\Common\S3DVertex.h" />
-    <ClInclude Include="..\Common\SColor.h" />
-    <ClInclude Include="..\Common\stringext.h" />
-    <ClInclude Include="..\Common\varianttype.h" />
-    <ClInclude Include="..\Common\vector2d.h" />
-    <ClInclude Include="..\Common\vector3d.h" />
-    <ClInclude Include="..\Common\wowDatabase.h" />
-    <ClInclude Include="..\Common\wowDbFile.h" />
-    <ClInclude Include="..\Common\wowEnums.h" />
-    <ClInclude Include="..\Common\wowEnvironment.h" />
-    <ClInclude Include="..\Common\wowTable.h" />
-    <ClInclude Include="..\Common\wowWDB5File.h" />
-    <ClInclude Include="..\Common\wowWDC3File.h" />
-    <ClInclude Include="..\Common\wowWMOFile.h" />
-    <ClInclude Include="..\Common\wowWMOStruct.h" />
+    <ClInclude Include="..\..\engine\common\aabbox3d.h" />
+    <ClInclude Include="..\..\engine\common\base.h" />
+    <ClInclude Include="..\..\engine\common\CFileSystem.h" />
+    <ClInclude Include="..\..\engine\common\CMemFile.h" />
+    <ClInclude Include="..\..\engine\common\CReadFile.h" />
+    <ClInclude Include="..\..\engine\common\CSysChrono.h" />
+    <ClInclude Include="..\..\engine\common\CSysSync.h" />
+    <ClInclude Include="..\..\engine\common\CWriteFile.h" />
+    <ClInclude Include="..\..\engine\common\frustum.h" />
+    <ClInclude Include="..\..\engine\common\function.h" />
+    <ClInclude Include="..\..\engine\common\function3d.h" />
+    <ClInclude Include="..\..\engine\common\line3d.h" />
+    <ClInclude Include="..\..\engine\common\matrix4.h" />
+    <ClInclude Include="..\..\engine\common\plane3d.h" />
+    <ClInclude Include="..\..\engine\common\predefine.h" />
+    <ClInclude Include="..\..\engine\common\quaternion.h" />
+    <ClInclude Include="..\..\engine\common\rect.h" />
+    <ClInclude Include="..\..\engine\common\S3DVertex.h" />
+    <ClInclude Include="..\..\engine\common\SColor.h" />
+    <ClInclude Include="..\..\engine\common\stringext.h" />
+    <ClInclude Include="..\..\engine\common\varianttype.h" />
+    <ClInclude Include="..\..\engine\common\vector2d.h" />
+    <ClInclude Include="..\..\engine\common\vector3d.h" />
+    <ClInclude Include="..\..\engine\common\wowDatabase.h" />
+    <ClInclude Include="..\..\engine\common\wowDbFile.h" />
+    <ClInclude Include="..\..\engine\common\wowEnums.h" />
+    <ClInclude Include="..\..\engine\common\wowEnvironment.h" />
+    <ClInclude Include="..\..\engine\common\wowTable.h" />
+    <ClInclude Include="..\..\engine\common\wowWDB5File.h" />
+    <ClInclude Include="..\..\engine\common\wowWDC3File.h" />
+    <ClInclude Include="..\..\engine\common\wowWMOFile.h" />
+    <ClInclude Include="..\..\engine\common\wowWMOStruct.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
