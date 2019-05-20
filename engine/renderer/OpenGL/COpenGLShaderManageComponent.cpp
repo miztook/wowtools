@@ -8,21 +8,27 @@
 COpenGLShaderManageComponent::COpenGLShaderManageComponent(const COpenGLDriver* driver)
 	: Driver(driver), CurrentProgram(nullptr)
 {
-
+	VertexShaderDir = CShaderUtil::getVSDir("glvs_15");
+	PixelShaderDir = CShaderUtil::getPSDir("glps_15");
 }
 
 COpenGLShaderManageComponent::~COpenGLShaderManageComponent()
 {
 	Driver->GLExtension.extGlUseProgramObject(0);
 
-
+	for (const auto& itr : ProgramMap)
+	{
+		const CGLProgram* program = itr.second;
+		Driver->GLExtension.extGlDeleteObject(program->handle);
+		delete program;
+	}
 }
 
-const COpenGLVertexShader* COpenGLShaderManageComponent::getVertexShader(const char* fileName, const std::set<std::string>& shaderMacro)
+const COpenGLVertexShader* COpenGLShaderManageComponent::getVertexShader(const char* fileName, const char* macroString)
 {
 	SShaderKey key;
 	key.fileName = fileName;
-	key.macroString = CShaderUtil::getShaderMacroString(shaderMacro);
+	key.macroString = macroString;
 
 	auto itr = VertexShaderMap.find(key);
 	if (itr != VertexShaderMap.end())
@@ -30,7 +36,7 @@ const COpenGLVertexShader* COpenGLShaderManageComponent::getVertexShader(const c
 		return itr->second;
 	}
 
-	COpenGLVertexShader* vshader = new COpenGLVertexShader(Driver, fileName, shaderMacro);
+	COpenGLVertexShader* vshader = new COpenGLVertexShader(Driver, fileName, macroString);
 	if (!vshader->compile())
 	{
 		delete vshader;
@@ -42,11 +48,11 @@ const COpenGLVertexShader* COpenGLShaderManageComponent::getVertexShader(const c
 	return vshader;
 }
 
-const COpenGLPixelShader* COpenGLShaderManageComponent::getPixelShader(const char* fileName, const std::set<std::string>& shaderMacro)
+const COpenGLPixelShader* COpenGLShaderManageComponent::getPixelShader(const char* fileName, const char* macroString)
 {
 	SShaderKey key;
 	key.fileName = fileName;
-	key.macroString = CShaderUtil::getShaderMacroString(shaderMacro);
+	key.macroString = macroString;
 
 	auto itr = PixelShaderMap.find(key);
 	if (itr != PixelShaderMap.end())
@@ -54,7 +60,7 @@ const COpenGLPixelShader* COpenGLShaderManageComponent::getPixelShader(const cha
 		return itr->second;
 	}
 
-	COpenGLPixelShader* pshader = new COpenGLPixelShader(Driver, fileName, shaderMacro);
+	COpenGLPixelShader* pshader = new COpenGLPixelShader(Driver, fileName, macroString);
 	if (!pshader->compile())
 	{
 		delete pshader;
@@ -239,12 +245,9 @@ void COpenGLShaderManageComponent::setShaderUniformF(uint32_t location, GLenum t
 	}
 }
 
-COpenGLVertexShader::COpenGLVertexShader(const COpenGLDriver* driver, const char* filename, const std::set<std::string>& macroSet)
-	: Driver(driver), AbsFileName(filename), MacroSet(macroSet)
+COpenGLVertexShader::COpenGLVertexShader(const COpenGLDriver* driver, const char* name, const char* macroString)
+	: Driver(driver), Name(name), MacroString(macroString)
 {
-	char name[QMAX_PATH];
-	getFileNameNoExtensionA(filename, name, QMAX_PATH);
-	Name = name;
 }
 
 COpenGLVertexShader::~COpenGLVertexShader()
@@ -262,8 +265,12 @@ bool COpenGLVertexShader::buildVideoResources()
 	if (VideoBuilt)
 		return false;
 
+	std::string absFileName = Driver->getShaderManageComponent()->getVSDir();
+	absFileName.append(Name);
+	absFileName.append(".glsl");
+
 	SShaderFile result;
-	if (!CShaderUtil::loadFile_OpenGL(AbsFileName.c_str(), MacroSet, result))
+	if (!CShaderUtil::loadFile_OpenGL(absFileName.c_str(), CShaderUtil::getShaderMacroSet(MacroString.c_str()), result))
 		return false;
 
 	const char* buffer = result.Buffer.data();
@@ -278,7 +285,7 @@ bool COpenGLVertexShader::buildVideoResources()
 
 	if (!status)
 	{
-		g_FileSystem->writeLog(ELOG_GX, "GLSL shader failed to compile: %s, %s", AbsFileName.c_str(), CShaderUtil::getShaderMacroString(MacroSet).c_str());
+		g_FileSystem->writeLog(ELOG_GX, "GLSL shader failed to compile: %s, %s", absFileName.c_str(), MacroString.c_str());
 		// check error message and log it
 		GLint maxLength = 0;
 		GLsizei length;
@@ -309,12 +316,9 @@ void COpenGLVertexShader::releaseVideoResources()
 	VideoBuilt = false;
 }
 
-COpenGLPixelShader::COpenGLPixelShader(const COpenGLDriver* driver, const char* filename, const std::set<std::string>& macroSet)
-	: Driver(driver), AbsFileName(filename), MacroSet(macroSet)
+COpenGLPixelShader::COpenGLPixelShader(const COpenGLDriver* driver, const char* name, const char* macroString)
+	: Driver(driver), Name(name), MacroString(macroString)
 {
-	char name[QMAX_PATH];
-	getFileNameNoExtensionA(filename, name, QMAX_PATH);
-	Name = name;
 }
 
 COpenGLPixelShader::~COpenGLPixelShader()
@@ -332,8 +336,12 @@ bool COpenGLPixelShader::buildVideoResources()
 	if (VideoBuilt)
 		return false;
 
+	std::string absFileName = Driver->getShaderManageComponent()->getPSDir();
+	absFileName.append(Name);
+	absFileName.append(".glsl");
+
 	SShaderFile result;
-	if (!CShaderUtil::loadFile_OpenGL(AbsFileName.c_str(), MacroSet, result))
+	if (!CShaderUtil::loadFile_OpenGL(absFileName.c_str(), CShaderUtil::getShaderMacroSet(MacroString.c_str()), result))
 		return false;
 
 	const char* buffer = result.Buffer.data();
@@ -348,7 +356,8 @@ bool COpenGLPixelShader::buildVideoResources()
 
 	if (!status)
 	{
-		g_FileSystem->writeLog(ELOG_GX, "GLSL shader failed to compile");
+		g_FileSystem->writeLog(ELOG_GX, "GLSL shader failed to compile: %s, %s", absFileName.c_str(), MacroString.c_str());
+
 		// check error message and log it
 		GLint maxLength = 0;
 		GLsizei length;

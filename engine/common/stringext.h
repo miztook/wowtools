@@ -328,6 +328,21 @@ inline void std_string_split(const std::string& _str, const char* split, std::ve
 	delete[] str;
 }
 
+inline std::string getFileDirA(const char* filename)
+{
+	const char* lastSlash = strrchr(filename, ('/'));
+	const char* lastBackSlash = strrchr(filename, ('\\'));
+	if (!lastSlash || lastSlash < lastBackSlash)
+		lastSlash = lastBackSlash;
+
+	if (!lastSlash || lastSlash - filename <= 0)
+		return std::string(".");
+	else
+	{
+		return std::string(filename, size_t(lastSlash - filename));
+	}
+}
+
 inline std::string getFileNameA(const char* filename)
 {
 	const char* lastSlash = strrchr(filename, '/');

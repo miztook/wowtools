@@ -41,7 +41,7 @@ public:
 class COpenGLVertexShader : public IVideoResource
 {
 public:
-	COpenGLVertexShader(const COpenGLDriver* driver, const char* filename, const std::set<std::string>& macroSet);
+	COpenGLVertexShader(const COpenGLDriver* driver, const char* name, const char* macroString);
 	~COpenGLVertexShader();
 
 public:
@@ -58,16 +58,15 @@ protected:
 private:
 	const COpenGLDriver* Driver;
 	GLuint	VertexShader;
-	std::string AbsFileName;
 	std::string Name;
-	std::set<std::string> MacroSet;
+	std::string MacroString;
 	bool	VideoBuilt;
 };
 
 class COpenGLPixelShader : public IVideoResource
 {
 public:
-	COpenGLPixelShader(const COpenGLDriver* driver, const char* filename, const std::set<std::string>& macroSet);
+	COpenGLPixelShader(const COpenGLDriver* driver, const char* name, const char* macroString);
 	~COpenGLPixelShader();
 
 public:
@@ -84,9 +83,8 @@ protected:
 private:
 	const COpenGLDriver* Driver;
 	GLuint	PixelShader;
-	std::string AbsFileName;
 	std::string Name;
-	std::set<std::string> MacroSet;
+	std::string MacroString;
 	bool	VideoBuilt;
 };
 
@@ -97,11 +95,11 @@ public:
 	~COpenGLShaderManageComponent();
 
 public:
-	const COpenGLVertexShader* getVertexShader(const char* fileName, const std::set<std::string>& shaderMacro);
-	const COpenGLPixelShader* getPixelShader(const char* fileName, const std::set<std::string>& shaderMacro);
+	const COpenGLVertexShader* getVertexShader(const char* fileName, const char* macroString);
+	const COpenGLPixelShader* getPixelShader(const char* fileName, const char* macroString);
 
-	COpenGLVertexShader* getDefaultVertexShader(E_VERTEX_TYPE vType, const std::set<std::string>& shaderMacro);
-	COpenGLPixelShader* getDefaultPixelShader(E_VERTEX_TYPE vType, const std::set<std::string>& shaderMacro);
+	COpenGLVertexShader* getDefaultVertexShader(E_VERTEX_TYPE vType, const char* macroString);
+	COpenGLPixelShader* getDefaultPixelShader(E_VERTEX_TYPE vType, const char* macroString);
 
 	void addMacroByMaterial(const SMaterial& material, std::set<std::string>& shaderMacro) const;
 
@@ -110,6 +108,9 @@ public:
 	const CGLProgram* createGLProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader);
 
 	void setShaderUniformF(uint32_t location, GLenum type, const float* srcData, uint32_t size);
+
+	const char* getVSDir() const { return VertexShaderDir.c_str(); }
+	const char* getPSDir() const { return PixelShaderDir.c_str(); }
 
 private:
 	struct SShaderKey
@@ -143,6 +144,9 @@ private:
 private:
 	const COpenGLDriver*	Driver;
 	const CGLProgram*		CurrentProgram;
+
+	std::string VertexShaderDir;
+	std::string PixelShaderDir;
 
 	std::map<SShaderKey, const COpenGLVertexShader*> VertexShaderMap;
 	std::map<SShaderKey, const COpenGLPixelShader*> PixelShaderMap;

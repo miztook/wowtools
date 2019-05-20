@@ -110,11 +110,12 @@ bool CShaderUtil::loadFile_OpenGL(const char* absFileName, const std::set<std::s
 	return true;
 }
 
-std::string CShaderUtil::getVSDir(const char * profile)
+std::string CShaderUtil::getVSDir(const char* profile)
 {
 	std::string str = g_FileSystem->getDataDirectory();
 	str.append("Shaders/Vertex/");
 	str.append(profile);
+	normalizeDirName(str);
 
 	return str;
 }
@@ -124,6 +125,7 @@ std::string CShaderUtil::getPSDir(const char * profile)
 	std::string str = g_FileSystem->getDataDirectory();
 	str.append("Shaders/Pixel/");
 	str.append(profile);
+	normalizeDirName(str);
 
 	return str;
 }
@@ -143,6 +145,18 @@ std::string CShaderUtil::getShaderMacroString(const std::set<std::string>& shade
 		++count;
 	}
 	return str;
+}
+
+std::set<std::string> CShaderUtil::getShaderMacroSet(const char* macroString)
+{
+	std::set<std::string> macroSet;
+	std::vector<std::string> macroList;
+	std_string_split(macroString, " ", macroList);
+	for (const auto& str : macroList)
+	{
+		macroSet.insert(str);
+	}
+	return macroSet;
 }
 
 bool CShaderUtil::processDirectiveInclude(const char* pAfterInclude, const char* szDirInclude, std::string& strInclude)
