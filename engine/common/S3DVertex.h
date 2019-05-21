@@ -11,6 +11,8 @@ struct SVertex_P
 	vector3df Pos;
 
 	void set(const vector3df& p) { Pos = p; }
+	
+	static E_VERTEX_TYPE TYPE() { return EVT_P; }
 };
 
 struct SVertex_PC
@@ -19,6 +21,8 @@ struct SVertex_PC
 	SColor		Color;
 
 	void set(const vector3df& p, SColor c) { Pos = p; Color = c; }
+
+	static E_VERTEX_TYPE TYPE() { return EVT_PC; }
 };
 
 struct SVertex_PCT
@@ -28,6 +32,8 @@ struct SVertex_PCT
 	vector2df TCoords;
 
 	void set(const vector3df& p, SColor c, const vector2df& t) { Pos = p; Color = c; TCoords = t; }
+
+	static E_VERTEX_TYPE TYPE() { return EVT_PCT; }
 };
 
 struct SVertex_PN
@@ -36,6 +42,8 @@ struct SVertex_PN
 	vector3df	Normal;
 
 	void set(const vector3df& p, const vector3df& n) { Pos = p; Normal = n; }
+
+	static E_VERTEX_TYPE TYPE() { return EVT_PN; }
 };
 
 struct SVertex_PNC
@@ -45,6 +53,8 @@ struct SVertex_PNC
 	SColor Color;
 
 	void set(const vector3df& p, const vector3df& n, SColor c) { Pos = p; Normal = n; Color = c; }
+
+	static E_VERTEX_TYPE TYPE() { return EVT_PNC; }
 };
 
 struct SVertex_PNT
@@ -54,6 +64,8 @@ struct SVertex_PNT
 	vector2df TCoords;
 
 	void set(const vector3df& p, const vector3df& n, const vector2df& t) { Pos = p; Normal = n; TCoords = t; }
+
+	static E_VERTEX_TYPE TYPE() { return EVT_PNT; }
 };
 
 struct SVertex_PT
@@ -62,6 +74,8 @@ struct SVertex_PT
 	vector2df TCoords;
 
 	void set(const vector3df& p, const vector2df& t) { Pos = p; TCoords = t; }
+
+	static E_VERTEX_TYPE TYPE() { return EVT_PT; }
 };
 
 struct SVertex_PNCT
@@ -72,6 +86,8 @@ struct SVertex_PNCT
 	vector2df TCoords;
 
 	void set(const vector3df& p, const vector3df& n, SColor c, const vector2df& t) { Pos = p; Normal = n; Color = c; TCoords = t; }
+
+	static E_VERTEX_TYPE TYPE() { return EVT_PNCT; }
 };
 
 struct SVertex_PNCT2
@@ -83,6 +99,8 @@ struct SVertex_PNCT2
 	vector2df TCoords1;
 
 	void set(const vector3df& p, const vector3df& n, SColor c, const vector2df& t0, const vector2df& t1) { Pos = p; Normal = n; Color = c; TCoords0 = t0; TCoords1 = t1; }
+
+	static E_VERTEX_TYPE TYPE() { return EVT_PNCT2; }
 };
 
 struct SVertex_PNT2WA
@@ -98,6 +116,8 @@ struct SVertex_PNT2WA
 	{
 		Pos = p; Normal = n; TCoords0 = t; TCoords1 = t1;
 	}
+
+	static E_VERTEX_TYPE TYPE() { return EVT_PNT2WA; }
 };
 
 inline uint32_t getVertexPitchFromType(E_VERTEX_TYPE type)

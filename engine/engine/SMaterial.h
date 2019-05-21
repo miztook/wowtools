@@ -2,8 +2,12 @@
 
 #include "SColor.h"
 #include "base.h"
+#include "vector4d.h"
+#include "matrix4.h"
 #include <string>
 #include <set>
+#include <vector>
+#include <map>
 
 struct SMRasterizerDesc
 {
@@ -106,6 +110,7 @@ struct SMaterial
 	std::set<std::string>  VSMacroSet;
 	std::string		PSFile;
 	std::set<std::string>  PSMacroSet;
+	std::map<std::string, std::vector<float>>	ShaderVariableMap;
 
 	SColorf		AmbientColor;
 	SColorf		DiffuseColor;
@@ -160,6 +165,10 @@ struct SMaterial
 	{
 		return MaterialType == EMT_ALPHA_TEST;
 	}
+
+	void setVariable(const char* name, const float* src, uint32_t size);
+	void setVariable(const char* name, const matrix4& mat) { setVariable(name, mat.M, 16); }
+	void setVariable(const char* name, const vector4df& vec) { setVariable(name, &vec.x, 4); }
 
 	SMRenderTargetBlendDesc getRenderTargetBlendDesc() const;
 };
@@ -228,4 +237,22 @@ inline SMRenderTargetBlendDesc SMaterial::getRenderTargetBlendDesc() const
 		break;
 	}
 	return desc;
+}
+
+inline void SMaterial::setVariable(const char* name, const float* src, uint32_t size)
+{
+	auto itr = ShaderVariableMap.find(name);
+	if (itr == ShaderVariableMap.end())
+	{
+		std::vector<float> buffer;
+		buffer.resize(size);
+		memcpy(buffer.data(), src, sizeof(float) * size);
+		ShaderVariableMap[name] = buffer;
+	}
+	else
+	{
+		std::vector<float>& buffer = itr->second;
+		ASSERT(buffer.size() >= size);
+		memcpy(buffer.data(), src, sizeof(float) * size);
+	}
 }

@@ -38,6 +38,11 @@ COpenGLShaderManageComponent::~COpenGLShaderManageComponent()
 	}
 }
 
+bool COpenGLShaderManageComponent::init()
+{
+	return true;
+}
+
 const COpenGLVertexShader* COpenGLShaderManageComponent::getVertexShader(const char* fileName, const char* macroString)
 {
 	SShaderKey key;

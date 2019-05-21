@@ -93,10 +93,15 @@ COpenGLTextureWriteComponent::~COpenGLTextureWriteComponent()
 	TextureWriterMap.clear();
 }
 
+bool COpenGLTextureWriteComponent::init()
+{
+	return true;
+}
+
 ITextureWriter* COpenGLTextureWriteComponent::createTextureWriter(ITexture* texture)
 {
 	ECOLOR_FORMAT format = texture->getColorFormat();
-	dimension2d size = texture->getSize();
+	const dimension2d& size = texture->getSize();
 	uint32_t numMipmap = texture->getNumMipmaps();
 	bool cube = texture->isCube();
 

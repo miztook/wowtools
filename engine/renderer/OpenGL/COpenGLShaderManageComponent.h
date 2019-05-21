@@ -22,6 +22,12 @@ struct SGLUniformInfo
 	}
 };
 
+struct SUniform
+{
+	GLenum type;
+
+};
+
 class CGLProgram
 {
 public:
@@ -95,6 +101,8 @@ public:
 	~COpenGLShaderManageComponent();
 
 public:
+	bool init();
+
 	const COpenGLVertexShader* getVertexShader(const char* fileName, const char* macroString = "");
 	const COpenGLPixelShader* getPixelShader(const char* fileName, const char* macroString = "");
 
@@ -151,4 +159,5 @@ private:
 	std::map<SShaderKey, const COpenGLVertexShader*> VertexShaderMap;
 	std::map<SShaderKey, const COpenGLPixelShader*> PixelShaderMap;
 	std::map<SProgramKey, const CGLProgram*> ProgramMap;
+	
 };

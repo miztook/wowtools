@@ -44,6 +44,8 @@ public:
 	~COpenGLTextureWriteComponent();
 
 public:
+	bool init();
+
 	ITextureWriter* createTextureWriter(ITexture* texture);
 	bool removeTextureWriter(ITexture* texture);
 

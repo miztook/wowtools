@@ -78,9 +78,16 @@
 COpenGLMaterialRenderComponent::COpenGLMaterialRenderComponent(const COpenGLExtension& extension)
 	: Extension(extension)
 {
+
+}
+
+bool COpenGLMaterialRenderComponent::init()
+{
 	resetRSCache();
 
 	CurrentRenderState = RsCache;
+
+	return true;
 }
 
 void COpenGLMaterialRenderComponent::applyRenderStates()

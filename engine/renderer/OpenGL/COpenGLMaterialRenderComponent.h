@@ -15,6 +15,8 @@ public:
 	explicit COpenGLMaterialRenderComponent(const COpenGLExtension& extension);
 
 public:
+	bool init();
+
 	void applyRenderStates();
 
 	void setClearColor(SColor clearColor);

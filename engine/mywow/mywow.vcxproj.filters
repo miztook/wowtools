@@ -191,6 +191,9 @@
     <ClInclude Include="..\engine\CShaderUtil.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\vector4d.h">
+      <Filter>common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">

@@ -4,8 +4,10 @@
 #include "COpenGLMaterialRenderComponent.h"
 #include "COpenGLTextureWriteComponent.h"
 #include "COpenGLShaderManageComponent.h"
+#include "COpenGLDrawHelperComponent.h"
 #include "COpenGLRenderTarget.h"
 #include "COpenGLVertexDeclaration.h"
+#include "IVertexIndexBuffer.h"
 #include "CFileSystem.h"
 #include "stringext.h"
 #include "function3d.h"
@@ -27,6 +29,7 @@ COpenGLDriver::COpenGLDriver()
 	MaterialRenderComponent = std::make_unique<COpenGLMaterialRenderComponent>(GLExtension);
 	TextureWriteComponent = std::make_unique<COpenGLTextureWriteComponent>(this);
 	ShaderManageComponent = std::make_unique<COpenGLShaderManageComponent>(this);
+	DrawHelperComponent = std::make_unique<COpenGLDrawHelperComponent>(this);
 }
 
 COpenGLDriver::~COpenGLDriver()
@@ -39,6 +42,7 @@ COpenGLDriver::~COpenGLDriver()
 	}
 
 	//
+	DrawHelperComponent.reset();
 	ShaderManageComponent.reset();
 	TextureWriteComponent.reset();
 	MaterialRenderComponent.reset();
@@ -254,6 +258,14 @@ bool COpenGLDriver::initDriver(const SWindowInfo& wndInfo, bool vsync, E_AA_MODE
 	for (int i = 0; i < EVT_COUNT; ++i)
 	{
 		VertexDeclarations[i] = std::make_unique<COpenGLVertexDeclaration>(this, (E_VERTEX_TYPE)i);
+	}
+
+	if (!MaterialRenderComponent->init() ||
+		!TextureWriteComponent->init() ||
+		!ShaderManageComponent->init() ||
+		!DrawHelperComponent->init())
+	{
+		ASSERT(false);
 	}
 
 	FrameBufferRT = std::make_unique<COpenGLRenderTarget>(this, windowSize, ColorFormat, DepthFormat, true);
@@ -541,4 +553,13 @@ ITextureWriter* COpenGLDriver::createTextureWriter(ITexture* texture)
 bool COpenGLDriver::removeTextureWriter(ITexture * texture)
 {
 	return TextureWriteComponent->removeTextureWriter(texture);
+}
+
+void COpenGLDriver::deleteVao(const IVertexBuffer* vbuffer)
+{
+	E_VERTEX_TYPE vType = vbuffer->getVertexType();
+	if (vType != EVT_INVALID)
+	{
+		VertexDeclarations[vType]->deleteVao(vbuffer);
+	}
 }

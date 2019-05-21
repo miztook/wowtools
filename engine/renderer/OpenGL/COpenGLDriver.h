@@ -7,6 +7,7 @@
 class COpenGLMaterialRenderComponent;
 class COpenGLTextureWriteComponent;
 class COpenGLShaderManageComponent;
+class COpenGLDrawHelperComponent;
 class COpenGLVertexDeclaration;
 class IVertexBuffer;
 
@@ -73,6 +74,7 @@ private:
 	std::unique_ptr<COpenGLMaterialRenderComponent>  MaterialRenderComponent;
 	std::unique_ptr<COpenGLTextureWriteComponent> TextureWriteComponent;
 	std::unique_ptr<COpenGLShaderManageComponent> ShaderManageComponent;
+	std::unique_ptr<COpenGLDrawHelperComponent> DrawHelperComponent;
 
 	std::array<std::unique_ptr<COpenGLVertexDeclaration>, EVT_COUNT>		VertexDeclarations;
 };
