@@ -9,6 +9,22 @@
 #include <vector>
 #include <map>
 
+class ITexture;
+
+struct STextureUnit
+{
+	ITexture* Texture;
+	E_TEXTURE_CLAMP TextureWrapU;
+	E_TEXTURE_CLAMP TextureWrapV;
+	vector4df TAnimation;			//xyzw
+
+	STextureUnit()
+		: Texture(nullptr), TextureWrapU(ETC_CLAMP), TextureWrapV(ETC_CLAMP), TAnimation(1.0f)
+	{
+		
+	}
+};
+
 struct SMRasterizerDesc
 {
 	E_CULL_MODE		Cull;
@@ -107,10 +123,11 @@ struct SMaterial
 	E_MATERIAL_TYPE	MaterialType;	//blend desc
 
 	std::string		VSFile;
-	std::set<std::string>  VSMacroSet;
+	std::string		VSMacroString;
 	std::string		PSFile;
-	std::set<std::string>  PSMacroSet;
+	std::string		PSMacroString;
 	std::map<std::string, std::vector<float>>	ShaderVariableMap;
+	std::map<std::string, STextureUnit> TextureVariableMap;
 
 	SColorf		AmbientColor;
 	SColorf		DiffuseColor;
@@ -169,6 +186,7 @@ struct SMaterial
 	void setVariable(const char* name, const float* src, uint32_t size);
 	void setVariable(const char* name, const matrix4& mat) { setVariable(name, mat.M, 16); }
 	void setVariable(const char* name, const vector4df& vec) { setVariable(name, &vec.x, 4); }
+	void clearVariables() { ShaderVariableMap.clear(); }
 
 	SMRenderTargetBlendDesc getRenderTargetBlendDesc() const;
 };

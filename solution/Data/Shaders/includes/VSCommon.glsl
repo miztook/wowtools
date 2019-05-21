@@ -27,10 +27,10 @@ vec4 Mul4( mat4 matrix, vec4 pos )
 	return vResult;
 }
 
-vec4 UnityObjectToClipPos(vec3 pos)
+vec4 g_ObjectToClipPos(vec3 pos)
 {
     // More efficient than computing M*VP matrix product
-    return Mul4(UNITY_MATRIX_VP, Mul4(unity_ObjectToWorld, vec4(pos, 1.0)));
+    return Mul4(UNITY_MATRIX_VP, Mul4(g_ObjectToWorld, vec4(pos, 1.0)));
 }
 
 #endif

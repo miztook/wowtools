@@ -22,7 +22,6 @@ COpenGLDriver::COpenGLDriver()
 	ColorFormat = ECF_A8R8G8B8;
 	DepthFormat = ECF_D24S8;
 
-	CurrentRenderMode = ERM_NONE;
 	DefaultFrameBuffer = 0;
 
 	//
@@ -356,32 +355,25 @@ void COpenGLDriver::setTransform(E_TRANSFORMATION_STATE state, const matrix4& ma
 	{
 	case ETS_VIEW:
 	{
-		Matrices[ETS_VIEW] = mat;
-
-		WV = Matrices[ETS_WORLD] * Matrices[ETS_VIEW];
-		WVP = WV * Matrices[ETS_PROJECTION];
-
-		CurrentRenderMode = ERM_3D;
+		V = mat;
+		VP = V * P;
+		T_V = V; T_V.transpose();
+		T_VP = VP; T_VP.transpose();
 	}
 	break;
 	case ETS_WORLD:
 	{
-		Matrices[ETS_WORLD] = mat;
-
-		WV = Matrices[ETS_WORLD] * Matrices[ETS_VIEW];
-		WVP = WV * Matrices[ETS_PROJECTION];
-
-		CurrentRenderMode = ERM_3D;
+		W = mat;
+		T_W = W; T_W.transpose();
 	}
 	break;
 
 	case ETS_PROJECTION:
 	{
-		Matrices[ETS_PROJECTION] = mat;
-
-		WVP = WV * Matrices[ETS_PROJECTION];
-
-		CurrentRenderMode = ERM_3D;
+		P = mat;
+		VP = V * P;
+		T_P = P; T_P.transpose();
+		T_VP = VP; T_VP.transpose(); 
 	}
 	break;
 	default:
@@ -450,8 +442,6 @@ bool COpenGLDriver::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
 
 bool COpenGLDriver::reset()
 {
-	CurrentRenderMode = ERM_NONE;
-
 	MaterialRenderComponent->resetRSCache();
 
 	FrameBufferRT = std::make_unique<COpenGLRenderTarget>(this, ScreenSize, ColorFormat, DepthFormat, true);
@@ -480,6 +470,9 @@ void COpenGLDriver::setViewPort(const recti& area)
 	View2DTM = f3d::makeViewMatrix(vector3df(fWidth + OrthoCenterOffset.x, fHeight + OrthoCenterOffset.y, 0),
 		vector3df::UnitZ(), vector3df::UnitY(), 0.0f);
 	Project2DTM = f3d::makeOrthoOffCetnerMatrixLH(-fWidth, fWidth, -fHeight, fHeight, 0.0f, 1.0f);
+
+	VP2D = View2DTM * Project2DTM;
+	T_VP2D = VP2D; T_VP2D.transpose();
 }
 
 void COpenGLDriver::setDisplayMode(const dimension2d& size)

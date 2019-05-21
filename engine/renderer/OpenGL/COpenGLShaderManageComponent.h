@@ -22,12 +22,6 @@ struct SGLUniformInfo
 	}
 };
 
-struct SUniform
-{
-	GLenum type;
-
-};
-
 class CGLProgram
 {
 public:
@@ -35,13 +29,29 @@ public:
 
 	GLhandleARB		handle;
 
+public:
 	uint32_t getTextureCount() const { return (uint32_t)textureNameIndexMap.size(); }
+	const SGLUniformInfo* getUniform(const char* name) const
+	{
+		auto itr = uniformNameIndexMap.find(name);
+		if (itr == uniformNameIndexMap.end())
+			return nullptr;
+		int index = itr->second;
+		return &uniformList[index];
+	}
+	int getTextureIndex(const char* name) const
+	{
+		auto itr = textureNameIndexMap.find(name);
+		if (itr == textureNameIndexMap.end())
+			return -1;
+		return itr->second;
+	}
 
 public:
 	//uniform info
 	std::vector<SGLUniformInfo> uniformList;
-	std::map<std::string, uint32_t>	uniformNameIndexMap;
-	std::map<std::string, uint32_t> textureNameIndexMap;
+	std::map<std::string, int>	uniformNameIndexMap;
+	std::map<std::string, int> textureNameIndexMap;
 };
 
 class COpenGLVertexShader : public IVideoResource
@@ -115,10 +125,20 @@ public:
 	const CGLProgram* getGlProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader);
 	const CGLProgram* createGLProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader);
 
+	void setShaderUniformF(const SGLUniformInfo* uniform, const matrix4& mat) { setShaderUniformF(uniform, mat.M, 16); }
+	void setShaderUniformF(const SGLUniformInfo* uniform, const vector4df& vec) { setShaderUniformF(uniform, &vec.x, 4); }
+	void setShaderUniformF(const SGLUniformInfo* uniform, const float* srcData, uint32_t size)
+	{
+		setShaderUniformF(uniform->location, uniform->type, srcData, size);
+	}
 	void setShaderUniformF(uint32_t location, GLenum type, const float* srcData, uint32_t size);
 
 	const char* getVSDir() const { return VertexShaderDir.c_str(); }
 	const char* getPSDir() const { return PixelShaderDir.c_str(); }
+	
+	//
+	void setGlobalVariables(const CGLProgram* program, bool is2D);
+	void setMaterialVariables(const CGLProgram* program, const SMaterial& material);
 
 private:
 	struct SShaderKey
@@ -159,5 +179,4 @@ private:
 	std::map<SShaderKey, const COpenGLVertexShader*> VertexShaderMap;
 	std::map<SShaderKey, const COpenGLPixelShader*> PixelShaderMap;
 	std::map<SProgramKey, const CGLProgram*> ProgramMap;
-	
 };

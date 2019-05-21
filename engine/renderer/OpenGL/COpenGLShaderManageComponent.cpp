@@ -218,12 +218,12 @@ const CGLProgram* COpenGLShaderManageComponent::createGLProgram(const COpenGLVer
 		ASSERT(type != GL_SAMPLER_1D_ARB && type != GL_SAMPLER_3D_ARB);
 
 		program->uniformList.emplace_back(info);
-		program->uniformNameIndexMap[name] = (uint32_t)program->uniformList.size() - 1;
+		program->uniformNameIndexMap[name] = (int)program->uniformList.size() - 1;
 		
 		if (info.isTexture())
 		{
 			info.textureIndex = (int)program->textureNameIndexMap.size();
-			program->textureNameIndexMap[name] = (uint32_t)program->uniformList.size() - 1;
+			program->textureNameIndexMap[name] = (int)program->uniformList.size() - 1;
 			//
 			Driver->GLExtension.extGlUniform1iv(info.location, info.type, &(GLint)info.textureIndex);
 		}
@@ -269,6 +269,48 @@ void COpenGLShaderManageComponent::setShaderUniformF(uint32_t location, GLenum t
 		ASSERT(false);
 		Driver->GLExtension.extGlUniform4fv(location, count / 4, srcData);
 		break;
+	}
+}
+
+void COpenGLShaderManageComponent::setGlobalVariables(const CGLProgram* program, bool is2D)
+{
+	if (is2D)
+	{
+		auto uf0 = program->getUniform("g_MatrixVP");
+		if (uf0)
+			setShaderUniformF(uf0, Driver->T_VP2D);
+	}
+	else
+	{
+		auto uf0 = program->getUniform("g_ObjectToWorld");
+		if (uf0)
+			setShaderUniformF(uf0, Driver->T_W);
+
+		auto uf1 = program->getUniform("g_MatrixVP");
+		if (uf1)
+			setShaderUniformF(uf1, Driver->T_VP);
+
+		auto uf2 = program->getUniform("g_MatrixV");
+		if (uf2)
+			setShaderUniformF(uf2, Driver->T_V);
+
+		auto uf3 = program->getUniform("g_MatrixP");
+		if (uf3)
+			setShaderUniformF(uf3, Driver->T_P);
+	}
+}
+
+void COpenGLShaderManageComponent::setMaterialVariables(const CGLProgram* program, const SMaterial& material)
+{
+	for (auto kv : material.ShaderVariableMap)
+	{
+		const char* name = kv.first.c_str();
+		const SGLUniformInfo* uniform = program->getUniform(name);
+		if (uniform)
+		{
+			const std::vector<float>& v = kv.second;
+			setShaderUniformF(uniform, v.data(), (uint32_t)v.size());
+		}		
 	}
 }
 

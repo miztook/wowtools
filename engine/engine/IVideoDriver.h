@@ -12,14 +12,6 @@
 class ITexture;
 class ITextureWriter;
 
-enum E_RENDER_MODE : int32_t
-{
-	ERM_NONE = 0,
-	ERM_2D,
-	ERM_3D,
-	ERM_STENCIL_FILL,
-};
-
 struct SDriverSetting
 {
 	SDriverSetting()
@@ -136,7 +128,6 @@ public:
 
 	const vector2df& getOrthoCenterOffset() const { return OrthoCenterOffset; }
 	SGlobalMaterial& getOverrideMaterial() { return GlobalMaterial; }
-	const matrix4& getTransform(E_TRANSFORMATION_STATE state) const { return Matrices[state]; }
 	const recti& getViewPort() const { return Viewport; }
 	const dimension2d& getDisplayMode() const { return ScreenSize; }
 	const SDriverSetting& getDriverSetting() const { return DriverSetting; }
@@ -144,9 +135,6 @@ public:
 	void setMaterial(const SMaterial& material) { Material = material; }
 	const SMaterial& getMaterial() const { return Material; }
 
-	const matrix4& getWVPMatrix() const { return WVP; }
-	const matrix4& getWVMatrix() const { return WV; }
-	const matrix4& getWMatrix() const { return getTransform(ETS_WORLD); }
 	const matrix4& getView2DTM() const { return View2DTM; }
 	const matrix4& getProject2DTM() const { return Project2DTM; }
 	const matrix4& getVPScaleTM() const { return VPScaleMatrix; }
@@ -194,9 +182,6 @@ protected:
 	const IRenderTarget*		CurrentRenderTarget;		//当前render target, 若为nullptr则表示frame buffer
 	std::unique_ptr<IRenderTarget>		FrameBufferRT;
 
-	matrix4		WVP;
-	matrix4		WV;
-	matrix4		Matrices[ETS_COUNT];
 	matrix4		View2DTM;
 	matrix4		Project2DTM;
 	matrix4		VPScaleMatrix;

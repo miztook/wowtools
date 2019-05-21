@@ -6,5 +6,5 @@ in vec3 Pos;
 
 void main(void)
 {
-	gl_Position = UnityObjectToClipPos(Pos);
+	gl_Position = g_ObjectToClipPos(Pos);
 }

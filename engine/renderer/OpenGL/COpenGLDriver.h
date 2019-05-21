@@ -45,6 +45,7 @@ public:
 	COpenGLMaterialRenderComponent* getMaterialRenderComponent() const { return MaterialRenderComponent.get();}
 	COpenGLTextureWriteComponent* getTextureWriteComponent() const { return TextureWriteComponent.get(); }
 	COpenGLShaderManageComponent* getShaderManageComponent() const { return ShaderManageComponent.get(); }
+	COpenGLDrawHelperComponent* getDrawHelperComponent() const { return DrawHelperComponent.get(); }
 
 	void deleteVao(const IVertexBuffer* vbuffer);
 
@@ -67,9 +68,13 @@ public:
 	CAdapterInfo	AdapterInfo;
 	COpenGLExtension	GLExtension;
 
-private:
-	E_RENDER_MODE		CurrentRenderMode;
+	matrix4		VP, T_VP;
+	matrix4		W, T_W;
+	matrix4		V, T_V;
+	matrix4		P, T_P;
+	matrix4		VP2D, T_VP2D;
 
+private:
 	//component
 	std::unique_ptr<COpenGLMaterialRenderComponent>  MaterialRenderComponent;
 	std::unique_ptr<COpenGLTextureWriteComponent> TextureWriteComponent;
@@ -77,4 +82,5 @@ private:
 	std::unique_ptr<COpenGLDrawHelperComponent> DrawHelperComponent;
 
 	std::array<std::unique_ptr<COpenGLVertexDeclaration>, EVT_COUNT>		VertexDeclarations;
+
 };
