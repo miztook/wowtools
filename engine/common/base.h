@@ -324,6 +324,13 @@ enum E_CULL_MODE : int
 	ECM_BACK,
 };
 
+enum E_ANTI_ALIASING_MODE : int
+{
+	EAAM_OFF = 0,
+	EAAM_SIMPLE,
+	EAAM_LINE_SMOOTH,
+};
+
 enum E_COMPARISON_FUNC : int
 {
 	ECFN_NEVER = 0,

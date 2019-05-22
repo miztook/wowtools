@@ -2,8 +2,9 @@
 
 #include "IVideoResource.h"
 #include "COpenGLHelper.h"
-#include "COpenGLExtension.h"
+#include "COpenGLDriver.h"
 #include "COpenGLTexture.h"
+#include "COpenGLShaderManageComponent.h"
 #include "function.h"
 
 #define  DEVICE_SET_CLEARCOLOR(prop, v)	if (RsCache.prop != (v))		\
@@ -75,8 +76,8 @@
 	RsCache.TextureUnits[st].prop = (v);	}
 
 
-COpenGLMaterialRenderComponent::COpenGLMaterialRenderComponent(const COpenGLExtension& extension)
-	: Extension(extension)
+COpenGLMaterialRenderComponent::COpenGLMaterialRenderComponent(const COpenGLDriver* driver)
+	: Driver(driver)
 {
 
 }
@@ -88,6 +89,125 @@ bool COpenGLMaterialRenderComponent::init()
 	CurrentRenderState = RsCache;
 
 	return true;
+}
+
+void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial& material, const SGlobalMaterial& globalMaterial, const CGLProgram* program)
+{
+	// zbuffer
+	{
+		CurrentRenderState.ZEnable = material.DepthStencilDesc.ZBuffer == ECFN_NEVER ? GL_FALSE : GL_TRUE;
+		CurrentRenderState.ZFunc = COpenGLHelper::getGLCompare((E_COMPARISON_FUNC)material.DepthStencilDesc.ZBuffer);
+	}
+
+	// zwrite
+	{
+		CurrentRenderState.ZWriteEnable = material.DepthStencilDesc.ZWriteEnable ? GL_TRUE : GL_FALSE;
+	}
+
+	// stencil
+	{
+		CurrentRenderState.StencilEnable = material.DepthStencilDesc.StencilEnable ? GL_TRUE : GL_FALSE;
+	}
+
+	// scissor
+	{
+		CurrentRenderState.ScissorEnable = material.RasterizerDesc.ScissorEnable ? GL_TRUE : GL_FALSE;
+	}
+
+	// backface culling
+	{
+		GLenum cullmode;
+		GLenum frontface = GL_CW;
+		switch (material.RasterizerDesc.Cull)
+		{
+		case ECM_FRONT:
+			cullmode = GL_FRONT;
+			break;
+		case ECM_BACK:
+			cullmode = GL_BACK;
+			break;
+		case ECM_NONE:
+		default:
+			cullmode = GL_FRONT_AND_BACK;
+			break;
+		}
+
+		CurrentRenderState.FrontFace = frontface;
+		CurrentRenderState.CullMode = cullmode;
+		CurrentRenderState.CullEnable = material.RasterizerDesc.Cull != ECM_NONE;
+	}
+
+	// anti aliasing
+	if (Driver->getDriverSetting().antialias)
+	{
+		bool multisample = false;
+		bool antialiasline = false;
+		switch (material.RasterizerDesc.AntiAliasing)
+		{
+		case EAAM_SIMPLE:
+			multisample = true;
+			break;
+		case EAAM_LINE_SMOOTH:
+			multisample = true;
+			antialiasline = true;
+			break;
+		case EAAM_OFF:
+		default:
+			break;
+		}
+
+		CurrentRenderState.MultiSampleAntiAlias = multisample ? GL_TRUE : GL_FALSE;
+		CurrentRenderState.AntiAliasedLineEnable = antialiasline ? GL_TRUE : GL_FALSE;
+	}
+	
+	//texture unit
+	for (const auto& itr : material.TextureVariableMap)
+	{
+		int idx = program->getTextureIndex(itr.first.c_str());
+		const STextureUnit& texUnit = itr.second;
+		ASSERT(idx < MATERIAL_MAX_TEXTURES);
+
+		CurrentRenderState.TextureUnits[idx].addressS = COpenGLHelper::getGLTextureAddress(texUnit.TextureWrapU);
+		CurrentRenderState.TextureUnits[idx].addressT = COpenGLHelper::getGLTextureAddress(texUnit.TextureWrapV);
+
+		CurrentRenderState.TextureUnits[idx].texture = texUnit.Texture;
+
+		//global material
+		{
+			GLint tftMag, tftMin, tftMip;
+
+			// Bilinear, trilinear, and anisotropic filter
+			GLint maxAnisotropy = 1;
+			if (globalMaterial.TextureFilter != ETF_NONE)
+			{
+				uint8_t anisotropic = getAnisotropic(globalMaterial.TextureFilter);
+				tftMag = GL_LINEAR;
+				tftMin = GL_LINEAR;
+				tftMip = globalMaterial.TextureFilter > ETF_BILINEAR ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR_MIPMAP_NEAREST;
+
+				if (Driver->GLExtension.queryOpenGLFeature(IRR_EXT_texture_filter_anisotropic))
+					maxAnisotropy = min_(anisotropic, Driver->GLExtension.MaxAnisotropy);
+			}
+			else
+			{
+				tftMag = GL_NEAREST;
+				tftMin = GL_NEAREST;
+				tftMip = GL_NEAREST_MIPMAP_NEAREST;
+			}
+
+			CurrentRenderState.TextureUnits[idx].magFilter = tftMag;
+			CurrentRenderState.TextureUnits[idx].minFilter = tftMin;
+			CurrentRenderState.TextureUnits[idx].mipFilter = tftMip;
+			CurrentRenderState.TextureUnits[idx].maxAniso = maxAnisotropy;
+		}
+	}
+
+	//blend state
+	const auto& desc = material.getRenderTargetBlendDesc();
+
+	CurrentRenderState.AlphaBlendEnable = desc.alphaBlendEnabled ? GL_TRUE : GL_FALSE;
+	CurrentRenderState.SrcBlend = COpenGLHelper::getGLBlend(desc.srcBlend);
+	CurrentRenderState.DestBlend = COpenGLHelper::getGLBlend(desc.destBlend);
 }
 
 void COpenGLMaterialRenderComponent::applyRenderStates()
@@ -108,7 +228,7 @@ void COpenGLMaterialRenderComponent::applyRenderStates()
 		DEVICE_SET_CULLFACE_STATE(CullMode, CurrentRenderState.CullMode);
 	}
 	DEVICE_SET_FRONTFACE_STATE(FrontFace, CurrentRenderState.FrontFace);
-	if (Extension.queryOpenGLFeature(IRR_ARB_multisample))
+	if (Driver->GLExtension.queryOpenGLFeature(IRR_ARB_multisample))
 	{
 		DEVICE_SET_BOOL_STATE(MultiSampleAntiAlias, GL_MULTISAMPLE_ARB, CurrentRenderState.MultiSampleAntiAlias);
 	}
@@ -120,8 +240,6 @@ void COpenGLMaterialRenderComponent::applyRenderStates()
 	{
 		DEVICE_SET_BLEND_STATE(SrcBlend, DestBlend, CurrentRenderState.SrcBlend, CurrentRenderState.DestBlend);
 	}
-
-	DEVICE_SET_LINEWIDTH(LineWidth, CurrentRenderState.LineWidth);
 
 	//texture units
 	for (uint32_t st = 0; st < MATERIAL_MAX_TEXTURES; ++st)
@@ -152,9 +270,9 @@ void COpenGLMaterialRenderComponent::applyRenderStates()
 
 		if (!bCube)
 		{
-			DEVICE_SET_TEXTURE2D_PARAMETER_I(st, addressU, GL_TEXTURE_WRAP_S, texunit.addressU);
+			DEVICE_SET_TEXTURE2D_PARAMETER_I(st, addressS, GL_TEXTURE_WRAP_S, texunit.addressS);
 
-			DEVICE_SET_TEXTURE2D_PARAMETER_I(st, addressV, GL_TEXTURE_WRAP_T, texunit.addressV);
+			DEVICE_SET_TEXTURE2D_PARAMETER_I(st, addressT, GL_TEXTURE_WRAP_T, texunit.addressT);
 
 			DEVICE_SET_TEXTURE2D_PARAMETER_I(st, magFilter, GL_TEXTURE_MAG_FILTER, texunit.magFilter);
 
@@ -169,9 +287,9 @@ void COpenGLMaterialRenderComponent::applyRenderStates()
 		}
 		else
 		{
-			DEVICE_SET_TEXTURECUBE_PARAMETER_I(st, addressU, GL_TEXTURE_WRAP_S, texunit.addressU);
+			DEVICE_SET_TEXTURECUBE_PARAMETER_I(st, addressS, GL_TEXTURE_WRAP_S, texunit.addressS);
 
-			DEVICE_SET_TEXTURECUBE_PARAMETER_I(st, addressV, GL_TEXTURE_WRAP_T, texunit.addressV);
+			DEVICE_SET_TEXTURECUBE_PARAMETER_I(st, addressT, GL_TEXTURE_WRAP_T, texunit.addressT);
 
 			GLint tftMag, tftMin, tftMip;
 			tftMag = GL_NEAREST;
@@ -204,13 +322,13 @@ void COpenGLMaterialRenderComponent::setViewport(recti vp)
 
 void COpenGLMaterialRenderComponent::setActiveTexture(uint32_t st)
 {
-	if (Extension.MaxTextureUnits > 1)
+	if (Driver->GLExtension.MaxTextureUnits > 1)
 	{
 		GLint v = (GLint)(GL_TEXTURE0_ARB + st);
 
 		if (RsCache.ActiveTextureIndex != v)
 		{
-			Extension.extGlActiveTexture(v);
+			Driver->GLExtension.extGlActiveTexture(v);
 			RsCache.ActiveTextureIndex = v;
 		}
 	}
@@ -240,8 +358,8 @@ void COpenGLMaterialRenderComponent::setTextureFilter(uint32_t st, E_TEXTURE_FIL
 		tftMin = GL_LINEAR;
 		tftMip = filter > ETF_BILINEAR ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR_MIPMAP_NEAREST;
 
-		if (Extension.queryOpenGLFeature(IRR_EXT_texture_filter_anisotropic))
-			maxAnisotropy = min_(anisotropic, Extension.MaxAnisotropy);
+		if (Driver->GLExtension.queryOpenGLFeature(IRR_EXT_texture_filter_anisotropic))
+			maxAnisotropy = min_(anisotropic, Driver->GLExtension.MaxAnisotropy);
 	}
 	else
 	{
@@ -262,7 +380,7 @@ void COpenGLMaterialRenderComponent::setTextureFilter(uint32_t st, E_TEXTURE_FIL
 		{
 			DEVICE_SET_TEXTURE2D_PARAMETER_I(st, minFilter, GL_TEXTURE_MIN_FILTER, tftMin);
 		}
-		if (Extension.queryOpenGLFeature(IRR_EXT_texture_filter_anisotropic))
+		if (Driver->GLExtension.queryOpenGLFeature(IRR_EXT_texture_filter_anisotropic))
 		{
 			DEVICE_SET_TEXTURE2D_PARAMETER_I(st, maxAniso, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
 		}
@@ -279,7 +397,7 @@ void COpenGLMaterialRenderComponent::setTextureFilter(uint32_t st, E_TEXTURE_FIL
 		{
 			DEVICE_SET_TEXTURECUBE_PARAMETER_I(st, minFilter, GL_TEXTURE_MIN_FILTER, tftMin);
 		}
-		if (Extension.queryOpenGLFeature(IRR_EXT_texture_filter_anisotropic))
+		if (Driver->GLExtension.queryOpenGLFeature(IRR_EXT_texture_filter_anisotropic))
 		{
 			DEVICE_SET_TEXTURECUBE_PARAMETER_I(st, maxAniso, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy);
 		}
@@ -335,10 +453,10 @@ void COpenGLMaterialRenderComponent::setTextureWrap(uint32_t st, E_TEXTURE_ADDRE
 		switch (address)
 		{
 		case ETA_U:
-			DEVICE_SET_TEXTURE2D_PARAMETER_I(st, addressU, GL_TEXTURE_WRAP_S, v);
+			DEVICE_SET_TEXTURE2D_PARAMETER_I(st, addressS, GL_TEXTURE_WRAP_S, v);
 			break;
 		case ETA_V:
-			DEVICE_SET_TEXTURE2D_PARAMETER_I(st, addressV, GL_TEXTURE_WRAP_T, v);
+			DEVICE_SET_TEXTURE2D_PARAMETER_I(st, addressT, GL_TEXTURE_WRAP_T, v);
 			break;
 		default:
 			ASSERT(false);
@@ -349,10 +467,10 @@ void COpenGLMaterialRenderComponent::setTextureWrap(uint32_t st, E_TEXTURE_ADDRE
 		switch (address)
 		{
 		case ETA_U:
-			DEVICE_SET_TEXTURECUBE_PARAMETER_I(st, addressU, GL_TEXTURE_WRAP_S, v);
+			DEVICE_SET_TEXTURECUBE_PARAMETER_I(st, addressS, GL_TEXTURE_WRAP_S, v);
 			break;
 		case ETA_V:
-			DEVICE_SET_TEXTURECUBE_PARAMETER_I(st, addressV, GL_TEXTURE_WRAP_T, v);
+			DEVICE_SET_TEXTURECUBE_PARAMETER_I(st, addressT, GL_TEXTURE_WRAP_T, v);
 			break;
 		default:
 			ASSERT(false);
@@ -382,7 +500,6 @@ void COpenGLMaterialRenderComponent::resetRSCache()
 	RsCache.AlphaBlendEnable = glIsEnabled(GL_BLEND);
 	glGetIntegerv(GL_BLEND_SRC_RGB, &RsCache.SrcBlend);
 	glGetIntegerv(GL_BLEND_DST_RGB, &RsCache.DestBlend);
-	glGetFloatv(GL_LINE_WIDTH, &RsCache.LineWidth);
 
 	//texture op
 	for (uint32_t i = 0; i < MATERIAL_MAX_TEXTURES; ++i)
@@ -400,8 +517,8 @@ void COpenGLMaterialRenderComponent::resetRSCache()
 		glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, &RsCache.TextureUnits[idx].maxLevel);
 		glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, &RsCache.TextureUnits[idx].minFilter);
 		glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, &RsCache.TextureUnits[idx].magFilter);
-		glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, &RsCache.TextureUnits[idx].addressU);
-		glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, &RsCache.TextureUnits[idx].addressV);
+		glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, &RsCache.TextureUnits[idx].addressS);
+		glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, &RsCache.TextureUnits[idx].addressT);
 		glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, &RsCache.TextureUnits[idx].maxAniso);
 	}
 }

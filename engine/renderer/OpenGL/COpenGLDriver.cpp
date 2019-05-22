@@ -25,7 +25,7 @@ COpenGLDriver::COpenGLDriver()
 	DefaultFrameBuffer = 0;
 
 	//
-	MaterialRenderComponent = std::make_unique<COpenGLMaterialRenderComponent>(GLExtension);
+	MaterialRenderComponent = std::make_unique<COpenGLMaterialRenderComponent>(this);
 	TextureWriteComponent = std::make_unique<COpenGLTextureWriteComponent>(this);
 	ShaderManageComponent = std::make_unique<COpenGLShaderManageComponent>(this);
 	DrawHelperComponent = std::make_unique<COpenGLDrawHelperComponent>(this);

@@ -12,6 +12,8 @@ COpenGLShaderManageComponent::COpenGLShaderManageComponent(const COpenGLDriver* 
 	VertexShaderDir.append("Shaders/glvs_15/");
 	PixelShaderDir = g_FileSystem->getDataDirectory();
 	PixelShaderDir.append("Shaders/glps_15/");
+
+	ShaderState.reset();
 }
 
 COpenGLShaderManageComponent::~COpenGLShaderManageComponent()
@@ -41,6 +43,41 @@ COpenGLShaderManageComponent::~COpenGLShaderManageComponent()
 bool COpenGLShaderManageComponent::init()
 {
 	return true;
+}
+
+const CGLProgram* COpenGLShaderManageComponent::applyShaders(const SMaterial& material, E_VERTEX_TYPE vertexType)
+{
+	const COpenGLVertexShader* vertexShader;
+	if (!material.VSFile.empty())
+		vertexShader = getVertexShader(material.VSFile.c_str(), material.VSMacroString.c_str());
+	else
+		vertexShader = getDefaultVertexShader(vertexType, material.VSMacroString.c_str());
+
+	const COpenGLPixelShader* pixelShader;
+	if (!material.PSFile.empty())
+		pixelShader = getPixelShader(material.PSFile.c_str(), material.PSMacroString.c_str());
+	else
+		pixelShader = getDefaultPixelShader(vertexType, material.PSMacroString.c_str());
+
+	if (ShaderState.vshader != vertexShader || ShaderState.pshader != pixelShader)
+	{
+		if (vertexShader && pixelShader)
+		{
+			CurrentProgram = getGlProgram(vertexShader, pixelShader);
+			Driver->GLExtension.extGlUseProgramObject(CurrentProgram->handle);
+		}
+		else
+		{
+			ASSERT(false);
+			CurrentProgram = nullptr;
+			Driver->GLExtension.extGlUseProgramObject(0);
+		}
+
+		ShaderState.vshader = vertexShader;
+		ShaderState.pshader = pixelShader;
+	}
+
+	return CurrentProgram;
 }
 
 const COpenGLVertexShader* COpenGLShaderManageComponent::getVertexShader(const char* fileName, const char* macroString)
@@ -91,6 +128,62 @@ const COpenGLPixelShader* COpenGLShaderManageComponent::getPixelShader(const cha
 	PixelShaderMap[key] = pshader;
 
 	return pshader;
+}
+
+const COpenGLVertexShader * COpenGLShaderManageComponent::getDefaultVertexShader(E_VERTEX_TYPE vType, const char * macroString)
+{
+	switch (vType)
+	{
+	case EVT_P:
+		return getVertexShader("Default_P", macroString);
+	case EVT_PC:
+		return getVertexShader("Default_PC", macroString);
+	case EVT_PCT:
+		return getVertexShader("Default_PCT", macroString);
+	case EVT_PN:
+		return getVertexShader("Default_PN", macroString);
+	case EVT_PNC:
+		return getVertexShader("Default_PNC", macroString);
+	case EVT_PNCT:
+	case EVT_PNCT2:
+		return getVertexShader("Default_PNCT", macroString);
+	case EVT_PT:
+		return getVertexShader("Default_PT", macroString);
+	case EVT_PNT:
+	case EVT_PNT2WA:
+		return getVertexShader("Default_PNT", macroString);
+	default:
+		break;
+	}
+	return nullptr;
+}
+
+const COpenGLPixelShader * COpenGLShaderManageComponent::getDefaultPixelShader(E_VERTEX_TYPE vType, const char * macroString)
+{
+	switch (vType)
+	{
+	case EVT_P:
+		return getPixelShader("Default_P", macroString);
+	case EVT_PC:
+		return getPixelShader("Default_PC", macroString);
+	case EVT_PCT:
+		return getPixelShader("Default_PCT", macroString);
+	case EVT_PN:
+		return getPixelShader("Default_PN", macroString);
+	case EVT_PNC:
+		return getPixelShader("Default_PNC", macroString);
+	case EVT_PNCT:
+	case EVT_PNCT2:
+		return getPixelShader("Default_PNCT", macroString);
+	case EVT_PT:
+		return getPixelShader("Default_PT", macroString);
+	case EVT_PNT:
+	case EVT_PNT2WA:
+		return getPixelShader("Default_PNT", macroString);
+	default:
+		break;
+	}
+	return nullptr;
 }
 
 void COpenGLShaderManageComponent::addMacroByMaterial(const SMaterial& material, std::set<std::string>& shaderMacro) const
@@ -276,8 +369,12 @@ void COpenGLShaderManageComponent::setGlobalVariables(const CGLProgram* program,
 {
 	if (is2D)
 	{
-		auto uf0 = program->getUniform("g_MatrixVP");
+		auto uf0 = program->getUniform("g_ObjectToWorld");
 		if (uf0)
+			setShaderUniformF(uf0, matrix4::Identity());
+
+		auto uf1 = program->getUniform("g_MatrixVP");
+		if (uf1)
 			setShaderUniformF(uf0, Driver->T_VP2D);
 	}
 	else

@@ -16,10 +16,9 @@ struct STextureUnit
 	ITexture* Texture;
 	E_TEXTURE_CLAMP TextureWrapU;
 	E_TEXTURE_CLAMP TextureWrapV;
-	vector4df TAnimation;			//xyzw
 
 	STextureUnit()
-		: Texture(nullptr), TextureWrapU(ETC_CLAMP), TextureWrapV(ETC_CLAMP), TAnimation(1.0f)
+		: Texture(nullptr), TextureWrapU(ETC_CLAMP), TextureWrapV(ETC_CLAMP)
 	{
 		
 	}
@@ -28,6 +27,7 @@ struct STextureUnit
 struct SMRasterizerDesc
 {
 	E_CULL_MODE		Cull;
+	E_ANTI_ALIASING_MODE		AntiAliasing;
 	bool		Wireframe;
 	bool		ScissorEnable;
 
@@ -89,16 +89,12 @@ struct SMRenderTargetBlendDesc
 	E_BLEND_FACTOR	srcBlend;
 	E_BLEND_FACTOR	destBlend;
 	bool	alphaBlendEnabled;
-	float	alphaTestRef;
-	bool	alphaTestEnabled;
 
 	void Default()
 	{
 		srcBlend = E_BLEND_FACTOR::One;
 		destBlend = E_BLEND_FACTOR::Zero;
 		alphaBlendEnabled = false;
-		alphaTestRef = 0;
-		alphaTestEnabled = false;
 	}
 
 	bool operator!=(const SMRenderTargetBlendDesc& b) const
@@ -213,8 +209,6 @@ inline SMRenderTargetBlendDesc SMaterial::getRenderTargetBlendDesc() const
 	case EMT_SOLID:
 		break;
 	case EMT_ALPHA_TEST:
-		desc.alphaTestEnabled = true;
-		desc.alphaTestRef = AlphaTestRef * getMaterialAlpha();
 		break;
 	case EMT_TRANSPARENT_ALPHA_BLEND:
 		desc.srcBlend = E_BLEND_FACTOR::Src_Alpha;

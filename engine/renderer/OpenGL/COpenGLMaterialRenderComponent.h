@@ -5,18 +5,21 @@
 #include "base.h"
 #include "SColor.h"
 #include "rect.h"
+#include "SMaterial.h"
 
-class COpenGLExtension;
+class COpenGLDriver;
 class ITexture;
+class CGLProgram;
 
 class COpenGLMaterialRenderComponent
 {
 public:
-	explicit COpenGLMaterialRenderComponent(const COpenGLExtension& extension);
+	explicit COpenGLMaterialRenderComponent(const COpenGLDriver* driver);
 
 public:
 	bool init();
 
+	void setRenderStates(const SMaterial& material, const SGlobalMaterial& globalMaterial, const CGLProgram* program);
 	void applyRenderStates();
 
 	void setClearColor(SColor clearColor);
@@ -45,8 +48,8 @@ private:
 		{
 			ITexture*	texture;
 
-			GLint	addressU;
-			GLint	addressV;
+			GLint	addressS;
+			GLint	addressT;
 
 			GLint	baseLevel;
 			GLint	maxLevel;
@@ -79,13 +82,12 @@ private:
 		GLint	 DestBlend;
 		GLint	 AlphaFunc;
 		GLfloat	 AlphaRef;
-		GLfloat	 LineWidth;
 
 		STextureUnit		TextureUnits[MATERIAL_MAX_TEXTURES];
 	};
 
 private:
-	const COpenGLExtension&	Extension;
+	const COpenGLDriver* Driver;
 
 	SRenderStateCache	CurrentRenderState;
 

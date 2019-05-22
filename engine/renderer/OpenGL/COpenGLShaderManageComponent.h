@@ -113,11 +113,12 @@ public:
 public:
 	bool init();
 
+	const CGLProgram* applyShaders(const SMaterial& material, E_VERTEX_TYPE vertexType);
 	const COpenGLVertexShader* getVertexShader(const char* fileName, const char* macroString = "");
 	const COpenGLPixelShader* getPixelShader(const char* fileName, const char* macroString = "");
 
-	COpenGLVertexShader* getDefaultVertexShader(E_VERTEX_TYPE vType, const char* macroString);
-	COpenGLPixelShader* getDefaultPixelShader(E_VERTEX_TYPE vType, const char* macroString);
+	const COpenGLVertexShader* getDefaultVertexShader(E_VERTEX_TYPE vType, const char* macroString);
+	const COpenGLPixelShader* getDefaultPixelShader(E_VERTEX_TYPE vType, const char* macroString);
 
 	void addMacroByMaterial(const SMaterial& material, std::set<std::string>& shaderMacro) const;
 
@@ -141,6 +142,18 @@ public:
 	void setMaterialVariables(const CGLProgram* program, const SMaterial& material);
 
 private:
+	struct SShaderState
+	{
+		void reset()
+		{
+			vshader = nullptr;
+			pshader = nullptr;
+		}
+
+		const COpenGLVertexShader*		vshader;
+		const COpenGLPixelShader*		pshader;
+	};
+
 	struct SShaderKey
 	{
 		std::string fileName;
@@ -172,6 +185,7 @@ private:
 private:
 	const COpenGLDriver*	Driver;
 	const CGLProgram*		CurrentProgram;
+	SShaderState	ShaderState;
 
 	std::string VertexShaderDir;
 	std::string PixelShaderDir;

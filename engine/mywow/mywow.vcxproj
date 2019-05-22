@@ -79,6 +79,7 @@
     <ClInclude Include="..\engine\IVideoResource.h" />
     <ClInclude Include="..\engine\mywow.h" />
     <ClInclude Include="..\engine\CRenderSetting.h" />
+    <ClInclude Include="..\engine\RenderStruct.h" />
     <ClInclude Include="..\engine\SMaterial.h" />
   </ItemGroup>
   <ItemGroup>
