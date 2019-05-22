@@ -132,58 +132,12 @@ const COpenGLPixelShader* COpenGLShaderManageComponent::getPixelShader(const cha
 
 const COpenGLVertexShader * COpenGLShaderManageComponent::getDefaultVertexShader(E_VERTEX_TYPE vType, const char * macroString)
 {
-	switch (vType)
-	{
-	case EVT_P:
-		return getVertexShader("Default_P", macroString);
-	case EVT_PC:
-		return getVertexShader("Default_PC", macroString);
-	case EVT_PCT:
-		return getVertexShader("Default_PCT", macroString);
-	case EVT_PN:
-		return getVertexShader("Default_PN", macroString);
-	case EVT_PNC:
-		return getVertexShader("Default_PNC", macroString);
-	case EVT_PNCT:
-	case EVT_PNCT2:
-		return getVertexShader("Default_PNCT", macroString);
-	case EVT_PT:
-		return getVertexShader("Default_PT", macroString);
-	case EVT_PNT:
-	case EVT_PNT2WA:
-		return getVertexShader("Default_PNT", macroString);
-	default:
-		break;
-	}
-	return nullptr;
+	return getVertexShader(CShaderUtil::getDefaultVSFileName(vType), macroString);
 }
 
-const COpenGLPixelShader * COpenGLShaderManageComponent::getDefaultPixelShader(E_VERTEX_TYPE vType, const char * macroString)
+const COpenGLPixelShader * COpenGLShaderManageComponent::getDefaultPixelShader(E_VERTEX_TYPE vType, const char* macroString)
 {
-	switch (vType)
-	{
-	case EVT_P:
-		return getPixelShader("Default_P", macroString);
-	case EVT_PC:
-		return getPixelShader("Default_PC", macroString);
-	case EVT_PCT:
-		return getPixelShader("Default_PCT", macroString);
-	case EVT_PN:
-		return getPixelShader("Default_PN", macroString);
-	case EVT_PNC:
-		return getPixelShader("Default_PNC", macroString);
-	case EVT_PNCT:
-	case EVT_PNCT2:
-		return getPixelShader("Default_PNCT", macroString);
-	case EVT_PT:
-		return getPixelShader("Default_PT", macroString);
-	case EVT_PNT:
-	case EVT_PNT2WA:
-		return getPixelShader("Default_PNT", macroString);
-	default:
-		break;
-	}
-	return nullptr;
+	return getPixelShader(CShaderUtil::getDefaultPSFileName(vType), macroString);
 }
 
 void COpenGLShaderManageComponent::addMacroByMaterial(const SMaterial& material, std::set<std::string>& shaderMacro) const

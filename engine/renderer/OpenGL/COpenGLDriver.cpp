@@ -7,6 +7,7 @@
 #include "COpenGLDrawHelperComponent.h"
 #include "COpenGLRenderTarget.h"
 #include "COpenGLVertexDeclaration.h"
+#include "COpenGLVertexIndexBuffer.h"
 #include "IVertexIndexBuffer.h"
 #include "CFileSystem.h"
 #include "stringext.h"
@@ -449,6 +450,99 @@ bool COpenGLDriver::reset()
 	g_FileSystem->writeLog(ELOG_GX, "reset... Device Format: %dX%d, %s", ScreenSize.width, ScreenSize.height, getColorFormatString(ColorFormat));
 
 	return true;
+}
+
+void COpenGLDriver::setVertexDeclarationAndBuffers(const CGLProgram* program, const IVertexBuffer* vbuffer0, uint32_t offset0, const IIndexBuffer* ibuffer)
+{
+	COpenGLVertexDeclaration* decl = getVertexDeclaration(vbuffer0->getVertexType());
+	ASSERT(decl);
+	decl->apply(program, vbuffer0, offset0);
+
+	if (ibuffer)
+	{
+		ASSERT(static_cast<const COpenGLIndexBuffer*>(ibuffer)->getHWBuffer());
+		GLExtension.extGlBindBuffer(GL_ELEMENT_ARRAY_BUFFER, static_cast<const COpenGLIndexBuffer*>(ibuffer)->getHWBuffer());
+	}
+	else
+	{
+		GLExtension.extGlBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
+}
+
+void COpenGLDriver::drawIndexedPrimitive(const IVertexBuffer* vbuffer, const IIndexBuffer* ibuffer, const CGLProgram* program, E_PRIMITIVE_TYPE primType, uint32_t primCount, const SDrawParam & drawParam)
+{
+	if (!drawParam.numVertices || drawParam.numVertices >= 65536 || !primCount || drawParam.baseVertIndex)
+	{
+		ASSERT(false);
+		return;
+	}
+
+	ASSERT(IVideoResource::hasVideoBuilt(vbuffer));
+	ASSERT(!ibuffer || IVideoResource::hasVideoBuilt(ibuffer));
+
+	GLenum mode = COpenGLHelper::getGLTopology(primType);
+	GLenum type = 0;
+	uint32_t indexSize = 0;
+	if (ibuffer)
+	{
+		switch (ibuffer->getIndexType())
+		{
+		case EIT_16BIT:
+		{
+			type = GL_UNSIGNED_SHORT;
+			indexSize = 2;
+			break;
+		}
+		case EIT_32BIT:
+		{
+			type = GL_UNSIGNED_INT;
+			indexSize = 4;
+			break;
+		}
+		}
+
+		setVertexDeclarationAndBuffers(program,
+			vbuffer, drawParam.voffset0,
+			ibuffer);
+
+		//buffer check
+		/*
+		{
+			int nIndices = getIndexCount(primType, primCount);
+			ASSERT(ibuffer->getIndexType() == EIT_16BIT);
+			int nVertices = (int)vbuffer->getNumVertices() - (int)drawParam.voffset0;
+			ASSERT(nVertices > 0);
+			{
+				for (int i = drawParam.startIndex; i < (int)drawParam.startIndex + nIndices; ++i)
+				{
+					const uint16_t* pIndices = (const uint16_t*)ibuffer->getIndices();
+					ASSERT(pIndices[i] < nVertices);
+				}
+			}
+		}
+		*/
+
+		GLExtension.extGlDrawElements(mode,
+			getIndexCount(primType, primCount),
+			type,
+			COpenGLHelper::buffer_offset(indexSize * drawParam.startIndex));
+	}
+	else
+	{
+		setVertexDeclarationAndBuffers(program,
+			vbuffer, drawParam.voffset0,
+			ibuffer);
+
+		glDrawArrays(mode, drawParam.startIndex, getIndexCount(primType, primCount));
+		ASSERT_OPENGL_SUCCESS();
+	}
+
+	if (primType == EPT_TRIANGLES || primType == EPT_TRIANGLE_STRIP)
+	{
+		PrimitivesDrawn += primCount;
+	}
+
+	++DrawCall;
 }
 
 void COpenGLDriver::setViewPort(const recti& area)

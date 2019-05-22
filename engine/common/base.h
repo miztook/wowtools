@@ -430,6 +430,64 @@ enum E_PRIMITIVE_TYPE : int
 	EPT_COUNT,
 };
 
+inline uint32_t getPrimitiveCount(E_PRIMITIVE_TYPE primType, uint32_t count)
+{
+	uint32_t p = 0;
+
+	switch (primType)
+	{
+	case EPT_POINTS:
+		p = count;
+		break;
+	case EPT_LINES:
+		ASSERT(count >= 2);
+		p = count / 2;
+		break;
+	case EPT_LINE_STRIP:
+		ASSERT(count >= 2);
+		p = count - 1;
+		break;
+	case EPT_TRIANGLE_STRIP:
+		ASSERT(count >= 3);
+		p = count - 2;
+		break;
+	case EPT_TRIANGLES:
+		ASSERT(count >= 3);
+		p = count / 3;
+		break;
+	default:
+		ASSERT(false);
+	}
+	return p;
+}
+
+inline uint32_t getIndexCount(E_PRIMITIVE_TYPE primType, uint32_t primCount)
+{
+	uint32_t p = 0;
+
+	switch (primType)
+	{
+	case EPT_POINTS:
+		p = primCount;
+		break;
+	case EPT_LINES:
+		p = primCount * 2;
+		break;
+	case EPT_LINE_STRIP:
+		p = primCount + 1;
+		break;
+	case EPT_TRIANGLE_STRIP:
+		p = primCount + 2;
+		break;
+	case EPT_TRIANGLES:
+		p = primCount * 3;
+		break;
+	default:
+		ASSERT(false);
+	}
+	return p;
+}
+
 enum E_UNIFORM_TYPE : int
 {
 	EUT_FLOAT = 0,

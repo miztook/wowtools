@@ -50,9 +50,6 @@
     <ClCompile Include="..\renderer\OpenGL\COpenGLMaterialRenderComponent.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="..\renderer\OpenGL\COpenGLDriver_draw.cpp">
-      <Filter>OpenGL</Filter>
-    </ClCompile>
     <ClCompile Include="OpenGL\COpenGLExtension.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>

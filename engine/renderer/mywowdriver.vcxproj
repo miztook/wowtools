@@ -37,7 +37,6 @@
     <ClCompile Include="..\renderer\mywowdriver.cpp" />
     <ClCompile Include="OpenGL\COpenGLDrawHelperComponent.cpp" />
     <ClCompile Include="OpenGL\COpenGLDriver.cpp" />
-    <ClCompile Include="..\renderer\OpenGL\COpenGLDriver_draw.cpp" />
     <ClCompile Include="..\renderer\OpenGL\COpenGLMaterialRenderComponent.cpp" />
     <ClCompile Include="OpenGL\COpenGLExtension.cpp" />
     <ClCompile Include="OpenGL\COpenGLRenderTarget.cpp" />

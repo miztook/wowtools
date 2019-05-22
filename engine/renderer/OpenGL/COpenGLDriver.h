@@ -2,6 +2,7 @@
 
 #include "IVideoDriver.h"
 #include "COpenGLExtension.h"
+#include "RenderStruct.h"
 #include <array>
 
 class COpenGLMaterialRenderComponent;
@@ -10,6 +11,8 @@ class COpenGLShaderManageComponent;
 class COpenGLDrawHelperComponent;
 class COpenGLVertexDeclaration;
 class IVertexBuffer;
+class IIndexBuffer;
+class CGLProgram;
 
 class COpenGLDriver : public IVideoDriver
 {
@@ -54,6 +57,14 @@ private:
 	void logCaps();
 	bool queryFeature(E_VIDEO_DRIVER_FEATURE feature) const;
 	bool reset();
+
+	//
+	COpenGLVertexDeclaration* getVertexDeclaration(E_VERTEX_TYPE type) const { return VertexDeclarations[type].get(); }
+	void setVertexDeclarationAndBuffers(const CGLProgram* program, const IVertexBuffer* vbuffer0, uint32_t offset0, const IIndexBuffer* ibuffer);
+	void drawIndexedPrimitive(const IVertexBuffer* vbuffer, const IIndexBuffer* ibuffer, const CGLProgram* program,
+		E_PRIMITIVE_TYPE primType,
+		uint32_t primCount,
+		const SDrawParam& drawParam);
 
 public:
 	//device settings
