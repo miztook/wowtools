@@ -92,6 +92,15 @@ inline matrix4 rotateZ(float vRad)
 	return ret;
 }
 
+inline vector3df viewToWorld(const vector3df& vIn, const matrix4& matView)
+{
+	vector3df vOut;
+	vOut.x = vIn.x * matView._11 + vIn.y * matView._12 + vIn.z * matView._13;
+	vOut.y = vIn.x * matView._21 + vIn.y * matView._22 + vIn.z * matView._23;
+	vOut.z = vIn.x * matView._31 + vIn.y * matView._32 + vIn.z * matView._33;
+	return vOut;
+}
+
 inline matrix4 makeViewMatrix(const vector3df& from, const vector3df& dir, const vector3df& vecUp, float roll)
 {
 	matrix4 view;
@@ -158,6 +167,31 @@ inline matrix4 makePerspectiveOffCenterMatrixLH(float fLeft, float fRight, float
 	m._31 = -(fRight + fLeft) / fWidth;
 	m._32 = -(fTop + fBottom) / fHeight;
 	m._41 = m._42 = m._44 = 0.0f;
+	return m;
+}
+
+inline matrix4 makePerspectiveMatrixLH(float fWidth, float fHeight, float fZNear, float fZFar)
+{
+	matrix4 m(false);
+	float f2ZN = 2.0f * fZNear;
+	m._11 = f2ZN / fWidth;
+	m._22 = f2ZN / fHeight;
+	m._33 = fZFar / (fZFar - fZNear);
+	m._43 = -fZNear * m._33;
+	m._34 = 1.0f;
+	return m;
+}
+
+inline matrix4 makePerspectiveFovMatrixLH(float fFovY, float fAspect, float fZNear, float fZFar)
+{
+	matrix4 m(false);
+	float fYScale = 1.0f / tanf(fFovY / 2.0f);
+	float fXScale = fYScale / fAspect;
+	m._11 = fXScale;
+	m._22 = fYScale;
+	m._33 = fZFar / (fZFar - fZNear);
+	m._43 = -fZNear * m._33;
+	m._34 = 1.0f;
 	return m;
 }
 

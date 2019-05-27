@@ -44,7 +44,6 @@ public:
 		return *this;
 	}
 	CMatrix4<T>& makeZero(){ memset(M, 0, 16 * sizeof(T)); return *this; }
-	bool makeInverse();
 	CMatrix4<T> getInverse() const;
 	float getDeterminant() const;
 	void transpose();
@@ -55,17 +54,16 @@ public:
 	//
 	vector3df transformVect(const vector3df& vect, float& z) const;
 	vector3df transformVect(const vector3df& vect) const;
-	plane3df transformForClipPlane(const plane3df& plane) const;
 	plane3df transformPlane(const plane3df& plane) const;
 	aabbox3df transformBox(const aabbox3df& box) const;
 	vector3df rotateVect(const vector3df& vect) const;
 	vector3df inverseRotateVect(const vector3df& vect) const;
 
-	vector3df getRow(int i) const { return vector3df(m[i][0], m[i][1], m[i][2]); }
-	vector3df getCol(int i) const { return vector3df(m[0][i], m[1][i], m[2][i]); }
+	vector3df getRow(int i) const { return vector3df(M[i * 4 + 0], M[i * 4 + 1], M[i * 4 + 2]); }
+	vector3df getCol(int i) const { return vector3df(M[0 * 4 + i], M[1 * 4 + i], M[2 * 4 + i]); }
 	//	Set row and column
-	void setRow(int i, const vector3df& v) { m[i][0] = v.x; m[i][1] = v.y; m[i][2] = v.z; }
-	void setCol(int i, const vector3df& v) { m[0][i] = v.x; m[1][i] = v.y; m[2][i] = v.z; }
+	void setRow(int i, const vector3df& v) { M[i * 4 + 0] = v.x; M[i * 4 + 1] = v.y; M[i * 4 + 2] = v.z; }
+	void setCol(int i, const vector3df& v) { M[0 * 4 + i] = v.x; M[1 * 4 + i] = v.y; M[2 * 4 + i] = v.z; }
 
 	CMatrix4<T>& setTranslation(const vector3d<T>& translation);
 	vector3d<T> getTranslation() const { return vector3d<T>(M[12], M[13], M[14]); }
@@ -519,18 +517,6 @@ inline CMatrix4<T>& CMatrix4<T>::setbyproduct(const CMatrix4<T>& other_a, const 
 }
 
 template <class T>
-inline bool CMatrix4<T>::makeInverse()
-{
-	CMatrix4<T> temp(false);
-	if (getInverse(temp))
-	{
-		*this = temp;
-		return true;
-	}
-	return false;
-}
-
-template <class T>
 inline float CMatrix4<T>::getDeterminant() const
 {
 	float fDet;
@@ -629,36 +615,10 @@ inline plane3df CMatrix4<T>::transformPlane(const plane3df& plane) const
 {
 	vector3df point = transformVect(plane.getMemberPoint());
 
-	CMatrix4<T> m = *this;
-	m.makeInverse();
+	CMatrix4<T> m = getInverse();
 	m.transpose();
 
 	vector3df normal = m.transformVect(plane.Normal);
-
-	return plane3df(point, normal);
-}
-
-template <class T>
-inline plane3df CMatrix4<T>::transformForClipPlane(const plane3df& plane) const
-{
-	CMatrix4<T> m = *this;
-	m.makeInverse();
-	m.transpose();
-
-	plane.normalize();
-
-	float x = plane.Normal.x;
-	float y = plane.Normal.y;
-	float z = plane.Normal.z;
-	float d = plane.D;
-
-	vector3df normal;
-	float D;
-
-	normal.x = x * m.M[0] + y * m.M[4] + z * m.M[8] + d * m.M[12];
-	normal.y = x * m.M[1] + y * m.M[5] + z * m.M[9] + d * m.M[13];
-	normal.z = x * m.M[2] + y * m.M[6] + z * m.M[10] + d * m.M[14];
-	D = x * m.M[3] + y * m.M[7] + z * m.M[11] + d * m.M[15];
 
 	return plane3df(point, normal);
 }

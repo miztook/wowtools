@@ -96,6 +96,7 @@
     <ClCompile Include="..\common\wowWMOFile.cpp" />
     <ClCompile Include="..\engine\CBlit.cpp" />
     <ClCompile Include="..\engine\CBLPImage.cpp" />
+    <ClCompile Include="..\engine\CCamera.cpp" />
     <ClCompile Include="..\engine\CCImage.cpp" />
     <ClCompile Include="..\engine\CInputReader.cpp" />
     <ClCompile Include="..\engine\COSInfo.cpp" />

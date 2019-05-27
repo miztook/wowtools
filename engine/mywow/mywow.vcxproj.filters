@@ -268,5 +268,8 @@
     <ClCompile Include="..\engine\CShaderUtil.cpp">
       <Filter>engine</Filter>
     </ClCompile>
+    <ClCompile Include="..\engine\CCamera.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
