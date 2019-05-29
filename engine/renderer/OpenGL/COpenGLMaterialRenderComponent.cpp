@@ -15,7 +15,7 @@
 
 #define DEVICE_SET_VIEWPORT(prop, v) if (RsCache.prop != (v))		\
 								{	\
-		glViewport(v.left(), v.top(), v.getWidth(), v.getHeight()); 	\
+		glViewport(v.left, v.top, v.getWidth(), v.getHeight()); 	\
 		ASSERT_OPENGL_SUCCESS();			\
 		RsCache.prop = (v);	}
 

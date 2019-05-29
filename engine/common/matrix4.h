@@ -52,8 +52,8 @@ public:
 	bool isIdentity() const;
 	bool isZero() const;
 	//
-	vector3df transformVect(const vector3df& vect, float& z) const;
-	vector3df transformVect(const vector3df& vect) const;
+	vector3df transformVector(const vector3df& vect, float& z) const;
+	vector3df transformVector(const vector3df& vect) const;
 	plane3df transformPlane(const plane3df& plane) const;
 	aabbox3df transformBox(const aabbox3df& box) const;
 	vector3df rotateVect(const vector3df& vect) const;
@@ -586,7 +586,7 @@ bool CMatrix4<T>::isZero() const
 }
 
 template <class T>
-inline vector3df CMatrix4<T>::transformVect(const vector3df& vect, float& z) const
+inline vector3df CMatrix4<T>::transformVector(const vector3df& vect, float& z) const
 {
 	vector3df vector;
 
@@ -599,7 +599,7 @@ inline vector3df CMatrix4<T>::transformVect(const vector3df& vect, float& z) con
 }
 
 template <class T>
-inline vector3df CMatrix4<T>::transformVect(const vector3df& vect) const
+inline vector3df CMatrix4<T>::transformVector(const vector3df& vect) const
 {
 	vector3df vector;
 
@@ -613,12 +613,12 @@ inline vector3df CMatrix4<T>::transformVect(const vector3df& vect) const
 template <class T>
 inline plane3df CMatrix4<T>::transformPlane(const plane3df& plane) const
 {
-	vector3df point = transformVect(plane.getMemberPoint());
+	vector3df point = transformVector(plane.getMemberPoint());
 
 	CMatrix4<T> m = getInverse();
 	m.transpose();
 
-	vector3df normal = m.transformVect(plane.Normal);
+	vector3df normal = m.transformVector(plane.Normal);
 
 	return plane3df(point, normal);
 }

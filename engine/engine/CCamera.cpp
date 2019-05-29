@@ -34,6 +34,33 @@ void CCamera::Init(const recti& screenRect, float vFront, float vBack)
 	m_bInit = true;
 }
 
+void CCamera::setDirAndUp(const vector3df& vecDir, const vector3df& vecUp)
+{
+	m_vecDir = f3d::normalize(vecDir);
+	vector3df vUp = f3d::normalize(vecUp);
+	m_vecRight = f3d::normalize(f3d::crossProduct(vUp, m_vecDir));
+	m_vecUp = f3d::normalize(f3d::crossProduct(m_vecDir, m_vecRight));
+
+	updateViewTM();
+}
+
+void CCamera::move(const vector3df& vecDelta)
+{
+	m_vecPos = m_vecPos + vecDelta;
+	updateViewTM();
+}
+
+void CCamera::turnAroundAxis(const vector3df& vecPos, const vector3df& vecAxis, float vDeltaRad)
+{
+	matrix4 matRotate = f3d::rotateAxis(vecPos, vecAxis, vDeltaRad);
+	vector3df vecOrigin = matRotate.transformVector(vector3df::Zero());
+	m_vecPos = matRotate.transformVector(m_vecPos);
+	m_vecDir = matRotate.transformVector(m_vecDir) - vecOrigin;
+	m_vecUp = matRotate.transformVector(m_vecUp) - vecOrigin;
+
+	setDirAndUp(m_vecDir, m_vecUp);
+}
+
 void CCamera::setViewTM(const matrix4& matView)
 {
 	m_matViewTM = matView;
@@ -103,7 +130,7 @@ void CCamera::updateProjectionTM()
 	if (!m_IsOrthogonal)
 		m_matProjectionTM = f3d::makePerspectiveFovMatrixLH(m_vFOV, m_vRatio, m_vFront, m_vBack);
 	else
-		m_matProjectionTM = f3d::makeOrthoOffCetnerMatrixLH(m_ScreenRect.left(), m_ScreenRect.right(), m_ScreenRect.top(), m_ScreenRect.bottom());
+		m_matProjectionTM = f3d::makeOrthoOffCetnerMatrixLH((float)m_ScreenRect.left, (float)m_ScreenRect.right, (float)m_ScreenRect.top, (float)m_ScreenRect.bottom, m_vFront, m_vBack);
 
 	m_matVPTM = m_matViewTM * m_matProjectionTM;
 	updateWorldFrustum();
@@ -130,9 +157,93 @@ void CCamera::updateWorldFrustum()
 
 		vNormals[frustum::VF_NEAR].set(0.0f, 0.0f, 1.0f);
 		vNormals[frustum::VF_FAR].set(0.0f, 0.0f, -1.0f);
+
+		//left
+		{
+			vector3df vNormal = f3d::viewToWorld(vNormals[frustum::VF_LEFT], m_matViewTM);
+			float fDist = vNormal.dotProduct(m_vecPos);
+			m_worldFrustum.setPlane(frustum::VF_LEFT, plane3df(vNormal, fDist));
+		}
+
+		//right
+		{
+			vector3df vNormal = f3d::viewToWorld(vNormals[frustum::VF_RIGHT], m_matViewTM);
+			float fDist = vNormal.dotProduct(m_vecPos);
+			m_worldFrustum.setPlane(frustum::VF_RIGHT, plane3df(vNormal, fDist));
+		}
+
+		//top
+		{
+			vector3df vNormal = f3d::viewToWorld(vNormals[frustum::VF_TOP], m_matViewTM);
+			float fDist = vNormal.dotProduct(m_vecPos);
+			m_worldFrustum.setPlane(frustum::VF_TOP, plane3df(vNormal, fDist));
+		}
+
+		//bottom
+		{
+			vector3df vNormal = f3d::viewToWorld(vNormals[frustum::VF_BOTTOM], m_matViewTM);
+			float fDist = vNormal.dotProduct(m_vecPos);
+			m_worldFrustum.setPlane(frustum::VF_BOTTOM, plane3df(vNormal, fDist));
+		}
+
+		//near
+		{
+			vector3df vPos = m_vecPos + m_vecDir * m_vFront;
+			vector3df vNormal = m_vecDir;
+			float fDist = vNormal.dotProduct(vPos);
+			m_worldFrustum.setPlane(frustum::VF_NEAR, plane3df(m_vecDir, fDist));
+		}
+
+		//far
+		{
+			vector3df vPos = m_vecPos + m_vecDir * m_vBack;
+			vector3df vNormal = -m_vecDir;
+			float fDist = vNormal.dotProduct(vPos);
+			m_worldFrustum.setPlane(frustum::VF_FAR, plane3df(m_vecDir, fDist));
+		}
 	}
 	else
 	{
+		//left
+		{
+			vector3df vNormal = m_vecRight;
+			float fDist = vNormal.dotProduct(m_vecPos + m_vecRight * (float)m_ScreenRect.left);
+			m_worldFrustum.setPlane(frustum::VF_LEFT, plane3df(vNormal, fDist));
+		}
 
+		//right
+		{
+			vector3df vNormal = -m_vecRight;
+			float fDist = vNormal.dotProduct(m_vecPos + m_vecRight * (float)m_ScreenRect.right);
+			m_worldFrustum.setPlane(frustum::VF_RIGHT, plane3df(vNormal, fDist));
+		}
+
+		//top
+		{
+			vector3df vNormal = -m_vecUp;
+			float fDist = vNormal.dotProduct(m_vecPos + m_vecUp * (float)m_ScreenRect.top);
+			m_worldFrustum.setPlane(frustum::VF_TOP, plane3df(vNormal, fDist));
+		}
+
+		//bottom
+		{
+			vector3df vNormal = m_vecUp;
+			float fDist = vNormal.dotProduct(m_vecPos + m_vecRight * (float)m_ScreenRect.bottom);
+			m_worldFrustum.setPlane(frustum::VF_BOTTOM, plane3df(vNormal, fDist));
+		}
+
+		//near
+		{
+			vector3df vNormal = m_vecDir;
+			float fDist = vNormal.dotProduct(m_vecPos + m_vecDir * m_vFront);
+			m_worldFrustum.setPlane(frustum::VF_LEFT, plane3df(vNormal, fDist));
+		}
+
+		//far
+		{
+			vector3df vNormal = -m_vecDir;
+			float fDist = vNormal.dotProduct(m_vecPos + m_vecRight * m_vBack);
+			m_worldFrustum.setPlane(frustum::VF_LEFT, plane3df(vNormal, fDist));
+		}
 	}
 }

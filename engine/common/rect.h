@@ -33,11 +33,6 @@ public:
 	bool contains(const rect<T>& other) const;
 	bool intersectsWithRect(const rect<T>& other) const;
 
-	T left() const { return UpperLeftCorner.x; }
-	T top() const { return UpperLeftCorner.y; }
-	T right() const { return LowerRightCorner.x; }
-	T bottom() const { return LowerRightCorner.y; }
-
 	bool operator==(const rect<T>& other) const
 	{
 		return UpperLeftCorner == other.UpperLeftCorner && LowerRightCorner == other.LowerRightCorner;
@@ -52,8 +47,20 @@ public:
 	rect<T>& operator*=(const T v) { UpperLeftCorner*=v; LowerRightCorner*=v; return *this; }
 
 public:
-	vector2d<T>		UpperLeftCorner;
-	vector2d<T>		LowerRightCorner;
+	union
+	{
+		
+		vector2d<T>		UpperLeftCorner;
+		vector2d<T>		LowerRightCorner;
+		struct  
+		{
+			T left;
+			T top;
+			T right;
+			T bottom;
+		};
+	};
+	
 };
 
 template <class T>
