@@ -183,6 +183,7 @@ struct SMaterial
 	void setVariable(const char* name, const matrix4& mat) { setVariable(name, mat.M, 16); }
 	void setVariable(const char* name, const vector4df& vec) { setVariable(name, &vec.x, 4); }
 	void clearVariables() { ShaderVariableMap.clear(); }
+	void setTexture(const char* name, ITexture* tex, E_TEXTURE_CLAMP wrapU, E_TEXTURE_CLAMP wrapV);
 
 	SMRenderTargetBlendDesc getRenderTargetBlendDesc() const;
 };
@@ -266,5 +267,25 @@ inline void SMaterial::setVariable(const char* name, const float* src, uint32_t 
 		std::vector<float>& buffer = itr->second;
 		ASSERT(buffer.size() >= size);
 		memcpy(buffer.data(), src, sizeof(float) * size);
+	}
+}
+
+inline void SMaterial::setTexture(const char* name, ITexture* tex, E_TEXTURE_CLAMP wrapU, E_TEXTURE_CLAMP wrapV)
+{
+	auto itr = TextureVariableMap.find(name);
+	if (itr == TextureVariableMap.end())
+	{
+		STextureUnit texUnit;
+		texUnit.Texture = tex;
+		texUnit.TextureWrapU = wrapU;
+		texUnit.TextureWrapV = wrapV;
+		TextureVariableMap[name] = texUnit;
+	}
+	else
+	{
+		STextureUnit& texUnit = itr->second;
+		texUnit.Texture = tex;
+		texUnit.TextureWrapU = wrapU;
+		texUnit.TextureWrapV = wrapV;
 	}
 }

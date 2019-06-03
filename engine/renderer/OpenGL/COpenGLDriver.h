@@ -44,6 +44,11 @@ public:
 	ITextureWriter* createTextureWriter(ITexture* texture) override;
 	bool removeTextureWriter(ITexture* texture) override;
 
+	void draw(IVertexBuffer* vbuffer, IIndexBuffer* ibuffer,
+		E_PRIMITIVE_TYPE primType,
+		uint32_t primCount,
+		const SDrawParam& drawParam);
+
 public:
 	COpenGLMaterialRenderComponent* getMaterialRenderComponent() const { return MaterialRenderComponent.get();}
 	COpenGLTextureWriteComponent* getTextureWriteComponent() const { return TextureWriteComponent.get(); }

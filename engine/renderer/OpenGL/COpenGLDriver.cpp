@@ -642,6 +642,21 @@ bool COpenGLDriver::removeTextureWriter(ITexture * texture)
 	return TextureWriteComponent->removeTextureWriter(texture);
 }
 
+void COpenGLDriver::draw(IVertexBuffer* vbuffer, IIndexBuffer* ibuffer, E_PRIMITIVE_TYPE primType, uint32_t primCount, const SDrawParam& drawParam)
+{
+	IVideoResource::buildVideoResources(vbuffer);
+	if (ibuffer)
+		IVideoResource::buildVideoResources(ibuffer);
+
+	const CGLProgram* program = ShaderManageComponent->applyShaders(Material, vbuffer->getVertexType());
+	MaterialRenderComponent->setRenderStates(Material, GlobalMaterial, program);
+
+
+	//TODO
+
+	MaterialRenderComponent->applyRenderStates();
+}
+
 void COpenGLDriver::deleteVao(const IVertexBuffer* vbuffer)
 {
 	E_VERTEX_TYPE vType = vbuffer->getVertexType();

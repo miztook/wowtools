@@ -21,6 +21,9 @@ public:
 	CCamera* get3DCamera() const { return m_p3DCamera.get(); }
 	CCamera* get2DCamera() const { return m_p2DCamera.get(); }
 
+	void render3D();
+	void render2D();
+
 private:
 	std::unique_ptr<CCamera>	m_p3DCamera;
 	std::unique_ptr<CCamera>	m_p2DCamera;
