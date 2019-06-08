@@ -135,27 +135,27 @@ inline GLint COpenGLHelper::getGLBlend(E_BLEND_FACTOR factor)
 	GLint r = 0;
 	switch (factor)
 	{
-	case E_BLEND_FACTOR::Zero:
+	case EBF_ZERO:
 		r = GL_ZERO; break;
-	case E_BLEND_FACTOR::One:
+	case EBF_ONE:
 		r = GL_ONE; break;
-	case E_BLEND_FACTOR::Dst_Color:
+	case EBF_DST_COLOR:
 		r = GL_DST_COLOR; break;
-	case E_BLEND_FACTOR::One_Minus_Dst_Color:
+	case EBF_ONE_MINUS_DST_COLOR:
 		r = GL_ONE_MINUS_DST_COLOR; break;
-	case E_BLEND_FACTOR::Src_Color:
+	case EBF_SRC_COLOR:
 		r = GL_SRC_COLOR; break;
-	case E_BLEND_FACTOR::One_Minus_Src_Color:
+	case EBF_ONE_MINUS_SRC_COLOR:
 		r = GL_ONE_MINUS_SRC_COLOR; break;
-	case E_BLEND_FACTOR::Src_Alpha:
+	case EBF_SRC_ALPHA:
 		r = GL_SRC_ALPHA; break;
-	case E_BLEND_FACTOR::One_Minus_Src_Alpha:
+	case EBF_ONE_MINUS_SRC_ALPHA:
 		r = GL_ONE_MINUS_SRC_ALPHA; break;
-	case E_BLEND_FACTOR::Dst_Alpha:
+	case EBF_DST_ALPHA:
 		r = GL_DST_ALPHA; break;
-	case E_BLEND_FACTOR::One_Minus_Dst_Alpha:
+	case EBF_ONE_MINUS_DST_ALPHA:
 		r = GL_ONE_MINUS_DST_ALPHA; break;
-	case E_BLEND_FACTOR::Src_Alpha_Saturate:
+	case EBF_SRC_ALPHA_SATURATE:
 		r = GL_SRC_ALPHA_SATURATE; break;
 	default:
 		ASSERT(false);

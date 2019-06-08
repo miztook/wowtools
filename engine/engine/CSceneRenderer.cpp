@@ -26,6 +26,10 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 		{
 			Driver->clear(true, true, false, BackgroundColor);
 
+			scene->render3D();
+			scene->render2D();
+			scene->renderDebugInfo();
+
 			Driver->endScene();
 		}
 	}

@@ -37,7 +37,7 @@ public:
 
 #ifdef A_PLATFORM_WIN_DESKTOP
 public:
-	void filterWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+	void filterWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) const;
 #endif
 
 private:

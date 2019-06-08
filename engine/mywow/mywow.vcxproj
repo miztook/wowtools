@@ -98,6 +98,7 @@
     <ClCompile Include="..\engine\CBLPImage.cpp" />
     <ClCompile Include="..\engine\CCamera.cpp" />
     <ClCompile Include="..\engine\CCImage.cpp" />
+    <ClCompile Include="..\engine\CGraphics.cpp" />
     <ClCompile Include="..\engine\CInputReader.cpp" />
     <ClCompile Include="..\engine\COSInfo.cpp" />
     <ClCompile Include="..\engine\CScene.cpp" />

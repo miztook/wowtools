@@ -5,3 +5,4 @@
 #include "Engine.h"
 #include "CInputReader.h"
 #include "CSceneRenderer.h"
+#include "CScene.h"

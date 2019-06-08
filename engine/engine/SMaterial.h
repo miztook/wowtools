@@ -92,8 +92,8 @@ struct SMRenderTargetBlendDesc
 
 	void Default()
 	{
-		srcBlend = E_BLEND_FACTOR::One;
-		destBlend = E_BLEND_FACTOR::Zero;
+		srcBlend = EBF_ONE;
+		destBlend = EBF_ZERO;
 		alphaBlendEnabled = false;
 	}
 
@@ -212,38 +212,38 @@ inline SMRenderTargetBlendDesc SMaterial::getRenderTargetBlendDesc() const
 	case EMT_ALPHA_TEST:
 		break;
 	case EMT_TRANSPARENT_ALPHA_BLEND:
-		desc.srcBlend = E_BLEND_FACTOR::Src_Alpha;
-		desc.destBlend = E_BLEND_FACTOR::One_Minus_Src_Alpha;
+		desc.srcBlend = EBF_SRC_ALPHA;
+		desc.destBlend = EBF_ONE_MINUS_SRC_ALPHA;
 		desc.alphaBlendEnabled = true;
 		break;
 	case EMT_TRANSPARENT_ONE_ALPHA:
-		desc.srcBlend = E_BLEND_FACTOR::One;
-		desc.destBlend = E_BLEND_FACTOR::One_Minus_Src_Alpha;
+		desc.srcBlend = EBF_ONE;
+		desc.destBlend = EBF_ONE_MINUS_SRC_ALPHA;
 		desc.alphaBlendEnabled = true;
 		break;
 	case EMT_TRANSPARENT_ADD_ALPHA:
-		desc.srcBlend = E_BLEND_FACTOR::Src_Alpha;
-		desc.destBlend = E_BLEND_FACTOR::One;
+		desc.srcBlend = EBF_SRC_ALPHA;
+		desc.destBlend = EBF_ONE;
 		desc.alphaBlendEnabled = true;
 		break;
 	case EMT_TRANSPARENT_ADD_COLOR:
-		desc.srcBlend = E_BLEND_FACTOR::Src_Color;
-		desc.destBlend = E_BLEND_FACTOR::One;
+		desc.srcBlend = EBF_SRC_COLOR;
+		desc.destBlend = EBF_ONE;
 		desc.alphaBlendEnabled = true;
 		break;
 	case EMT_TRANSPARENT_MODULATE:
-		desc.srcBlend = E_BLEND_FACTOR::Zero;
-		desc.destBlend = E_BLEND_FACTOR::Src_Color;
+		desc.srcBlend = EBF_ZERO;
+		desc.destBlend = EBF_SRC_COLOR;
 		desc.alphaBlendEnabled = true;
 		break;
 	case EMT_TRANSPARENT_MODULATE_X2:
-		desc.srcBlend = E_BLEND_FACTOR::Dst_Color;
-		desc.destBlend = E_BLEND_FACTOR::Src_Color;
+		desc.srcBlend = EBF_DST_COLOR;
+		desc.destBlend = EBF_SRC_COLOR;
 		desc.alphaBlendEnabled = true;
 		break;
 	case EMT_TRANSPARENT_ONE_ONE:
-		desc.srcBlend = E_BLEND_FACTOR::One;
-		desc.destBlend = E_BLEND_FACTOR::One;
+		desc.srcBlend = EBF_ONE;
+		desc.destBlend = EBF_ONE;
 		desc.alphaBlendEnabled = true;
 		break;
 	default:

@@ -651,10 +651,11 @@ void COpenGLDriver::draw(IVertexBuffer* vbuffer, IIndexBuffer* ibuffer, E_PRIMIT
 	const CGLProgram* program = ShaderManageComponent->applyShaders(Material, vbuffer->getVertexType());
 	MaterialRenderComponent->setRenderStates(Material, GlobalMaterial, program);
 
-
-	//TODO
+	ShaderManageComponent->setMaterialVariables(program, Material);
 
 	MaterialRenderComponent->applyRenderStates();
+
+	drawIndexedPrimitive(vbuffer, ibuffer, program, primType, primCount, drawParam);
 }
 
 void COpenGLDriver::deleteVao(const IVertexBuffer* vbuffer)

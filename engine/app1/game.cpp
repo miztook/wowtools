@@ -17,11 +17,11 @@ void MyMessageHandler::onSize(window_type hwnd, int width, int height)
 	}
 }
 
-void createScene()
+CScene* createScene()
 {
-	CScene* scene = g_Engine->getScene();
+	CScene* scene = new CScene;
+
+
+	return scene;
 }
 
-void destroyScene()
-{
-}

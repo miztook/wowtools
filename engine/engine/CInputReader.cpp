@@ -57,7 +57,7 @@ bool CInputReader::isMousePressed(E_MOUSE_BUTTON button)
 	}
 }
 
-void CInputReader::filterWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+void CInputReader::filterWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) const
 {
 	if (ProcessMouse)
 	{

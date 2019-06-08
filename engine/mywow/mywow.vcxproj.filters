@@ -271,5 +271,8 @@
     <ClCompile Include="..\engine\CCamera.cpp">
       <Filter>engine</Filter>
     </ClCompile>
+    <ClCompile Include="..\engine\CGraphics.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -31,15 +31,13 @@ Engine::Engine(const SWindowInfo& wndInfo)
 	WindowInfo = wndInfo;
 
 	Driver = nullptr;
-
-	DefaultScene = new CScene;
+	Graphics = nullptr;
 }
 
 Engine::~Engine()
 {
+	delete Graphics;
 	delete Driver;
-
-	delete DefaultScene;
 }
 
 bool Engine::init(E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode, driverInitFunc initFunc)
@@ -54,6 +52,9 @@ bool Engine::init(E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode, driver
 	{
 		goto fail;
 	}
+
+	//
+	Graphics = new CGraphics(Driver);
 
 	return true;
 

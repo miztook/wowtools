@@ -1,6 +1,10 @@
 #pragma once
 
 #include "base.h"
+#include "RenderStruct.h"
+#include "vector2d.h"
+#include "rect.h"
+#include "SColor.h"
 
 class COpenGLDriver;
 class ITexture;
@@ -27,6 +31,15 @@ public:
 
 	IIndexBuffer* getStaticIndexBufferQuadList() const { return StaticIndexBufferQuadList.get(); }
 	IIndexBuffer* getStaticIndexBufferTriangleList() const { return StaticIndexBufferTriangleList.get(); }
+
+	//
+	void draw2DImageBatch(ITexture* texture,
+		const vector2di positions[],
+		const recti* sourceRects[],
+		uint32_t batchCount,
+		SColor color,
+		E_RECT_UVCOORDS uvcoords,
+		const S2DBlendParam& blendParam);
 
 private:
 	void createStaticVertexBufferScreenQuad();

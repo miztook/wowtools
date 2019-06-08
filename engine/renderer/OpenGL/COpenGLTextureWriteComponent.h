@@ -46,10 +46,10 @@ public:
 public:
 	bool init();
 
-	ITextureWriter* createTextureWriter(ITexture* texture);
-	bool removeTextureWriter(ITexture* texture);
+	ITextureWriter* createTextureWriter(const ITexture* texture);
+	bool removeTextureWriter(const ITexture* texture);
 
 private:
-	std::map<ITexture*, ITextureWriter*>		TextureWriterMap;
+	std::map<const ITexture*, ITextureWriter*>		TextureWriterMap;
 	COpenGLDriver*	Driver;
 };

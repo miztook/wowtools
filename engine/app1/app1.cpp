@@ -32,8 +32,7 @@ int main()
 	g_Engine->setMessageHandler(&handler);
 
 	createInput();
-	createScene();
-
+	CScene* scene = createScene();
 	CSceneRenderer* sceneRenderer = CSceneRenderer::createSceneRenderer();
 
 	MSG msg;
@@ -51,15 +50,15 @@ int main()
 				update();
 			
 			//render scene
-			sceneRenderer->renderFrame(g_Engine->getScene(), active);
+			sceneRenderer->renderFrame(scene, active);
 
 			::Sleep(1);
 		}
 	}
 
 	delete sceneRenderer;
+	delete scene;
 
-	destroyScene();
 	destroyInput();
 
 	destroyEngine();

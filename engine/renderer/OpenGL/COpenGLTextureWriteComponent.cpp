@@ -98,7 +98,7 @@ bool COpenGLTextureWriteComponent::init()
 	return true;
 }
 
-ITextureWriter* COpenGLTextureWriteComponent::createTextureWriter(ITexture* texture)
+ITextureWriter* COpenGLTextureWriteComponent::createTextureWriter(const ITexture* texture)
 {
 	ECOLOR_FORMAT format = texture->getColorFormat();
 	const dimension2d& size = texture->getSize();
@@ -118,7 +118,7 @@ ITextureWriter* COpenGLTextureWriteComponent::createTextureWriter(ITexture* text
 	return writer;
 }
 
-bool COpenGLTextureWriteComponent::removeTextureWriter(ITexture* texture)
+bool COpenGLTextureWriteComponent::removeTextureWriter(const ITexture* texture)
 {
 	auto itr = TextureWriterMap.find(texture);
 	if (itr != TextureWriterMap.end())

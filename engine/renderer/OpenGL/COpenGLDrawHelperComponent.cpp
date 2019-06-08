@@ -108,3 +108,8 @@ void COpenGLDrawHelperComponent::destroyStaticIndexBufferTriangleList()
 {
 	StaticIndexBufferTriangleList.reset();
 }
+
+void COpenGLDrawHelperComponent::draw2DImageBatch(ITexture* texture, const vector2di positions[], const recti* sourceRects[], uint32_t batchCount, SColor color, E_RECT_UVCOORDS uvcoords, const S2DBlendParam& blendParam)
+{
+
+}

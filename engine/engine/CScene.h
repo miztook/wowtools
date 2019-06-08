@@ -20,9 +20,12 @@ public:
 
 	CCamera* get3DCamera() const { return m_p3DCamera.get(); }
 	CCamera* get2DCamera() const { return m_p2DCamera.get(); }
+	void onScreenResize(const dimension2d& size);
 
-	void render3D();
-	void render2D();
+
+	void render3D() const;
+	void render2D() const;
+	void renderDebugInfo() const;
 
 private:
 	std::unique_ptr<CCamera>	m_p3DCamera;

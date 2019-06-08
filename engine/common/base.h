@@ -352,19 +352,27 @@ enum E_COLOR_WRITE : uint8_t
 	COLORWRITE_ALL = 0xf,
 };
 
-enum class E_BLEND_FACTOR : int
+enum E_BLEND_FACTOR : int
 {
-	Zero = 0,
-	One,
-	Dst_Color,
-	One_Minus_Dst_Color,
-	Src_Color,
-	One_Minus_Src_Color,
-	Src_Alpha,
-	One_Minus_Src_Alpha,
-	Dst_Alpha,
-	One_Minus_Dst_Alpha,
-	Src_Alpha_Saturate,
+	EBF_ZERO = 0,
+	EBF_ONE,
+	EBF_DST_COLOR,
+	EBF_ONE_MINUS_DST_COLOR,
+	EBF_SRC_COLOR,
+	EBF_ONE_MINUS_SRC_COLOR,
+	EBF_SRC_ALPHA,
+	EBF_ONE_MINUS_SRC_ALPHA,
+	EBF_DST_ALPHA,
+	EBF_ONE_MINUS_DST_ALPHA,
+	EBF_SRC_ALPHA_SATURATE,
+};
+
+enum E_RECT_UVCOORDS : int
+{
+	ERU_00_11 = 0,
+	ERU_01_10,
+	ERU_10_01,
+	ERU_11_00,
 };
 
 enum E_TEXTURE_FILTER : int

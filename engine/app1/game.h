@@ -11,8 +11,7 @@ public:
 	virtual void onSize(window_type hwnd, int width, int height) override;
 };
 
-void createScene();
-void destroyScene();
+CScene* createScene();
 
 void createInput();
 void destroyInput();
