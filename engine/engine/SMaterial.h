@@ -183,7 +183,11 @@ struct SMaterial
 	void setVariable(const char* name, const matrix4& mat) { setVariable(name, mat.M, 16); }
 	void setVariable(const char* name, const vector4df& vec) { setVariable(name, &vec.x, 4); }
 	void clearVariables() { ShaderVariableMap.clear(); }
-	void setTexture(const char* name, ITexture* tex, E_TEXTURE_CLAMP wrapU, E_TEXTURE_CLAMP wrapV);
+	void setTexture(const char* name, ITexture* tex, E_TEXTURE_CLAMP wrapU = ETC_CLAMP, E_TEXTURE_CLAMP wrapV = ETC_CLAMP);
+	void setMainTexture(ITexture* tex, E_TEXTURE_CLAMP wrapU = ETC_CLAMP, E_TEXTURE_CLAMP wrapV = ETC_CLAMP)
+	{
+		setTexture("_MainTex", tex, wrapU, wrapV);
+	}
 
 	SMRenderTargetBlendDesc getRenderTargetBlendDesc() const;
 };

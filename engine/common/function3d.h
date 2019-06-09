@@ -193,7 +193,7 @@ inline matrix4 makeViewMatrix(const vector3df& from, const vector3df& dir, const
 	return view;
 }
 
-inline matrix4 makeOrthoOffCetnerMatrixLH(float fLeft, float fRight, float fTop, float fBottom, float fZNear, float fZFar)
+inline matrix4 makeOrthoOffCenterMatrixLH(float fLeft, float fRight, float fTop, float fBottom, float fZNear, float fZFar)
 {
 	matrix4 m(false);
 	float fWidth = fRight - fLeft;

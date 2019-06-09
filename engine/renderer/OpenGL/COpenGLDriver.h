@@ -9,6 +9,7 @@ class COpenGLMaterialRenderComponent;
 class COpenGLTextureWriteComponent;
 class COpenGLShaderManageComponent;
 class COpenGLDrawHelperComponent;
+class COpenGLTextureManageComponent;
 class COpenGLVertexDeclaration;
 class IVertexBuffer;
 class IIndexBuffer;
@@ -41,9 +42,20 @@ public:
 	void setDisplayMode(const dimension2d& size) override;
 	bool setDriverSetting(const SDriverSetting& setting) override;
 
+public:
 	ITextureWriter* createTextureWriter(ITexture* texture) override;
 	bool removeTextureWriter(ITexture* texture) override;
 
+	ITexture* getTextureWhite() const override;
+	void draw2DImageBatch(ITexture* texture,
+		const vector2di positions[],
+		const recti* sourceRects[],
+		uint32_t batchCount,
+		SColor color,
+		E_RECT_UVCOORDS uvcoords,
+		const S2DBlendParam& blendParam) override;
+
+public:
 	void draw(IVertexBuffer* vbuffer, IIndexBuffer* ibuffer,
 		E_PRIMITIVE_TYPE primType,
 		uint32_t primCount,
@@ -96,6 +108,7 @@ private:
 	std::unique_ptr<COpenGLTextureWriteComponent> TextureWriteComponent;
 	std::unique_ptr<COpenGLShaderManageComponent> ShaderManageComponent;
 	std::unique_ptr<COpenGLDrawHelperComponent> DrawHelperComponent;
+	std::unique_ptr<COpenGLTextureManageComponent>	TextureManageComponent;
 
 	std::array<std::unique_ptr<COpenGLVertexDeclaration>, EVT_COUNT>		VertexDeclarations;
 

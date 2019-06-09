@@ -5,6 +5,7 @@
 #include "COpenGLTextureWriteComponent.h"
 #include "COpenGLShaderManageComponent.h"
 #include "COpenGLDrawHelperComponent.h"
+#include "COpenGLTextureManageComponent.h"
 #include "COpenGLRenderTarget.h"
 #include "COpenGLVertexDeclaration.h"
 #include "COpenGLVertexIndexBuffer.h"
@@ -30,6 +31,7 @@ COpenGLDriver::COpenGLDriver()
 	TextureWriteComponent = std::make_unique<COpenGLTextureWriteComponent>(this);
 	ShaderManageComponent = std::make_unique<COpenGLShaderManageComponent>(this);
 	DrawHelperComponent = std::make_unique<COpenGLDrawHelperComponent>(this);
+	TextureManageComponent = std::make_unique<COpenGLTextureManageComponent>(this);
 }
 
 COpenGLDriver::~COpenGLDriver()
@@ -46,6 +48,7 @@ COpenGLDriver::~COpenGLDriver()
 	ShaderManageComponent.reset();
 	TextureWriteComponent.reset();
 	MaterialRenderComponent.reset();
+	TextureManageComponent.reset();
 
 	if (!wglMakeCurrent(nullptr, nullptr))
 	{
@@ -147,8 +150,6 @@ bool COpenGLDriver::initDriver(const SWindowInfo& wndInfo, bool vsync, E_AA_MODE
 	g_FileSystem->writeLog(ELOG_GX, "Render System: OpenGL");
 
 	//device info
-	AdapterInfo.index = 0;
-
 	const char* str = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
 	AdapterInfo.description = str;
 	const char* str1 = reinterpret_cast<const char*>(glGetString(GL_VERSION));
@@ -263,7 +264,8 @@ bool COpenGLDriver::initDriver(const SWindowInfo& wndInfo, bool vsync, E_AA_MODE
 	if (!MaterialRenderComponent->init() ||
 		!TextureWriteComponent->init() ||
 		!ShaderManageComponent->init() ||
-		!DrawHelperComponent->init())
+		!DrawHelperComponent->init() ||
+		!TextureManageComponent->init())
 	{
 		ASSERT(false);
 	}
@@ -563,7 +565,7 @@ void COpenGLDriver::setViewPort(const recti& area)
 
 	View2DTM = f3d::makeViewMatrix(vector3df(fWidth + OrthoCenterOffset.x, fHeight + OrthoCenterOffset.y, 0),
 		vector3df::UnitZ(), vector3df::UnitY(), 0.0f);
-	Project2DTM = f3d::makeOrthoOffCetnerMatrixLH(-fWidth, fWidth, -fHeight, fHeight, 0.0f, 1.0f);
+	Project2DTM = f3d::makeOrthoOffCenterMatrixLH(-fWidth, fWidth, -fHeight, fHeight, 0.0f, 1.0f);
 
 	VP2D = View2DTM * Project2DTM;
 	T_VP2D = VP2D; T_VP2D.transpose();
@@ -632,16 +634,6 @@ bool COpenGLDriver::setDriverSetting(const SDriverSetting & setting)
 	return ret;
 }
 
-ITextureWriter* COpenGLDriver::createTextureWriter(ITexture* texture)
-{
-	return TextureWriteComponent->createTextureWriter(texture);
-}
-
-bool COpenGLDriver::removeTextureWriter(ITexture * texture)
-{
-	return TextureWriteComponent->removeTextureWriter(texture);
-}
-
 void COpenGLDriver::draw(IVertexBuffer* vbuffer, IIndexBuffer* ibuffer, E_PRIMITIVE_TYPE primType, uint32_t primCount, const SDrawParam& drawParam)
 {
 	IVideoResource::buildVideoResources(vbuffer);
@@ -665,4 +657,27 @@ void COpenGLDriver::deleteVao(const IVertexBuffer* vbuffer)
 	{
 		VertexDeclarations[vType]->deleteVao(vbuffer);
 	}
+}
+
+ITextureWriter* COpenGLDriver::createTextureWriter(ITexture* texture)
+{
+	return TextureWriteComponent->createTextureWriter(texture);
+}
+
+bool COpenGLDriver::removeTextureWriter(ITexture * texture)
+{
+	return TextureWriteComponent->removeTextureWriter(texture);
+}
+
+ITexture* COpenGLDriver::getTextureWhite() const
+{
+	return TextureManageComponent->getDefaultWhite();
+}
+
+void COpenGLDriver::draw2DImageBatch(ITexture* texture, const vector2di positions[], const recti* sourceRects[], uint32_t batchCount, SColor color, E_RECT_UVCOORDS uvcoords, const S2DBlendParam& blendParam)
+{
+	if (!texture)
+		texture = getTextureWhite();
+
+	DrawHelperComponent->draw2DImageBatch(texture, positions, sourceRects, batchCount, color, uvcoords, blendParam);
 }

@@ -12,7 +12,20 @@ COpenGLTextureManageComponent::COpenGLTextureManageComponent(const COpenGLDriver
 
 COpenGLTextureManageComponent::~COpenGLTextureManageComponent()
 {
+	for (auto itr = TextureMap.begin(); itr != TextureMap.end(); ++itr)
+	{
+		ITexture* tex = itr->second;
+		if (tex)
+			delete tex;
+	}
+	TextureMap.clear();
+}
 
+bool COpenGLTextureManageComponent::init()
+{
+	loadDefaultTextures();
+
+	return true;
 }
 
 ITexture* COpenGLTextureManageComponent::getManualTexture(const char* name) const

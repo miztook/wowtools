@@ -137,9 +137,6 @@
     <ClInclude Include="..\engine\ITexture.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\CGraphics.h">
-      <Filter>engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\engine\CGeometryCreator.h">
       <Filter>engine</Filter>
     </ClInclude>
@@ -269,9 +266,6 @@
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\CCamera.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\CGraphics.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

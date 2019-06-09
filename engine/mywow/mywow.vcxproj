@@ -56,7 +56,6 @@
     <ClInclude Include="..\engine\CCamera.h" />
     <ClInclude Include="..\engine\CFPSCounter.h" />
     <ClInclude Include="..\engine\CGeometryCreator.h" />
-    <ClInclude Include="..\engine\CGraphics.h" />
     <ClInclude Include="..\engine\CCImage.h" />
     <ClInclude Include="..\engine\CInputReader.h" />
     <ClInclude Include="..\engine\COSInfo.h" />
@@ -98,7 +97,6 @@
     <ClCompile Include="..\engine\CBLPImage.cpp" />
     <ClCompile Include="..\engine\CCamera.cpp" />
     <ClCompile Include="..\engine\CCImage.cpp" />
-    <ClCompile Include="..\engine\CGraphics.cpp" />
     <ClCompile Include="..\engine\CInputReader.cpp" />
     <ClCompile Include="..\engine\COSInfo.cpp" />
     <ClCompile Include="..\engine\CScene.cpp" />

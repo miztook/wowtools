@@ -5,6 +5,8 @@
 #include "vector2d.h"
 #include "rect.h"
 #include "SColor.h"
+#include "S3DVertex.h"
+#include <vector>
 
 class COpenGLDriver;
 class ITexture;
@@ -42,6 +44,8 @@ public:
 		const S2DBlendParam& blendParam);
 
 private:
+	void initMaterials();
+
 	void createStaticVertexBufferScreenQuad();
 	void destroyStaticVertexBufferScreenQuad();
 
@@ -51,6 +55,12 @@ private:
 	void createStaticIndexBufferTriangleList();
 	void destroyStaticIndexBufferTriangleList();
 
+	void createDynamicVertexBuffers();
+	void destroyDynamicVertexBuffers();
+
+	rectf setUVCoords(E_RECT_UVCOORDS uvcoords, float x0, float y0, float x1, float y1);
+	void do_draw2DImageBatch(uint32_t batchCount, uint32_t nOffset, const vector2di* positions, const recti** sourceRects, ITexture* texture, E_RECT_UVCOORDS uvcoords, SColor color, const S2DBlendParam& blendParam);
+
 private:
 	COpenGLDriver* Driver;
 
@@ -58,4 +68,11 @@ private:
 	std::unique_ptr<IVertexBuffer>			StaticVertexBufferScreenQuadFlip;
 	std::unique_ptr<IIndexBuffer>			StaticIndexBufferQuadList;
 	std::unique_ptr<IIndexBuffer>			StaticIndexBufferTriangleList;
+
+	SVertex_PCT*		ImageVertices;
+
+	std::unique_ptr<IVertexBuffer>		VBImage;
+
+	SMaterial	InitMaterial2D;
+	SGlobalMaterial		InitGlobalMaterial2D;
 };

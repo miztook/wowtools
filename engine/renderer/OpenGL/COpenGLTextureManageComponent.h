@@ -20,6 +20,8 @@ public:
 	~COpenGLTextureManageComponent();
 
 public:
+	bool init();
+
 	ITexture* getDefaultWhite() const { return DefaultWhite; }
 
 	ITexture* getManualTexture(const char* name) const;

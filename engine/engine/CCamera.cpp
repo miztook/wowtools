@@ -9,7 +9,7 @@ CCamera::CCamera(bool isOrthogonal)
 	m_vRatio = 0.0f;
 	m_vFront = 0.0f;
 	m_vBack = 0.0f;
-	m_ScreenRect.set(0, 0, 0, 0);
+	m_orthoLeft = m_orthoRight = m_orthoLeft = m_orthoRight = 0;
 
 	m_vecPos = vector3df::Zero();
 	m_vecDir = vector3df::UnitZ();
@@ -28,9 +28,9 @@ void CCamera::Init(float vFov, float vRatio, float vFront, float vBack)
 	m_bInit = true;
 }
 
-void CCamera::Init(const recti& screenRect, float vFront, float vBack)
+void CCamera::Init(float left, float right, float top, float bottom, float vFront, float vBack)
 {
-	setProjectionParam(screenRect, vFront, vBack);
+	setProjectionParam(left, right, top, bottom, vFront, vBack);
 	m_bInit = true;
 }
 
@@ -109,11 +109,14 @@ void CCamera::setProjectionParam(float vFOV, float vRatio, float vFront, float v
 	setZFrontAndBack(vFront, vBack);
 }
 
-void CCamera::setProjectionParam(const recti& screenRect, float vFront, float vBack)
+void CCamera::setProjectionParam(float left, float right, float top, float bottom, float vFront, float vBack)
 {
 	ASSERT(m_IsOrthogonal);
 
-	m_ScreenRect = screenRect;
+	m_orthoLeft = left;
+	m_orthoRight = right;
+	m_orthoTop = top;
+	m_orthoBottom = bottom;
 	setZFrontAndBack(vFront, vBack);
 }
 
@@ -130,8 +133,7 @@ void CCamera::updateProjectionTM()
 	if (!m_IsOrthogonal)
 		m_matProjectionTM = f3d::makePerspectiveFovMatrixLH(m_vFOV, m_vRatio, m_vFront, m_vBack);
 	else
-		m_matProjectionTM = f3d::makeOrthoOffCetnerMatrixLH((float)m_ScreenRect.left, (float)m_ScreenRect.right, (float)m_ScreenRect.top, (float)m_ScreenRect.bottom, m_vFront, m_vBack);
-
+		m_matProjectionTM = f3d::makeOrthoOffCenterMatrixLH(m_orthoLeft, m_orthoRight, m_orthoTop, m_orthoBottom, m_vFront, m_vBack);
 	m_matVPTM = m_matViewTM * m_matProjectionTM;
 	updateWorldFrustum();
 }
@@ -207,28 +209,28 @@ void CCamera::updateWorldFrustum()
 		//left
 		{
 			vector3df vNormal = m_vecRight;
-			float fDist = vNormal.dotProduct(m_vecPos + m_vecRight * (float)m_ScreenRect.left);
+			float fDist = vNormal.dotProduct(m_vecPos + m_vecRight * m_orthoLeft);
 			m_worldFrustum.setPlane(frustum::VF_LEFT, plane3df(vNormal, fDist));
 		}
 
 		//right
 		{
 			vector3df vNormal = -m_vecRight;
-			float fDist = vNormal.dotProduct(m_vecPos + m_vecRight * (float)m_ScreenRect.right);
+			float fDist = vNormal.dotProduct(m_vecPos + m_vecRight * m_orthoRight);
 			m_worldFrustum.setPlane(frustum::VF_RIGHT, plane3df(vNormal, fDist));
 		}
 
 		//top
 		{
 			vector3df vNormal = -m_vecUp;
-			float fDist = vNormal.dotProduct(m_vecPos + m_vecUp * (float)m_ScreenRect.top);
+			float fDist = vNormal.dotProduct(m_vecPos + m_vecUp * m_orthoTop);
 			m_worldFrustum.setPlane(frustum::VF_TOP, plane3df(vNormal, fDist));
 		}
 
 		//bottom
 		{
 			vector3df vNormal = m_vecUp;
-			float fDist = vNormal.dotProduct(m_vecPos + m_vecRight * (float)m_ScreenRect.bottom);
+			float fDist = vNormal.dotProduct(m_vecPos + m_vecRight * m_orthoBottom);
 			m_worldFrustum.setPlane(frustum::VF_BOTTOM, plane3df(vNormal, fDist));
 		}
 

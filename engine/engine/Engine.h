@@ -4,7 +4,6 @@
 #include "CTimer.h"
 #include "CInputReader.h"
 #include "IVideoDriver.h"
-#include "CGraphics.h"
 
 using driverInitFunc = std::function<IVideoDriver*(const SWindowInfo& wndInfo,
 	E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode)>;
@@ -30,7 +29,6 @@ public:
 	const SWindowInfo& getWindowInfo() const { return WindowInfo; }
 	const COSInfo&	getOSInfo() const { return OSInfo; }
 	CInputReader* getInputReader() { return &InputReader; }
-	CGraphics*  getGraphics() const { return Graphics; }
 
 private:
 	IVideoDriver*	Driver;
@@ -39,7 +37,6 @@ private:
 	CTimer		Timer;
 	CInputReader		InputReader;
 	IMessageHandler*		MessageHandler;
-	CGraphics*		Graphics;
 };
 
 extern Engine* g_Engine;

@@ -15,8 +15,7 @@ public:
 public:
 	void init3DCamera(float fov, float aspectRatio, float nearZ, float farZ, 
 		const vector3df& pos, const vector3df& dir, const vector3df& up);
-	void init2DCamera(const recti& screenRect, float vFront, float vBack,
-		const vector3df& pos, const vector3df& dir, const vector3df& up);
+	void init2DCamera(const dimension2d& screenSize, float vFront, float vBack);
 
 	CCamera* get3DCamera() const { return m_p3DCamera.get(); }
 	CCamera* get2DCamera() const { return m_p2DCamera.get(); }

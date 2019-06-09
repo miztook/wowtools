@@ -6,6 +6,8 @@
 #include "matrix4.h"
 #include "SMaterial.h"
 #include "IRenderTarget.h"
+#include "SColor.h"
+#include "RenderStruct.h"
 #include <string>
 #include <list>
 
@@ -50,12 +52,11 @@ struct SDisplayMode
 class CAdapterInfo
 {
 public:
-	CAdapterInfo() : index(0), vendorID(0)
+	CAdapterInfo() : vendorID(0)
 	{
 	}
 
 public:
-	uint32_t		index;
 	uint32_t		vendorID;
 	std::string		description;
 	std::string		name;
@@ -114,11 +115,6 @@ public:
 		DrawCall = 0;
 
 		OrthoCenterOffset.set(0, 0);
-		InitMaterial2D.RasterizerDesc.Cull = ECM_BACK;
-		InitMaterial2D.Lighting = false;
-		InitMaterial2D.DepthStencilDesc.ZWriteEnable = false;
-		InitMaterial2D.DepthStencilDesc.ZBuffer = ECFN_NEVER;
-		InitGlobalMaterial2D.TextureFilter = ETF_BILINEAR;
 	}
 
 	virtual ~IVideoDriver() {}
@@ -134,6 +130,8 @@ public:
 
 	void setMaterial(const SMaterial& material) { Material = material; }
 	const SMaterial& getMaterial() const { return Material; }
+	void setGlobalMaterial(const SGlobalMaterial& globalMaterial) { GlobalMaterial = globalMaterial; }
+	const SGlobalMaterial& getGlobalMaterial() const { return GlobalMaterial; }
 
 	const matrix4& getView2DTM() const { return View2DTM; }
 	const matrix4& getProject2DTM() const { return Project2DTM; }
@@ -162,10 +160,31 @@ public:
 	virtual void setDisplayMode(const dimension2d& size) = 0;
 	virtual bool setDriverSetting(const SDriverSetting& setting) = 0;
 
+public:
 	//
 	virtual ITextureWriter* createTextureWriter(ITexture* texture) = 0;
 	virtual bool removeTextureWriter(ITexture* texture) = 0;
 
+	//
+	virtual ITexture* getTextureWhite() const = 0;
+	virtual void draw2DImageBatch(ITexture* texture,
+		const vector2di positions[],
+		const recti* sourceRects[],
+		uint32_t batchCount,
+		SColor color,
+		E_RECT_UVCOORDS uvcoords,
+		const S2DBlendParam& blendParam) = 0;
+
+public:
+	void draw2DImage(ITexture* texture, const vector2di& pos,
+		const recti* sourceRect = nullptr,
+		SColor color = SColor::White(),
+		E_RECT_UVCOORDS uvcoords = ERU_00_11,
+		const S2DBlendParam& blendParam = S2DBlendParam::OpaqueSource())
+	{
+		draw2DImageBatch(texture, &pos, sourceRect ? &sourceRect : nullptr, 1, color, uvcoords, blendParam);
+	}
+	
 protected:
 	void makeVPScaleMatrix(const recti& vpRect);
 
@@ -176,8 +195,6 @@ protected:
 	SGlobalMaterial		GlobalMaterial;
 
 	vector2df	OrthoCenterOffset;		//dx9有0.5像素的偏移
-	SMaterial	InitMaterial2D;
-	SGlobalMaterial		InitGlobalMaterial2D;
 
 	const IRenderTarget*		CurrentRenderTarget;		//当前render target, 若为nullptr则表示frame buffer
 	std::unique_ptr<IRenderTarget>		FrameBufferRT;

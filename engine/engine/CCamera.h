@@ -2,7 +2,6 @@
 
 #include "vector3d.h"
 #include "matrix4.h"
-#include "rect.h"
 #include "frustum.h"
 
 class CCamera
@@ -13,7 +12,7 @@ public:
 
 public:
 	void Init(float vFov, float vRatio, float vFront, float vBack);
-	void Init(const recti& screenRect, float vFront, float vBack);
+	void Init(float left, float right, float top, float bottom, float vFront, float vBack);
 
 	void setPos(const vector3df& vecPos) { m_vecPos = vecPos; updateViewTM(); }
 	void setDirAndUp(const vector3df& vecDir, const vector3df& vecUp);
@@ -26,7 +25,7 @@ public:
 
 	void setFOV(float vFOV) { m_vFOV = vFOV; updateProjectionTM(); }
 	void setProjectionParam(float vFOV, float vRatio, float vFront, float vBack);
-	void setProjectionParam(const recti& screenRect, float vFront, float vBack);
+	void setProjectionParam(float left, float right, float top, float bottom, float vFront, float vBack);
 
 public:
 	bool IsOrthogonal() const { return m_IsOrthogonal; }
@@ -44,7 +43,6 @@ public:
 
 	float getFOV() const { return m_vFOV; }
 	float getRatio() const { return m_vRatio; }
-	const recti& getScreenRect() const { return m_ScreenRect; }
 
 	void getProjectionParam(float* pvFOV, float* pvRatio, float* pvFront, float* pvBack)
 	{
@@ -77,7 +75,13 @@ private:
 			float m_vFOV;
 			float m_vRatio;
 		};
-		recti m_ScreenRect;
+		struct  
+		{
+			float m_orthoLeft;
+			float m_orthoRight;
+			float m_orthoTop;
+			float m_orthoBottom;
+		};
 	};
 
 	frustum	m_worldFrustum;

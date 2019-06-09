@@ -31,12 +31,10 @@ Engine::Engine(const SWindowInfo& wndInfo)
 	WindowInfo = wndInfo;
 
 	Driver = nullptr;
-	Graphics = nullptr;
 }
 
 Engine::~Engine()
 {
-	delete Graphics;
 	delete Driver;
 }
 
@@ -52,9 +50,6 @@ bool Engine::init(E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode, driver
 	{
 		goto fail;
 	}
-
-	//
-	Graphics = new CGraphics(Driver);
 
 	return true;
 
