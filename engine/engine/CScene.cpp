@@ -4,12 +4,14 @@
 
 CScene::CScene()
 {
-	
+	m_p3DCamera = std::make_unique<CCamera>(false);
+	m_p2DCamera = std::make_unique<CCamera>(true);
 }
 
 CScene::~CScene()
 {
-
+	m_p2DCamera.reset();
+	m_p3DCamera.reset();
 }
 
 void CScene::init3DCamera(float fov, float aspectRatio, float nearZ, float farZ, const vector3df& pos, const vector3df& dir, const vector3df& up)
