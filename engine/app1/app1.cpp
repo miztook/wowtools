@@ -28,15 +28,17 @@ int main()
 		return -1;
 	}
 
+	createGame();
+	g_pGame->createInput();
+
 	MyMessageHandler handler;
 	g_Engine->setMessageHandler(&handler);
 
-	createInput();
-	CScene* scene = createScene();
+	g_pGame->createScene();
 	CSceneRenderer* sceneRenderer = CSceneRenderer::createSceneRenderer();
 
 	MSG msg;
-	while (!g_bExit)
+	while (!g_pGame->m_bExit)
 	{
 		if (::PeekMessage(&msg, hwnd, 0, 0, PM_REMOVE))
 		{
@@ -45,21 +47,21 @@ int main()
 		}
 		else
 		{
-			bool active = !g_bBackMode && ::GetActiveWindow() == hwnd;
+			bool active = !g_pGame->m_bBackMode && ::GetActiveWindow() == hwnd;
 			if (active)
-				update();
+				g_pGame->update();
 			
 			//render scene
-			sceneRenderer->renderFrame(scene, active);
+			sceneRenderer->renderFrame(g_pGame->m_pScene, active);
 
 			::Sleep(1);
 		}
 	}
 
 	delete sceneRenderer;
-	delete scene;
 
-	destroyInput();
+	g_pGame->destroyInput();
+	destroyGame();
 
 	destroyEngine();
 

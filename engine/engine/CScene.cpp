@@ -2,7 +2,8 @@
 #include "CCamera.h"
 #include "Engine.h"
 
-CScene::CScene()
+CScene::CScene(const char* strName)
+	: m_strName(strName)
 {
 	m_p3DCamera = std::make_unique<CCamera>(false);
 	m_p2DCamera = std::make_unique<CCamera>(true);
@@ -66,4 +67,5 @@ void CScene::renderDebugInfo() const
 	if (!m_p2DCamera->IsInited())
 		return;
 
+	g_Engine->getDriver()->draw2DImage(nullptr, vector2di(10, 10));
 }

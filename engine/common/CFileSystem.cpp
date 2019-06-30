@@ -107,7 +107,7 @@ bool CFileSystem::isFileExists(const char* filename)
 	return Q_access(filename, 0) == 0;
 }
 
-void CFileSystem::writeLog(E_LOG_TYPE type, const char * format, ...)
+void CFileSystem::writeLog(E_LOG_TYPE type, const char* format, ...)
 {
 	CLock lock(LogCS);
 

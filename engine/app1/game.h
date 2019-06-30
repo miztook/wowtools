@@ -1,18 +1,34 @@
 #pragma once
 #include "mywow.h"
 
-extern bool g_bExit;
-extern bool g_bBackMode;
-
 class MyMessageHandler : public IMessageHandler
 {
 public:
-	virtual void onExit(window_type hwnd) override { g_bExit = true; }
+	virtual void onExit(window_type hwnd) override;
 	virtual void onSize(window_type hwnd, int width, int height) override;
 };
 
-CScene* createScene();
+class CGame
+{
+public:
+	CGame();
+	~CGame();
 
-void createInput();
-void destroyInput();
-void update();
+public:
+	void createScene();
+
+	void createInput();
+	void destroyInput();
+	void update();
+
+public:
+	CScene*	m_pScene;
+	bool m_bExit;
+	bool m_bBackMode;
+};
+
+void createGame();
+void destroyGame();
+
+extern CGame* g_pGame;
+

@@ -8,7 +8,7 @@ float Saturate(float x)
     return max(0.0, min(1.0, x));
 }
 
-vec3 Mul3( mat3 matrix, vec3 pos )
+vec3 Mul3( mat4 matrix, vec3 pos )
 {
 	vec3 vResult;
     vResult.x = dot( pos, matrix[0].xyz );

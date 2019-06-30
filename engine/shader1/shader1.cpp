@@ -44,8 +44,16 @@ void compileShaders()
 	COpenGLDriver* driver = static_cast<COpenGLDriver*>(g_Engine->getDriver());
 	COpenGLShaderManageComponent* shaderManagerComponent = driver->getShaderManageComponent();
 
-	auto vs = shaderManagerComponent->getVertexShader("Default_P");
-	auto ps = shaderManagerComponent->getPixelShader("Default_P");
+	shaderManagerComponent->getVertexShader("Default_P");
+	shaderManagerComponent->getVertexShader("Default_PC");
+	shaderManagerComponent->getVertexShader("Default_PCT");
+	shaderManagerComponent->getVertexShader("Default_PN");
+	shaderManagerComponent->getVertexShader("Default_PNC");
+	shaderManagerComponent->getVertexShader("Default_PNCT");
+	shaderManagerComponent->getVertexShader("Default_PNT");
+	shaderManagerComponent->getVertexShader("Default_PT");
+	
+	shaderManagerComponent->getPixelShader("Default_P");
 	//const CGLProgram* program = shaderManagerComponent->getGlProgram(vs, ps);
 }
 

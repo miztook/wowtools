@@ -25,7 +25,7 @@ void CInputListener::onKeyMessage(window_type hwnd, E_INPUT_MESSAGE message, int
 {
 	if (message == Key_Up && key == VK_ESCAPE)
 	{
-		g_bExit = true;
+		g_pGame->m_bExit = true;
 	}
 }
 
@@ -42,7 +42,7 @@ void CInputListener::onMouseWheel(window_type hwnd, int zDelta)
 
 CInputListener g_listener;
 
-void createInput()
+void CGame::createInput()
 {
 	CInputReader* inputReader = g_Engine->getInputReader();
 	inputReader->addListener(&g_listener);
@@ -51,13 +51,9 @@ void createInput()
 	inputReader->acquire(EID_MOUSE);
 }
 
-void destroyInput()
+void CGame::destroyInput()
 {
 	CInputReader* inputReader = g_Engine->getInputReader();
 	inputReader->removeListener(&g_listener);
 }
 
-void update()
-{
-
-}
