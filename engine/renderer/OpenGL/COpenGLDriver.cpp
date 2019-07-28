@@ -79,7 +79,6 @@ bool COpenGLDriver::initDriver(const SWindowInfo& wndInfo, bool vsync, E_AA_MODE
 
 	const uint8_t depthBits = 24;
 	const uint8_t stencilBits = 8;
-
 	// Set up pixel format descriptor with desired parameters
 	PIXELFORMATDESCRIPTOR pfd = {
 		sizeof(PIXELFORMATDESCRIPTOR),             // Size Of This Pixel Format Descriptor
@@ -131,13 +130,82 @@ bool COpenGLDriver::initDriver(const SWindowInfo& wndInfo, bool vsync, E_AA_MODE
 	}
 
 	Hgrc = wglCreateContext(Hdc);
-	if (!Hgrc)
+
+	// Make the new window active for drawing.  We can't call any OpenGL functions without an active rendering context
+	if (!wglMakeCurrent(Hdc, Hgrc))
 	{
+		wglDeleteContext(Hgrc);
+		::ReleaseDC(HWnd, Hdc);
+
+		return false;
+	}
+
+#pragma warning(push)
+#pragma warning(disable:4191)
+	PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+	PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
+#pragma warning(pop)
+
+	ASSERT(wglCreateContextAttribsARB);
+	ASSERT(wglChoosePixelFormatARB);
+
+	//新的ChoosePixelFormat, 要使用它必须新创建一个临时窗口，创建Context，然后销毁临时窗口，这样wglChoosePixelFormatARB才能使用
+	//SetPixelFormat函数每个窗口只能调用一次
+	/*
+	int attributeListInt[] =
+	{
+		WGL_SUPPORT_OPENGL_ARB, TRUE,
+		WGL_DRAW_TO_WINDOW_ARB, TRUE,
+		WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
+		WGL_COLOR_BITS_ARB, 24,
+		WGL_DEPTH_BITS_ARB, 24,
+		WGL_DOUBLE_BUFFER_ARB, TRUE,
+		WGL_SWAP_METHOD_ARB, WGL_SWAP_EXCHANGE_ARB,
+		WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
+		WGL_STENCIL_BITS_ARB, 8,
+		0,
+	};
+
+	int pixelFormats[1];
+	UINT formatCount;
+	if (!wglChoosePixelFormatARB(Hdc, attributeListInt, NULL, 1, &pixelFormats[0], &formatCount))
+	{
+		ASSERT(false);
+		return false;
+	}
+
+	PIXELFORMATDESCRIPTOR pfd;
+	if (!SetPixelFormat(Hdc, pixelFormats[0], &pfd))
+	{
+		ASSERT(false);
+		return false;
+	}
+	*/
+
+	const int contextAttribs[] =
+	{
+		WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
+		WGL_CONTEXT_MINOR_VERSION_ARB, 2,
+		WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB,
+		WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+		0
+	};
+	glcontext_type newHgrc = wglCreateContextAttribsARB(Hdc, 0, contextAttribs);
+	if (!newHgrc)
+	{
+		wglMakeCurrent(NULL, NULL);
+		wglDeleteContext(Hgrc);
+
 		::ReleaseDC(HWnd, Hdc);
 
 		ASSERT(false);
 		return false;
 	}
+
+	wglMakeCurrent(NULL, NULL);
+	wglDeleteContext(Hgrc);
+
+	Hgrc = newHgrc;
 
 	if (!wglMakeCurrent(Hdc, Hgrc))
 	{
