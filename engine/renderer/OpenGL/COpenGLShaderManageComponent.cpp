@@ -210,7 +210,6 @@ const CGLProgram* COpenGLShaderManageComponent::createGLProgram(const COpenGLVer
 
 	if (!status)
 	{
-		g_FileSystem->writeLog(ELOG_GX, "GLSL shader program failed to link: ");
 		// check error message and log it
 		GLint maxLength = 0;
 		GLsizei length;
@@ -270,9 +269,9 @@ const CGLProgram* COpenGLShaderManageComponent::createGLProgram(const COpenGLVer
 		if (info.isTexture())
 		{
 			info.textureIndex = (int)program->textureNameIndexMap.size();
-			program->textureNameIndexMap[name] = (int)program->uniformList.size() - 1;
+			program->textureNameIndexMap[name] = info.textureIndex;
 			//
-			Driver->GLExtension.extGlUniform1iv(info.location, info.type, &(GLint)info.textureIndex);
+			Driver->GLExtension.extGlUniform1iv(info.location, 1, &(GLint)info.textureIndex);
 		}
 		else
 		{
@@ -468,7 +467,7 @@ bool COpenGLPixelShader::buildVideoResources()
 
 	const char* buffer = result.Buffer.data();
 
-	GLhandleARB shaderHandle = Driver->GLExtension.extGlCreateShaderObject(GL_VERTEX_SHADER_ARB);
+	GLhandleARB shaderHandle = Driver->GLExtension.extGlCreateShaderObject(GL_FRAGMENT_SHADER_ARB);
 	Driver->GLExtension.extGlShaderSourceARB(shaderHandle, 1, &buffer, nullptr);
 	Driver->GLExtension.extGlCompileShaderARB(shaderHandle);
 

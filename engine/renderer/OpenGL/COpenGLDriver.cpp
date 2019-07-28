@@ -38,17 +38,17 @@ COpenGLDriver::~COpenGLDriver()
 {
 	FrameBufferRT.reset();
 
-	for (int i = 0; i < EVT_COUNT; ++i)
-	{
-		VertexDeclarations[i].reset();
-	}
-
 	//
 	DrawHelperComponent.reset();
 	ShaderManageComponent.reset();
 	TextureWriteComponent.reset();
 	MaterialRenderComponent.reset();
 	TextureManageComponent.reset();
+
+	for (int i = 0; i < EVT_COUNT; ++i)
+	{
+		VertexDeclarations[i].reset();
+	}
 
 	if (!wglMakeCurrent(nullptr, nullptr))
 	{

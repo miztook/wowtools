@@ -30,6 +30,7 @@ bool CShaderUtil::loadFile_OpenGL(const char* absFileName, const std::set<std::s
 		uint32_t dwRead;
 		uint32_t dwLimit = (uint32_t)(buffer.size() - (p - buffer.data()));
 		
+		memset(p, 0, dwLimit);
 		dwRead = rFile->readLine(p, dwLimit);
 		if (dwRead == 0)
 			break;

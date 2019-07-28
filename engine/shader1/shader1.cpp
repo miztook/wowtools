@@ -44,16 +44,43 @@ void compileShaders()
 	COpenGLDriver* driver = static_cast<COpenGLDriver*>(g_Engine->getDriver());
 	COpenGLShaderManageComponent* shaderManagerComponent = driver->getShaderManageComponent();
 
-	shaderManagerComponent->getVertexShader("Default_P");
-	shaderManagerComponent->getVertexShader("Default_PC");
-	shaderManagerComponent->getVertexShader("Default_PCT");
-	shaderManagerComponent->getVertexShader("Default_PN");
-	shaderManagerComponent->getVertexShader("Default_PNC");
-	shaderManagerComponent->getVertexShader("Default_PNCT");
-	shaderManagerComponent->getVertexShader("Default_PNT");
-	shaderManagerComponent->getVertexShader("Default_PT");
+	const char* vsshaders[] =
+	{
+ 		"Default_P",
+		"Default_PC",
+		"Default_PCT",
+		"Default_PN",
+		"Default_PNC",
+		"Default_PNCT",
+		"Default_PNT",
+		"Default_PT",
+	};
+
+	for (const char* vsFile : vsshaders)
+	{
+		shaderManagerComponent->getVertexShader(vsFile);
+	}
 	
-	shaderManagerComponent->getPixelShader("Default_P");
+	const char* psshaders[] =
+	{
+		"Default_P",
+		"Default_PC",
+		"Default_PCT",
+		"Default_PN",
+		"Default_PNC",
+		"Default_PNCT",
+		"Default_PNT",
+		"Default_PT",
+		"UI",
+		"UI_Alpha",
+		"UI_Alpha_AlphaChannel",
+		"UI_AlphaChannel",
+	};
+	
+	for (const char* psFile : psshaders)
+	{
+		shaderManagerComponent->getPixelShader(psFile);
+	}
 	//const CGLProgram* program = shaderManagerComponent->getGlProgram(vs, ps);
 }
 
