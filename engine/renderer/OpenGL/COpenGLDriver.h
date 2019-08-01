@@ -59,7 +59,8 @@ public:
 	void draw(IVertexBuffer* vbuffer, IIndexBuffer* ibuffer,
 		E_PRIMITIVE_TYPE primType,
 		uint32_t primCount,
-		const SDrawParam& drawParam);
+		const SDrawParam& drawParam,
+		bool is2D);
 
 public:
 	COpenGLMaterialRenderComponent* getMaterialRenderComponent() const { return MaterialRenderComponent.get();}

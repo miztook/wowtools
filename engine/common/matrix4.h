@@ -129,7 +129,10 @@ public:
 public:
 	union
 	{
-		T M[16];
+		struct
+		{
+			T M[16];
+		};
 		struct
 		{
 			T _11, _12, _13, _14;

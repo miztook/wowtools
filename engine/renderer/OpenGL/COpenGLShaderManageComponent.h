@@ -126,8 +126,8 @@ public:
 	const CGLProgram* getGlProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader);
 	const CGLProgram* createGLProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader);
 
-	void setShaderUniformF(const SGLUniformInfo* uniform, const matrix4& mat) { setShaderUniformF(uniform, mat.M, 16); }
-	void setShaderUniformF(const SGLUniformInfo* uniform, const vector4df& vec) { setShaderUniformF(uniform, &vec.x, 4); }
+	void setShaderUniformF(const SGLUniformInfo* uniform, const matrix4& mat) { setShaderUniformF(uniform, mat.M, sizeof(matrix4)); }
+	void setShaderUniformF(const SGLUniformInfo* uniform, const vector4df& vec) { setShaderUniformF(uniform, &vec.x, sizeof(vector4df)); }
 	void setShaderUniformF(const SGLUniformInfo* uniform, const float* srcData, uint32_t size)
 	{
 		setShaderUniformF(uniform->location, uniform->type, srcData, size);

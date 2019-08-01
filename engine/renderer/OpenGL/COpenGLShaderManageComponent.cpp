@@ -237,7 +237,6 @@ const CGLProgram* COpenGLShaderManageComponent::createGLProgram(const COpenGLVer
 	Driver->GLExtension.extGlGetObjectParameteriv(p, GL_OBJECT_ACTIVE_UNIFORM_MAX_LENGTH_ARB, &maxLen);
 
 	//
-	program->uniformList.resize(numUniforms);
 	std::vector<char> buf;
 	buf.resize(maxLen);
 	for (int i = 0; i < (int)numUniforms; ++i)
@@ -262,21 +261,22 @@ const CGLProgram* COpenGLShaderManageComponent::createGLProgram(const COpenGLVer
 		}
 
 		ASSERT(type != GL_SAMPLER_1D_ARB && type != GL_SAMPLER_3D_ARB);
-
-		program->uniformList.emplace_back(info);
-		program->uniformNameIndexMap[name] = (int)program->uniformList.size() - 1;
 		
 		if (info.isTexture())
 		{
 			info.textureIndex = (int)program->textureNameIndexMap.size();
 			program->textureNameIndexMap[name] = info.textureIndex;
 			//
-			Driver->GLExtension.extGlUniform1iv(info.location, 1, &(GLint)info.textureIndex);
+			GLint i = (GLint)info.textureIndex;
+			Driver->GLExtension.extGlUniform1iv(info.location, 1, &i);
 		}
 		else
 		{
 			info.textureIndex = -1;
 		}
+
+		program->uniformList.emplace_back(info);
+		program->uniformNameIndexMap[name] = (int)program->uniformList.size() - 1;
 	}
 
 	Driver->GLExtension.extGlUseProgramObject(0);
@@ -303,13 +303,13 @@ void COpenGLShaderManageComponent::setShaderUniformF(uint32_t location, GLenum t
 		Driver->GLExtension.extGlUniform4fv(location, count / 4, srcData);
 		break;
 	case GL_FLOAT_MAT2_ARB:
-		Driver->GLExtension.extGlUniformMatrix2fv(location, count / 4, GL_FALSE, srcData);
+		Driver->GLExtension.extGlUniformMatrix2fv(location, count / 4, GL_TRUE, srcData);
 		break;
 	case GL_FLOAT_MAT3_ARB:
-		Driver->GLExtension.extGlUniformMatrix3fv(location, count / 9, GL_FALSE, srcData);
+		Driver->GLExtension.extGlUniformMatrix3fv(location, count / 9, GL_TRUE, srcData);
 		break;
 	case GL_FLOAT_MAT4_ARB:
-		Driver->GLExtension.extGlUniformMatrix4fv(location, count / 16, GL_FALSE, srcData);
+		Driver->GLExtension.extGlUniformMatrix4fv(location, count / 16, GL_TRUE, srcData);
 		break;
 	default:
 		ASSERT(false);
@@ -328,7 +328,7 @@ void COpenGLShaderManageComponent::setGlobalVariables(const CGLProgram* program,
 
 		auto uf1 = program->getUniform("g_MatrixVP");
 		if (uf1)
-			setShaderUniformF(uf0, Driver->T_VP2D);
+			setShaderUniformF(uf1, Driver->T_VP2D);
 	}
 	else
 	{

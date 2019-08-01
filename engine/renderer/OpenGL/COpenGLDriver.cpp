@@ -428,14 +428,14 @@ void COpenGLDriver::setTransform(E_TRANSFORMATION_STATE state, const matrix4& ma
 	{
 		V = mat;
 		VP = V * P;
-		T_V = V; T_V.transpose();
-		T_VP = VP; T_VP.transpose();
+		T_V = V;
+		T_VP = VP; 
 	}
 	break;
 	case ETS_WORLD:
 	{
 		W = mat;
-		T_W = W; T_W.transpose();
+		T_W = W;
 	}
 	break;
 
@@ -443,8 +443,8 @@ void COpenGLDriver::setTransform(E_TRANSFORMATION_STATE state, const matrix4& ma
 	{
 		P = mat;
 		VP = V * P;
-		T_P = P; T_P.transpose();
-		T_VP = VP; T_VP.transpose(); 
+		T_P = P;
+		T_VP = VP;
 	}
 	break;
 	default:
@@ -636,7 +636,7 @@ void COpenGLDriver::setViewPort(const recti& area)
 	Project2DTM = f3d::makeOrthoOffCenterMatrixLH(-fWidth, fWidth, -fHeight, fHeight, 0.0f, 1.0f);
 
 	VP2D = View2DTM * Project2DTM;
-	T_VP2D = VP2D; T_VP2D.transpose();
+	T_VP2D = VP2D;
 }
 
 void COpenGLDriver::setDisplayMode(const dimension2d& size)
@@ -702,7 +702,7 @@ bool COpenGLDriver::setDriverSetting(const SDriverSetting & setting)
 	return ret;
 }
 
-void COpenGLDriver::draw(IVertexBuffer* vbuffer, IIndexBuffer* ibuffer, E_PRIMITIVE_TYPE primType, uint32_t primCount, const SDrawParam& drawParam)
+void COpenGLDriver::draw(IVertexBuffer* vbuffer, IIndexBuffer* ibuffer, E_PRIMITIVE_TYPE primType, uint32_t primCount, const SDrawParam& drawParam, bool is2D)
 {
 	IVideoResource::buildVideoResources(vbuffer);
 	if (ibuffer)
@@ -711,6 +711,7 @@ void COpenGLDriver::draw(IVertexBuffer* vbuffer, IIndexBuffer* ibuffer, E_PRIMIT
 	const CGLProgram* program = ShaderManageComponent->applyShaders(Material, vbuffer->getVertexType());
 	MaterialRenderComponent->setRenderStates(Material, GlobalMaterial, program);
 
+	ShaderManageComponent->setGlobalVariables(program, is2D);
 	ShaderManageComponent->setMaterialVariables(program, Material);
 
 	MaterialRenderComponent->applyRenderStates();

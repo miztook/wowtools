@@ -49,9 +49,11 @@ public:
 public:
 	union
 	{
-		
-		vector2d<T>		UpperLeftCorner;
-		vector2d<T>		LowerRightCorner;
+		struct  
+		{
+			vector2d<T>		UpperLeftCorner;
+			vector2d<T>		LowerRightCorner;
+		};
 		struct  
 		{
 			T left;

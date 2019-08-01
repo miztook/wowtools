@@ -14,7 +14,7 @@
 	GLenum err = glGetError(); \
 	if (err != GL_NO_ERROR)		\
 			{								\
-	 ASSERT(false);						\
+	 ASSERT(false && "GLError!");						\
 			}					\
 }
 
@@ -23,7 +23,7 @@
 	GLint err = glGetError(); \
 	if (err != GL_NO_ERROR)		\
 			{				\
-		ASSERT(false);						\
+		ASSERT(false && "GLError!");						\
 			}					\
     }
 

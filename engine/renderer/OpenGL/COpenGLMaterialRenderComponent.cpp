@@ -134,7 +134,7 @@ void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial& material, 
 
 		CurrentRenderState.FrontFace = frontface;
 		CurrentRenderState.CullMode = cullmode;
-		CurrentRenderState.CullEnable = material.RasterizerDesc.Cull != ECM_NONE;
+		CurrentRenderState.CullEnable = material.RasterizerDesc.Cull != ECM_NONE ? GL_TRUE : GL_FALSE;
 	}
 
 	// anti aliasing
@@ -164,9 +164,11 @@ void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial& material, 
 	for (const auto& itr : material.TextureVariableMap)
 	{
 		int idx = program->getTextureIndex(itr.first.c_str());
-		const STextureUnit& texUnit = itr.second;
-		ASSERT(idx < MATERIAL_MAX_TEXTURES);
+		if (idx == -1)			//material中的texture变量未使用
+			continue;
+		ASSERT(idx >= 0 && idx < MATERIAL_MAX_TEXTURES);
 
+		const STextureUnit& texUnit = itr.second;
 		CurrentRenderState.TextureUnits[idx].addressS = COpenGLHelper::getGLTextureAddress(texUnit.TextureWrapU);
 		CurrentRenderState.TextureUnits[idx].addressT = COpenGLHelper::getGLTextureAddress(texUnit.TextureWrapV);
 

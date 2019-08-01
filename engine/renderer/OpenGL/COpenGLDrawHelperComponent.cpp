@@ -214,7 +214,20 @@ void COpenGLDrawHelperComponent::do_draw2DImageBatch(uint32_t batchCount, uint32
 		uint32_t srcIndex = i + nOffset;
 		const vector2di& destPos = positions[srcIndex];
 		vector2di sourcePos = sourceRects ? vector2di(sourceRects[srcIndex]->left, sourceRects[srcIndex]->top) : vector2di(0, 0);
-		dimension2d sourceSize = sourceRects ? dimension2d(sourceRects[srcIndex]->getWidth(), sourceRects[srcIndex]->getHeight()) : dimension2d(0, 0);
+		dimension2d sourceSize;
+		if (sourceRects)
+		{
+			sourceSize = dimension2d(sourceRects[srcIndex]->getWidth(), sourceRects[srcIndex]->getHeight());
+		}
+		else if (texture)
+		{
+			sourceSize = texture->getSize();
+		}
+		else
+		{
+			ASSERT(false);
+			break;
+		}
 
 		//tcoords
 		float x0, x1, y0, y1;
@@ -275,5 +288,5 @@ void COpenGLDrawHelperComponent::do_draw2DImageBatch(uint32_t batchCount, uint32
 	drawParam.baseVertIndex = 0;
 
 	Driver->draw(VBImage.get(), getStaticIndexBufferQuadList(), EPT_TRIANGLES,
-		batchCount * 2, drawParam);
+		batchCount * 2, drawParam, true);
 }
