@@ -53,6 +53,7 @@ void COpenGLTextureWriter::unlock(uint32_t face, uint32_t level) const
 
 bool COpenGLTextureWriter::copyToTexture(ITexture * texture, const recti * descRect) const
 {
+	ASSERT(false);
 	return false;
 }
 
