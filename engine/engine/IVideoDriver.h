@@ -123,15 +123,14 @@ public:
 	E_DRIVER_TYPE getDriverType() const { return DriverType; }
 
 	const vector2df& getOrthoCenterOffset() const { return OrthoCenterOffset; }
-	SGlobalMaterial& getOverrideMaterial() { return GlobalMaterial; }
 	const recti& getViewPort() const { return Viewport; }
 	const dimension2d& getDisplayMode() const { return ScreenSize; }
 	const SDriverSetting& getDriverSetting() const { return DriverSetting; }
 
-	void setMaterial(const SMaterial& material) { Material = material; }
-	const SMaterial& getMaterial() const { return Material; }
-	void setGlobalMaterial(const SGlobalMaterial& globalMaterial) { GlobalMaterial = globalMaterial; }
-	const SGlobalMaterial& getGlobalMaterial() const { return GlobalMaterial; }
+	void setMaterial(const SMaterial& material) { Material = &material; }
+	const SMaterial* getMaterial() const { return Material; }
+	void setGlobalMaterial(const SGlobalMaterial& globalMaterial) { GlobalMaterial = &globalMaterial; }
+	const SGlobalMaterial* getGlobalMaterial() const { return GlobalMaterial; }
 
 	const matrix4& getView2DTM() const { return View2DTM; }
 	const matrix4& getProject2DTM() const { return Project2DTM; }
@@ -191,8 +190,8 @@ protected:
 protected:
 	const E_DRIVER_TYPE	DriverType;
 
-	SMaterial	Material;
-	SGlobalMaterial		GlobalMaterial;
+	const SMaterial*	Material;
+	const SGlobalMaterial*	GlobalMaterial;
 
 	vector2df	OrthoCenterOffset;		//dx9ÓÐ0.5ÏñËØµÄÆ«ÒÆ
 

@@ -91,34 +91,34 @@ bool COpenGLMaterialRenderComponent::init()
 	return true;
 }
 
-void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial& material, const SGlobalMaterial& globalMaterial, const CGLProgram* program)
+void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial* material, const SGlobalMaterial* globalMaterial, const CGLProgram* program)
 {
 	// zbuffer
 	{
-		CurrentRenderState.ZEnable = material.DepthStencilDesc.ZBuffer == ECFN_NEVER ? GL_FALSE : GL_TRUE;
-		CurrentRenderState.ZFunc = COpenGLHelper::getGLCompare((E_COMPARISON_FUNC)material.DepthStencilDesc.ZBuffer);
+		CurrentRenderState.ZEnable = material->DepthStencilDesc.ZBuffer == ECFN_NEVER ? GL_FALSE : GL_TRUE;
+		CurrentRenderState.ZFunc = COpenGLHelper::getGLCompare((E_COMPARISON_FUNC)material->DepthStencilDesc.ZBuffer);
 	}
 
 	// zwrite
 	{
-		CurrentRenderState.ZWriteEnable = material.DepthStencilDesc.ZWriteEnable ? GL_TRUE : GL_FALSE;
+		CurrentRenderState.ZWriteEnable = material->DepthStencilDesc.ZWriteEnable ? GL_TRUE : GL_FALSE;
 	}
 
 	// stencil
 	{
-		CurrentRenderState.StencilEnable = material.DepthStencilDesc.StencilEnable ? GL_TRUE : GL_FALSE;
+		CurrentRenderState.StencilEnable = material->DepthStencilDesc.StencilEnable ? GL_TRUE : GL_FALSE;
 	}
 
 	// scissor
 	{
-		CurrentRenderState.ScissorEnable = material.RasterizerDesc.ScissorEnable ? GL_TRUE : GL_FALSE;
+		CurrentRenderState.ScissorEnable = material->RasterizerDesc.ScissorEnable ? GL_TRUE : GL_FALSE;
 	}
 
 	// backface culling
 	{
 		GLenum cullmode;
 		GLenum frontface = GL_CW;
-		switch (material.RasterizerDesc.Cull)
+		switch (material->RasterizerDesc.Cull)
 		{
 		case ECM_FRONT:
 			cullmode = GL_FRONT;
@@ -134,7 +134,7 @@ void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial& material, 
 
 		CurrentRenderState.FrontFace = frontface;
 		CurrentRenderState.CullMode = cullmode;
-		CurrentRenderState.CullEnable = material.RasterizerDesc.Cull != ECM_NONE ? GL_TRUE : GL_FALSE;
+		CurrentRenderState.CullEnable = material->RasterizerDesc.Cull != ECM_NONE ? GL_TRUE : GL_FALSE;
 	}
 
 	// anti aliasing
@@ -142,7 +142,7 @@ void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial& material, 
 	{
 		bool multisample = false;
 		bool antialiasline = false;
-		switch (material.RasterizerDesc.AntiAliasing)
+		switch (material->RasterizerDesc.AntiAliasing)
 		{
 		case EAAM_SIMPLE:
 			multisample = true;
@@ -161,11 +161,14 @@ void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial& material, 
 	}
 	
 	//texture unit
-	for (const auto& itr : material.TextureVariableMap)
+	for (const auto& itr : material->TextureVariableMap)
 	{
 		int idx = program->getTextureIndex(itr.first.c_str());
 		if (idx == -1)			//material中的texture变量未使用
+		{
+			CurrentRenderState.TextureUnits[idx].texture = nullptr;				//未使用的texture置空
 			continue;
+		}
 		ASSERT(idx >= 0 && idx < MATERIAL_MAX_TEXTURES);
 
 		const STextureUnit& texUnit = itr.second;
@@ -180,12 +183,12 @@ void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial& material, 
 
 			// Bilinear, trilinear, and anisotropic filter
 			GLint maxAnisotropy = 1;
-			if (globalMaterial.TextureFilter != ETF_NONE)
+			if (globalMaterial->TextureFilter != ETF_NONE)
 			{
-				uint8_t anisotropic = getAnisotropic(globalMaterial.TextureFilter);
+				uint8_t anisotropic = getAnisotropic(globalMaterial->TextureFilter);
 				tftMag = GL_LINEAR;
 				tftMin = GL_LINEAR;
-				tftMip = globalMaterial.TextureFilter > ETF_BILINEAR ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR_MIPMAP_NEAREST;
+				tftMip = globalMaterial->TextureFilter > ETF_BILINEAR ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR_MIPMAP_NEAREST;
 
 				if (Driver->GLExtension.queryOpenGLFeature(IRR_EXT_texture_filter_anisotropic))
 					maxAnisotropy = min_(anisotropic, Driver->GLExtension.MaxAnisotropy);
@@ -205,7 +208,7 @@ void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial& material, 
 	}
 
 	//blend state
-	const auto& desc = material.getRenderTargetBlendDesc();
+	const auto& desc = material->getRenderTargetBlendDesc();
 
 	CurrentRenderState.AlphaBlendEnable = desc.alphaBlendEnabled ? GL_TRUE : GL_FALSE;
 	CurrentRenderState.SrcBlend = COpenGLHelper::getGLBlend(desc.srcBlend);

@@ -19,7 +19,7 @@ public:
 public:
 	bool init();
 
-	void setRenderStates(const SMaterial& material, const SGlobalMaterial& globalMaterial, const CGLProgram* program);
+	void setRenderStates(const SMaterial* material, const SGlobalMaterial* globalMaterial, const CGLProgram* program);
 	void applyRenderStates();
 
 	void setClearColor(SColor clearColor);

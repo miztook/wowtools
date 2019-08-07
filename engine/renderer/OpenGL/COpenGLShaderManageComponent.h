@@ -113,7 +113,7 @@ public:
 public:
 	bool init();
 
-	const CGLProgram* applyShaders(const SMaterial& material, E_VERTEX_TYPE vertexType);
+	const CGLProgram* applyShaders(const SMaterial* material, E_VERTEX_TYPE vertexType);
 	const COpenGLVertexShader* getVertexShader(const char* fileName, const char* macroString = "");
 	const COpenGLPixelShader* getPixelShader(const char* fileName, const char* macroString = "");
 
@@ -139,7 +139,7 @@ public:
 	
 	//
 	void setGlobalVariables(const CGLProgram* program, bool is2D);
-	void setMaterialVariables(const CGLProgram* program, const SMaterial& material);
+	void setMaterialVariables(const CGLProgram* program, const SMaterial* material);
 
 private:
 	struct SShaderState
