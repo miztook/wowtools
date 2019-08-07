@@ -60,7 +60,6 @@
     <ClInclude Include="..\engine\CInputReader.h" />
     <ClInclude Include="..\engine\COSInfo.h" />
     <ClInclude Include="..\engine\CScene.h" />
-    <ClInclude Include="..\engine\CSceneEnvironment.h" />
     <ClInclude Include="..\engine\CSceneRenderer.h" />
     <ClInclude Include="..\engine\IImage.h" />
     <ClInclude Include="..\engine\ISceneNode.h" />

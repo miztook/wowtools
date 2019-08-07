@@ -125,9 +125,6 @@
     <ClInclude Include="..\engine\CRenderSetting.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\CSceneEnvironment.h">
-      <Filter>engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\engine\ITextureWriter.h">
       <Filter>engine</Filter>
     </ClInclude>
