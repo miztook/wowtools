@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CascLib", "..\3rdparty\Casc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pugixml", "..\3rdparty\pugixml\pugixml.vcxproj", "{BB9615C2-A6E8-486D-A4F5-257A621DAC25}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freetype", "..\3rdparty\freetype-2.5.5\freetype.vcxproj", "{6E7BAD55-203C-4746-8BEE-2DDD2D7CB176}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,10 @@ Global
 		{BB9615C2-A6E8-486D-A4F5-257A621DAC25}.Debug|x64.Build.0 = Debug|x64
 		{BB9615C2-A6E8-486D-A4F5-257A621DAC25}.Release|x64.ActiveCfg = Release|x64
 		{BB9615C2-A6E8-486D-A4F5-257A621DAC25}.Release|x64.Build.0 = Release|x64
+		{6E7BAD55-203C-4746-8BEE-2DDD2D7CB176}.Debug|x64.ActiveCfg = Debug|x64
+		{6E7BAD55-203C-4746-8BEE-2DDD2D7CB176}.Debug|x64.Build.0 = Debug|x64
+		{6E7BAD55-203C-4746-8BEE-2DDD2D7CB176}.Release|x64.ActiveCfg = Release|x64
+		{6E7BAD55-203C-4746-8BEE-2DDD2D7CB176}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
