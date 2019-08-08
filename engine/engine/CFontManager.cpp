@@ -2,10 +2,6 @@
 #include "CFTFont.h"
 
 
-#define FONTSIZE_ROUND(x)  (((x) + 32) & ~63)
-#define FONTSIZE_FLOOR(x) ((x) & ~63)
-#define FONTSIZE_CEILING(x)  (((x) + 63) & ~63)
-
 FT_Error MyFTCFaceRequest(FTC_FaceID  face_id,
 	FT_Library  library,
 	FT_Pointer  request_data,

@@ -23,12 +23,7 @@ class ITexture;
 class CFTFont
 {
 public:
-	explicit CFTFont(const char* faceName, int faceIndex, uint32_t size, int fontStyle, int outlineWidth)
-		: FontFacePath(faceName), FontFaceIndex(faceIndex), FontSize(size), FontStyle(fontStyle), OutlineWidth(outlineWidth)
-	{
-		m_iFontWidth = m_iFontHeight = 0;
-		m_bFixedSize = false;
-	}
+	explicit CFTFont(CFontManager* fontManager, const char* faceName, int faceIndex, uint32_t size, int fontStyle, int outlineWidth);
 	~CFTFont();
 
 public:
