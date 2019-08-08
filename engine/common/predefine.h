@@ -69,6 +69,10 @@
 #define ASSERT(x)
 #endif
 
+#ifndef ASSERT_TODO
+#define ASSERT_TODO ASSERT(false && "TODO");
+#endif
+
 #ifndef ARRAY_COUNT
 #define ARRAY_COUNT(a)		(sizeof(a)/sizeof(*a))
 #endif

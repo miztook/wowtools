@@ -191,6 +191,18 @@
     <ClInclude Include="..\engine\RenderStruct.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\engine\FontDef.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CFTFont.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CFontManager.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CFTGlyphCache.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">
@@ -263,6 +275,15 @@
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\CCamera.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CFTFont.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CFontManager.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CFTGlyphCache.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

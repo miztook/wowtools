@@ -54,13 +54,17 @@
     <ClInclude Include="..\common\wowWMOStruct.h" />
     <ClInclude Include="..\engine\CBLPImage.h" />
     <ClInclude Include="..\engine\CCamera.h" />
+    <ClInclude Include="..\engine\CFontManager.h" />
     <ClInclude Include="..\engine\CFPSCounter.h" />
+    <ClInclude Include="..\engine\CFTFont.h" />
+    <ClInclude Include="..\engine\CFTGlyphCache.h" />
     <ClInclude Include="..\engine\CGeometryCreator.h" />
     <ClInclude Include="..\engine\CCImage.h" />
     <ClInclude Include="..\engine\CInputReader.h" />
     <ClInclude Include="..\engine\COSInfo.h" />
     <ClInclude Include="..\engine\CScene.h" />
     <ClInclude Include="..\engine\CSceneRenderer.h" />
+    <ClInclude Include="..\engine\FontDef.h" />
     <ClInclude Include="..\engine\IImage.h" />
     <ClInclude Include="..\engine\ISceneNode.h" />
     <ClInclude Include="..\engine\CSysUtil.h" />
@@ -96,6 +100,9 @@
     <ClCompile Include="..\engine\CBLPImage.cpp" />
     <ClCompile Include="..\engine\CCamera.cpp" />
     <ClCompile Include="..\engine\CCImage.cpp" />
+    <ClCompile Include="..\engine\CFontManager.cpp" />
+    <ClCompile Include="..\engine\CFTFont.cpp" />
+    <ClCompile Include="..\engine\CFTGlyphCache.cpp" />
     <ClCompile Include="..\engine\CInputReader.cpp" />
     <ClCompile Include="..\engine\COSInfo.cpp" />
     <ClCompile Include="..\engine\CScene.cpp" />
@@ -180,7 +187,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\common;..\engine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\3rdparty\freetype-2.5.5\include;..\common;..\engine</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -193,7 +200,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\common;..\engine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\3rdparty\freetype-2.5.5\include;..\common;..\engine</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -208,7 +215,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\common;..\engine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\3rdparty\freetype-2.5.5\include;..\common;..\engine</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -225,7 +232,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\common;..\engine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\3rdparty\freetype-2.5.5\include;..\common;..\engine</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

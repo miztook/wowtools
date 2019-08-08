@@ -20,6 +20,12 @@ typedef		void*				glcontext_type;
 //	typedef	double	f64;
 #endif
 
+#define PTR_TO_INT32(x)		((int32_t)((intptr_t)(x) & 0xffffffff))
+#define PTR_TO_UINT32(x)	((uint32_t)((uintptr_t)(x) & 0xffffffff))
+
+#define INT32_TO_PTR(x)		((intptr_t)((intptr_t)((int32_t)x) & 0xffffffff))
+#define UINT32_TO_PTR(x)	((uintptr_t)((uintptr_t)((uint32_t)x) & 0xffffffff))
+
 struct SWindowInfo
 {
 	SWindowInfo() : hwnd(nullptr), width(0), height(0) {}
