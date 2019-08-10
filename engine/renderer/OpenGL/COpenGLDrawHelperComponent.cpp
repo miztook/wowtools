@@ -181,6 +181,66 @@ rectf COpenGLDrawHelperComponent::setUVCoords(E_RECT_UVCOORDS uvcoords, float x0
 	return tcoords;
 }
 
+void COpenGLDrawHelperComponent::add2DColor(const recti & rect, SColor color, E_2DBlendMode mode)
+{
+	ITexture* texture = Driver->getTextureWhite();
+
+	S2DBlendParam blendParam(color.getAlpha() < 255, false, mode);
+	SQuadDrawBatchKey key(texture, blendParam);
+	SQuadBatchDraw& batchDraw = m_2DQuadDrawMap[key];
+
+	{
+		SVertex_PCT verts[4];
+		verts[0].set(vector3df((float)rect.left, (float)rect.top, 0.0f), color, vector2df(0.0f, 0.0f));
+		verts[1].set(vector3df((float)rect.right, (float)rect.top, 0.0f), color, vector2df(1.0f, 0.0f));
+		verts[2].set(vector3df((float)rect.left, (float)rect.bottom, 0.0f), color, vector2df(0.0f, 1.0f));
+		verts[3].set(vector3df((float)rect.right, (float)rect.bottom, 0.0f), color, vector2df(1.0f, 1.0f));
+
+		batchDraw.drawVerts.emplace_back(verts[0]);
+		batchDraw.drawVerts.emplace_back(verts[1]);
+		batchDraw.drawVerts.emplace_back(verts[2]);
+		batchDraw.drawVerts.emplace_back(verts[3]);
+	}
+}
+
+void COpenGLDrawHelperComponent::add2DQuads(ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam & blendParam)
+{
+	ASSERT(texture);
+	if (!texture)
+		return;
+
+	SQuadDrawBatchKey key(texture, blendParam);
+	SQuadBatchDraw& batchDraw = m_2DQuadDrawMap[key];
+
+	const SVertex_PCT* p = vertices;
+	for (uint32_t i = 0; i < numQuads; ++i)
+	{
+		batchDraw.drawVerts.push_back(p[0]);
+		batchDraw.drawVerts.push_back(p[1]);
+		batchDraw.drawVerts.push_back(p[2]);
+		batchDraw.drawVerts.push_back(p[3]);
+
+		p += 4;
+	}
+}
+
+void COpenGLDrawHelperComponent::flushAll2DQuads()
+{
+	for (const auto& kv : m_2DQuadDrawMap)
+	{
+		const SQuadDrawBatchKey& key = kv.first;
+		const SQuadBatchDraw& batchDraw = kv.second;
+
+		uint32_t numQuads = (uint32_t)batchDraw.vertNum() / 4;
+		if (!numQuads)
+			continue;
+
+		draw2DSquadBatch(key.texture, &batchDraw.drawVerts[0], numQuads, key.blendParam);
+		//batchDraw.drawVerts.clear();
+	}
+	m_2DQuadDrawMap.clear();
+}
+
 void COpenGLDrawHelperComponent::draw2DImageBatch(ITexture* texture, const vector2di positions[], const recti* sourceRects[], uint32_t batchCount, SColor color, E_RECT_UVCOORDS uvcoords, const S2DBlendParam& blendParam)
 {
 	ASSERT(texture || sourceRects);
@@ -204,6 +264,28 @@ void COpenGLDrawHelperComponent::draw2DImageBatch(ITexture* texture, const vecto
 
 		const int nOffset = nMaxBatch * MAX_QUADS;
 		do_draw2DImageBatch(batchCount, nOffset, positions, sourceRects, texture, uvcoords, color, blendParam);
+	}
+}
+
+void COpenGLDrawHelperComponent::draw2DSquadBatch(ITexture * texture, const SVertex_PCT* verts, uint32_t numQuads, const S2DBlendParam & blendParam)
+{
+	uint32_t nMaxBatch = numQuads / MAX_IMAGE_BATCH_COUNT;
+	uint32_t nLeftBatch = numQuads % MAX_IMAGE_BATCH_COUNT;
+
+	for (uint32_t n = 0; n < nMaxBatch; ++n)
+	{
+		const uint32_t batchCount = MAX_IMAGE_BATCH_COUNT;
+		const int nOffset = n * MAX_IMAGE_BATCH_COUNT * 4;
+
+		do_draw2DSquadBatch(batchCount, texture, &verts[nOffset], batchCount, blendParam);
+	}
+
+	if (nLeftBatch)
+	{
+		const uint32_t batchCount = nLeftBatch;
+		const int nOffset = nMaxBatch * MAX_QUADS;
+		
+		do_draw2DSquadBatch(batchCount, texture, &verts[nOffset], batchCount, blendParam);
 	}
 }
 
@@ -276,6 +358,24 @@ void COpenGLDrawHelperComponent::do_draw2DImageBatch(uint32_t batchCount, uint32
 	}
 
 	VBImage->updateBuffer<SVertex_PCT>(ImageVertices, batchCount * 4);
+
+	InitMaterial2D.setMainTexture(texture);
+	blendParam.setMaterial(InitMaterial2D);
+
+	Driver->setMaterial(InitMaterial2D);
+	Driver->setGlobalMaterial(InitGlobalMaterial2D);
+
+	SDrawParam drawParam = { 0 };
+	drawParam.numVertices = batchCount * 4;
+	drawParam.baseVertIndex = 0;
+
+	Driver->draw(VBImage.get(), getStaticIndexBufferQuadList(), EPT_TRIANGLES,
+		batchCount * 2, drawParam, true);
+}
+
+void COpenGLDrawHelperComponent::do_draw2DSquadBatch(uint32_t batchCount, ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam)
+{
+	VBImage->updateBuffer<SVertex_PCT>(vertices, batchCount * 4);
 
 	InitMaterial2D.setMainTexture(texture);
 	blendParam.setMaterial(InitMaterial2D);

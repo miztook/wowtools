@@ -27,6 +27,7 @@ public:
 	~CFTFont();
 
 public:
+	const static int FONT_TEXTURE_SIZE = 512;
 	const static int INTER_GLYPH_PAD_SPACE = 0;
 	const static int INTER_LINE_PADDING = 0;
 
@@ -98,7 +99,7 @@ private:
 
 private:
 	bool addFontTexture();
-	FT_BitmapGlyph RenderChar(uint32_t ch, bool bRenderAsOutline);
+	FT_BitmapGlyph renderChar(uint32_t ch, bool bRenderAsOutline);
 	void drawTextWBatch();
 
 	void drawText(const SDrawText& d, const char16_t* txt, float fInv);

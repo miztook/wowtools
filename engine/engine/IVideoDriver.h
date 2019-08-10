@@ -8,6 +8,7 @@
 #include "IRenderTarget.h"
 #include "SColor.h"
 #include "RenderStruct.h"
+#include "S3DVertex.h"
 #include <string>
 #include <list>
 
@@ -165,7 +166,13 @@ public:
 	virtual bool removeTextureWriter(ITexture* texture) = 0;
 
 	//
+	virtual ITexture* createEmptyTexture(const dimension2d& size, ECOLOR_FORMAT format) = 0;
 	virtual ITexture* getTextureWhite() const = 0;
+	
+	//
+	virtual void add2DColor(const recti& rect, SColor color, E_2DBlendMode mode = E_Solid) = 0;
+	virtual void add2DQuads(ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam = S2DBlendParam::OpaqueSource()) = 0;
+	virtual void flushAll2DQuads() = 0;
 	virtual void draw2DImageBatch(ITexture* texture,
 		const vector2di positions[],
 		const recti* sourceRects[],

@@ -66,6 +66,18 @@ void COpenGLTextureManageComponent::removeTexture(const char* name)
 	TextureMap.erase(itr);
 }
 
+ITexture* COpenGLTextureManageComponent::createEmptyTexture(const dimension2d & size, ECOLOR_FORMAT format)
+{
+	COpenGLTexture* tex = new COpenGLTexture(Driver, false);
+	if (tex->createEmptyTexture(size, format))
+	{
+		ASSERT(tex->getGLTexture() != 0);
+		return tex;
+	}
+	delete tex;
+	return nullptr;
+}
+
 void COpenGLTextureManageComponent::loadDefaultTextures()
 {
 	ECOLOR_FORMAT format = ECF_R5G6B5;

@@ -738,9 +738,32 @@ bool COpenGLDriver::removeTextureWriter(ITexture * texture)
 	return TextureWriteComponent->removeTextureWriter(texture);
 }
 
+ITexture* COpenGLDriver::createEmptyTexture(const dimension2d& size, ECOLOR_FORMAT format)
+{
+	return TextureManageComponent->createEmptyTexture(size, format);
+}
+
 ITexture* COpenGLDriver::getTextureWhite() const
 {
 	return TextureManageComponent->getDefaultWhite();
+}
+
+void COpenGLDriver::add2DColor(const recti & rect, SColor color, E_2DBlendMode mode)
+{
+	DrawHelperComponent->add2DColor(rect, color, mode);
+}
+
+void COpenGLDriver::add2DQuads(ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam /*= S2DBlendParam::OpaqueSource()*/)
+{
+	if (!texture)
+		texture = getTextureWhite();
+
+	DrawHelperComponent->add2DQuads(texture, vertices, numQuads, blendParam);
+}
+
+void COpenGLDriver::flushAll2DQuads()
+{
+	DrawHelperComponent->flushAll2DQuads();
 }
 
 void COpenGLDriver::draw2DImageBatch(ITexture* texture, const vector2di positions[], const recti* sourceRects[], uint32_t batchCount, SColor color, E_RECT_UVCOORDS uvcoords, const S2DBlendParam& blendParam)

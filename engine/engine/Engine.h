@@ -5,6 +5,8 @@
 #include "CInputReader.h"
 #include "IVideoDriver.h"
 
+class CFontManager;
+
 using driverInitFunc = std::function<IVideoDriver*(const SWindowInfo& wndInfo,
 	E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode)>;
 
@@ -24,6 +26,8 @@ public:
 	void setMessageHandler(IMessageHandler* messageHandler) { MessageHandler = messageHandler; }
 	IMessageHandler* getMessageHandler() { return MessageHandler; }
 
+	void onWindowResized(const dimension2d& size);
+
 public:
 	IVideoDriver* getDriver() const { return Driver; }
 	const SWindowInfo& getWindowInfo() const { return WindowInfo; }
@@ -37,6 +41,9 @@ private:
 	CTimer		Timer;
 	CInputReader		InputReader;
 	IMessageHandler*		MessageHandler;
+
+	//
+	CFontManager*		FontManager;
 };
 
 extern Engine* g_Engine;

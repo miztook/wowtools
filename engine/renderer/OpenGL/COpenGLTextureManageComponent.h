@@ -4,6 +4,7 @@
 #include <memory>
 #include <map>
 #include <list>
+#include "vector2d.h"
 
 class COpenGLDriver;
 class ITexture;
@@ -27,6 +28,8 @@ public:
 	ITexture* getManualTexture(const char* name) const;
 	ITexture* addTexture(const char* name, std::shared_ptr<CCImage> image, bool mipmap);
 	void removeTexture(const char* name);
+
+	ITexture* createEmptyTexture(const dimension2d& size, ECOLOR_FORMAT format);
 
 private:
 	void loadDefaultTextures();

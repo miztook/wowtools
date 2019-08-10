@@ -60,7 +60,8 @@ CFTFont* CFontManager::createFont(const SFontKey& type)
 		return nullptr;
 	}
 
-	CFTFont* pFont = new CFTFont(A_FACE_NAME,
+	CFTFont* pFont = new CFTFont(this, 
+		A_FACE_NAME,
 		A_FACE_INDEX,
 		type.size,
 		type.style,

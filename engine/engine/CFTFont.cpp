@@ -2,6 +2,9 @@
 #include "Engine.h"
 #include "CFTGlyphCache.h"
 #include "CFontManager.h"
+#include "CSysCodeCvt.h"
+#include "ITexture.h"
+#include "ITextureWriter.h"
 
 #define FONTSIZE_ROUND(x)  (((x) + 32) & ~63)
 #define FONTSIZE_FLOOR(x) ((x) & ~63)
@@ -32,6 +35,387 @@ CFTFont::CFTFont(CFontManager* fontManager, const char* faceName, int faceIndex,
 
 CFTFont::~CFTFont()
 {
+	for (ITexture* tex : FontTextures)
+	{
+		if (tex)
+		{
+			g_Engine->getDriver()->removeTextureWriter(tex);
+			delete tex;
+		}
+	}
+
+	delete MyFTGlyphCache;
+	delete FTCScaler;
+	if (MyFaceID)
+		FontManager->RemoveFaceID(MyFaceID);
+}
+
+void CFTFont::flushText()
+{
+	drawTextWBatch();
+
+	DrawTexts.clear();
+	Texts.clear();
+}
+
+dimension2d CFTFont::getTextExtent(const char* utf8text, int nCharCount /*= -1*/, bool vertical /*= false*/)
+{
+	int32_t x;
+	int32_t y;
+
+	if (vertical)
+	{
+		x = m_iFontWidth;
+		y = 0;
+	}
+	else
+	{
+		x = 0;
+		y = m_iFontHeight;
+	}
+
+	const char* sz8 = utf8text;
+	int nLen = nCharCount > 0 ? nCharCount : (int)strlen(utf8text);
+	while (*sz8 && nLen >= 0)
+	{
+		int32_t nAdv;
+		int32_t value = CSysCodeCvt::ParseUnicodeFromUTF8Str(sz8, &nAdv, nLen);
+		if (nAdv == 0)
+			break;
+		sz8 += nAdv;
+		nLen -= nAdv;
+		if (value < 0 || value >= 0x10000)
+			continue;
+
+		char16_t ch = (char16_t)value;
+
+		const SCharInfo* charInfo = addChar(ch);
+		ASSERT(charInfo);
+
+		if (ch == (char16_t)'\r' || ch == (char16_t)'\n') // Unix breaks
+		{
+			// 			if (vertical)
+			// 			{
+			// 				x += charInfo->width;
+			// 				y = 0;
+			// 			}
+			y += m_iFontHeight;
+			x = 0;
+		}
+		else
+		{
+			if (vertical)
+				y += m_iFontHeight;
+			else
+				x += charInfo->width;
+		}
+	}
+
+	return dimension2d(x, y);
+}
+
+dimension2d CFTFont::getWTextExtent(const char16_t* text, int nCharCount /*= -1*/, bool vertical /*= false*/)
+{
+	int32_t x;
+	int32_t y;
+
+	if (vertical)
+	{
+		x = m_iFontWidth;
+		y = 0;
+	}
+	else
+	{
+		x = 0;
+		y = m_iFontHeight;
+	}
+
+	uint32_t len = nCharCount > 0 ? (uint32_t)nCharCount : (uint32_t)CSysCodeCvt::UTF16Len(text);
+	for (uint32_t i = 0; i < len; ++i)
+	{
+		char16_t ch = text[i];
+		const SCharInfo* charInfo = addChar(ch);
+		ASSERT(charInfo);
+
+		if (ch == (char16_t)'\r' || ch == (char16_t)'\n') // Unix breaks
+		{
+			if (vertical)
+			{
+				x += charInfo->width;
+				y = 0;
+			}
+			else
+			{
+				y += m_iFontHeight;
+				x = 0;
+			}
+		}
+		else
+		{
+			if (vertical)
+				y += m_iFontHeight;
+			else
+				x += charInfo->width;
+		}
+	}
+
+	return dimension2d(x, y);
+}
+
+dimension2d CFTFont::getWCharExtent(char16_t ch, bool vertical /*= false*/)
+{
+	int32_t x;
+	int32_t y;
+
+	if (vertical)
+	{
+		x = m_iFontWidth;
+		y = 0;
+	}
+	else
+	{
+		x = 0;
+		y = m_iFontHeight;
+	}
+
+	const SCharInfo* charInfo = addChar(ch);
+	ASSERT(charInfo);
+
+	if (ch == (char16_t)'\r' || ch == (char16_t)'\n') // Mac or Windows breaks
+	{
+		// 		if (vertical)
+		// 		{
+		// 			x += charInfo->width;
+		// 			y = 0;
+		// 		}
+		// 		else
+		y += m_iFontHeight;
+		x = 0;
+	}
+	else
+	{
+		if (vertical)
+			y += m_iFontHeight;
+		else
+			x += charInfo->width;
+	}
+
+	return dimension2d(x, y);
+}
+
+int CFTFont::GetTextWCount(const char * utf8text) const
+{
+	int uCharCount = 0;
+	const char* p = utf8text;
+	while (*p)
+	{
+		char16_t ch;
+		int nadv;
+		ch = (char16_t)CSysCodeCvt::ParseUnicodeFromUTF8Str(p, &nadv);
+		if (nadv == 0)		//parse end
+			break;
+		p += nadv;
+		if (ch == 0)		//string end
+			break;
+		++uCharCount;
+	}
+
+	return uCharCount;
+}
+
+FT_BitmapGlyph CFTFont::getCharExtent(uint32_t ch, int& offsetX, int& offsetY, int& chWidth, int& chHeight, int& chBmpW, int& chBmpH)
+{
+	FT_BitmapGlyph ftGlyph;
+
+	ftGlyph = renderChar(ch, false);
+
+	if (!ftGlyph)
+		return nullptr;
+
+	FT_Size ftSize = GetFTSize();
+
+	offsetX = ftGlyph->left;
+	offsetY = (((ftSize->metrics.ascender << 1) + BoldWidth) >> 7) - ftGlyph->top;
+
+	chWidth = FixedToInt(ftGlyph->root.advance.x) + (BoldWidth >> 6);
+	chHeight = m_iFontHeight;
+
+	chBmpW = ftGlyph->bitmap.width;
+	chBmpH = ftGlyph->bitmap.rows;
+
+	return ftGlyph;
+}
+
+const CFTFont::SCharInfo* CFTFont::getCharInfo(char16_t ch) const
+{
+	auto itr = CharacterMap.find(ch);
+	if (itr != CharacterMap.end())
+		return &itr->second;
+	return nullptr;
+}
+
+const CFTFont::SCharInfo* CFTFont::addChar(char16_t ch)
+{
+	T_CharacterMap::const_iterator itr = CharacterMap.find(ch);
+	if (itr != CharacterMap.end())
+	{
+		ASSERT((itr->second).TexIndex >= 0 &&
+			(itr->second).TexIndex <= (int32_t)FontTextures.size());
+		return &itr->second;
+	}
+
+	FT_BitmapGlyph bitmapGlyph;
+	int offsetX, offsetY, chW, chH, bmpW, bmpH;
+
+	bitmapGlyph = getCharExtent(ch, offsetX, offsetY, chW, chH, bmpW, bmpH);
+	if (!bitmapGlyph)
+	{
+		ASSERT(false);
+		return nullptr;
+	}
+
+	ASSERT(bmpW <= m_iFontWidth);
+	ASSERT(bmpH <= m_iFontHeight);
+
+	NextX = CurrentX + (m_iFontWidth + INTER_GLYPH_PAD_SPACE);
+
+	if (NextX > FONT_TEXTURE_SIZE)				//换行
+	{
+		CurrentX = 0;
+		NextX = CurrentX + (m_iFontWidth + INTER_GLYPH_PAD_SPACE);
+		CurrentY = NextY;
+	}
+
+	MaxY = CurrentY + (m_iFontHeight + INTER_LINE_PADDING);						//换页, 增加纹理
+	if (MaxY > FONT_TEXTURE_SIZE)
+	{
+		addFontTexture();
+
+		CurrentX = CurrentY = NextY = 0;
+		MaxY = 0;
+	}
+
+	//write texture
+	ITexture* tex = FontTextures.back();
+
+	int32_t charposx = CurrentX;
+	int32_t charposy = CurrentY;
+
+	recti rc(charposx, charposy, charposx + m_iFontWidth, charposy + m_iFontHeight);
+
+	if (!rc.isEmpty())			//如空格字符的rect为空，不需要绘制
+	{
+		//CLock lock(&g_Globals.textureCS);
+
+		ITextureWriter* texWriter = g_Engine->getDriver()->createTextureWriter(tex);
+
+		uint32_t pitch;
+		uint8_t* data = (uint8_t*)texWriter->lock(0, 0, pitch);
+		ASSERT(data);
+
+		//写纹理 A8L8
+		if (tex->getColorFormat() == ECF_A8L8)
+		{
+			uint8_t* p = data + (charposy * pitch) + getBytesPerPixelFromFormat(ECF_A8L8) * charposx;
+
+			for (int h = 0; h < m_iFontHeight; ++h)
+			{
+				uint8_t* dst = reinterpret_cast<uint8_t*>(p);
+				for (int w = 0; w < m_iFontWidth; ++w)
+				{
+					bool bTestEdge = (h == 0 || h == m_iFontHeight - 1 || w == 0 || w == m_iFontWidth - 1);
+					bool bEdge = (w >= bmpW || h >= bmpH);
+					if (bEdge)
+					{
+						uint8_t alpha = 0;
+
+						*dst++ = 0;		//color
+						*dst++ = 0;		//alpha
+					}
+					else
+					{
+						const uint8_t* src = bitmapGlyph->bitmap.buffer + (h * bitmapGlyph->bitmap.pitch);
+						uint8_t alpha = src[w];
+
+						*dst++ = alpha; 	//color
+						*dst++ = alpha;		//alpha
+					}
+				}
+				p += pitch;
+			}
+		}
+		else if (tex->getColorFormat() == ECF_A8R8G8B8)			//dx11 format
+		{
+			uint8_t* p = data + (charposy * pitch) + getBytesPerPixelFromFormat(ECF_A8R8G8B8) * charposx;
+
+			for (int h = 0; h < m_iFontHeight; ++h)
+			{
+				uint8_t* dst = reinterpret_cast<uint8_t*>(p);
+				for (int w = 0; w < m_iFontWidth; ++w)
+				{
+					bool bEdge = (w >= bmpW || h >= bmpH);
+					if (bEdge)
+					{
+						uint8_t alpha = 0;
+
+						*dst++ = alpha; 	//b
+						*dst++ = alpha; 	//g
+						*dst++ = alpha; 	//r
+
+						*dst++ = alpha;		//alpha
+					}
+					else
+					{
+						const uint8_t* src = bitmapGlyph->bitmap.buffer + (h * bitmapGlyph->bitmap.pitch);
+						uint8_t alpha = src[w];
+
+						*dst++ = alpha; 	//b
+						*dst++ = alpha; 	//g
+						*dst++ = alpha; 	//r
+
+						*dst++ = alpha;		//alpha
+					}
+				}
+				p += pitch;
+			}
+		}
+		else
+		{
+			ASSERT(false);
+		}
+
+		texWriter->unlock(0, 0);
+
+		texWriter->copyToTexture(tex, &rc);
+	}
+
+	//添加信息
+	SCharInfo charInfo;
+
+	rc.set(charposx, charposy, charposx + bmpW, charposy + bmpH);
+	charInfo.TexIndex = (int32_t)FontTextures.size() - 1;
+	charInfo.offsetX = offsetX;
+	charInfo.offsetY = offsetY;
+	charInfo.width = chW;
+	charInfo.height = chH;
+	charInfo.UVRect = rc;
+
+	CharacterMap[ch] = charInfo;
+
+	CurrentX = NextX;
+
+	if (MaxY > NextY)
+		NextY = MaxY;
+
+	return &CharacterMap[ch];
+}
+
+ITexture* CFTFont::getTexture(uint32_t idx)
+{
+	if (idx >= (uint32_t)FontTextures.size())
+		return nullptr;
+
+	return FontTextures[idx];
 }
 
 bool CFTFont::init()
@@ -103,4 +487,91 @@ bool CFTFont::init()
 	addFontTexture();
 
 	return true;
+}
+
+int CFTFont::GetUnicodeCMapIndex(FT_Face ftFace) const
+{
+	for (int i = 0; i < ftFace->num_charmaps; i++)
+	{
+		if (FT_ENCODING_UNICODE == ftFace->charmaps[i]->encoding)
+			return i;
+	}
+	return -1;
+}
+
+FT_Face CFTFont::GetFTFace() const
+{
+	FT_Face ftFace = nullptr;
+	FTC_Manager_LookupFace(FontManager->GetCacheManager(), (FTC_FaceID)MyFaceID, &ftFace);
+	return ftFace;
+}
+
+FT_Size CFTFont::GetFTSize() const
+{
+	FT_Size ftSize = nullptr;
+	FTC_Manager_LookupSize(FontManager->GetCacheManager(), FTCScaler, &ftSize);
+	return ftSize;
+}
+
+bool CFTFont::addFontTexture()
+{
+	ECOLOR_FORMAT format;
+
+	if (g_Engine->getDriver()->isSupportA8L8())
+	{
+		format = ECF_A8L8;
+	}
+	else
+	{
+		format = ECF_A8R8G8B8;
+	}
+
+	ITexture* fontTex = g_Engine->getDriver()->createEmptyTexture(dimension2d(FONT_TEXTURE_SIZE, FONT_TEXTURE_SIZE), format);	   //no mipmap
+	FontTextures.push_back(fontTex);
+
+	return true;
+}
+
+FT_BitmapGlyph CFTFont::renderChar(uint32_t ch, bool bRenderAsOutline)
+{
+	FTC_CMapCache mapCache = FontManager->GetCMapCache();
+	FTC_FaceID ftFaceID = (FTC_FaceID)GetMyFaceID();
+
+	//在cmap中找
+	uint32_t index = FTC_CMapCache_Lookup(mapCache, ftFaceID, UnicodeCMapIndex, (uint32_t)ch);
+	if (0 == index)
+	{
+		index = FTC_CMapCache_Lookup(mapCache, ftFaceID, UnicodeCMapIndex, L'□');
+		if (0 == index)
+			return nullptr;
+	}
+
+	return MyFTGlyphCache->LookupGlyph(index, bRenderAsOutline);
+}
+
+void CFTFont::drawTextWBatch()
+{
+	float fInv = 1.0f / FONT_TEXTURE_SIZE;
+
+	for (const SDrawText& d : DrawTexts)
+	{
+		const char16_t* txt = &Texts[d.offset];
+
+		if (!d.bVertical)
+			drawText(d, txt, fInv);
+		else
+			drawTextVertical(d, txt, fInv);
+	}
+
+	g_Engine->getDriver()->flushAll2DQuads();
+}
+
+void CFTFont::drawText(const SDrawText& d, const char16_t* txt, float fInv)
+{
+
+}
+
+void CFTFont::drawTextVertical(const SDrawText& d, const char16_t* txt, float fInv)
+{
+
 }

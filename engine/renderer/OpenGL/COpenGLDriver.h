@@ -46,7 +46,13 @@ public:
 	ITextureWriter* createTextureWriter(ITexture* texture) override;
 	bool removeTextureWriter(ITexture* texture) override;
 
+	ITexture* createEmptyTexture(const dimension2d& size, ECOLOR_FORMAT format) override;
 	ITexture* getTextureWhite() const override;
+	
+public:
+	void add2DColor(const recti& rect, SColor color, E_2DBlendMode mode = E_Solid) override;
+	void add2DQuads(ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam = S2DBlendParam::OpaqueSource()) override;
+	void flushAll2DQuads() override;
 	void draw2DImageBatch(ITexture* texture,
 		const vector2di positions[],
 		const recti* sourceRects[],

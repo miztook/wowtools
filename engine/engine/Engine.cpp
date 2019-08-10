@@ -1,5 +1,7 @@
 #include "Engine.h"
 #include "mywow.h"
+#include "CFontManager.h"
+
 
 Engine* g_Engine = nullptr;
 
@@ -31,10 +33,12 @@ Engine::Engine(const SWindowInfo& wndInfo)
 	WindowInfo = wndInfo;
 
 	Driver = nullptr;
+	FontManager = nullptr;
 }
 
 Engine::~Engine()
 {
+	delete FontManager;
 	delete Driver;
 }
 
@@ -45,15 +49,28 @@ bool Engine::init(E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode, driver
 		goto fail;
 	}
 
+	g_FileSystem->writeLog(ELOG_GX, "Engine Init...");
+
 	Driver = initFunc(WindowInfo, driverType, vsync, aaMode);
 	if (!Driver)
 	{
 		goto fail;
 	}
 
+	g_FileSystem->writeLog(ELOG_GX, "Create FontManager...");
+	FontManager = new CFontManager(0, 0, 0, 12);
+	FontManager->createDefaultFonts();
+
 	return true;
 
 fail:
 	ASSERT(false);
 	return false;
+}
+
+void Engine::onWindowResized(const dimension2d& size)
+{
+	if (Driver)
+		Driver->setDisplayMode(size);
+
 }
