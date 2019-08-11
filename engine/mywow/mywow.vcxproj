@@ -84,6 +84,7 @@
     <ClInclude Include="..\engine\CRenderSetting.h" />
     <ClInclude Include="..\engine\RenderStruct.h" />
     <ClInclude Include="..\engine\SMaterial.h" />
+    <ClInclude Include="EngineUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp" />
@@ -114,6 +115,7 @@
     <ClCompile Include="..\engine\CTimer.cpp" />
     <ClCompile Include="..\engine\ddslib.cpp" />
     <ClCompile Include="..\engine\Engine.cpp" />
+    <ClCompile Include="EngineUtil.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5FC4A776-9356-4FE9-93BA-F610DEE4E660}</ProjectGuid>

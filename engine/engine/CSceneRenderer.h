@@ -17,6 +17,7 @@ private:
 
 public:
 	void renderFrame(const CScene* scene, bool active);
+	float getFPS() const { return m_FPSCounter.getFPS(); }
 
 private:
 	void beginFrame();

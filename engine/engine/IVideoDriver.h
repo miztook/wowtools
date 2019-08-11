@@ -210,6 +210,8 @@ protected:
 	matrix4		VPScaleMatrix;
 	matrix4		InvVPScaleMatrix;
 
+	CAdapterInfo	AdapterInfo;
+
 	recti			Viewport;
 	dimension2d		ScreenSize;
 	SDriverSetting	DriverSetting;

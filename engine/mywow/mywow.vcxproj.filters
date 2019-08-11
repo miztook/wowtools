@@ -206,6 +206,9 @@
     <ClInclude Include="..\common\CSysCodeCvt.h">
       <Filter>common</Filter>
     </ClInclude>
+    <ClInclude Include="EngineUtil.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">
@@ -291,6 +294,9 @@
     </ClCompile>
     <ClCompile Include="..\common\CSysCodeCvt.cpp">
       <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineUtil.cpp">
+      <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

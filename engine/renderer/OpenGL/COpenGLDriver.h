@@ -100,7 +100,6 @@ public:
 	ECOLOR_FORMAT DepthFormat;
 	GLint		DefaultFrameBuffer;
 
-	CAdapterInfo	AdapterInfo;
 	COpenGLExtension	GLExtension;
 
 	matrix4		VP, T_VP;

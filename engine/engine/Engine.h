@@ -33,6 +33,7 @@ public:
 	const SWindowInfo& getWindowInfo() const { return WindowInfo; }
 	const COSInfo&	getOSInfo() const { return OSInfo; }
 	CInputReader* getInputReader() { return &InputReader; }
+	CFontManager* getFontManager() { return FontManager; }
 
 private:
 	IVideoDriver*	Driver;
