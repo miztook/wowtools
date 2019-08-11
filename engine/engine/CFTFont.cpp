@@ -5,6 +5,7 @@
 #include "CSysCodeCvt.h"
 #include "ITexture.h"
 #include "ITextureWriter.h"
+#include "CFileSystem.h"
 
 #define FONTSIZE_ROUND(x)  (((x) + 32) & ~63)
 #define FONTSIZE_FLOOR(x) ((x) & ~63)

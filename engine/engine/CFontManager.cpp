@@ -1,6 +1,7 @@
 #include "CFontManager.h"
 #include "CFTFont.h"
-
+#include "CFileSystem.h"
+#include "stringext.h"
 
 FT_Error MyFTCFaceRequest(FTC_FaceID  face_id,
 	FT_Library  library,
@@ -11,7 +12,9 @@ FT_Error MyFTCFaceRequest(FTC_FaceID  face_id,
 
 	FT_Error error = 0;
 
-	std::string strFullFontPath = myFaceID->file_path;
+	std::string strFullFontPath = g_FileSystem->getBaseDirectory();
+	normalizeDirName(strFullFontPath);
+	strFullFontPath.append(myFaceID->file_path);
 
 	error = FT_New_Face(
 		library,
@@ -70,7 +73,7 @@ CFTFont* CFontManager::createFont(const SFontKey& type)
 	if (!pFont->init())
 	{
 		delete pFont;
-		ASSERT(false && "CFontServices::createFont failed! font face");
+		ASSERT(false && "CFontManager::createFont failed! font face");
 		return nullptr;
 	}
 

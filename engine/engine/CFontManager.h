@@ -12,7 +12,7 @@
 #include FT_CACHE_H
 
 //在手游中用一种字体，减少复杂度
-#define A_FACE_NAME		"font/fzxh1jw.ttf"
+#define A_FACE_NAME		"Fonts/ARKai_C.ttf"
 #define A_FACE_INDEX		0
 
 class CFTFont;
