@@ -63,8 +63,7 @@ public:
 	std::string		name;
 	std::string		vendorName;
 
-	typedef std::list<SDisplayMode>	T_DisplayModeList;
-	T_DisplayModeList displayModes;
+	std::list<SDisplayMode> displayModes;
 
 	void addDisplayMode(const SDisplayMode& mode)
 	{
@@ -78,7 +77,7 @@ public:
 	{
 		SDisplayMode ret;
 		//select first
-		T_DisplayModeList::const_iterator itr = displayModes.begin();
+		auto itr = displayModes.begin();
 		uint32_t diff = abs(((int)itr->width - (int)width)) + abs(((int)itr->height - (int)height));
 		ret = (*itr);
 
@@ -135,8 +134,6 @@ public:
 
 	const matrix4& getView2DTM() const { return View2DTM; }
 	const matrix4& getProject2DTM() const { return Project2DTM; }
-	const matrix4& getVPScaleTM() const { return VPScaleMatrix; }
-	const matrix4& getInvVPScaleTM() const { return InvVPScaleMatrix; }
 
 	IRenderTarget* getFrameBufferRT() const { return FrameBufferRT.get(); }
 
@@ -191,8 +188,10 @@ public:
 		draw2DImageBatch(texture, &pos, sourceRect ? &sourceRect : nullptr, 1, color, uvcoords, blendParam);
 	}
 	
-protected:
-	void makeVPScaleMatrix(const recti& vpRect);
+public:
+	CAdapterInfo	AdapterInfo;
+	uint32_t		PrimitivesDrawn;
+	uint32_t		DrawCall;
 
 protected:
 	const E_DRIVER_TYPE	DriverType;
@@ -207,10 +206,6 @@ protected:
 
 	matrix4		View2DTM;
 	matrix4		Project2DTM;
-	matrix4		VPScaleMatrix;
-	matrix4		InvVPScaleMatrix;
-
-	CAdapterInfo	AdapterInfo;
 
 	recti			Viewport;
 	dimension2d		ScreenSize;
@@ -219,20 +214,5 @@ protected:
 	bool	IsMultiSampleEnabled;
 	bool	IsSupportDepthTexture;
 	bool	IsSupportA8L8;
-
-	uint32_t		PrimitivesDrawn;
-	uint32_t		DrawCall;
 };
 
-inline void IVideoDriver::makeVPScaleMatrix(const recti& vpRect)
-{
-	VPScaleMatrix.makeIdentity();
-	VPScaleMatrix._11 = (float)vpRect.getWidth() * 0.5f;
-	VPScaleMatrix._22 = -(float)vpRect.getHeight() * 0.5f;
-	VPScaleMatrix._33 = 1.0f;
-	VPScaleMatrix._41 = /* (float)vpRect.left + */ (float)vpRect.getWidth() * 0.5f;
-	VPScaleMatrix._42 = /* (float)vpRect.top + */ (float)vpRect.getHeight() * 0.5f;
-	VPScaleMatrix._43 = 0.0f;
-
-	InvVPScaleMatrix = VPScaleMatrix.getInverse();
-}

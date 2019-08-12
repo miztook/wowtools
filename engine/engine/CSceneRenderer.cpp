@@ -1,6 +1,8 @@
 #include "CSceneRenderer.h"
 #include "CScene.h"
 #include "Engine.h"
+#include "EngineUtil.h"
+#include "CCamera.h"
 
 CSceneRenderer * CSceneRenderer::createSceneRenderer()
 {
@@ -28,7 +30,9 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 
 			scene->render3D();
 			scene->render2D();
-			scene->renderDebugInfo();
+
+			if (scene->get2DCamera()->IsInited())
+				renderDebugInfo();
 
 			Driver->endScene();
 		}
@@ -45,4 +49,19 @@ void CSceneRenderer::beginFrame()
 void CSceneRenderer::endFrame()
 {
 	m_FPSCounter.registerFrame(CSysChrono::getTimePointNow());
+}
+
+void CSceneRenderer::renderDebugInfo() const
+{
+	char debugMsg[512];
+	const IVideoDriver* driver = g_Engine->getDriver();
+	Q_sprintf(debugMsg, 512, "Dev: %s\nGraphics: %s\nRes: %d X %d\nFPS: %0.1f\nTriangles: %u\nDraw Call: %u\n",
+		driver->AdapterInfo.description.c_str(),
+		driver->AdapterInfo.name.c_str(),
+		driver->getViewPort().getWidth(),
+		driver->getViewPort().getHeight(),
+		m_FPSCounter.getFPS(),
+		driver->PrimitivesDrawn,
+		driver->DrawCall);
+	EngineUtil::drawDebugInfo(debugMsg);
 }

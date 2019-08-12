@@ -426,27 +426,23 @@ void COpenGLDriver::setTransform(E_TRANSFORMATION_STATE state, const matrix4& ma
 	{
 	case ETS_VIEW:
 	{
-		V = mat;
-		VP = V * P;
-		T_V = V;
-		T_VP = VP; 
+		M_V = mat;
+		M_VP = M_V * M_P; 
 	}
 	break;
 	case ETS_WORLD:
 	{
-		W = mat;
-		T_W = W;
+		M_W = mat;
 	}
 	break;
 
 	case ETS_PROJECTION:
 	{
-		P = mat;
-		VP = V * P;
-		T_P = P;
-		T_VP = VP;
+		M_P = mat;
+		M_VP = M_V * M_P;
 	}
 	break;
+
 	default:
 		break;
 	}
@@ -626,8 +622,6 @@ void COpenGLDriver::setViewPort(const recti& area)
 
 	Viewport = vp;
 
-	makeVPScaleMatrix(vp);
-
 	float fWidth = vp.getWidth() * 0.5f;
 	float fHeight = vp.getHeight() * 0.5f;
 
@@ -635,8 +629,7 @@ void COpenGLDriver::setViewPort(const recti& area)
 		vector3df::UnitZ(), vector3df::UnitY(), 0.0f);
 	Project2DTM = f3d::makeOrthoOffCenterMatrixLH(-fWidth, fWidth, -fHeight, fHeight, 0.0f, 1.0f);
 
-	VP2D = View2DTM * Project2DTM;
-	T_VP2D = VP2D;
+	M_VP2D = View2DTM * Project2DTM;
 }
 
 void COpenGLDriver::setDisplayMode(const dimension2d& size)

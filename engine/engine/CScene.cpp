@@ -2,6 +2,7 @@
 #include "CCamera.h"
 #include "Engine.h"
 
+
 CScene::CScene(const char* strName)
 	: m_strName(strName)
 {
@@ -62,13 +63,3 @@ void CScene::render2D() const
 
 }
 
-void CScene::renderDebugInfo() const
-{
-	if (!m_p2DCamera->IsInited())
-		return;
-
-	//S2DBlendParam blendParam(true, false, E_AlphaBlend);
-	//g_Engine->getDriver()->draw2DImage(nullptr, vector2di(10, 10), nullptr, SColor(128, 255, 255, 255), ERU_00_11, blendParam);
-
-	g_Engine->getDriver()->CA
-}

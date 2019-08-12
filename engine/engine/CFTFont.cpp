@@ -51,6 +51,371 @@ CFTFont::~CFTFont()
 		FontManager->RemoveFaceID(MyFaceID);
 }
 
+void CFTFont::drawA(const char* utf8text, SColor color, vector2di position, int nCharCount /*= -1*/, const recti* pClip /*= nullptr*/)
+{
+	int32_t x = position.x;
+	int32_t y = position.y;
+
+	//clip
+	if (pClip &&
+		(y >= pClip->bottom || y + m_iFontHeight <= pClip->top || x >= pClip->right))
+		return;
+
+	const S2DBlendParam& blendParam = S2DBlendParam::UIFontBlendParam();
+	float fInv = 1.0f / FONT_TEXTURE_SIZE;
+
+	const char* p = utf8text;
+	int nLen = nCharCount > 0 ? nCharCount : (int)strlen(utf8text);
+
+	m_TmpVerts.clear();
+	SVertex_PCT verts[4];			//left top, right top, left bottom, right bottom
+	ITexture* lastTexture = nullptr;
+	while (*p && nLen >= 0)
+	{
+		char16_t ch;
+		int nadv;
+		ch = (char16_t)CSysCodeCvt::ParseUnicodeFromUTF8Str(p, &nadv, nLen);
+		if (nadv == 0)		//parse end
+			break;
+		p += nadv;
+		nLen -= nadv;
+		if (ch == 0)		//string end
+			break;
+
+		const SCharInfo* charInfo = addChar(ch);
+
+		if (!charInfo)
+			continue;
+
+		if (ch == (char16_t)'\r' || ch == (char16_t)'\n') // Unix breaks
+		{
+			y += m_iFontHeight;
+			x = position.x;
+			continue;
+		}
+
+		int idx = charInfo->TexIndex;
+		ASSERT(idx >= 0 && idx < (int32_t)FontTextures.size());
+
+		ITexture* texture = FontTextures[idx];
+		if (lastTexture != texture)
+		{
+			if (!m_TmpVerts.empty())
+			{
+				g_Engine->getDriver()->add2DQuads(lastTexture,
+					&m_TmpVerts[0],
+					(uint32_t)m_TmpVerts.size() / 4,
+					blendParam);
+				m_TmpVerts.clear();
+			}
+			lastTexture = texture;
+		}
+
+		float posX0 = (float)(x + charInfo->offsetX);
+		float posX1 = (float)(posX0 + charInfo->UVRect.getWidth());
+		float posY0 = (float)(y + charInfo->offsetY);
+		float posY1 = (float)(posY0 + charInfo->UVRect.getHeight());
+
+		float texX0 = charInfo->UVRect.left * fInv;
+		float texX1 = charInfo->UVRect.right * fInv;
+		float texY0 = charInfo->UVRect.top * fInv;
+		float texY1 = charInfo->UVRect.bottom * fInv;
+
+		float fLeft = posX0;
+		float fTop = posY0;
+		float fRight = posX1;
+		float fBottom = posY1;
+		float tu1 = 0.0f;
+		float tu2 = 0.0f;
+		float tv1 = 0.0f;
+		float tv2 = 0.0f;
+
+		if (pClip)			//clip
+		{
+			if (posX1 <= pClip->left || posX0 >= pClip->right)
+				continue;
+
+			if (posX0 < pClip->left)
+			{
+				fLeft = (float)pClip->left;
+				tu1 = (pClip->left - posX0) * fInv;
+			}
+
+			if (posX1 > pClip->right)
+			{
+				fRight = (float)pClip->right;
+				tu2 = (posX1 - pClip->right) * fInv;
+			}
+
+			if (posY0 < pClip->top)
+			{
+				fTop = (float)pClip->top;
+				tv1 = (pClip->top - posY0) * fInv;
+			}
+
+			if (posY1 > pClip->bottom)
+			{
+				fBottom = (float)pClip->bottom;
+				tv2 = (posY1 - pClip->bottom) * fInv;
+			}
+		}
+
+		float du = texX1 - texX0;
+		float dv = texY1 - texY0;
+
+		verts[0].Pos.set(fLeft, fTop, 0);
+		verts[0].Color = color;
+		verts[0].TCoords.set(
+			texX0 + tu1 * du,
+			texY0 + tv1 * dv);
+
+		verts[1].Pos.set(fRight, fTop, 0);
+		verts[1].Color = color;
+		verts[1].TCoords.set(
+			texX1 - tu2 * du,
+			texY0 + tv1 * dv);
+
+		verts[2].Pos.set(fLeft, fBottom, 0);
+		verts[2].Color = color;
+		verts[2].TCoords.set(
+			texX0 + tu1 * du,
+			texY1 - tv2 * dv);
+
+		verts[3].Pos.set(fRight, fBottom, 0);
+		verts[3].Color = color;
+		verts[3].TCoords.set(
+			texX1 - tu2 * du,
+			texY1 - tv2 * dv);
+
+		m_TmpVerts.push_back(verts[0]);
+		m_TmpVerts.push_back(verts[1]);
+		m_TmpVerts.push_back(verts[2]);
+		m_TmpVerts.push_back(verts[3]);
+
+		x += charInfo->width;
+	}
+
+	if (!m_TmpVerts.empty())
+	{
+		g_Engine->getDriver()->add2DQuads(lastTexture,
+			&m_TmpVerts[0],
+			(uint32_t)m_TmpVerts.size() / 4,
+			blendParam);
+		m_TmpVerts.clear();
+	}
+
+	g_Engine->getDriver()->flushAll2DQuads();
+}
+
+void CFTFont::drawW(const char16_t* text, SColor color, vector2di position, int nCharCount /*= -1*/, const recti* pClip /*= nullptr*/)
+{
+	int32_t x = position.x;
+	int32_t y = position.y;
+
+	//clip
+	if (pClip &&
+		(y >= pClip->bottom || y + m_iFontHeight <= pClip->top || x >= pClip->right))
+		return;
+
+	const S2DBlendParam& blendParam = S2DBlendParam::UIFontBlendParam();
+	float fInv = 1.0f / FONT_TEXTURE_SIZE;
+
+	uint32_t len = nCharCount > 0 ? (uint32_t)nCharCount : (uint32_t)CSysCodeCvt::UTF16Len(text);
+
+	m_TmpVerts.clear();
+	SVertex_PCT verts[4];			//left top, right top, left bottom, right bottom
+	ITexture* lastTexture = nullptr;
+	for (uint32_t i = 0; i < len; ++i)
+	{
+		char16_t c = text[i];
+		if (c == 0)		//string end
+			continue;
+
+		const SCharInfo* charInfo = addChar(c);
+
+		if (!charInfo)
+			continue;
+
+		if (c == (char16_t)'\r' || c == (char16_t)'\n') // Unix breaks
+		{
+			y += m_iFontHeight;
+			x = position.x;
+			continue;
+		}
+
+		int idx = charInfo->TexIndex;
+		ASSERT(idx >= 0 && idx < (int32_t)FontTextures.size());
+
+		ITexture* texture = FontTextures[idx];
+		if (lastTexture != texture)
+		{
+			if (!m_TmpVerts.empty())
+			{
+				g_Engine->getDriver()->add2DQuads(lastTexture,
+					&m_TmpVerts[0],
+					(uint32_t)m_TmpVerts.size() / 4,
+					blendParam);
+				m_TmpVerts.clear();
+			}
+			lastTexture = texture;
+		}
+
+		float posX0 = (float)(x + charInfo->offsetX);
+		float posX1 = (float)(posX0 + charInfo->UVRect.getWidth());
+		float posY0 = (float)(y + charInfo->offsetY);
+		float posY1 = (float)(posY0 + charInfo->UVRect.getHeight());
+
+		float texX0 = charInfo->UVRect.left * fInv;
+		float texX1 = charInfo->UVRect.right * fInv;
+		float texY0 = charInfo->UVRect.top * fInv;
+		float texY1 = charInfo->UVRect.bottom * fInv;
+
+		float fLeft = posX0;
+		float fTop = posY0;
+		float fRight = posX1;
+		float fBottom = posY1;
+		float tu1 = 0.0f;
+		float tu2 = 0.0f;
+		float tv1 = 0.0f;
+		float tv2 = 0.0f;
+
+		if (pClip)			//clip
+		{
+			if (posX1 <= pClip->left || posX0 >= pClip->right)
+				continue;
+
+			if (posX0 < pClip->left)
+			{
+				fLeft = (float)pClip->left;
+				tu1 = (pClip->left - posX0) * fInv;
+			}
+
+			if (posX1 > pClip->right)
+			{
+				fRight = (float)pClip->right;
+				tu2 = (posX1 - pClip->right) * fInv;
+			}
+
+			if (posY0 < pClip->top)
+			{
+				fTop = (float)pClip->top;
+				tv1 = (pClip->top - posY0) * fInv;
+			}
+
+			if (posY1 > pClip->bottom)
+			{
+				fBottom = (float)pClip->bottom;
+				tv2 = (posY1 - pClip->bottom) * fInv;
+			}
+		}
+
+		float du = texX1 - texX0;
+		float dv = texY1 - texY0;
+
+		verts[0].Pos.set(fLeft, fTop, 0);
+		verts[0].Color = color;
+		verts[0].TCoords.set(
+			texX0 + tu1 * du,
+			texY0 + tv1 * dv);
+
+		verts[1].Pos.set(fRight, fTop, 0);
+		verts[1].Color = color;
+		verts[1].TCoords.set(
+			texX1 - tu2 * du,
+			texY0 + tv1 * dv);
+
+		verts[2].Pos.set(fLeft, fBottom, 0);
+		verts[2].Color = color;
+		verts[2].TCoords.set(
+			texX0 + tu1 * du,
+			texY1 - tv2 * dv);
+
+		verts[3].Pos.set(fRight, fBottom, 0);
+		verts[3].Color = color;
+		verts[3].TCoords.set(
+			texX1 - tu2 * du,
+			texY1 - tv2 * dv);
+
+		m_TmpVerts.push_back(verts[0]);
+		m_TmpVerts.push_back(verts[1]);
+		m_TmpVerts.push_back(verts[2]);
+		m_TmpVerts.push_back(verts[3]);
+
+		x += charInfo->width;
+	}
+
+	if (!m_TmpVerts.empty())
+	{
+		g_Engine->getDriver()->add2DQuads(lastTexture,
+			&m_TmpVerts[0],
+			(uint32_t)m_TmpVerts.size() / 4,
+			blendParam);
+		m_TmpVerts.clear();
+	}
+
+	g_Engine->getDriver()->flushAll2DQuads();
+}
+
+void CFTFont::addTextA(const char* text, SColor color, vector2di position, int nCharCount /*= -1*/, const recti* pClip /*= nullptr*/, bool bVertical /*= false*/)
+{
+	if (nCharCount == 0)			//-1表示实际长度，0或以上是指定长度
+		return;
+
+	uint32_t offset = (uint32_t)Texts.size();
+	const char* p = text;
+	int nLen = nCharCount > 0 ? nCharCount : (int)strlen(text);
+	uint32_t uCharCount = 0;
+	while (*p && nLen >= 0)
+	{
+		char16_t ch;
+		int nadv;
+		ch = (char16_t)CSysCodeCvt::ParseUnicodeFromUTF8Str(p, &nadv, nLen);
+		if (nadv == 0)		//parse end
+			break;
+		p += nadv;
+		nLen -= nadv;
+		if (ch == 0)		//string end
+			break;
+
+		Texts.push_back(ch);
+		++uCharCount;
+	}
+
+	SDrawText d;
+	d.offset = offset;
+	d.length = uCharCount;
+	d.color = color;
+	d.position = position;
+	d.bVertical = bVertical;
+	d.bClip = pClip != nullptr;
+	if (pClip)
+		d.rcClip = *pClip;
+	DrawTexts.emplace_back(d);
+}
+
+void CFTFont::addTextW(const char16_t* text, SColor color, vector2di position, int nCharCount /*= -1*/, const recti* pClip /*= nullptr*/, bool bVertical /*= false*/)
+{
+	if (nCharCount == 0)		//-1表示实际长度，0或以上是指定长度
+		return;
+
+	uint32_t offset = (uint32_t)Texts.size();
+	uint32_t uCharCount = nCharCount > 0 ? (uint32_t)nCharCount : (uint32_t)CSysCodeCvt::UTF16Len(text);
+
+	for (uint32_t i = 0; i < uCharCount; ++i)
+		Texts.push_back(text[i]);
+
+	SDrawText d;
+	d.offset = offset;
+	d.length = uCharCount;
+	d.color = color;
+	d.position = position;
+	d.bVertical = bVertical;
+	d.bClip = pClip != nullptr;
+	if (pClip)
+		d.rcClip = *pClip;
+	DrawTexts.emplace_back(d);
+}
+
 void CFTFont::flushText()
 {
 	drawTextWBatch();

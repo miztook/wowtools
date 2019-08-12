@@ -23,6 +23,7 @@ private:
 	void beginFrame();
 	void endFrame();
 
+	void renderDebugInfo() const;
 
 private:
 	CTimer		m_Timer;

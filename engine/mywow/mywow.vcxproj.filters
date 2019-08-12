@@ -206,7 +206,7 @@
     <ClInclude Include="..\common\CSysCodeCvt.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="EngineUtil.h">
+    <ClInclude Include="..\engine\EngineUtil.h">
       <Filter>engine</Filter>
     </ClInclude>
   </ItemGroup>
@@ -295,7 +295,7 @@
     <ClCompile Include="..\common\CSysCodeCvt.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="EngineUtil.cpp">
+    <ClCompile Include="..\engine\EngineUtil.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

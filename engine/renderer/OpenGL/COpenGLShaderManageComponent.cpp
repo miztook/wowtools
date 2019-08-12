@@ -328,25 +328,25 @@ void COpenGLShaderManageComponent::setGlobalVariables(const CGLProgram* program,
 
 		auto uf1 = program->getUniform("g_MatrixVP");
 		if (uf1)
-			setShaderUniformF(uf1, Driver->T_VP2D);
+			setShaderUniformF(uf1, Driver->M_VP2D);
 	}
 	else
 	{
 		auto uf0 = program->getUniform("g_ObjectToWorld");
 		if (uf0)
-			setShaderUniformF(uf0, Driver->T_W);
+			setShaderUniformF(uf0, Driver->M_W);
 
 		auto uf1 = program->getUniform("g_MatrixVP");
 		if (uf1)
-			setShaderUniformF(uf1, Driver->T_VP);
+			setShaderUniformF(uf1, Driver->M_VP);
 
 		auto uf2 = program->getUniform("g_MatrixV");
 		if (uf2)
-			setShaderUniformF(uf2, Driver->T_V);
+			setShaderUniformF(uf2, Driver->M_V);
 
 		auto uf3 = program->getUniform("g_MatrixP");
 		if (uf3)
-			setShaderUniformF(uf3, Driver->T_P);
+			setShaderUniformF(uf3, Driver->M_P);
 	}
 }
 

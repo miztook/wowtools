@@ -102,11 +102,11 @@ public:
 
 	COpenGLExtension	GLExtension;
 
-	matrix4		VP, T_VP;
-	matrix4		W, T_W;
-	matrix4		V, T_V;
-	matrix4		P, T_P;
-	matrix4		VP2D, T_VP2D;
+	matrix4		M_VP;
+	matrix4		M_W;
+	matrix4		M_V;
+	matrix4		M_P;
+	matrix4		M_VP2D;
 
 private:
 	//component

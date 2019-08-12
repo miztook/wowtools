@@ -7,5 +7,5 @@ void EngineUtil::drawDebugInfo(const char* strMsg)
 {
 	CFTFont* font = g_Engine->getFontManager()->getDefaultFont();
 	ASSERT(font);
-	font->drawA(strMsg, SColor::White(), vector2di(5, 5));
+	font->drawA(strMsg, SColor::Green(), vector2di(5, 5));
 }

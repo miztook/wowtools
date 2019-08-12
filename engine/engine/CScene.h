@@ -25,8 +25,7 @@ public:
 
 	void render3D() const;
 	void render2D() const;
-	void renderDebugInfo() const;
-
+	
 private:
 	std::string m_strName;
 	std::unique_ptr<CCamera>	m_p3DCamera;
