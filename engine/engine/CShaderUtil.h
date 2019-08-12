@@ -22,21 +22,21 @@ public:
 	static std::set<std::string> getShaderMacroSet(const char* macroString);
 
 public:
-	static const char* getUIPSFileName(bool alpha, bool alphaChannel)
+	static std::string getUIPSMacroString(bool alpha, bool alphaChannel)
 	{
 		if (alphaChannel)
 		{
 			if (alpha)
-				return "UI_Alpha_AlphaChannel";
+				return std::string("_USE_ALPHA_") + "#" + std::string("_USE_ALPHA_CHANNEL_");
 			else
-				return "UI_AlphaChannel";
+				return std::string("_USE_ALPHA_CHANNEL_");
 		}
 		else
 		{
 			if (alpha)
-				return "UI_Alpha";
+				return std::string("_USE_ALPHA_");
 			else
-				return "UI";
+				return "";
 		}
 	}
 

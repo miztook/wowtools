@@ -289,10 +289,11 @@ std::set<std::string> CShaderUtil::getShaderMacroSet(const char* macroString)
 {
 	std::set<std::string> macroSet;
 	std::vector<std::string> macroList;
-	std_string_split(macroString, " ", macroList);
+	std_string_split(macroString, '#', macroList);
 	for (const auto& str : macroList)
 	{
-		macroSet.insert(str);
+		if (!str.empty())
+			macroSet.insert(str);
 	}
 	return macroSet;
 }

@@ -1,12 +1,14 @@
 #include "base.h"
 #include "mywow.h"
 #include "mywowdriver.h"
+#include "CShaderUtil.h"
 
 #include "OpenGL/COpenGLDriver.h"
 #include "OpenGL/COpenGLShaderManageComponent.h"
 
 #pragma comment(lib, "mywow.lib")
 #pragma comment(lib, "mywowdriver.lib")
+#pragma comment(lib, "freetype.lib")
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
 
@@ -71,16 +73,18 @@ void compileShaders()
 		"Default_PNCT",
 		"Default_PNT",
 		"Default_PT",
-		"UI",
-		"UI_Alpha",
-		"UI_Alpha_AlphaChannel",
-		"UI_AlphaChannel",
 	};
 	
 	for (const char* psFile : psshaders)
 	{
 		shaderManagerComponent->getPixelShader(psFile);
 	}
+
+	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getUIPSMacroString(false, false).c_str());
+	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getUIPSMacroString(false, true).c_str());
+	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getUIPSMacroString(true, false).c_str());
+	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getUIPSMacroString(true, true).c_str());
+
 	//const CGLProgram* program = shaderManagerComponent->getGlProgram(vs, ps);
 }
 

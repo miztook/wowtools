@@ -302,33 +302,6 @@ inline void std_string_split(const std::string& _str, char split, std::vector<st
 	delete[] str;
 }
 
-inline void std_string_split(const std::string& _str, const char* split, std::vector<std::string>& retVString)
-{
-	retVString.clear();
-
-	char* str = new char[_str.length() + 1];
-	ASSERT(str);
-	strcpy(str, _str.data());
-
-	char* pchStart = str;
-	char* pch = NULL;
-	while (true)
-	{
-		pch = strstr(pchStart, split);
-		if (pch)
-		{
-			*pch = '\0';
-			retVString.push_back(pch);
-		}
-
-		if (!pch)
-			break;
-
-		pchStart = pch + strlen(split);
-	}
-	delete[] str;
-}
-
 inline std::string getFileDirA(const char* filename)
 {
 	const char* lastSlash = strrchr(filename, ('/'));

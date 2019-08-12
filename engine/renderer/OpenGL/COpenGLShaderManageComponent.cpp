@@ -389,9 +389,14 @@ bool COpenGLVertexShader::buildVideoResources()
 	absFileName.append(Name);
 	absFileName.append(".glsl");
 
+	g_FileSystem->writeLog(ELOG_GX, "COpenGLVertexShader buildVideoResources: %s, %s", absFileName.c_str(), MacroString.c_str());
+
 	SShaderFile result;
 	if (!CShaderUtil::loadFile_OpenGL(absFileName.c_str(), CShaderUtil::getShaderMacroSet(MacroString.c_str()), result))
+	{
+		g_FileSystem->writeLog(ELOG_GX, "GLSL shader failed to load: %s, %s", absFileName.c_str(), MacroString.c_str());
 		return false;
+	}
 
 	const char* buffer = result.Buffer.data();
 
@@ -461,9 +466,14 @@ bool COpenGLPixelShader::buildVideoResources()
 	absFileName.append(Name);
 	absFileName.append(".glsl");
 
+	g_FileSystem->writeLog(ELOG_GX, "COpenGLPixelShader buildVideoResources: %s, %s", absFileName.c_str(), MacroString.c_str());
+
 	SShaderFile result;
 	if (!CShaderUtil::loadFile_OpenGL(absFileName.c_str(), CShaderUtil::getShaderMacroSet(MacroString.c_str()), result))
+	{
+		g_FileSystem->writeLog(ELOG_GX, "GLSL shader failed to load: %s, %s", absFileName.c_str(), MacroString.c_str());
 		return false;
+	}
 
 	const char* buffer = result.Buffer.data();
 

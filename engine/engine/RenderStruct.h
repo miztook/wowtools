@@ -92,7 +92,8 @@ struct S2DBlendParam
 	{
 		material.VSFile = "";
 		material.MaterialType = getMaterialType();
-		material.PSFile = CShaderUtil::getUIPSFileName(alpha, alphaChannel);
+		material.PSFile = "UI";
+		material.PSMacroString = CShaderUtil::getUIPSMacroString(alpha, alphaChannel);
 	}
 
 	static const S2DBlendParam& OpaqueSource()
