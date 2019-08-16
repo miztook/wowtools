@@ -113,15 +113,21 @@ void CFileSystem::writeLog(E_LOG_TYPE type, const char* format, ...)
 
 	va_list va;
 	va_start(va, format);
-	Q_vsprintf(LogString, 1024, format, va);
+	Q_vsprintf(LogString, 2048, format, va);
 	va_end(va);
+
+	std::string content = LogString;
+	content.append("\n");
+
+#ifdef A_PLATFORM_WIN_DESKTOP
+	OutputDebugStringA(content.c_str());
+#endif
 
 	char timebuf[64];
 	Q_getLocalTime(timebuf, 64);
 
 	std::string text = timebuf;
-	text.append(LogString);
-	text.append("\n");
+	text.append(content);
 	switch (type)
 	{
 	case ELOG_GX:

@@ -65,6 +65,8 @@
     <ClInclude Include="..\engine\COSInfo.h" />
     <ClInclude Include="..\engine\CScene.h" />
     <ClInclude Include="..\engine\CSceneRenderer.h" />
+    <ClInclude Include="..\engine\CWinMemDbg.h" />
+    <ClInclude Include="..\engine\CWinMiniDump.h" />
     <ClInclude Include="..\engine\EngineUtil.h" />
     <ClInclude Include="..\engine\FontDef.h" />
     <ClInclude Include="..\engine\IImage.h" />
@@ -113,6 +115,8 @@
     <ClCompile Include="..\engine\CShaderUtil.cpp" />
     <ClCompile Include="..\engine\CSysUtil.cpp" />
     <ClCompile Include="..\engine\CTimer.cpp" />
+    <ClCompile Include="..\engine\CWinMemDbg.cpp" />
+    <ClCompile Include="..\engine\CWinMiniDump.cpp" />
     <ClCompile Include="..\engine\ddslib.cpp" />
     <ClCompile Include="..\engine\Engine.cpp" />
     <ClCompile Include="..\engine\EngineUtil.cpp" />

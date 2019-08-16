@@ -3,6 +3,8 @@
 #include "mywowdriver.h"
 
 #include "game.h"
+#include "CWinMiniDump.h"
+#include "CWinMemDbg.h"
 
 #pragma comment(lib, "mywow.lib")
 #pragma comment(lib, "mywowdriver.lib")
@@ -12,6 +14,8 @@
 
 int main()
 {
+	CWinMiniDump::begin();
+
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
@@ -67,6 +71,8 @@ int main()
 	destroyEngine();
 
 	destroyFileSystem();
+
+	CWinMiniDump::end();
 
 	return 0;
 }
