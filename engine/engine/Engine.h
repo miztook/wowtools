@@ -6,6 +6,7 @@
 #include "IVideoDriver.h"
 
 class CFontManager;
+class CMeshManager;
 
 using driverInitFunc = std::function<IVideoDriver*(const SWindowInfo& wndInfo,
 	E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode)>;
@@ -45,6 +46,7 @@ private:
 
 	//
 	CFontManager*		FontManager;
+	CMeshManager*		MeshManager;
 };
 
 extern Engine* g_Engine;

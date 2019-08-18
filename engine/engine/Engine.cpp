@@ -1,7 +1,7 @@
 #include "Engine.h"
 #include "mywow.h"
 #include "CFontManager.h"
-
+#include "CMeshManager.h"
 
 Engine* g_Engine = nullptr;
 
@@ -34,10 +34,12 @@ Engine::Engine(const SWindowInfo& wndInfo)
 
 	Driver = nullptr;
 	FontManager = nullptr;
+	MeshManager = nullptr;
 }
 
 Engine::~Engine()
 {
+	delete MeshManager;
 	delete FontManager;
 	delete Driver;
 }
@@ -60,6 +62,9 @@ bool Engine::init(E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode, driver
 	g_FileSystem->writeLog(ELOG_GX, "Create FontManager...");
 	FontManager = new CFontManager(0, 0, 0, 12);
 	FontManager->createDefaultFonts();
+
+	g_FileSystem->writeLog(ELOG_GX, "Create MeshManager...");
+	MeshManager = new CMeshManager();
 
 	return true;
 

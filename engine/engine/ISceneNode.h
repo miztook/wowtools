@@ -84,15 +84,13 @@ public:
 
 	const aabbox3df& getWorldBoundingBox() const { return WorldBoundingBox; }
 
-	void setParent(ISceneNode* parent) { Parent = parent; updateGeneration(); }
-	uint8_t getGeneration() const { return Generation; }
+	void setParent(ISceneNode* parent) { Parent = parent; }
 
 	ISceneNode* getParent() const { return Parent; }
 	float getDistance() const { return Distance; }
 
 protected:
 	void rotate(const quaternion& q) { m_Transform.rotate(q); NeedUpdate = true; }
-	void updateGeneration();
 
 protected:
 	std::list<ISceneNode*>		ChildNodeList;			//child lists
@@ -102,7 +100,6 @@ private:
 	CTransform		m_Transform;
 	aabbox3df			WorldBoundingBox;
 	ISceneNode*			Parent;
-	uint8_t		Generation;
 
 public:
 	bool		NeedUpdate;
@@ -179,18 +176,6 @@ inline void ISceneNode::removeAllChildren(bool bIncludeChild)
 		delete node;
 	}
 	ChildNodeList.clear();
-}
-
-inline void ISceneNode::updateGeneration()
-{
-	uint8_t n = 0;
-	ISceneNode* p = Parent;
-	while (p)
-	{
-		++n;
-		p = p->Parent;
-	}
-	Generation = n;
 }
 
 inline bool ISceneNode::hasChild() const

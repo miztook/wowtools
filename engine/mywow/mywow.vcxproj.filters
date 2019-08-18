@@ -209,6 +209,12 @@
     <ClInclude Include="..\engine\EngineUtil.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\engine\CMesh.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CMeshManager.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">
@@ -296,6 +302,12 @@
       <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\EngineUtil.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CMesh.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CMeshManager.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
