@@ -62,6 +62,8 @@
     <ClInclude Include="..\engine\CGeometryCreator.h" />
     <ClInclude Include="..\engine\CCImage.h" />
     <ClInclude Include="..\engine\CInputReader.h" />
+    <ClInclude Include="..\engine\CMesh.h" />
+    <ClInclude Include="..\engine\CMeshManager.h" />
     <ClInclude Include="..\engine\COSInfo.h" />
     <ClInclude Include="..\engine\CScene.h" />
     <ClInclude Include="..\engine\CSceneRenderer.h" />
@@ -109,6 +111,8 @@
     <ClCompile Include="..\engine\CFTFont.cpp" />
     <ClCompile Include="..\engine\CFTGlyphCache.cpp" />
     <ClCompile Include="..\engine\CInputReader.cpp" />
+    <ClCompile Include="..\engine\CMesh.cpp" />
+    <ClCompile Include="..\engine\CMeshManager.cpp" />
     <ClCompile Include="..\engine\COSInfo.cpp" />
     <ClCompile Include="..\engine\CScene.cpp" />
     <ClCompile Include="..\engine\CSceneRenderer.cpp" />
