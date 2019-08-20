@@ -19,6 +19,11 @@ void MyMessageHandler::onSize(window_type hwnd, int width, int height)
 	{
 		g_pGame->m_bBackMode = false;
 
+		dimension2d screenSize((uint32_t)width, (uint32_t)height);
+		g_Engine->onWindowResized(screenSize);
+
+		if (g_pGame->m_pScene)
+			g_pGame->m_pScene->onScreenResize(screenSize);
 	}
 }
 

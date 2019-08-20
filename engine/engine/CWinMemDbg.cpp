@@ -1,5 +1,6 @@
 ﻿#include "CWinMemDbg.h"
 #include "CFileSystem.h"
+#include "CSysUtil.h"
 #include "function.h"
 
 size_t g_maxAlloc = 1000;
@@ -67,14 +68,14 @@ int __cdecl MyAllocHook(
 	return(TRUE);         // Allow the memory operation to proceed
 }
 
-void AWinMemDbg::beginCheckPoint()
+void CWinMemDbg::beginCheckPoint()
 {
 	memset(m_BlockInfo, 0, sizeof(m_BlockInfo));
 
 	_CrtMemCheckpoint(&OldState);
 }
 
-bool AWinMemDbg::endCheckPoint()
+bool CWinMemDbg::endCheckPoint()
 {
 	_CrtMemCheckpoint(&NewState);
 
@@ -82,7 +83,7 @@ bool AWinMemDbg::endCheckPoint()
 	return diff == 0;
 }
 
-void AWinMemDbg::outputDifference(const char* funcname)
+void CWinMemDbg::outputDifference(const char* funcname)
 {
 	//ASys::OutputDebug("%s memory used: %0.2f M\n", funcname,
 	//	DiffState.lSizes[_NORMAL_BLOCK] / 1048576.f);
@@ -91,7 +92,7 @@ void AWinMemDbg::outputDifference(const char* funcname)
 		DiffState.lSizes[_NORMAL_BLOCK]);
 }
 
-void AWinMemDbg::setAllocHook(bool enable, int nMaxAlloc /*= 1000*/)
+void CWinMemDbg::setAllocHook(bool enable, int nMaxAlloc /*= 1000*/)
 {
 	if (enable)
 	{
@@ -104,14 +105,14 @@ void AWinMemDbg::setAllocHook(bool enable, int nMaxAlloc /*= 1000*/)
 	}
 }
 
-void AWinMemDbg::outputMaxMemoryUsed()
+void CWinMemDbg::outputMaxMemoryUsed()
 {
 	_CrtMemCheckpoint(&OldState);
 
-	g_FileSystem->writeLog(ELOG_GX, "maximum memory used: %0.2f M\n", OldState.lHighWaterCount / 1048576.f);
+	CSysUtil::outputDebug("maximum memory used: %0.2f M\n", OldState.lHighWaterCount / 1048576.f);
 }
 
-const char* AWinMemDbg::getBlockAllocInfo(const void* address)
+const char* CWinMemDbg::getBlockAllocInfo(const void* address)
 {
 	_CrtMemBlockHeader* pHeader = NewState.pBlockHeader;
 	while (pHeader != nullptr)
@@ -128,7 +129,7 @@ const char* AWinMemDbg::getBlockAllocInfo(const void* address)
 	return m_BlockInfo;
 }
 
-void AWinMemDbg::registerFrame(TIME_POINT now)
+void CWinMemDbg::registerFrame(TIME_POINT now)
 {
 	const uint32_t milli = CSysChrono::getDurationMilliseconds(now, LastTime);
 

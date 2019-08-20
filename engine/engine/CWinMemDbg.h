@@ -3,10 +3,10 @@
 #include <crtdbg.h>
 #include "CSysChrono.h"
 
-class AWinMemDbg
+class CWinMemDbg
 {
 public:
-	AWinMemDbg() 
+	CWinMemDbg() 
 	{
 		MPS = 60;
 		LastTime = CSysChrono::getTimePointNow();

@@ -12,6 +12,10 @@
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
 
+CWinMemDbg globalDbg;
+
+int doRun();
+
 int main()
 {
 	CWinMiniDump::begin();
@@ -22,6 +26,22 @@ int main()
 	
 	//_CrtSetBreakAlloc(212);
 
+	globalDbg.beginCheckPoint();
+
+	int ret = doRun();
+
+	bool safe = globalDbg.endCheckPoint();
+	ASSERT(safe);
+
+	globalDbg.outputMaxMemoryUsed();
+
+	CWinMiniDump::end();
+
+	return ret;
+}
+
+int doRun()
+{
 	SWindowInfo wndInfo = CSysUtil::createWindow("app1", 1136, 640, false, false);
 	HWND hwnd = wndInfo.hwnd;
 
@@ -55,7 +75,7 @@ int main()
 			bool active = !g_pGame->m_bBackMode && ::GetActiveWindow() == hwnd;
 			if (active)
 				g_pGame->update();
-			
+
 			//render scene
 			sceneRenderer->renderFrame(g_pGame->m_pScene, active);
 
@@ -71,8 +91,6 @@ int main()
 	destroyEngine();
 
 	destroyFileSystem();
-
-	CWinMiniDump::end();
 
 	return 0;
 }
