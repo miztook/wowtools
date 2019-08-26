@@ -43,6 +43,9 @@ public:
 	bool setDriverSetting(const SDriverSetting& setting) override;
 
 public:
+	IVertexBuffer* createVertexBuffer(E_MESHBUFFER_MAPPING mapping) override;
+	IIndexBuffer* createIndexBuffer(E_MESHBUFFER_MAPPING mapping) override;
+
 	ITextureWriter* createTextureWriter(ITexture* texture) override;
 	bool removeTextureWriter(ITexture* texture) override;
 

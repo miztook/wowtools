@@ -4,6 +4,7 @@
 #include <map>
 #include "aabbox3d.h"
 #include "S3DVertex.h"
+#include "IVertexIndexBuffer.h"
 
 class CMesh;
 
@@ -15,6 +16,17 @@ private:
 public:
 	CMeshManager();
 	~CMeshManager();
+
+public:
+	bool addMesh(const char* name, IVertexBuffer* vbuffer, IIndexBuffer* ibuffer, E_PRIMITIVE_TYPE primType, uint32_t primCount, const aabbox3df& box);
+	CMesh* getMesh(const char* name) const;
+	void removeMesh(const char* name);
+
+	bool addGridLineMesh(const char* name, uint32_t xzCount, float gridSize, SColor color);
+	bool addDecal(const char* name, float width, float height, SColor color);
+	bool addCube(const char* name, const vector3df& size, SColor color);
+	bool addSphere(const char* name, float radius, uint32_t polyCountX, uint32_t polyCountY, SColor color);
+	bool addCylinder(const char* name, float radius, float height, uint32_t numSegment, SColor color);
 
 public:
 	static void getCubeMeshVICount(uint32_t& vcount, uint32_t& icount);
@@ -39,7 +51,7 @@ public:
 		return aabbox3df(vector3df(-radius, -height, -radius), vector3df(radius, height, radius));
 	}
 
-	static uint32_t getGridLineVCount(uint32_t xzCount) { return (2 * xzCount + 1) * 4; }
+	static uint32_t getGridLineVCount(uint32_t xzCount);
 	static bool fillGridLineMeshV(SVertex_PC* gVertices, uint32_t vcount, uint32_t xzCount, float gridSize, SColor color);
 	static aabbox3df getGridLineAABBox(uint32_t xzCount, float gridSize)
 	{

@@ -158,6 +158,9 @@ public:
 	virtual bool setDriverSetting(const SDriverSetting& setting) = 0;
 
 public:
+	virtual IVertexBuffer* createVertexBuffer(E_MESHBUFFER_MAPPING mapping) = 0;
+	virtual IIndexBuffer* createIndexBuffer(E_MESHBUFFER_MAPPING mapping) = 0;
+
 	//
 	virtual ITextureWriter* createTextureWriter(ITexture* texture) = 0;
 	virtual bool removeTextureWriter(ITexture* texture) = 0;
