@@ -117,9 +117,6 @@ public:
 	const COpenGLVertexShader* getVertexShader(const char* fileName, const char* macroString = "");
 	const COpenGLPixelShader* getPixelShader(const char* fileName, const char* macroString = "");
 
-	const COpenGLVertexShader* getDefaultVertexShader(E_VERTEX_TYPE vType, const char* macroString);
-	const COpenGLPixelShader* getDefaultPixelShader(E_VERTEX_TYPE vType, const char* macroString);
-
 	void addMacroByMaterial(const SMaterial& material, std::set<std::string>& shaderMacro) const;
 
 	const CGLProgram* findGLProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader) const;

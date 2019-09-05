@@ -31,7 +31,7 @@ public:
 	void removeMesh(CMesh* pMesh);
 
 public:
-	void render() override;
+	void render(IRenderer* renderer) override;
 
 private:
 

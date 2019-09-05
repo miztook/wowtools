@@ -24,7 +24,7 @@ public:
 public:
 	virtual void registerSceneNode();
 	virtual void tick(uint32_t tickTime, bool visible) {}
-	virtual void render() = 0;
+	virtual void render(IRenderer* renderer) = 0;
 
 public:
 	CTransform* getTransform() { return &m_Transform; }

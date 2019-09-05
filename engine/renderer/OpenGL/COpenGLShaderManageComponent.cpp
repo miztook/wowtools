@@ -47,17 +47,12 @@ bool COpenGLShaderManageComponent::init()
 
 const CGLProgram* COpenGLShaderManageComponent::applyShaders(const SMaterial* material, E_VERTEX_TYPE vertexType)
 {
-	const COpenGLVertexShader* vertexShader;
-	if (!material->VSFile.empty())
-		vertexShader = getVertexShader(material->VSFile.c_str(), material->VSMacroString.c_str());
-	else
-		vertexShader = getDefaultVertexShader(vertexType, material->VSMacroString.c_str());
+	auto shaderKey = CShaderUtil::getShaderKey(
+		material->VSFile.c_str(), material->VSMacroString.c_str(),
+		material->PSFile.c_str(), material->PSMacroString.c_str(), vertexType);
 
-	const COpenGLPixelShader* pixelShader;
-	if (!material->PSFile.empty())
-		pixelShader = getPixelShader(material->PSFile.c_str(), material->PSMacroString.c_str());
-	else
-		pixelShader = getDefaultPixelShader(vertexType, material->PSMacroString.c_str());
+	const COpenGLVertexShader* vertexShader = getVertexShader(shaderKey.VSFile.c_str(), shaderKey.VSMacroString.c_str());
+	const COpenGLPixelShader* pixelShader = getPixelShader(shaderKey.PSFile.c_str(), shaderKey.PSMacroString.c_str());
 
 	if (ShaderState.vshader != vertexShader || ShaderState.pshader != pixelShader)
 	{
@@ -128,16 +123,6 @@ const COpenGLPixelShader* COpenGLShaderManageComponent::getPixelShader(const cha
 	PixelShaderMap[key] = pshader;
 
 	return pshader;
-}
-
-const COpenGLVertexShader * COpenGLShaderManageComponent::getDefaultVertexShader(E_VERTEX_TYPE vType, const char * macroString)
-{
-	return getVertexShader(CShaderUtil::getDefaultVSFileName(vType), macroString);
-}
-
-const COpenGLPixelShader * COpenGLShaderManageComponent::getDefaultPixelShader(E_VERTEX_TYPE vType, const char* macroString)
-{
-	return getPixelShader(CShaderUtil::getDefaultPSFileName(vType), macroString);
 }
 
 void COpenGLShaderManageComponent::addMacroByMaterial(const SMaterial& material, std::set<std::string>& shaderMacro) const

@@ -6,6 +6,8 @@
 #include "stringext.h"
 #include "function.h"
 
+std::map<CShaderUtil::SShaderKey, int> CShaderUtil::ShaderIdMap;
+
 bool CShaderUtil::loadFile_OpenGL(const char* absFileName, const std::set<std::string>& shaderMacro, SShaderFile& result)
 {
 	CReadFile* rFile = g_FileSystem->createAndOpenFile(absFileName, false);
@@ -296,4 +298,28 @@ std::set<std::string> CShaderUtil::getShaderMacroSet(const char* macroString)
 			macroSet.insert(str);
 	}
 	return macroSet;
+}
+
+CShaderUtil::SShaderKey CShaderUtil::getShaderKey(const char* vsFile, const char* vsMacroString, const char* psFile, const char* psMacroString, E_VERTEX_TYPE vertexType)
+{
+	SShaderKey key(vsFile, vsMacroString, psFile, psMacroString);
+	if (key.VSFile.empty())
+		key.VSFile = getDefaultVSFileName(vertexType);
+	if (key.PSFile.empty())
+		key.PSFile = getDefaultPSFileName(vertexType);
+	return key;
+}
+
+int CShaderUtil::getShaderProgramSortId(const char* vsFile, const char* vsMacroString, const char* psFile, const char* psMacroString, E_VERTEX_TYPE vertexType)
+{
+	SShaderKey key = getShaderKey(vsFile, vsMacroString, psFile, psMacroString, vertexType);
+
+	auto itr = ShaderIdMap.find(key);
+	if (itr == ShaderIdMap.end())
+	{
+		int id = (int)ShaderIdMap.size() + 1;
+		ShaderIdMap[key] = id;
+		return id;
+	}
+	return itr->second;
 }

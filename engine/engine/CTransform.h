@@ -76,6 +76,18 @@ public:
 		CallbackHiearchyChangedList.remove(callback);
 	}
 
+	uint32_t getHiearchyCount() const
+	{
+		uint8_t n = 0;
+		CTransform* p = Parent;
+		while (p)
+		{
+			++n;
+			p = p->Parent;
+		}
+		return n;
+	}
+
 private:
 	void CheckTransformChange() const;
 
