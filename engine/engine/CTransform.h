@@ -3,48 +3,194 @@
 #include "matrix4.h"
 #include "quaternion.h"
 #include "function3d.h"
+#include <list>
+
+class ISceneNode;
 
 class CTransform
 {
 public:
-	const matrix4& getAbsoluteRotateMatrix() const { return AbsoluteRotateMatrix; }
-	const matrix4& getRelativeRotateMatrix() const { return RelativeRotateMatrix; }
+	using ON_TRANSFORM_CHANGED = void(*)(const CTransform* transform);
+	using ON_HIEARCHY_CHANGED = void(*)(const CTransform* transform);
 
-	const matrix4& getAbsoluteTransformation() const { return AbsoluteTransformation; }
+public:
+	explicit CTransform(ISceneNode* node)
+	{
+		setDirty();
+		SceneNode = node;
+		Parent = nullptr;
+	}
+
+	~CTransform()
+	{
+		ASSERT(CallbackTransformChangedList.empty());
+		ASSERT(CallbackHiearchyChangedList.empty());
+	}
+
+public:
+	ISceneNode* getSceneNode() const { return SceneNode; }
+	void setSceneNode(ISceneNode* node) { SceneNode = node; }
+
+	const matrix4& getRelativeRotateMatrix() const { return RelativeRotateMatrix; }
 	const matrix4& getRelativeTransformation() const { return RelativeTransformation; }
+
+	const matrix4& getAbsoluteRotateMatrix() const;
+	const matrix4& getAbsoluteTransformation() const;
+	
 	void setRelativeTransformation(const matrix4& mat);
 
 	//
 	vector3df getDir() const { return f3d::normalize(RelativeRotateMatrix.getRow(2)); }
 	vector3df getUp() const { return f3d::normalize(RelativeRotateMatrix.getRow(1)); }
 	vector3df getRight() const { return f3d::normalize(RelativeRotateMatrix.getRow(0)); }
-	void setDirAndUp(const vector3df& dir, const vector3df& up);
 	vector3df getPos() const { return RelativeTransformation.getTranslation(); }
-	void setPos(const vector3df& pos) { RelativeTransformation.setTranslation(pos); }
 	vector3df getScale() const { return RelativeTransformation.getScale(); }
+
+	void setDirAndUp(const vector3df& dir, const vector3df& up);
+	void setPos(const vector3df& pos) { RelativeTransformation.setTranslation(pos); }
 	void setScale(const vector3df& scale);
-
-	vector3df getAbsDir() const { return f3d::normalize(AbsoluteRotateMatrix.getRow(2)); }
-	vector3df getAbsUp() const { return f3d::normalize(AbsoluteRotateMatrix.getRow(1)); }
-	vector3df getAbsRight() const { return f3d::normalize(AbsoluteRotateMatrix.getRow(0)); }
-	vector3df getAbsPos() const { return AbsoluteTransformation.getTranslation(); }
-	vector3df getAbsScale() const { return AbsoluteTransformation.getScale(); }
-
-	void update(const CTransform* parent);
 	void rotate(const quaternion& q);
+	void setPosDirUp(const vector3df& pos, const vector3df& dir, const vector3df& up);
+	void setPosDirUpScale(const vector3df& pos, const vector3df& dir, const vector3df& up, const vector3df& scale);
+
+	void setDirty();
+
+	//
+	void setParent(CTransform* parent);
+	CTransform* getParent() const { return Parent; }
+
+	void addChild(CTransform* child);
+	bool removeChild(CTransform* child);
+	bool hasChild() const { return !ChildList.empty(); }
+	void removeAllChildren(bool bRecursiveChild);
+	const std::list<CTransform*>& getChildList() const { return ChildList; }
+
+	//
+	void RegisterTransformChangedCallback(ON_TRANSFORM_CHANGED callback)
+	{
+		CallbackTransformChangedList.push_back(callback);
+	}
+
+	void UnregisterTransformChangedCallback(ON_TRANSFORM_CHANGED callback)
+	{
+		CallbackHiearchyChangedList.remove(callback);
+	}
+
+private:
+	void CheckTransformChange() const;
 
 private:
 	matrix4			RelativeRotateMatrix;
 	matrix4			RelativeTransformation;
-	matrix4			AbsoluteRotateMatrix;
-	matrix4			AbsoluteTransformation;
+	mutable matrix4			AbsoluteRotateMatrix;
+	mutable matrix4			AbsoluteTransformation;
+	mutable bool		TransformDirty;
+
+	ISceneNode*		SceneNode;
+
+	CTransform* Parent;
+	std::list<CTransform*>		ChildList;
+
+	std::list<ON_TRANSFORM_CHANGED>		CallbackTransformChangedList;
+	std::list<ON_HIEARCHY_CHANGED>		CallbackHiearchyChangedList;
 };
+
+inline void CTransform::setDirty()
+{
+	TransformDirty = true;
+	for (CTransform* child : ChildList)
+	{
+		child->setDirty();
+	}
+}
+
+inline void CTransform::setParent(CTransform* parent)
+{
+	if(Parent && Parent != parent)
+		Parent->removeChild(this);
+
+	Parent = parent;
+	if (Parent)
+		Parent->addChild(this);
+}
+
+inline void CTransform::addChild(CTransform* child)
+{
+	ASSERT(child && child != this);
+
+	if (child->Parent && child->Parent != this)
+		child->Parent->removeChild(this);
+
+	ChildList.push_back(child);
+	child->Parent = this;
+}
+
+inline bool CTransform::removeChild(CTransform* child)
+{
+	ASSERT(child && child != this);
+
+	for (CTransform* trans : ChildList)
+	{
+		if (trans == child)
+		{
+			ChildList.remove(child);
+			child->Parent = nullptr;
+			return true;
+		}
+	}
+	return false;
+}
+
+inline void CTransform::removeAllChildren(bool bRecursiveChild)
+{
+	for (CTransform* child : ChildList)
+	{
+		if (bRecursiveChild)
+			child->removeAllChildren(bRecursiveChild);
+		delete child;
+	}
+	ChildList.clear();
+}
+
+inline void CTransform::CheckTransformChange() const
+{
+	if (TransformDirty)
+	{
+		if (Parent)
+		{
+			AbsoluteRotateMatrix = getRelativeRotateMatrix() * Parent->getAbsoluteRotateMatrix();
+			AbsoluteTransformation = getRelativeTransformation() * Parent->getAbsoluteTransformation();
+		}
+		else
+		{
+			AbsoluteRotateMatrix = getRelativeRotateMatrix();
+			AbsoluteTransformation = getRelativeTransformation();
+		}
+		for (const auto& cb : CallbackTransformChangedList)
+		{
+			cb(this);
+		}
+		TransformDirty = false;
+	}
+}
+
+inline const matrix4& CTransform::getAbsoluteRotateMatrix() const
+{
+	CheckTransformChange();
+	return AbsoluteRotateMatrix;
+}
+
+inline const matrix4& CTransform::getAbsoluteTransformation() const
+{
+	CheckTransformChange();
+	return AbsoluteTransformation;
+}
 
 inline void CTransform::setRelativeTransformation(const matrix4& mat)
 {
 	vector3df s = mat.getScale();
 	RelativeRotateMatrix = mat;
-	RelativeRotateMatrix.setScale(vector3df(1.0f / s.x, 1.0f / s.y, 1.0f / s.z));
+	RelativeRotateMatrix.setScale(vector3df::One());
 	RelativeRotateMatrix.setTranslation(vector3df::Zero());
 
 	RelativeTransformation = mat;
@@ -69,26 +215,32 @@ inline void CTransform::setScale(const vector3df& scale)
 	RelativeTransformation = mat;
 }
 
-inline void CTransform::update(const CTransform* parent)
-{
-	if (parent)
-	{
-		AbsoluteRotateMatrix = getRelativeRotateMatrix() * parent->getAbsoluteRotateMatrix();
-		AbsoluteTransformation = getRelativeTransformation() * parent->getAbsoluteTransformation();
-	}
-	else
-	{
-		AbsoluteRotateMatrix = getRelativeRotateMatrix();
-		AbsoluteTransformation = getRelativeTransformation();
-	}
-}
-
 inline void CTransform::rotate(const quaternion& q)
 {
 	RelativeRotateMatrix = q * RelativeRotateMatrix;
 	matrix4 mat = RelativeRotateMatrix;
 	mat.setScale(getScale());
 	mat.setTranslation(getPos());
+
+	RelativeTransformation = mat;
+}
+
+inline void CTransform::setPosDirUp(const vector3df& pos, const vector3df& dir, const vector3df& up)
+{
+	RelativeRotateMatrix = f3d::transformMatrix(dir, up, vector3df::Zero());
+	matrix4 mat = RelativeRotateMatrix;
+	mat.setScale(getScale());
+	mat.setTranslation(pos);
+
+	RelativeTransformation = mat;
+}
+
+inline void CTransform::setPosDirUpScale(const vector3df& pos, const vector3df& dir, const vector3df& up, const vector3df& scale)
+{
+	RelativeRotateMatrix = f3d::transformMatrix(dir, up, vector3df::Zero());
+	matrix4 mat = RelativeRotateMatrix;
+	mat.setScale(scale);
+	mat.setTranslation(pos);
 
 	RelativeTransformation = mat;
 }

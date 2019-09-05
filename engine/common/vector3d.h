@@ -72,6 +72,7 @@ public:
 
 	 vector3d<T> getXZ() const { vector3d<T> v(x, 0, z); v.normalize(); return v; }
 
+	 static const vector3d<T>& One() { static vector3d<T> m(1); return m; }
 	 static const vector3d<T>& Zero() { static vector3d<T> m(0); return m; }
 	 static const vector3d<T>& UnitX() { static vector3d<T> m(1,0,0); return m; }
 	 static const vector3d<T>& UnitY() { static vector3d<T> m(0,1,0); return m; }

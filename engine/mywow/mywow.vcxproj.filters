@@ -215,6 +215,18 @@
     <ClInclude Include="..\engine\CWinMiniDump.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\engine\CMeshManager.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CMesh.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CMeshSceneNode.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\IRenderer.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">
@@ -308,6 +320,18 @@
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\CWinMiniDump.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CMesh.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CMeshManager.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CMeshSceneNode.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\IRenderer.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

@@ -56,8 +56,8 @@ public:
 	vector3df transformVector(const vector3df& vect) const;
 	plane3df transformPlane(const plane3df& plane) const;
 	aabbox3df transformBox(const aabbox3df& box) const;
-	vector3df rotateVect(const vector3df& vect) const;
-	vector3df inverseRotateVect(const vector3df& vect) const;
+	vector3df rotateVector(const vector3df& vect) const;
+	vector3df inverseRotateVector(const vector3df& vect) const;
 
 	vector3df getRow(int i) const { return vector3df(M[i * 4 + 0], M[i * 4 + 1], M[i * 4 + 2]); }
 	vector3df getCol(int i) const { return vector3df(M[0 * 4 + i], M[1 * 4 + i], M[2 * 4 + i]); }
@@ -73,9 +73,16 @@ public:
 	vector3d<T> getRotationRadians() const;
 	vector3d<T> getRotationDegrees() const { return getRotationRadians() * RADTODEG; }
 
+	CMatrix4<T>& scale(const vector3d<T>& scale);
+	CMatrix4<T>& scale(const T scale) { return scale(vector3d<T>(scale, scale, scale)); }
 	CMatrix4<T>& setScale(const vector3d<T>& scale);
-	CMatrix4<T>& setScale(const T scale) { return setScale(vector3d<T>(scale, scale, scale)); }
 	vector3d<T> getScale() const;
+
+	vector3d<T> getDir() const { return f3d::normalize(getRow(2)); }
+	vector3d<T> getUp() const { return f3d::normalize(getRow(1)); }
+	vector3d<T> getRight() const { return f3d::normalize(getRow(0)); }
+
+
 	// camera view, perspective
 	//camera
 	CMatrix4<T>& buildCameraLookAtMatrixLH(
@@ -629,12 +636,12 @@ inline plane3df CMatrix4<T>::transformPlane(const plane3df& plane) const
 template <class T>
 inline aabbox3df CMatrix4<T>::transformBox(const aabbox3df& box) const
 {
-	vector3df vCenter = mat.transformVect(box.getCenter());
+	vector3df vCenter = transformVector(box.getCenter());
 
 	const vector3df& ext = box.getExtent();
-	vector3df vAxisX = mat.rotateVect(vector3df(ext.x, 0, 0));
-	vector3df vAxisY = mat.rotateVect(vector3df(0, ext.y, 0));
-	vector3df vAxisZ = mat.rotateVect(vector3df(0, 0, ext.z));
+	vector3df vAxisX = rotateVector(vector3df(ext.x, 0, 0));
+	vector3df vAxisY = rotateVector(vector3df(0, ext.y, 0));
+	vector3df vAxisZ = rotateVector(vector3df(0, 0, ext.z));
 
 	vector3df vExtends;
 	vExtends.x = fabs(vAxisX.x) + fabs(vAxisY.x) + fabs(vAxisZ.x);
@@ -648,7 +655,7 @@ inline aabbox3df CMatrix4<T>::transformBox(const aabbox3df& box) const
 }
 
 template <class T>
-inline vector3df CMatrix4<T>::rotateVect(const vector3df& vect) const
+inline vector3df CMatrix4<T>::rotateVector(const vector3df& vect) const
 {
 	vector3df tmp;
 	tmp.x = vect.x*M[0] + vect.y*M[4] + vect.z*M[8];
@@ -658,7 +665,7 @@ inline vector3df CMatrix4<T>::rotateVect(const vector3df& vect) const
 }
 
 template <class T>
-inline  vector3df CMatrix4<T>::inverseRotateVect(const vector3df& vect) const
+inline  vector3df CMatrix4<T>::inverseRotateVector(const vector3df& vect) const
 {
 	vector3df tmp;
 	tmp.x = vect.x*M[0] + vect.y*M[1] + vect.z*M[2];
@@ -744,7 +751,7 @@ inline vector3d<T> CMatrix4<T>::getRotationRadians() const
 }
 
 template <class T>
-inline CMatrix4<T>& CMatrix4<T>::setScale(const vector3d<T>& scale)
+inline CMatrix4<T>& CMatrix4<T>::scale(const vector3d<T>& scale)
 {
 	T x = abs_(scale.x);			// 0
 	T y = abs_(scale.y);			// 5
@@ -765,6 +772,32 @@ inline CMatrix4<T>& CMatrix4<T>::setScale(const vector3d<T>& scale)
 	M[12] *= x;
 	M[13] *= y;
 	M[14] *= z;
+
+	return (*this);
+}
+
+template <class T>
+inline CMatrix4<T>& CMatrix4<T>::setScale(const vector3d<T>& scale)
+{
+	T x = abs_(scale.x);			// 0
+	T y = abs_(scale.y);			// 5
+	T z = abs_(scale.z);			// 10
+
+	M[0] = x;
+	M[1] = y;
+	M[2] = z;
+
+	M[4] = x;
+	M[5] = y;
+	M[6] = z;
+
+	M[8] = x;
+	M[9] = y;
+	M[10] = z;
+
+	M[12] = x;
+	M[13] = y;
+	M[14] = z;
 
 	return (*this);
 }
