@@ -11,6 +11,16 @@
 
 class ITexture;
 
+enum E_RENDER_QUEUE : int
+{
+	ERQ_BACKGROUND = 1000,
+	ERQ_GEOMETRY = 2000,
+	ERQ_ALPHATEST = 2450,
+	ERQ_GEOMETRYLAST = 2500,
+	ERQ_TRANSPARENT = 3000,
+	ERQ_OVERLAY = 4000,
+};
+
 struct STextureUnit
 {
 	ITexture* Texture;
@@ -117,6 +127,7 @@ struct SMRenderTargetBlendDesc
 struct SMaterial
 {
 	E_MATERIAL_TYPE	MaterialType;	//blend desc
+	E_RENDER_QUEUE	RenderQueue;
 
 	std::string		VSFile;
 	std::string		VSMacroString;
@@ -143,6 +154,7 @@ struct SMaterial
 		DiffuseColor(1.0f, 1.0f, 1.0f, 1.0f),
 		EmissiveColor(1.0f, 1.0f, 1.0f, 1.0f),
 		MaterialType(EMT_SOLID),
+		RenderQueue(ERQ_GEOMETRY),
 		Lighting(true),
 		FogEnable(false),
 		colorWrite(COLORWRITE_ALL),

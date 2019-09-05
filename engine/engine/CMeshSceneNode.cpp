@@ -46,3 +46,8 @@ void CMeshSceneNode::removeMesh(CMesh* pMesh)
 		}
 	}
 }
+
+void CMeshSceneNode::render()
+{
+
+}
