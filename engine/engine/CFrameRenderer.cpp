@@ -88,7 +88,31 @@ void CFrameRenderer::tickAllSceneNodes(uint32_t tickTime)
 	}
 }
 
-void CFrameRenderer::addRenderUnit(const SRenderUnit* unit)
+void CFrameRenderer::addRenderUnit(const SRenderUnit& unit)
 {
+	int renderQueue = unit.material->RenderQueue;
 
+	auto itr = m_RenderQueueMap.find(renderQueue);
+	if (itr != m_RenderQueueMap.end())
+	{
+		const CRenderUnitQueue& renderUnitQueue = itr->second;
+		renderUnitQueue.RenderUnits.push_back(unit);
+		return;
+	}
+
+	auto func = CRenderUnitQueue::getCompareFunc(renderQueue);
+	CRenderUnitQueue renderUnitQueue(func);
+	renderUnitQueue.RenderUnits.push_back(unit);
+	m_RenderQueueMap[renderQueue] = renderUnitQueue;
+}
+
+void CFrameRenderer::renderAll()
+{
+	for (auto kv : m_RenderQueueMap)
+	{
+		int id = kv.first;
+		const CRenderUnitQueue& renderUnitQueue = kv.second;
+
+		ASSERT_TODO;
+	}
 }

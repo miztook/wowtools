@@ -37,7 +37,7 @@ public:
 	void clearAllSceneNodes();
 	void tickAllSceneNodes(uint32_t tickTime);
 
-	void addRenderUnit(const SRenderUnit* unit);
+	void addRenderUnit(const SRenderUnit& unit);
 	void renderAll();
 
 private:

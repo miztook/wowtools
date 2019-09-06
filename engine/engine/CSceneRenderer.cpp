@@ -19,7 +19,6 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 {
 	beginFrame();
 
-
 	if (Driver->checkValid())
 	{
 		Driver->setRenderTarget(nullptr);
