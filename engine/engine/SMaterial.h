@@ -21,6 +21,26 @@ enum E_RENDER_QUEUE : int
 	ERQ_OVERLAY = 4000,
 };
 
+inline bool IsRenderQueueSolid(int queue)
+{
+	return queue < ERQ_ALPHATEST;
+}
+
+inline bool IsRenderQueueAlphaTest(int queue)
+{
+	return queue >= ERQ_ALPHATEST && queue < ERQ_TRANSPARENT;
+}
+
+inline bool isRenderQueueTransparent(int queue)
+{
+	return queue >= ERQ_TRANSPARENT && queue < ERQ_OVERLAY;
+}
+
+inline bool isRenderQueueOverlay(int queue)
+{
+	return queue >= ERQ_OVERLAY;
+}
+
 struct STextureUnit
 {
 	ITexture* Texture;
@@ -126,7 +146,7 @@ struct SMRenderTargetBlendDesc
 
 struct SMaterial
 {
-	E_MATERIAL_TYPE	MaterialType;	//blend desc
+	E_ALPHA_TYPE	AlphaType;	//blend desc
 	E_RENDER_QUEUE	RenderQueue;
 
 	std::string		VSFile;
@@ -153,7 +173,7 @@ struct SMaterial
 		: AmbientColor(1.0f, 1.0f, 1.0f, 1.0f),
 		DiffuseColor(1.0f, 1.0f, 1.0f, 1.0f),
 		EmissiveColor(1.0f, 1.0f, 1.0f, 1.0f),
-		MaterialType(EMT_SOLID),
+		AlphaType(EMT_SOLID),
 		RenderQueue(ERQ_GEOMETRY),
 		Lighting(true),
 		FogEnable(false),
@@ -178,17 +198,6 @@ struct SMaterial
 			DiffuseColor.a = (DiffuseColor.a * alpha);
 		else
 			EmissiveColor.a = (EmissiveColor.a * alpha);
-	}
-
-	bool isTransparent() const
-	{
-		return MaterialType > EMT_ALPHA_TEST &&
-			MaterialType < EMT_COUNT;
-	}
-
-	bool isAlphaTest() const
-	{
-		return MaterialType == EMT_ALPHA_TEST;
 	}
 
 	void setVariable(const char* name, const float* src, uint32_t size);
@@ -221,11 +230,9 @@ inline SMRenderTargetBlendDesc SMaterial::getRenderTargetBlendDesc() const
 	SMRenderTargetBlendDesc desc;
 	desc.Default();
 
-	switch (MaterialType)
+	switch (AlphaType)
 	{
 	case EMT_SOLID:
-		break;
-	case EMT_ALPHA_TEST:
 		break;
 	case EMT_TRANSPARENT_ALPHA_BLEND:
 		desc.srcBlend = EBF_SRC_ALPHA;

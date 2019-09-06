@@ -23,7 +23,7 @@ public:
 
 public:
 	virtual void registerSceneNode();
-	virtual void tick(uint32_t tickTime, bool visible) {}
+	virtual void tick(uint32_t tickTime) {}
 	virtual void render(IRenderer* renderer) = 0;
 
 public:

@@ -1,10 +1,29 @@
 #pragma once
 
 #include "ISceneNode.h"
+#include "RenderStruct.h"
 #include <vector>
 #include <map>
+#include <algorithm>
 
-struct SRenderUnit;
+class CRenderUnitQueue
+{
+public:
+	using COMPARE_FUNC = bool (*)(const SRenderUnit& a, const SRenderUnit& b);
+
+public:
+	CRenderUnitQueue(COMPARE_FUNC func) : CompareFunc(func) {}
+
+	void sort()
+	{
+		std::sort(RenderUnits.begin(), RenderUnits.end(), CompareFunc);
+	}
+
+	static COMPARE_FUNC getCompareFunc(int renderQueue);
+
+	std::vector<SRenderUnit>	RenderUnits;
+	COMPARE_FUNC  CompareFunc;
+};
 
 class CFrameRenderer
 {
@@ -15,6 +34,8 @@ public:
 public:
 	void addSceneNode(ISceneNode* node);
 	void skipSceneNode(ISceneNode* node);
+	void clearAllSceneNodes();
+	void tickAllSceneNodes(uint32_t tickTime);
 
 	void addRenderUnit(const SRenderUnit* unit);
 	void renderAll();
@@ -42,5 +63,5 @@ private:
 	std::vector<SEntry>		m_SceneNodes;
 
 	//
-	std::map<int, std::vector<const SRenderUnit*>>  m_RenderUnitMap;
+	std::map<int, CRenderUnitQueue>  m_RenderQueueMap;
 };

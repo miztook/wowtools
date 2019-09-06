@@ -127,7 +127,7 @@ const COpenGLPixelShader* COpenGLShaderManageComponent::getPixelShader(const cha
 
 void COpenGLShaderManageComponent::addMacroByMaterial(const SMaterial& material, std::set<std::string>& shaderMacro) const
 {
-	if (material.isAlphaTest())
+	if (IsRenderQueueAlphaTest(material.RenderQueue))
 	{
 		shaderMacro.insert("ALPHA_TEST");
 	}
