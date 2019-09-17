@@ -3,9 +3,11 @@
 #include "CTimer.h"
 #include "CFPSCounter.h"
 #include "SColor.h"
+#include <vector>
 
 class IVideoDriver;
 class CScene;
+class ISceneNode;
 
 class CSceneRenderer
 {
@@ -23,6 +25,8 @@ private:
 	void beginFrame();
 	void endFrame();
 
+	void render3D(const CScene* scene) const;
+	void render2D(const CScene* scene) const;
 	void renderDebugInfo() const;
 
 private:
@@ -30,4 +34,6 @@ private:
 	CFPSCounter	m_FPSCounter;
 	IVideoDriver*	Driver;
 	SColor	BackgroundColor;
+
+	std::vector<ISceneNode*>	m_ProcessList;
 };

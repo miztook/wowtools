@@ -4,8 +4,10 @@
 #include "vector3d.h"
 #include "rect.h"
 #include <string>
+#include <list>
 
 class CCamera;
+class ISceneNode;
 
 class CScene
 {
@@ -22,13 +24,17 @@ public:
 	CCamera* get3DCamera() const { return m_p3DCamera.get(); }
 	CCamera* get2DCamera() const { return m_p2DCamera.get(); }
 	void onScreenResize(const dimension2d& size);
-
-	void render3D() const;
-	void render2D() const;
 	
+	void addSceneNode(ISceneNode* node);
+	void cleanSceneNodes();
+	void deleteAllSceneNodes();
+	const std::list<ISceneNode*>& getSceneNodeList() const { return m_SceneNodes; }
+
 private:
 	std::string m_strName;
 	std::unique_ptr<CCamera>	m_p3DCamera;
 	std::unique_ptr<CCamera>	m_p2DCamera;
+
+	std::list<ISceneNode*>	m_SceneNodes;		//¸ù½áµã
 };
 

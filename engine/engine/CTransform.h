@@ -23,8 +23,11 @@ public:
 
 	~CTransform()
 	{
+		deleteAllChildren();
+
 		ASSERT(CallbackTransformChangedList.empty());
 		ASSERT(CallbackHiearchyChangedList.empty());
+		ASSERT(ChildList.empty());
 	}
 
 public:
@@ -62,7 +65,7 @@ public:
 	void addChild(CTransform* child);
 	bool removeChild(CTransform* child);
 	bool hasChild() const { return !ChildList.empty(); }
-	void removeAllChildren(bool bRecursiveChild);
+	void deleteAllChildren();
 	const std::list<CTransform*>& getChildList() const { return ChildList; }
 
 	//
@@ -153,12 +156,11 @@ inline bool CTransform::removeChild(CTransform* child)
 	return false;
 }
 
-inline void CTransform::removeAllChildren(bool bRecursiveChild)
+inline void CTransform::deleteAllChildren()
 {
 	for (CTransform* child : ChildList)
 	{
-		if (bRecursiveChild)
-			child->removeAllChildren(bRecursiveChild);
+		child->deleteAllChildren();
 		delete child;
 	}
 	ChildList.clear();

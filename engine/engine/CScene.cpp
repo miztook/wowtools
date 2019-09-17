@@ -1,7 +1,7 @@
 #include "CScene.h"
 #include "CCamera.h"
 #include "Engine.h"
-
+#include "ISceneNode.h"
 
 CScene::CScene(const char* strName)
 	: m_strName(strName)
@@ -25,7 +25,7 @@ void CScene::init3DCamera(float fov, float aspectRatio, float nearZ, float farZ,
 
 void CScene::init2DCamera(const dimension2d& screenSize, float vFront, float vBack)
 {
-	float fHalfWidth = screenSize.width * 0.5f;
+	float fHalfWidth = screenSize.width * 0.5f; 
 	float fHalfHeight = screenSize.height * 0.5f;
 	m_p2DCamera->Init(-fHalfWidth, fHalfWidth, -fHalfHeight, fHalfHeight, vFront, vBack);
 	m_p2DCamera->setPos(vector3df(fHalfWidth, fHalfHeight, vFront));
@@ -50,16 +50,37 @@ void CScene::onScreenResize(const dimension2d& size)
 	}
 }
 
-void CScene::render3D() const
+void CScene::addSceneNode(ISceneNode* node)
 {
-	if (!m_p3DCamera->IsInited())
-		return;
+	if (node && node->getTransform()->getParent())
+		m_SceneNodes.push_back(node);
 }
 
-void CScene::render2D() const
+void CScene::cleanSceneNodes()
 {
-	if (!m_p2DCamera->IsInited())
-		return;
-
+	for (auto itr = m_SceneNodes.begin(); itr != m_SceneNodes.end();)
+	{
+		ISceneNode* node = *itr;
+		if (node->isToDelete())
+		{
+			ISceneNode::checkDelete(node);
+			m_SceneNodes.erase(itr++);
+		}
+		else
+		{
+			++itr;
+		}
+	}
 }
+
+void CScene::deleteAllSceneNodes()
+{
+	for (auto itr = m_SceneNodes.begin(); itr != m_SceneNodes.end();)
+	{
+		ISceneNode* node = *itr;
+		delete node;
+	}
+	m_SceneNodes.clear();
+}
+
 

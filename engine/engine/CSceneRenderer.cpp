@@ -3,6 +3,19 @@
 #include "Engine.h"
 #include "EngineUtil.h"
 #include "CCamera.h"
+#include "ISceneNode.h"
+#include <algorithm>
+
+bool SceneNodeCompare(const ISceneNode* a, const ISceneNode* b)
+{
+	uint32_t h1 = a->getTransform()->getHiearchyCount();
+	uint32_t h2 = b->getTransform()->getHiearchyCount();
+
+	if (h1 != h2)
+		return h1 < h2;
+	else
+		return a < b;
+}
 
 CSceneRenderer * CSceneRenderer::createSceneRenderer()
 {
@@ -19,6 +32,25 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 {
 	beginFrame();
 
+	uint32_t tickTime = m_Timer.getTimeSinceLastFrame();
+
+	//collect scene node
+	m_ProcessList.clear();
+	const std::list<ISceneNode*>& sceneNodeList = scene->getSceneNodeList();
+	for (ISceneNode* node : sceneNodeList)
+		m_ProcessList.push_back(node);
+
+	//cull
+
+	//scene node tick && render
+	std::sort(m_ProcessList.begin(), m_ProcessList.end(), SceneNodeCompare);
+	for (const auto& node : m_ProcessList)
+	{
+		if (!node->isToDelete())
+			node->tick(tickTime);
+	}
+
+	//actual render
 	if (Driver->checkValid())
 	{
 		Driver->setRenderTarget(nullptr);
@@ -27,8 +59,9 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 		{
 			Driver->clear(true, true, false, BackgroundColor);
 
-			scene->render3D();
-			scene->render2D();
+			render3D(scene);
+
+			render2D(scene);
 
 			if (scene->get2DCamera()->IsInited())
 				renderDebugInfo();
@@ -48,6 +81,18 @@ void CSceneRenderer::beginFrame()
 void CSceneRenderer::endFrame()
 {
 	m_FPSCounter.registerFrame(CSysChrono::getTimePointNow());
+}
+
+void CSceneRenderer::render3D(const CScene* scene) const
+{
+	if (!scene->get3DCamera()->IsInited())
+		return;
+}
+
+void CSceneRenderer::render2D(const CScene* scene) const
+{
+	if (!scene->get2DCamera()->IsInited())
+		return;
 }
 
 void CSceneRenderer::renderDebugInfo() const

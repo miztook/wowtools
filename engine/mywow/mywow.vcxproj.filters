@@ -227,7 +227,7 @@
     <ClInclude Include="..\engine\IRenderer.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\CFrameRenderer.h">
+    <ClInclude Include="..\engine\CRenderLoop.h">
       <Filter>engine</Filter>
     </ClInclude>
   </ItemGroup>
@@ -337,7 +337,7 @@
     <ClCompile Include="..\engine\IRenderer.cpp">
       <Filter>engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\engine\CFrameRenderer.cpp">
+    <ClCompile Include="..\engine\CRenderLoop.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

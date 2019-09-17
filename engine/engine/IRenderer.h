@@ -9,7 +9,7 @@ class ISceneNode;
 class IRenderer
 {
 public:
-	IRenderer(const ISceneNode* sceneNode) : SceneNode(sceneNode), Active(true) {}
+	IRenderer(const ISceneNode* sceneNode) : SceneNode(sceneNode), Active(true), AlwaysTick(false) {}
 	virtual ~IRenderer() = default;
 
 public:
@@ -21,6 +21,7 @@ public:
 
 public:
 	bool Active;
+	bool AlwaysTick;
 
 protected:
 	const ISceneNode*		SceneNode;
