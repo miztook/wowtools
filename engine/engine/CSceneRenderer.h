@@ -8,6 +8,7 @@
 class IVideoDriver;
 class CScene;
 class ISceneNode;
+class IRenderer;
 
 class CSceneRenderer
 {
@@ -36,4 +37,5 @@ private:
 	SColor	BackgroundColor;
 
 	std::vector<ISceneNode*>	m_ProcessList;
+	std::vector<IRenderer*> m_VisbleRenderers;
 };

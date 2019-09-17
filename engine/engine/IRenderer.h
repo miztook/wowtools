@@ -9,7 +9,7 @@ class ISceneNode;
 class IRenderer
 {
 public:
-	IRenderer(const ISceneNode* sceneNode) : SceneNode(sceneNode), Active(true), AlwaysTick(false) {}
+	explicit IRenderer(ISceneNode* sceneNode) : SceneNode(sceneNode), Active(true) {}
 	virtual ~IRenderer() = default;
 
 public:
@@ -18,12 +18,12 @@ public:
 public:
 	SMaterial& getMaterial() { return Material; }
 	matrix4 getLocalToWorldMatrix() const;
+	ISceneNode* getSceneNode() const { return SceneNode; }
 
 public:
 	bool Active;
-	bool AlwaysTick;
 
 protected:
-	const ISceneNode*		SceneNode;
+	ISceneNode*		SceneNode;
 	SMaterial	Material;
 };

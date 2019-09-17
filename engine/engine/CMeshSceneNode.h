@@ -9,7 +9,7 @@ class CMesh;
 class CMeshRenderer : public IRenderer
 {
 public:
-	explicit CMeshRenderer(const CMesh* mesh, const ISceneNode* node);
+	explicit CMeshRenderer(const CMesh* mesh, ISceneNode* node);
 
 public:
 	aabbox3df getBoundingBox() const override;
@@ -31,7 +31,7 @@ public:
 	void removeMesh(CMesh* pMesh);
 
 public:
-	void render(IRenderer* renderer) override;
+	void render(IRenderer* renderer, const CCamera* cam) override;
 
 private:
 

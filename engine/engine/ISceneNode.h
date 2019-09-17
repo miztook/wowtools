@@ -6,14 +6,17 @@
 #include "aabbox3d.h"
 #include <list>
 #include <algorithm>
+#include <functional>
 
 class IRenderer;
+class CCamera;
+using TRAVERSE_SCENENODE_FUNC = std::function<void(ISceneNode* node)>;
 
 class ISceneNode
 {
 public:
 	ISceneNode(ISceneNode* parent)
-		: m_Transform(this), m_Enabled(true), m_ToDelete(false)
+		: m_Transform(this), m_Active(true), m_ToDelete(false)
 	{
 		if (parent)
 			getTransform()->setParent(parent->getTransform());
@@ -22,36 +25,35 @@ public:
 	virtual ~ISceneNode() = default;
 
 public:
-	virtual void registerSceneNode();
 	virtual void tick(uint32_t tickTime) {}
-	virtual void render(IRenderer* renderer) = 0;
+	virtual void render(IRenderer* renderer, const CCamera* cam) = 0;
 
 public:
+	void traverse(TRAVERSE_SCENENODE_FUNC func);
 	CTransform* getTransform() { return &m_Transform; }
 	const CTransform* getTransform() const { return &m_Transform; }
 	const std::list<IRenderer*>& getRendererList() const { return m_RendererList; }
 	void markDelete() { m_ToDelete = true; }
 	bool isToDelete() const { return m_ToDelete; }
 	static void checkDelete(ISceneNode* node);
+	void setActive(bool active) { m_Active = active; }
+	bool activeSelf() const { return m_Active; }
 
-public:
-	bool m_Enabled;
-	
 protected:
 	CTransform		m_Transform;
 	std::list<IRenderer*>	m_RendererList;
 	bool m_ToDelete;
+	bool m_Active;
 };
 
-inline void ISceneNode::registerSceneNode()
+inline void ISceneNode::traverse(TRAVERSE_SCENENODE_FUNC func)
 {
-	if (!m_Enabled)
-		return;
+	func(this);
 
 	for (const auto& trans : m_Transform.getChildList())
 	{
 		ISceneNode* node = trans->getSceneNode();
-		node->registerSceneNode();
+		node->traverse(func);
 	}
 }
 

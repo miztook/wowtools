@@ -1,7 +1,7 @@
 #include "CMeshSceneNode.h"
 #include "CMesh.h"
 
-CMeshRenderer::CMeshRenderer(const CMesh * mesh, const ISceneNode* node)
+CMeshRenderer::CMeshRenderer(const CMesh * mesh, ISceneNode* node)
 	: IRenderer(node), Mesh(mesh)
 {
 	Box = Mesh->getBoundingBox();
@@ -47,7 +47,7 @@ void CMeshSceneNode::removeMesh(CMesh* pMesh)
 	}
 }
 
-void CMeshSceneNode::render(IRenderer* renderer)
+void CMeshSceneNode::render(IRenderer* renderer, const CCamera* cam)
 {
 
 }

@@ -4,6 +4,7 @@
 #include "EngineUtil.h"
 #include "CCamera.h"
 #include "ISceneNode.h"
+#include "IRenderer.h"
 #include <algorithm>
 
 bool SceneNodeCompare(const ISceneNode* a, const ISceneNode* b)
@@ -38,16 +39,38 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 	m_ProcessList.clear();
 	const std::list<ISceneNode*>& sceneNodeList = scene->getSceneNodeList();
 	for (ISceneNode* node : sceneNodeList)
-		m_ProcessList.push_back(node);
+	{
+		node->traverse([this](ISceneNode* n) 
+		{ 
+			if (n->activeSelf() && !n->isToDelete())
+				m_ProcessList.push_back(n); 
+		});
+	}
 
-	//cull
-
-	//scene node tick && render
+	//scene node tick
 	std::sort(m_ProcessList.begin(), m_ProcessList.end(), SceneNodeCompare);
 	for (const auto& node : m_ProcessList)
 	{
-		if (!node->isToDelete())
-			node->tick(tickTime);
+		node->tick(tickTime);
+	}
+
+	//cull renderers
+	m_VisbleRenderers.clear();
+	const CCamera* cam = scene->get3DCamera();
+	for (const auto& node : m_ProcessList)
+	{
+		const std::list<IRenderer*> rendererList = node->getRendererList();
+		for (const IRenderer* renderer : rendererList)
+		{
+			const aabbox3df& box = renderer->getBoundingBox();
+		}
+	}
+
+	//scene node renderer
+	for (IRenderer* renderer : m_VisbleRenderers)
+	{
+		ISceneNode* node = renderer->getSceneNode();
+		node->render(renderer, cam);
 	}
 
 	//actual render
@@ -60,8 +83,6 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 			Driver->clear(true, true, false, BackgroundColor);
 
 			render3D(scene);
-
-			render2D(scene);
 
 			if (scene->get2DCamera()->IsInited())
 				renderDebugInfo();
