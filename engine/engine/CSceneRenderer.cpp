@@ -5,6 +5,7 @@
 #include "CCamera.h"
 #include "ISceneNode.h"
 #include "IRenderer.h"
+#include "CRenderLoop.h"
 #include <algorithm>
 
 bool SceneNodeCompare(const ISceneNode* a, const ISceneNode* b)
@@ -54,25 +55,33 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 		node->tick(tickTime);
 	}
 
-	//cull renderers
-	m_VisbleRenderers.clear();
+	//3d camera
 	const CCamera* cam = scene->get3DCamera();
-	for (const auto& node : m_ProcessList)
+	if (cam->IsInited())
 	{
-		const std::list<IRenderer*> rendererList = node->getRendererList();
-		for (const IRenderer* renderer : rendererList)
+		//cull renderers
+		CullResult.VisibleRenderers.clear();
+		for (const auto& node : m_ProcessList)
 		{
-			const aabbox3df& box = renderer->getBoundingBox();
+			const std::list<IRenderer*> rendererList = node->getRendererList();
+			for (const IRenderer* renderer : rendererList)
+			{
+				const aabbox3df& box = renderer->getBoundingBox();
+				if (cam->getWorldFrustum().isInFrustum(box))
+					CullResult.VisibleRenderers.push_back(renderer);
+			}
+		}
+
+		//scene node renderer
+		for (const IRenderer* renderer : CullResult.VisibleRenderers)
+		{
+			ISceneNode* node = renderer->getSceneNode();
+			SRenderUnit* renderUnit = node->render(renderer, cam);
+			if (renderUnit)
+				RenderLoop.addRenderUnit(*renderUnit);
 		}
 	}
-
-	//scene node renderer
-	for (IRenderer* renderer : m_VisbleRenderers)
-	{
-		ISceneNode* node = renderer->getSceneNode();
-		node->render(renderer, cam);
-	}
-
+	
 	//actual render
 	if (Driver->checkValid())
 	{
@@ -82,14 +91,15 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 		{
 			Driver->clear(true, true, false, BackgroundColor);
 
-			render3D(scene);
+			RenderLoop.doRenderLoopPrepass();
+			RenderLoop.doRenderLoopForward();
 
-			if (scene->get2DCamera()->IsInited())
-				renderDebugInfo();
+			renderDebugInfo();
 
 			Driver->endScene();
 		}
 	}
+	RenderLoop.clearRenderUnits();
 
 	endFrame();
 }
@@ -102,12 +112,6 @@ void CSceneRenderer::beginFrame()
 void CSceneRenderer::endFrame()
 {
 	m_FPSCounter.registerFrame(CSysChrono::getTimePointNow());
-}
-
-void CSceneRenderer::render3D(const CScene* scene) const
-{
-	if (!scene->get3DCamera()->IsInited())
-		return;
 }
 
 void CSceneRenderer::render2D(const CScene* scene) const

@@ -27,6 +27,8 @@ public:
 	void setProjectionParam(float vFOV, float vRatio, float vFront, float vBack);
 	void setProjectionParam(float left, float right, float top, float bottom, float vFront, float vBack);
 
+	const frustum& getWorldFrustum() const { return m_worldFrustum; }
+
 public:
 	bool IsOrthogonal() const { return m_IsOrthogonal; }
 	bool IsInited() const { return m_bInit; }

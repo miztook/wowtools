@@ -4,11 +4,12 @@
 #include "CFPSCounter.h"
 #include "SColor.h"
 #include <vector>
+#include "SCullResult.h"
+#include "CRenderLoop.h"
 
 class IVideoDriver;
 class CScene;
 class ISceneNode;
-class IRenderer;
 
 class CSceneRenderer
 {
@@ -37,5 +38,7 @@ private:
 	SColor	BackgroundColor;
 
 	std::vector<ISceneNode*>	m_ProcessList;
-	std::vector<IRenderer*> m_VisbleRenderers;
+	
+	SCullResult		CullResult;
+	CRenderLoop		RenderLoop;
 };

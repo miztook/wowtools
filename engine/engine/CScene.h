@@ -30,6 +30,8 @@ public:
 	void deleteAllSceneNodes();
 	const std::list<ISceneNode*>& getSceneNodeList() const { return m_SceneNodes; }
 
+	void afterFrame() { cleanSceneNodes(); }
+
 private:
 	std::string m_strName;
 	std::unique_ptr<CCamera>	m_p3DCamera;

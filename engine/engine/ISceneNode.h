@@ -10,6 +10,7 @@
 
 class IRenderer;
 class CCamera;
+struct SRenderUnit;
 using TRAVERSE_SCENENODE_FUNC = std::function<void(ISceneNode* node)>;
 
 class ISceneNode
@@ -26,7 +27,7 @@ public:
 
 public:
 	virtual void tick(uint32_t tickTime) {}
-	virtual void render(IRenderer* renderer, const CCamera* cam) = 0;
+	virtual SRenderUnit* render(const IRenderer* renderer, const CCamera* cam) = 0;
 
 public:
 	void traverse(TRAVERSE_SCENENODE_FUNC func);

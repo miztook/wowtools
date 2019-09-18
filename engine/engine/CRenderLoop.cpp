@@ -1,44 +1,27 @@
 #include "CRenderLoop.h"
 #include "SMaterial.h"
 
-bool SolidCompare(const SRenderUnit& a, const SRenderUnit& b)
+bool OpaqueCompare(const SRenderUnit& a, const SRenderUnit& b)
 {
 	return true;
 }
 
-bool AlphaTestCompare(const SRenderUnit& a, const SRenderUnit& b)
-{
-	return true;
-}
-
-bool TransparentCompare(const SRenderUnit& a, const SRenderUnit& b)
-{
-	return true;
-}
-
-bool OverlayCompare(const SRenderUnit& a, const SRenderUnit& b)
+bool AfterOpaqueCompare(const SRenderUnit& a, const SRenderUnit& b)
 {
 	return true;
 }
 
 RENDERUNIT_COMPARE_FUNC getCompareFunc(int renderQueue)
 {
-	if (renderQueue < ERQ_ALPHATEST)		//solid
+	if (renderQueue <= ERQ_GEOMETRY_INDEX_MAX)		//solid
 	{
-		return SolidCompare;
+		return OpaqueCompare;
 	}
-	else if (renderQueue < ERQ_TRANSPARENT)			//alphatest
+	else if (renderQueue <= ERQ_INDEX_MAX)		//transparent
 	{
-		return AlphaTestCompare;
+		return AfterOpaqueCompare;
 	}
-	else if (renderQueue < ERQ_OVERLAY)		//transparent
-	{
-		return TransparentCompare;
-	}
-	else
-	{
-		return OverlayCompare;
-	}
+	return nullptr;
 }
 
 CRenderLoop::CRenderLoop()
@@ -55,22 +38,42 @@ void CRenderLoop::addRenderUnit(const SRenderUnit& unit)
 {
 	int renderQueue = unit.material->RenderQueue;
 
-	if (renderQueue <= ERQ_BACKGROUND)
-		m_RenderUnits_Background.push_back(unit);
-	else if (renderQueue <= ERQ_GEOMETRY)
-		m_RenderUnits_Geometry.push_back(unit);
-	else if (renderQueue <= ERQ_ALPHATEST)
-		m_RenderUnits_AlphaTest.push_back(unit);
-	else if (renderQueue <= ERQ_GEOMETRYLAST)
-		m_RenderUnits_GeometryLast.push_back(unit);
-	else if (renderQueue <= ERQ_TRANSPARENT)
-		m_RenderUnits_Transparent.push_back(unit);
-	else if (renderQueue <= ERQ_OVERLAY)
-		m_RenderUnits_Overlay.push_back(unit);
+	if (renderQueue <= ERQ_GEOMETRY_INDEX_MAX)		//solid
+	{
+		m_RenderUnits_Opaque.push_back(unit);
+	}
+	else if (renderQueue <= ERQ_INDEX_MAX)		//transparent
+	{
+		m_RenderUnits_AfterOpaque.push_back(unit);
+	}
 }
 
-void CRenderLoop::renderAll()
+void CRenderLoop::doRenderLoopPrepass()
 {
 
+}
+
+void CRenderLoop::doRenderLoopForward()
+{
+	renderOpaques();
+	renderAfterOpaues();
+}
+
+void CRenderLoop::clearRenderUnits()
+{
+	m_RenderUnits_Opaque.clear();
+	m_RenderUnits_AfterOpaque.clear();
+}
+
+void CRenderLoop::renderOpaques()
+{
+	std::sort(m_RenderUnits_Opaque.begin(), m_RenderUnits_Opaque.end(), OpaqueCompare);
+
+
+}
+
+void CRenderLoop::renderAfterOpaues()
+{
+	std::sort(m_RenderUnits_AfterOpaque.begin(), m_RenderUnits_AfterOpaque.end(), AfterOpaqueCompare);
 }
 

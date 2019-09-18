@@ -79,6 +79,8 @@ int doRun()
 			//render scene
 			sceneRenderer->renderFrame(g_pGame->m_pScene, active);
 
+			g_pGame->m_pScene->afterFrame();		//cleanup
+
 			::Sleep(1);
 		}
 	}

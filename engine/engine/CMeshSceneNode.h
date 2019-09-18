@@ -31,7 +31,7 @@ public:
 	void removeMesh(CMesh* pMesh);
 
 public:
-	void render(IRenderer* renderer, const CCamera* cam) override;
+	SRenderUnit* render(const IRenderer* renderer, const CCamera* cam) override;
 
 private:
 

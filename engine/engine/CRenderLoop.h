@@ -17,16 +17,20 @@ public:
 
 public:
 	void addRenderUnit(const SRenderUnit& unit);
-	void renderAll();
+	
+	void doRenderLoopPrepass();
+	void doRenderLoopForward();
+
+	void clearRenderUnits();
+
+private:
+	void renderOpaques();
+	void renderAfterOpaues();
 
 private:
 	const SRenderUnit*			CurrentUnit;
 
 	//
-	std::vector<SRenderUnit>		m_RenderUnits_Background;
-	std::vector<SRenderUnit>		m_RenderUnits_Geometry;
-	std::vector<SRenderUnit>		m_RenderUnits_AlphaTest;
-	std::vector<SRenderUnit>		m_RenderUnits_GeometryLast;
-	std::vector<SRenderUnit>		m_RenderUnits_Transparent;
-	std::vector<SRenderUnit>		m_RenderUnits_Overlay;
+	std::vector<SRenderUnit>		m_RenderUnits_Opaque;
+	std::vector<SRenderUnit>		m_RenderUnits_AfterOpaque;
 };

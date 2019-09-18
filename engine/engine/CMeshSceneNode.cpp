@@ -47,7 +47,7 @@ void CMeshSceneNode::removeMesh(CMesh* pMesh)
 	}
 }
 
-void CMeshSceneNode::render(IRenderer* renderer, const CCamera* cam)
+SRenderUnit* CMeshSceneNode::render(const IRenderer* renderer, const CCamera* cam)
 {
-
+	return nullptr;
 }
