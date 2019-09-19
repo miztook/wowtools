@@ -1,5 +1,6 @@
 #include "CRenderLoop.h"
 #include "SMaterial.h"
+#include "IRenderer.h"
 
 bool OpaqueCompare(const SRenderUnit& a, const SRenderUnit& b)
 {
@@ -36,7 +37,7 @@ CRenderLoop::~CRenderLoop()
 
 void CRenderLoop::addRenderUnit(const SRenderUnit& unit)
 {
-	int renderQueue = unit.material->RenderQueue;
+	int renderQueue = unit.renderer->getMaterial().RenderQueue;
 
 	if (renderQueue <= ERQ_GEOMETRY_INDEX_MAX)		//solid
 	{

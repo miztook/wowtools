@@ -117,7 +117,9 @@ struct S2DBlendParam
 
 struct  SDrawParam
 {
-	uint32_t		voffset0;
+	SDrawParam() : voffset(0), baseVertIndex(0), minVertIndex(0), numVertices(0), startIndex(0) {}
+
+	uint32_t		voffset;
 	int		baseVertIndex;
 	uint32_t		minVertIndex;
 	uint32_t		numVertices;
@@ -126,12 +128,14 @@ struct  SDrawParam
 
 struct SRenderUnit
 {
-	float distance;
-	const SMaterial* material;
+	SRenderUnit(const IRenderer* rdr) : renderer(rdr), vbuffer(nullptr), ibuffer(nullptr), primCount(0), primType(EPT_TRIANGLES) {}
+
+	const IRenderer* renderer;
 	IVertexBuffer* vbuffer;
 	IIndexBuffer* ibuffer;
 	SDrawParam  drawParam;
 	matrix4		matWorld;
 	uint32_t		primCount;
 	E_PRIMITIVE_TYPE	primType;
+	float distance;
 };

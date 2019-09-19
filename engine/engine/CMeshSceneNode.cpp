@@ -49,5 +49,18 @@ void CMeshSceneNode::removeMesh(CMesh* pMesh)
 
 SRenderUnit* CMeshSceneNode::render(const IRenderer* renderer, const CCamera* cam)
 {
-	return nullptr;
+	const CMeshRenderer* meshRenderer = static_cast<const CMeshRenderer*>(renderer);
+
+	SRenderUnit* unit = new SRenderUnit(renderer);
+
+	const CMesh* mesh = meshRenderer->getMesh();
+	unit->vbuffer = mesh->getVertexBuffer();
+	unit->ibuffer = mesh->getIndexBuffer();
+	unit->primType = mesh->PrimType;
+	unit->primCount = mesh->PrimCount;
+
+	unit->drawParam.numVertices = mesh->getVertexBuffer()->getNumVertices();
+	unit->matWorld = meshRenderer->getLocalToWorldMatrix();
+
+	return unit;
 }
