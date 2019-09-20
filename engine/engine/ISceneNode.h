@@ -16,13 +16,12 @@ using TRAVERSE_SCENENODE_FUNC = std::function<void(ISceneNode* node)>;
 class ISceneNode
 {
 public:
-	ISceneNode(ISceneNode* parent)
+	ISceneNode()
 		: m_Transform(this), m_Active(true), m_ToDelete(false)
 	{
-		if (parent)
-			getTransform()->setParent(parent->getTransform());
 	}
 
+protected:
 	virtual ~ISceneNode() = default;
 
 public:
@@ -30,13 +29,20 @@ public:
 	virtual SRenderUnit* render(const IRenderer* renderer, const CCamera* cam) = 0;
 
 public:
+	void setParent(ISceneNode* parent)
+	{
+		getTransform()->setParent(parent ? parent->getTransform() : nullptr);
+	}
 	void traverse(TRAVERSE_SCENENODE_FUNC func);
 	CTransform* getTransform() { return &m_Transform; }
 	const CTransform* getTransform() const { return &m_Transform; }
 	const std::list<IRenderer*>& getRendererList() const { return m_RendererList; }
-	void markDelete() { m_ToDelete = true; }
+
+	void markDelete();
 	bool isToDelete() const { return m_ToDelete; }
+	void immediateDelete();
 	static void checkDelete(ISceneNode* node);
+
 	void setActive(bool active) { m_Active = active; }
 	bool activeSelf() const { return m_Active; }
 
@@ -58,15 +64,33 @@ inline void ISceneNode::traverse(TRAVERSE_SCENENODE_FUNC func)
 	}
 }
 
+inline void ISceneNode::markDelete()
+{
+	m_ToDelete = true;
+	for (const auto& trans : getTransform()->getChildList())
+	{
+		ISceneNode* node = trans->getSceneNode();
+		node->markDelete();
+	}
+}
+
+inline void ISceneNode::immediateDelete()
+{
+	markDelete();
+	checkDelete(this);
+}
+
 inline void ISceneNode::checkDelete(ISceneNode* node)
 {
-	if (!node->isToDelete())
-		return;
+	if (node->isToDelete())			
+		node->markDelete();		//删除所有子结点
+
 	for (const auto& trans : node->getTransform()->getChildList())
 	{
 		ISceneNode* node = trans->getSceneNode();
-		if (node->isToDelete())
-			checkDelete(node);
+		checkDelete(node);
 	}
-	delete node;
+
+	if (node->isToDelete())
+		delete node;
 }

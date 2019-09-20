@@ -23,7 +23,7 @@ private:
 class CMeshSceneNode : public ISceneNode
 {
 public:
-	explicit CMeshSceneNode(ISceneNode* parent);
+	explicit CMeshSceneNode();
 	~CMeshSceneNode() = default;
 
 public:

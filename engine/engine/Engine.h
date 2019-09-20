@@ -35,6 +35,7 @@ public:
 	const COSInfo&	getOSInfo() const { return OSInfo; }
 	CInputReader* getInputReader() { return &InputReader; }
 	CFontManager* getFontManager() { return FontManager; }
+	CMeshManager* getMeshManager() { return MeshManager; }
 
 private:
 	IVideoDriver*	Driver;

@@ -24,7 +24,7 @@ int main()
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 	
-	//_CrtSetBreakAlloc(212);
+	//_CrtSetBreakAlloc(650);
 
 	globalDbg.beginCheckPoint();
 

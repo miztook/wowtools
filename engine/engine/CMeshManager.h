@@ -19,7 +19,7 @@ public:
 
 public:
 	bool addMesh(const char* name, IVertexBuffer* vbuffer, IIndexBuffer* ibuffer, E_PRIMITIVE_TYPE primType, uint32_t primCount, const aabbox3df& box);
-	CMesh* getMesh(const char* name) const;
+	const CMesh* getMesh(const char* name) const;
 	void removeMesh(const char* name);
 
 	bool addGridLineMesh(const char* name, uint32_t xzCount, float gridSize, SColor color);

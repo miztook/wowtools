@@ -38,7 +38,7 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 
 	//collect scene node
 	m_ProcessList.clear();
-	const std::list<ISceneNode*>& sceneNodeList = scene->getSceneNodeList();
+	const std::list<ISceneNode*>& sceneNodeList = scene->getTopSceneNodeList();
 	for (ISceneNode* node : sceneNodeList)
 	{
 		node->traverse([this](ISceneNode* n) 

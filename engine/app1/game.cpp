@@ -1,6 +1,7 @@
 #include "game.h"
 #include "Engine.h"
 #include "function3d.h"
+#include "CMeshManager.h"
 
 CGame* g_pGame = nullptr;
 
@@ -42,17 +43,20 @@ CGame::~CGame()
 
 void CGame::createScene()
 {
-	CScene* scene = new CScene("default");
+	m_pScene = new CScene("default");
 
 	const auto& dim = g_Engine->getDriver()->getDisplayMode();
 	float aspect = (float)dim.width / dim.height;
 	vector3df camPos(0, 5, 10);
 	vector3df camDir = f3d::normalize(vector3df(0, 2.5f, 0) - camPos);
-	scene->init3DCamera(PI / 4, aspect, 1, 2000.0f, camPos, camDir, vector3df::UnitZ());
+	m_pScene->init3DCamera(PI / 4, aspect, 1, 2000.0f, camPos, camDir, vector3df::UnitZ());
 
-	scene->init2DCamera(dim, 0, 1);
+	//scene->init2DCamera(dim, 0, 1);
 
-	m_pScene = scene;
+	//add mesh
+	g_Engine->getMeshManager()->addGridLineMesh("$grid20", 20, 1, SColor(128, 128, 128));
+
+	m_pScene->addMeshSceneNode("$grid20");
 }
 
 void CGame::update()

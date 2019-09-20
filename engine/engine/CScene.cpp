@@ -1,7 +1,9 @@
 #include "CScene.h"
 #include "CCamera.h"
 #include "Engine.h"
+#include "CMeshManager.h"
 #include "ISceneNode.h"
+#include "CMeshSceneNode.h"
 
 CScene::CScene(const char* strName)
 	: m_strName(strName)
@@ -12,6 +14,8 @@ CScene::CScene(const char* strName)
 
 CScene::~CScene()
 {
+	deleteAllSceneNodes();
+
 	m_p2DCamera.reset();
 	m_p3DCamera.reset();
 }
@@ -50,12 +54,6 @@ void CScene::onScreenResize(const dimension2d& size)
 	}
 }
 
-void CScene::addSceneNode(ISceneNode* node)
-{
-	if (node && node->getTransform()->getParent())
-		m_SceneNodes.push_back(node);
-}
-
 void CScene::cleanSceneNodes()
 {
 	for (auto itr = m_SceneNodes.begin(); itr != m_SceneNodes.end();)
@@ -75,12 +73,24 @@ void CScene::cleanSceneNodes()
 
 void CScene::deleteAllSceneNodes()
 {
-	for (auto itr = m_SceneNodes.begin(); itr != m_SceneNodes.end();)
+	for (auto itr = m_SceneNodes.begin(); itr != m_SceneNodes.end(); ++itr)
 	{
 		ISceneNode* node = *itr;
-		delete node;
+		node->markDelete();
 	}
+	cleanSceneNodes();
+
 	m_SceneNodes.clear();
 }
 
+CMeshSceneNode* CScene::addMeshSceneNode(const char* name)
+{
+	const CMesh* mesh = g_Engine->getMeshManager()->getMesh(name);
+	if (!mesh)
+		return nullptr;
+
+	CMeshSceneNode* node = new CMeshSceneNode;
+	m_SceneNodes.push_back(node);
+	return node;
+}
 

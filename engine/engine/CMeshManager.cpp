@@ -27,7 +27,7 @@ bool CMeshManager::addMesh(const char* name, IVertexBuffer* vbuffer, IIndexBuffe
 	return true;
 }
 
-CMesh* CMeshManager::getMesh(const char* name) const
+const CMesh* CMeshManager::getMesh(const char* name) const
 {
 	auto i = MeshMap.find(name);
 	if (i == MeshMap.end())

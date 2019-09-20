@@ -12,8 +12,7 @@ aabbox3df CMeshRenderer::getBoundingBox() const
 	return getLocalToWorldMatrix().transformBox(Box);
 }
 
-CMeshSceneNode::CMeshSceneNode(ISceneNode* parent)
-	: ISceneNode(parent)
+CMeshSceneNode::CMeshSceneNode()
 {
 
 }
