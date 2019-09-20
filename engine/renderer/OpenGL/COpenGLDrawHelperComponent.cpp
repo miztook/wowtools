@@ -365,7 +365,7 @@ void COpenGLDrawHelperComponent::do_draw2DImageBatch(uint32_t batchCount, uint32
 	Driver->setMaterial(InitMaterial2D);
 	Driver->setGlobalMaterial(InitGlobalMaterial2D);
 
-	SDrawParam drawParam = { 0 };
+	SDrawParam drawParam;
 	drawParam.numVertices = batchCount * 4;
 	drawParam.baseVertIndex = 0;
 
@@ -383,7 +383,7 @@ void COpenGLDrawHelperComponent::do_draw2DSquadBatch(uint32_t batchCount, ITextu
 	Driver->setMaterial(InitMaterial2D);
 	Driver->setGlobalMaterial(InitGlobalMaterial2D);
 
-	SDrawParam drawParam = { 0 };
+	SDrawParam drawParam;
 	drawParam.numVertices = batchCount * 4;
 	drawParam.baseVertIndex = 0;
 

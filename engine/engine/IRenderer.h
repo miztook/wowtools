@@ -3,6 +3,7 @@
 #include "aabbox3d.h"
 #include "SMaterial.h"
 #include "RenderStruct.h"
+#include "SGlobalLayerData.h"
 
 class ISceneNode;
 
@@ -21,10 +22,15 @@ public:
 	matrix4 getLocalToWorldMatrix() const;
 	ISceneNode* getSceneNode() const { return SceneNode; }
 
+	int getRenderQueue() const { return Material.RenderQueue; }
+	void setGlobalLayerData(const SGlobalLayerData& layerData) { GlobalLayerData = layerData; }
+	const SGlobalLayerData& getGlobalLayerData() const { return GlobalLayerData; }
+
 public:
 	bool Active;
 
 protected:
 	ISceneNode*		SceneNode;
 	SMaterial	Material;
+	SGlobalLayerData	GlobalLayerData;
 };

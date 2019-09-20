@@ -307,7 +307,7 @@ enum E_TRANSFORMATION_STATE : int
 	ETS_COUNT,
 };
 
-enum E_ALPHA_TYPE : int
+enum E_BLEND_TYPE : int
 {
 	EMT_SOLID = 0,
 

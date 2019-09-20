@@ -568,7 +568,7 @@ void COpenGLDriver::drawIndexedPrimitive(const IVertexBuffer* vbuffer, const IIn
 		}
 
 		setVertexDeclarationAndBuffers(program,
-			vbuffer, drawParam.voffset0,
+			vbuffer, drawParam.voffset,
 			ibuffer);
 
 		//buffer check
@@ -596,7 +596,7 @@ void COpenGLDriver::drawIndexedPrimitive(const IVertexBuffer* vbuffer, const IIn
 	else
 	{
 		setVertexDeclarationAndBuffers(program,
-			vbuffer, drawParam.voffset0,
+			vbuffer, drawParam.voffset,
 			ibuffer);
 
 		glDrawArrays(mode, drawParam.startIndex, getIndexCount(primType, primCount));

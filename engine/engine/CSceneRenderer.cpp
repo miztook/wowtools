@@ -78,7 +78,7 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 			ISceneNode* node = renderer->getSceneNode();
 			SRenderUnit* renderUnit = node->render(renderer, cam);
 			if (renderUnit)
-				RenderLoop.addRenderUnit(*renderUnit);
+				RenderLoop.addRenderUnit(renderUnit);
 		}
 	}
 	

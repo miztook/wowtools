@@ -7,6 +7,7 @@
 
 class IVertexBuffer;
 class IIndexBuffer;
+class IRenderer;
 
 enum E_2DBlendMode : int8_t
 {
@@ -41,7 +42,7 @@ struct S2DBlendParam
 		return ((blendMode << 8) + ((alpha ? 1 : 0) << 4) + (alphaChannel ? 1 : 0));
 	}
 
-	E_ALPHA_TYPE getAlphaType() const
+	E_BLEND_TYPE getAlphaType() const
 	{
 		if (!alpha && !alphaChannel)
 			return EMT_SOLID;
@@ -91,7 +92,7 @@ struct S2DBlendParam
 	void setMaterial(SMaterial& material) const
 	{
 		material.VSFile = "";
-		material.AlphaType = getAlphaType();
+		material.BlendType = getAlphaType();
 		material.PSFile = "UI";
 		material.PSMacroString = CShaderUtil::getUIPSMacroString(alpha, alphaChannel);
 	}
@@ -128,7 +129,15 @@ struct  SDrawParam
 
 struct SRenderUnit
 {
-	SRenderUnit(const IRenderer* rdr) : renderer(rdr), vbuffer(nullptr), ibuffer(nullptr), primCount(0), primType(EPT_TRIANGLES) {}
+	explicit SRenderUnit(const IRenderer* rdr) : renderer(rdr)
+	{
+		vbuffer = nullptr;
+		ibuffer = nullptr;
+		primCount = 0;
+		primType = EPT_TRIANGLES;
+		distance = 0;
+		shaderSortId = 0;
+	}
 
 	const IRenderer* renderer;
 	IVertexBuffer* vbuffer;
@@ -138,4 +147,6 @@ struct SRenderUnit
 	uint32_t		primCount;
 	E_PRIMITIVE_TYPE	primType;
 	float distance;
+	int shaderSortId;
+
 };

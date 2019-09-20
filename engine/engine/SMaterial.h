@@ -151,9 +151,9 @@ struct SMRenderTargetBlendDesc
 
 struct SMaterial
 {
-	E_ALPHA_TYPE	AlphaType;	//blend desc
 	E_RENDER_QUEUE	RenderQueue;
-
+	E_BLEND_TYPE	BlendType;	//blend desc
+	
 	std::string		VSFile;
 	std::string		VSMacroString;
 	std::string		PSFile;
@@ -178,7 +178,7 @@ struct SMaterial
 		: AmbientColor(1.0f, 1.0f, 1.0f, 1.0f),
 		DiffuseColor(1.0f, 1.0f, 1.0f, 1.0f),
 		EmissiveColor(1.0f, 1.0f, 1.0f, 1.0f),
-		AlphaType(EMT_SOLID),
+		BlendType(EMT_SOLID),
 		RenderQueue(ERQ_GEOMETRY),
 		Lighting(true),
 		FogEnable(false),
@@ -235,7 +235,7 @@ inline SMRenderTargetBlendDesc SMaterial::getRenderTargetBlendDesc() const
 	SMRenderTargetBlendDesc desc;
 	desc.Default();
 
-	switch (AlphaType)
+	switch (BlendType)
 	{
 	case EMT_SOLID:
 		break;
