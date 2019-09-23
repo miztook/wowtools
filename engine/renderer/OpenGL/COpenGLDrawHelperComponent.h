@@ -125,7 +125,6 @@ private:
 	std::unique_ptr<IVertexBuffer>		VBImage;
 
 	SMaterial	InitMaterial2D;
-	SGlobalMaterial		InitGlobalMaterial2D;
 
 	//
 	T_QuadDrawMap		m_2DQuadDrawMap;

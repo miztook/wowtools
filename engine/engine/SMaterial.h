@@ -168,9 +168,6 @@ struct SMaterial
 	SMRasterizerDesc	RasterizerDesc;
 	SMDepthStencilDesc	DepthStencilDesc;
 
-	bool		Lighting;
-	bool		FogEnable;
-
 	E_COLOR_WRITE	colorWrite;
 	float		AlphaTestRef;
 
@@ -180,29 +177,11 @@ struct SMaterial
 		EmissiveColor(1.0f, 1.0f, 1.0f, 1.0f),
 		BlendType(EMT_SOLID),
 		RenderQueue(ERQ_GEOMETRY),
-		Lighting(true),
-		FogEnable(false),
 		colorWrite(COLORWRITE_ALL),
 		AlphaTestRef(0)
 	{
 		RasterizerDesc.Default();
 		DepthStencilDesc.Default();
-	}
-
-	float getMaterialAlpha() const
-	{
-		if (Lighting)
-			return DiffuseColor.a;
-		else
-			return EmissiveColor.a;
-	}
-
-	void setMaterialAlpha(float alpha)
-	{
-		if (Lighting)
-			DiffuseColor.a = (DiffuseColor.a * alpha);
-		else
-			EmissiveColor.a = (EmissiveColor.a * alpha);
 	}
 
 	void setVariable(const char* name, const float* src, uint32_t size);

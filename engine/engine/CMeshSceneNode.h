@@ -27,7 +27,7 @@ public:
 	~CMeshSceneNode();
 
 public:
-	void addMesh(const CMesh* pMesh);
+	CMeshRenderer* addMesh(const CMesh* pMesh);
 	void removeMesh(const CMesh* pMesh);
 
 public:

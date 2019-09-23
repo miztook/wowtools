@@ -4,6 +4,7 @@
 #include "CTimer.h"
 #include "CInputReader.h"
 #include "IVideoDriver.h"
+#include "CRenderSetting.h"
 
 class CFontManager;
 class CMeshManager;
@@ -34,8 +35,9 @@ public:
 	const SWindowInfo& getWindowInfo() const { return WindowInfo; }
 	const COSInfo&	getOSInfo() const { return OSInfo; }
 	CInputReader* getInputReader() { return &InputReader; }
-	CFontManager* getFontManager() { return FontManager; }
-	CMeshManager* getMeshManager() { return MeshManager; }
+	CFontManager* getFontManager() const { return FontManager; }
+	CMeshManager* getMeshManager() const { return MeshManager; }
+	const CRenderSetting& getRenderSetting() const { return RenderSetting; }
 
 private:
 	IVideoDriver*	Driver;
@@ -46,6 +48,7 @@ private:
 	IMessageHandler*		MessageHandler;
 
 	//
+	CRenderSetting		RenderSetting;
 	CFontManager*		FontManager;
 	CMeshManager*		MeshManager;
 };

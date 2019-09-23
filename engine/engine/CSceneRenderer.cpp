@@ -91,8 +91,8 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 		{
 			Driver->clear(true, true, false, BackgroundColor);
 
-			RenderLoop.doRenderLoopPrepass();
-			RenderLoop.doRenderLoopForward();
+			RenderLoop.doRenderLoopPrepass(cam);
+			RenderLoop.doRenderLoopForward(cam);
 
 			renderDebugInfo();
 
@@ -112,12 +112,6 @@ void CSceneRenderer::beginFrame()
 void CSceneRenderer::endFrame()
 {
 	m_FPSCounter.registerFrame(CSysChrono::getTimePointNow());
-}
-
-void CSceneRenderer::render2D(const CScene* scene) const
-{
-	if (!scene->get2DCamera()->IsInited())
-		return;
 }
 
 void CSceneRenderer::renderDebugInfo() const

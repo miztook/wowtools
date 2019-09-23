@@ -39,13 +39,9 @@ bool COpenGLDrawHelperComponent::init()
 void COpenGLDrawHelperComponent::initMaterials()
 {
 	InitMaterial2D.RasterizerDesc.Cull = ECM_BACK;
-	InitMaterial2D.Lighting = false;
 	InitMaterial2D.DepthStencilDesc.ZWriteEnable = false;
 	InitMaterial2D.DepthStencilDesc.ZBuffer = ECFN_NEVER;
 	InitMaterial2D.RasterizerDesc.AntiAliasing = EAAM_LINE_SMOOTH;
-
-	InitGlobalMaterial2D.MipMapLodBias = 0;
-	InitGlobalMaterial2D.TextureFilter = ETF_NONE;
 }
 
 void COpenGLDrawHelperComponent::createStaticVertexBufferScreenQuad()
@@ -363,7 +359,7 @@ void COpenGLDrawHelperComponent::do_draw2DImageBatch(uint32_t batchCount, uint32
 	blendParam.setMaterial(InitMaterial2D);
 
 	Driver->setMaterial(InitMaterial2D);
-	Driver->setGlobalMaterial(InitGlobalMaterial2D);
+	Driver->setGlobalMaterial(Driver->getGlobalMaterial2D());
 
 	SDrawParam drawParam;
 	drawParam.numVertices = batchCount * 4;
@@ -381,7 +377,7 @@ void COpenGLDrawHelperComponent::do_draw2DSquadBatch(uint32_t batchCount, ITextu
 	blendParam.setMaterial(InitMaterial2D);
 
 	Driver->setMaterial(InitMaterial2D);
-	Driver->setGlobalMaterial(InitGlobalMaterial2D);
+	Driver->setGlobalMaterial(Driver->getGlobalMaterial2D());
 
 	SDrawParam drawParam;
 	drawParam.numVertices = batchCount * 4;

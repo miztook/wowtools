@@ -27,8 +27,6 @@ private:
 	void beginFrame();
 	void endFrame();
 
-	void render3D(const CScene* scene) const;
-	void render2D(const CScene* scene) const;
 	void renderDebugInfo() const;
 
 private:

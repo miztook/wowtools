@@ -33,12 +33,12 @@ bool CInputReader::unacquire(E_INPUT_DEVICE device)
 	return false;
 }
 
-bool CInputReader::isKeyPressed(uint8_t keycode)
+bool CInputReader::isKeyPressed(uint8_t keycode) const
 {
 	return ProcessKeyboard && CSysUtil::isKeyPressed(keycode);
 }
 
-bool CInputReader::isMousePressed(E_MOUSE_BUTTON button)
+bool CInputReader::isMousePressed(E_MOUSE_BUTTON button) const
 {
 	if (!ProcessMouse)
 		return false;

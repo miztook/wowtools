@@ -6,8 +6,8 @@ CMesh::CMesh(const char * szName, IVertexBuffer* vbuffer, IIndexBuffer* ibuffer,
 	Name = szName;
 	VBuffer = vbuffer;
 	IBuffer = ibuffer;
-	primType = primType;
-	primCount = primCount;
+	PrimType = primType;
+	PrimCount = primCount;
 }
 
 CMesh::~CMesh()

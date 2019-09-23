@@ -26,13 +26,14 @@ CMeshSceneNode::~CMeshSceneNode()
 	m_RendererList.clear();
 }
 
-void CMeshSceneNode::addMesh(const CMesh* pMesh)
+CMeshRenderer* CMeshSceneNode::addMesh(const CMesh* pMesh)
 {
 	if (!pMesh)
-		return;
+		return nullptr;
 
 	auto meshRenderer = new CMeshRenderer(pMesh, this);
 	m_RendererList.push_back(meshRenderer);
+	return meshRenderer;
 }
 
 void CMeshSceneNode::removeMesh(const CMesh* pMesh)
@@ -68,7 +69,6 @@ SRenderUnit* CMeshSceneNode::render(const IRenderer* renderer, const CCamera* ca
 	unit->primCount = mesh->PrimCount;
 
 	unit->drawParam.numVertices = mesh->getVertexBuffer()->getNumVertices();
-	unit->matWorld = meshRenderer->getLocalToWorldMatrix();
 
 	return unit;
 }

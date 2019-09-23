@@ -23,8 +23,8 @@ public:
 public:
 	bool acquire(E_INPUT_DEVICE device);
 	bool unacquire(E_INPUT_DEVICE device);
-	bool isKeyPressed(uint8_t keycode);
-	bool isMousePressed(E_MOUSE_BUTTON button);
+	bool isKeyPressed(uint8_t keycode) const;
+	bool isMousePressed(E_MOUSE_BUTTON button) const;
 
 	void addListener(IInputListener* listener)
 	{

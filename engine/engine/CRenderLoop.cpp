@@ -1,6 +1,9 @@
 #include "CRenderLoop.h"
 #include "SMaterial.h"
 #include "IRenderer.h"
+#include "Engine.h"
+#include "IVideoDriver.h"
+#include "CCamera.h"
 
 bool OpaqueCompare(const SRenderUnit* a, const SRenderUnit* b)
 {
@@ -71,7 +74,7 @@ bool AfterOpaqueCompare(const SRenderUnit* a, const SRenderUnit* b)
 
 CRenderLoop::CRenderLoop()
 {
-
+	Driver = g_Engine->getDriver();
 }
 
 CRenderLoop::~CRenderLoop()
@@ -93,15 +96,15 @@ void CRenderLoop::addRenderUnit(const SRenderUnit* unit)
 	}
 }
 
-void CRenderLoop::doRenderLoopPrepass()
+void CRenderLoop::doRenderLoopPrepass(const CCamera* cam)
 {
 
 }
 
-void CRenderLoop::doRenderLoopForward()
+void CRenderLoop::doRenderLoopForward(const CCamera* cam)
 {
-	renderOpaques();
-	renderAfterOpaues();
+	renderOpaques(cam);
+	renderAfterOpaues(cam);
 }
 
 void CRenderLoop::clearRenderUnits()
@@ -119,20 +122,30 @@ void CRenderLoop::clearRenderUnits()
 	m_RenderUnits_AfterOpaque.clear();
 }
 
-void CRenderLoop::renderOpaques()
+void CRenderLoop::renderOpaques(const CCamera* cam)
 {
 	std::sort(m_RenderUnits_Opaque.begin(), m_RenderUnits_Opaque.end(), OpaqueCompare);
+
+	const auto& matView = cam->getViewTM();
+	const auto& matProjection = cam->getProjectionTM();
 
 	for (const SRenderUnit* unit : m_RenderUnits_Opaque)
 	{
 		if (!unit->primCount)
 			continue;
 
+		const IRenderer* renderer = unit->renderer;
 
+		Driver->setWorldViewProjection(renderer->getLocalToWorldMatrix(), matView, matProjection);
+
+		Driver->setMaterial(renderer->getMaterial());
+		Driver->setGlobalMaterial(Driver->getGlobalMaterial3D());
+
+		Driver->draw(unit->vbuffer, unit->ibuffer, unit->primType, unit->primCount, unit->drawParam, cam->IsOrthogonal());
 	}
 }
 
-void CRenderLoop::renderAfterOpaues()
+void CRenderLoop::renderAfterOpaues(const CCamera* cam)
 {
 	std::sort(m_RenderUnits_AfterOpaque.begin(), m_RenderUnits_AfterOpaque.end(), AfterOpaqueCompare);
 }

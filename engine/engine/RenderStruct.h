@@ -143,7 +143,6 @@ struct SRenderUnit
 	IVertexBuffer* vbuffer;
 	IIndexBuffer* ibuffer;
 	SDrawParam  drawParam;
-	matrix4		matWorld;
 	uint32_t		primCount;
 	E_PRIMITIVE_TYPE	primType;
 	float distance;
