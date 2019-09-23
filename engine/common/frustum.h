@@ -61,9 +61,9 @@ inline void frustum::transform(const matrix4& mat)
 
 inline bool frustum::isInFrustum(const aabbox3df& box) const
 {
-	for (int p = 1; p < 6; ++p)
+	for (const auto& plane : planes)
 	{
-		if (ISREL3D_BACK == box.classifyPlaneRelation(planes[p]))
+		if (ISREL3D_BACK == box.classifyPlaneRelation(plane))
 			return false;
 	}
 

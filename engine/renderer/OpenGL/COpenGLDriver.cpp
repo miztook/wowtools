@@ -419,38 +419,12 @@ bool COpenGLDriver::setRenderTarget(const IRenderTarget * texture, bool bindDept
 	return true;
 }
 
-void COpenGLDriver::setTransform(E_TRANSFORMATION_STATE state, const matrix4& mat)
+void COpenGLDriver::setWorldViewProjection(const matrix4& world, const matrix4& view, const matrix4& projection)
 {
-	ASSERT(0 <= state && state < ETS_COUNT);
-	switch (state)
-	{
-	case ETS_VIEW:
-	{
-		M_V = mat;
-		M_VP = M_V * M_P; 
-	}
-	break;
-	case ETS_WORLD:
-	{
-		M_W = mat;
-	}
-	break;
-
-	case ETS_PROJECTION:
-	{
-		M_P = mat;
-		M_VP = M_V * M_P;
-	}
-	break;
-
-	default:
-		break;
-	}
-}
-
-void COpenGLDriver::setTexture(int index, ITexture * tex)
-{
-	MaterialRenderComponent->setCurrentTexture(index, tex);
+	M_W = world;
+	M_V = view;
+	M_P = projection;
+	M_VP = M_V * M_P;
 }
 
 dimension2d COpenGLDriver::getWindowSize() const

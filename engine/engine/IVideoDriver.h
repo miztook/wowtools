@@ -150,12 +150,16 @@ public:
 	virtual bool checkValid() = 0;
 	virtual bool setRenderTarget(const IRenderTarget* texture, bool bindDepth = true) = 0;
 
-	virtual void setTransform(E_TRANSFORMATION_STATE state, const matrix4& mat) = 0;
-	virtual void setTexture(int index, ITexture* tex) = 0;
+	virtual void setWorldViewProjection(const matrix4& world, const matrix4& view, const matrix4& projection) = 0;
 
 	virtual void setViewPort(const recti& area) = 0;
 	virtual void setDisplayMode(const dimension2d& size) = 0;
 	virtual bool setDriverSetting(const SDriverSetting& setting) = 0;
+
+	virtual void draw(IVertexBuffer* vbuffer, IIndexBuffer* ibuffer,
+		E_PRIMITIVE_TYPE primType,
+		uint32_t primCount,
+		const SDrawParam& drawParam, bool is2D) = 0;
 
 public:
 	virtual IVertexBuffer* createVertexBuffer(E_MESHBUFFER_MAPPING mapping) = 0;

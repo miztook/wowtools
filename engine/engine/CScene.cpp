@@ -61,7 +61,7 @@ void CScene::cleanSceneNodes()
 		ISceneNode* node = *itr;
 		if (node->isToDelete())
 		{
-			ISceneNode::checkDelete(node);
+			ISceneNode::checkDestroy(node);
 			m_SceneNodes.erase(itr++);
 		}
 		else
@@ -73,22 +73,16 @@ void CScene::cleanSceneNodes()
 
 void CScene::deleteAllSceneNodes()
 {
-	for (auto itr = m_SceneNodes.begin(); itr != m_SceneNodes.end(); ++itr)
+	for (ISceneNode* node : m_SceneNodes)
 	{
-		ISceneNode* node = *itr;
-		node->markDelete();
+		node->destroyImmediate();
 	}
-	cleanSceneNodes();
 
 	m_SceneNodes.clear();
 }
 
 CMeshSceneNode* CScene::addMeshSceneNode(const char* name)
 {
-	const CMesh* mesh = g_Engine->getMeshManager()->getMesh(name);
-	if (!mesh)
-		return nullptr;
-
 	CMeshSceneNode* node = new CMeshSceneNode;
 	m_SceneNodes.push_back(node);
 	return node;

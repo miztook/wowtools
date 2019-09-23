@@ -123,7 +123,13 @@ void CRenderLoop::renderOpaques()
 {
 	std::sort(m_RenderUnits_Opaque.begin(), m_RenderUnits_Opaque.end(), OpaqueCompare);
 
+	for (const SRenderUnit* unit : m_RenderUnits_Opaque)
+	{
+		if (!unit->primCount)
+			continue;
 
+
+	}
 }
 
 void CRenderLoop::renderAfterOpaues()

@@ -63,7 +63,7 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 		CullResult.VisibleRenderers.clear();
 		for (const auto& node : m_ProcessList)
 		{
-			const std::list<IRenderer*> rendererList = node->getRendererList();
+			const std::list<IRenderer*>& rendererList = node->getRendererList();
 			for (const IRenderer* renderer : rendererList)
 			{
 				const aabbox3df& box = renderer->getBoundingBox();

@@ -38,10 +38,10 @@ public:
 	const CTransform* getTransform() const { return &m_Transform; }
 	const std::list<IRenderer*>& getRendererList() const { return m_RendererList; }
 
-	void markDelete();
+	void destroy();
 	bool isToDelete() const { return m_ToDelete; }
-	void immediateDelete();
-	static void checkDelete(ISceneNode* node);
+	void destroyImmediate();
+	static void checkDestroy(ISceneNode* node);
 
 	void setActive(bool active) { m_Active = active; }
 	bool activeSelf() const { return m_Active; }
@@ -64,31 +64,31 @@ inline void ISceneNode::traverse(TRAVERSE_SCENENODE_FUNC func)
 	}
 }
 
-inline void ISceneNode::markDelete()
+inline void ISceneNode::destroy()
 {
 	m_ToDelete = true;
 	for (const auto& trans : getTransform()->getChildList())
 	{
 		ISceneNode* node = trans->getSceneNode();
-		node->markDelete();
+		node->destroy();
 	}
 }
 
-inline void ISceneNode::immediateDelete()
+inline void ISceneNode::destroyImmediate()
 {
-	markDelete();
-	checkDelete(this);
+	destroy();
+	checkDestroy(this);
 }
 
-inline void ISceneNode::checkDelete(ISceneNode* node)
+inline void ISceneNode::checkDestroy(ISceneNode* node)
 {
 	if (node->isToDelete())			
-		node->markDelete();		//删除所有子结点
+		node->destroy();		//删除所有子结点
 
 	for (const auto& trans : node->getTransform()->getChildList())
 	{
 		ISceneNode* node = trans->getSceneNode();
-		checkDelete(node);
+		checkDestroy(node);
 	}
 
 	if (node->isToDelete())

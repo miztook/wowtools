@@ -14,10 +14,19 @@ aabbox3df CMeshRenderer::getBoundingBox() const
 
 CMeshSceneNode::CMeshSceneNode()
 {
-
+	
 }
 
-void CMeshSceneNode::addMesh(CMesh* pMesh)
+CMeshSceneNode::~CMeshSceneNode()
+{
+	for (IRenderer* renderer : m_RendererList)
+	{
+		delete renderer;
+	}
+	m_RendererList.clear();
+}
+
+void CMeshSceneNode::addMesh(const CMesh* pMesh)
 {
 	if (!pMesh)
 		return;
@@ -26,7 +35,7 @@ void CMeshSceneNode::addMesh(CMesh* pMesh)
 	m_RendererList.push_back(meshRenderer);
 }
 
-void CMeshSceneNode::removeMesh(CMesh* pMesh)
+void CMeshSceneNode::removeMesh(const CMesh* pMesh)
 {
 	if (!pMesh)
 		return;

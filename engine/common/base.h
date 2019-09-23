@@ -299,14 +299,6 @@ enum E_IMAGE_TYPE : int
 	EIT_BLP,
 };
 
-enum E_TRANSFORMATION_STATE : int
-{
-	ETS_VIEW = 0,
-	ETS_WORLD,
-	ETS_PROJECTION,
-	ETS_COUNT,
-};
-
 enum E_BLEND_TYPE : int
 {
 	EMT_SOLID = 0,

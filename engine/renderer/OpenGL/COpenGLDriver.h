@@ -2,7 +2,6 @@
 
 #include "IVideoDriver.h"
 #include "COpenGLExtension.h"
-#include "RenderStruct.h"
 #include <array>
 
 class COpenGLMaterialRenderComponent;
@@ -14,6 +13,7 @@ class COpenGLVertexDeclaration;
 class IVertexBuffer;
 class IIndexBuffer;
 class CGLProgram;
+struct SDrawParam;
 
 class COpenGLDriver : public IVideoDriver
 {
@@ -35,12 +35,16 @@ public:
 	bool checkValid() override { return true; }
 	bool setRenderTarget(const IRenderTarget* texture, bool bindDepth = true) override;
 
-	void setTransform(E_TRANSFORMATION_STATE state, const matrix4& mat) override;
-	void setTexture(int index, ITexture* tex) override;
+	void setWorldViewProjection(const matrix4& world, const matrix4& view, const matrix4& projection) override;
 
 	void setViewPort(const recti& area) override;
 	void setDisplayMode(const dimension2d& size) override;
 	bool setDriverSetting(const SDriverSetting& setting) override;
+
+	void draw(IVertexBuffer* vbuffer, IIndexBuffer* ibuffer,
+		E_PRIMITIVE_TYPE primType,
+		uint32_t primCount,
+		const SDrawParam& drawParam, bool is2D) override;
 
 public:
 	IVertexBuffer* createVertexBuffer(E_MESHBUFFER_MAPPING mapping) override;
@@ -63,13 +67,6 @@ public:
 		SColor color,
 		E_RECT_UVCOORDS uvcoords,
 		const S2DBlendParam& blendParam) override;
-
-public:
-	void draw(IVertexBuffer* vbuffer, IIndexBuffer* ibuffer,
-		E_PRIMITIVE_TYPE primType,
-		uint32_t primCount,
-		const SDrawParam& drawParam,
-		bool is2D);
 
 public:
 	COpenGLMaterialRenderComponent* getMaterialRenderComponent() const { return MaterialRenderComponent.get();}

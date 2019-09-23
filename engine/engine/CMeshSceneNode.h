@@ -24,11 +24,11 @@ class CMeshSceneNode : public ISceneNode
 {
 public:
 	explicit CMeshSceneNode();
-	~CMeshSceneNode() = default;
+	~CMeshSceneNode();
 
 public:
-	void addMesh(CMesh* pMesh);
-	void removeMesh(CMesh* pMesh);
+	void addMesh(const CMesh* pMesh);
+	void removeMesh(const CMesh* pMesh);
 
 public:
 	SRenderUnit* render(const IRenderer* renderer, const CCamera* cam) override;

@@ -42,7 +42,7 @@ struct S2DBlendParam
 		return ((blendMode << 8) + ((alpha ? 1 : 0) << 4) + (alphaChannel ? 1 : 0));
 	}
 
-	E_BLEND_TYPE getAlphaType() const
+	E_BLEND_TYPE getBlendType() const
 	{
 		if (!alpha && !alphaChannel)
 			return EMT_SOLID;
@@ -92,7 +92,7 @@ struct S2DBlendParam
 	void setMaterial(SMaterial& material) const
 	{
 		material.VSFile = "";
-		material.BlendType = getAlphaType();
+		material.BlendType = getBlendType();
 		material.PSFile = "UI";
 		material.PSMacroString = CShaderUtil::getUIPSMacroString(alpha, alphaChannel);
 	}
