@@ -19,7 +19,11 @@ public:
 
 	void createInput();
 	void destroyInput();
+	void processInput();
+
 	void update();
+
+	void onKeyMessage(window_type hwnd, E_INPUT_MESSAGE message, int key);
 
 public:
 	CScene*	m_pScene;

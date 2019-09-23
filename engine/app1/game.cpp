@@ -63,7 +63,15 @@ void CGame::createScene()
 
 void CGame::update()
 {
+	processInput();
+}
 
+void CGame::onKeyMessage(window_type hwnd, E_INPUT_MESSAGE message, int key)
+{
+	if (message == Key_Up)
+	{
+
+	}
 }
 
 void createGame()

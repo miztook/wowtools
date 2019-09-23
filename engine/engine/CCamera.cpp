@@ -120,6 +120,73 @@ void CCamera::setProjectionParam(float left, float right, float top, float botto
 	setZFrontAndBack(vFront, vBack);
 }
 
+void CCamera::onKeyMove(float speed, const SKeyControl& keycontrol)
+{
+	if (keycontrol.front || keycontrol.back || keycontrol.left ||
+		keycontrol.right || keycontrol.up || keycontrol.down)
+	{
+		vector3df vDir = getDir();
+		vector3df vRight = getRight();
+		vector3df vUp = getUp();
+
+		vector3df vDelta(0, 0, 0);
+		if (keycontrol.front)
+			vDelta += vDir * speed;
+		else if (keycontrol.back)
+			vDelta -= vDir * speed;
+
+		if (keycontrol.left)
+			vDelta -= vRight * speed;
+		else if (keycontrol.right)
+			vDelta += vRight * speed;
+
+		if (keycontrol.up)
+			vDelta += vUp * speed;
+		else if (keycontrol.down)
+			vDelta -= vUp * speed;
+
+		move(vDelta);
+	}
+}
+
+void CCamera::pitch_yaw_Maya(float pitchDegree, float yawDegree, const vector3df& vTarget)
+{
+	quaternion quatX(getRight(), pitchDegree * DEGTORAD);
+	quaternion quatY(vector3df::UnitY(), yawDegree * DEGTORAD);
+	quaternion q = (quatX * quatY);
+
+	vector3df vOppositeDir = -getDir();
+	vOppositeDir = q * vOppositeDir;
+
+	float d = vOppositeDir.dotProduct(vector3df::UnitY());
+	if (fabs(d) < 0.9999f)
+	{
+		turnAroundAxis(vTarget, getRight(), pitchDegree * DEGTORAD);
+	}
+	turnAroundAxis(vTarget, vector3df::UnitY(), yawDegree * DEGTORAD);
+}
+
+void CCamera::move_offset_Maya(float xOffset, float yOffset)
+{
+	move(-getRight() * xOffset + getUp() * yOffset);
+}
+
+void CCamera::pitch_yaw_FPS(float pitchDegree, float yawDegree)
+{
+	quaternion quatX(getRight(), pitchDegree * DEGTORAD);
+	quaternion quatY(vector3df::UnitY(), yawDegree * DEGTORAD);
+	quaternion q = (quatX * quatY);
+
+	vector3df v = q * getDir();
+	float d = v.dotProduct(vector3df::UnitY());
+	if (fabs(d) > 0.9999f)
+	{
+		v = quatY * getDir();
+	}
+
+	setDirAndUp(v, vector3df::UnitY());
+}
+
 void CCamera::updateViewTM()
 {
 	m_matViewTM = f3d::makeViewMatrix(m_vecPos, m_vecDir, m_vecUp, 0.0f);

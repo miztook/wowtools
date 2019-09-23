@@ -42,6 +42,7 @@ public:
 	const vector3df& getPos() const { return m_vecPos; }
 	const vector3df& getDir() const { return m_vecDir; }
 	const vector3df& getRight() const { return m_vecRight; }
+	const vector3df& getUp() const { return m_vecUp; }
 
 	float getFOV() const { return m_vFOV; }
 	float getRatio() const { return m_vRatio; }
@@ -54,10 +55,28 @@ public:
 		*pvRatio = m_vRatio;
 	}
 
+public:
+	//
+	struct SKeyControl
+	{
+		bool front;
+		bool back;
+		bool left;
+		bool right;
+		bool up;
+		bool down;
+	};
+
+	void onKeyMove(float speed, const SKeyControl& keycontrol);
+	void pitch_yaw_Maya(float pitchDegree, float yawDegree, const vector3df& vTarget);
+	void move_offset_Maya(float xOffset, float yOffset);
+	void pitch_yaw_FPS(float pitchDegree, float yawDegree);
+
 private:
 	void updateViewTM();
 	void updateProjectionTM();
 	void updateWorldFrustum();
+
 
 private:
 	vector3df m_vecPos;
