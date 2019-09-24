@@ -161,10 +161,6 @@ struct SMaterial
 	std::map<std::string, std::vector<float>>	ShaderVariableMap;
 	std::map<std::string, STextureUnit> TextureVariableMap;
 
-	SColorf		AmbientColor;
-	SColorf		DiffuseColor;
-	SColorf		EmissiveColor;
-
 	SMRasterizerDesc	RasterizerDesc;
 	SMDepthStencilDesc	DepthStencilDesc;
 
@@ -172,10 +168,7 @@ struct SMaterial
 	float		AlphaTestRef;
 
 	SMaterial()
-		: AmbientColor(1.0f, 1.0f, 1.0f, 1.0f),
-		DiffuseColor(1.0f, 1.0f, 1.0f, 1.0f),
-		EmissiveColor(1.0f, 1.0f, 1.0f, 1.0f),
-		BlendType(EMT_SOLID),
+		: BlendType(EMT_SOLID),
 		RenderQueue(ERQ_GEOMETRY),
 		colorWrite(COLORWRITE_ALL),
 		AlphaTestRef(0)
