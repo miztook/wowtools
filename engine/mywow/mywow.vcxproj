@@ -46,8 +46,11 @@
     <ClInclude Include="..\common\vector4d.h" />
     <ClInclude Include="..\common\wowDatabase.h" />
     <ClInclude Include="..\common\wowDbFile.h" />
-    <ClInclude Include="..\common\wowEnums.h" />
+    <ClInclude Include="..\common\wowGameFile.h" />
+    <ClInclude Include="..\common\wowHeader.h" />
     <ClInclude Include="..\common\wowEnvironment.h" />
+    <ClInclude Include="..\common\wowM2File.h" />
+    <ClInclude Include="..\common\wowM2Struct.h" />
     <ClInclude Include="..\common\wowTable.h" />
     <ClInclude Include="..\common\wowWDB5File.h" />
     <ClInclude Include="..\common\wowWDC3File.h" />
@@ -104,6 +107,8 @@
     <ClCompile Include="..\common\wowDatabase.cpp" />
     <ClCompile Include="..\common\wowDbFile.cpp" />
     <ClCompile Include="..\common\wowEnvironment.cpp" />
+    <ClCompile Include="..\common\wowGameFile.cpp" />
+    <ClCompile Include="..\common\wowM2File.cpp" />
     <ClCompile Include="..\common\wowTable.cpp" />
     <ClCompile Include="..\common\wowWDB5File.cpp" />
     <ClCompile Include="..\common\wowWDC3File.cpp" />

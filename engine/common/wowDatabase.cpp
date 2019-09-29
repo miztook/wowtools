@@ -48,7 +48,7 @@ bool wowDatabase::init()
 	return true;
 }
 
-CMemFile * wowDatabase::loadDBMemFile(const CTableStruct* table) const
+CMemFile* wowDatabase::loadDBMemFile(const CTableStruct* table) const
 {
 	if (!table)
 		return nullptr;

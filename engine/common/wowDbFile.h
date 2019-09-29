@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <vector>
 #include "varianttype.h"
-#include "wowEnums.h"
+#include "wowHeader.h"
 #include "CMemFile.h"
 
 class CTableStruct;

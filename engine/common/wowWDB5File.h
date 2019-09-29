@@ -25,7 +25,7 @@ public:
 		uint16_t id_index;                                            // new in WDB5 (and only after build 21737), this is the index of the field containing ID values; this is ignored if flags & 0x04 != 0
 	};
 
-	WDB5File(CMemFile* memFile);
+	explicit WDB5File(CMemFile* memFile);
 	~WDB5File() = default;
 
 	bool open();

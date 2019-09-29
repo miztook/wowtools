@@ -17,7 +17,7 @@ uint32_t CMemFile::read( void* dest, uint32_t bytes )
 		return 0;
 
 	size_t rpos = pointer + bytes;
-	if (rpos > size) {
+	if (rpos >= size) {
 		bytes = size - pointer;
 		eof = true;
 	}

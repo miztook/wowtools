@@ -67,7 +67,7 @@ private:
 		GLint	 FillMode;
 		GLboolean	 ColorMask[4];		//RGBA
 		GLboolean	 ZWriteEnable;
-		GLint	 StencilEnable;
+		//GLint	 StencilEnable;
 		GLint	 ScissorEnable;
 		GLint	 CullEnable;
 		GLint	 CullMode;

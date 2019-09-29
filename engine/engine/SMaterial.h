@@ -59,66 +59,6 @@ struct STextureUnit
 	}
 };
 
-struct SMRasterizerDesc
-{
-	E_CULL_MODE		Cull;
-	E_ANTI_ALIASING_MODE		AntiAliasing;
-	bool		Wireframe;
-	bool		ScissorEnable;
-
-	void Default()
-	{
-		Cull = ECM_NONE;
-		Wireframe = false;
-		ScissorEnable = false;
-	}
-
-	bool operator!=(const SMRasterizerDesc& b) const
-	{
-		bool equal = (Cull == b.Cull &&
-			Wireframe == b.Wireframe &&
-			ScissorEnable == b.ScissorEnable);
-		return !equal;
-	}
-	bool operator==(const SMRasterizerDesc& b) const
-	{
-		bool equal = (Cull == b.Cull &&
-			Wireframe == b.Wireframe &&
-			ScissorEnable == b.ScissorEnable);
-		return equal;
-	}
-};
-
-struct SMDepthStencilDesc
-{
-	E_COMPARISON_FUNC		ZBuffer;
-	bool		ZWriteEnable;
-	bool		StencilEnable;
-
-	void Default()
-	{
-		ZBuffer = ECFN_LESSEQUAL;
-		ZWriteEnable = true;
-		StencilEnable = false;
-	}
-
-	bool operator!=(const SMDepthStencilDesc& b) const
-	{
-		bool equal = (ZBuffer == b.ZBuffer &&
-			ZWriteEnable == b.ZWriteEnable &&
-			StencilEnable == b.StencilEnable);
-		return !equal;
-	}
-
-	bool operator==(const SMDepthStencilDesc& b) const
-	{
-		bool equal = (ZBuffer == b.ZBuffer &&
-			ZWriteEnable == b.ZWriteEnable &&
-			StencilEnable == b.StencilEnable);
-		return equal;
-	}
-};
-
 struct SMRenderTargetBlendDesc
 {
 	E_BLEND_FACTOR	srcBlend;
@@ -152,8 +92,7 @@ struct SMRenderTargetBlendDesc
 struct SMaterial
 {
 	E_RENDER_QUEUE	RenderQueue;
-	E_BLEND_TYPE	BlendType;	//blend desc
-	
+
 	std::string		VSFile;
 	std::string		VSMacroString;
 	std::string		PSFile;
@@ -161,20 +100,31 @@ struct SMaterial
 	std::map<std::string, std::vector<float>>	ShaderVariableMap;
 	std::map<std::string, STextureUnit> TextureVariableMap;
 
-	SMRasterizerDesc	RasterizerDesc;
-	SMDepthStencilDesc	DepthStencilDesc;
+	E_CULL_MODE		Cull;
+	E_ANTI_ALIASING_MODE		AntiAliasing;
+	bool		Wireframe;
+	bool		ScissorEnable;
+	E_COMPARISON_FUNC		ZBuffer;
+	bool		ZWriteEnable;
 
+	E_BLEND_TYPE	BlendType;	//blend desc
 	E_COLOR_WRITE	colorWrite;
 	float		AlphaTestRef;
 
 	SMaterial()
-		: BlendType(EMT_SOLID),
+		: 
 		RenderQueue(ERQ_GEOMETRY),
+		BlendType(EMT_SOLID),
 		colorWrite(COLORWRITE_ALL),
 		AlphaTestRef(0)
 	{
-		RasterizerDesc.Default();
-		DepthStencilDesc.Default();
+		RenderQueue = ERQ_GEOMETRY;
+		Cull = ECM_BACK;
+		AntiAliasing = EAAM_OFF;
+		Wireframe = false;
+		ScissorEnable = false;
+		ZBuffer = ECFN_LESSEQUAL;
+		ZWriteEnable = true;
 	}
 
 	void setVariable(const char* name, const float* src, uint32_t size);

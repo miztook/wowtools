@@ -38,10 +38,10 @@ bool COpenGLDrawHelperComponent::init()
 
 void COpenGLDrawHelperComponent::initMaterials()
 {
-	InitMaterial2D.RasterizerDesc.Cull = ECM_BACK;
-	InitMaterial2D.DepthStencilDesc.ZWriteEnable = false;
-	InitMaterial2D.DepthStencilDesc.ZBuffer = ECFN_NEVER;
-	InitMaterial2D.RasterizerDesc.AntiAliasing = EAAM_LINE_SMOOTH;
+	InitMaterial2D.Cull = ECM_BACK;
+	InitMaterial2D.ZWriteEnable = false;
+	InitMaterial2D.ZBuffer = ECFN_NEVER;
+	InitMaterial2D.AntiAliasing = EAAM_LINE_SMOOTH;
 }
 
 void COpenGLDrawHelperComponent::createStaticVertexBufferScreenQuad()

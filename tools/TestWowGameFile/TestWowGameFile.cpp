@@ -31,7 +31,7 @@ void testWowGameFile()
 	char		workingDirectory[QMAX_PATH];
 	Q_getcwd(workingDirectory, QMAX_PATH);
 
-	CFileSystem* fs = new CFileSystem(workingDirectory, R"(E:\World Of Warcraft)");
+	CFileSystem* fs = new CFileSystem(workingDirectory, R"(D:\World Of Warcraft)");
 	wowEnvironment* wowEnv = new wowEnvironment(fs);
 
 	if (!wowEnv->init())

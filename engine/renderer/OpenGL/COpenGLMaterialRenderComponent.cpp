@@ -95,30 +95,25 @@ void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial* material, 
 {
 	// zbuffer
 	{
-		CurrentRenderState.ZEnable = material->DepthStencilDesc.ZBuffer == ECFN_NEVER ? GL_FALSE : GL_TRUE;
-		CurrentRenderState.ZFunc = COpenGLHelper::getGLCompare((E_COMPARISON_FUNC)material->DepthStencilDesc.ZBuffer);
+		CurrentRenderState.ZEnable = material->ZBuffer == ECFN_NEVER ? GL_FALSE : GL_TRUE;
+		CurrentRenderState.ZFunc = COpenGLHelper::getGLCompare((E_COMPARISON_FUNC)material->ZBuffer);
 	}
 
 	// zwrite
 	{
-		CurrentRenderState.ZWriteEnable = material->DepthStencilDesc.ZWriteEnable ? GL_TRUE : GL_FALSE;
-	}
-
-	// stencil
-	{
-		CurrentRenderState.StencilEnable = material->DepthStencilDesc.StencilEnable ? GL_TRUE : GL_FALSE;
+		CurrentRenderState.ZWriteEnable = material->ZWriteEnable ? GL_TRUE : GL_FALSE;
 	}
 
 	// scissor
 	{
-		CurrentRenderState.ScissorEnable = material->RasterizerDesc.ScissorEnable ? GL_TRUE : GL_FALSE;
+		CurrentRenderState.ScissorEnable = material->ScissorEnable ? GL_TRUE : GL_FALSE;
 	}
 
 	// backface culling
 	{
 		GLenum cullmode;
 		GLenum frontface = GL_CW;
-		switch (material->RasterizerDesc.Cull)
+		switch (material->Cull)
 		{
 		case ECM_FRONT:
 			cullmode = GL_FRONT;
@@ -134,7 +129,7 @@ void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial* material, 
 
 		CurrentRenderState.FrontFace = frontface;
 		CurrentRenderState.CullMode = cullmode;
-		CurrentRenderState.CullEnable = material->RasterizerDesc.Cull != ECM_NONE ? GL_TRUE : GL_FALSE;
+		CurrentRenderState.CullEnable = material->Cull != ECM_NONE ? GL_TRUE : GL_FALSE;
 	}
 
 	// anti aliasing
@@ -142,7 +137,7 @@ void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial* material, 
 	{
 		bool multisample = false;
 		bool antialiasline = false;
-		switch (material->RasterizerDesc.AntiAliasing)
+		switch (material->AntiAliasing)
 		{
 		case EAAM_SIMPLE:
 			multisample = true;
@@ -224,7 +219,7 @@ void COpenGLMaterialRenderComponent::applyRenderStates()
 	}
 
 	DEVICE_SET_DEPTHMASK_STATE(ZWriteEnable, CurrentRenderState.ZWriteEnable);
-	DEVICE_SET_BOOL_STATE(StencilEnable, GL_STENCIL_TEST, CurrentRenderState.StencilEnable);
+	//DEVICE_SET_BOOL_STATE(StencilEnable, GL_STENCIL_TEST, CurrentRenderState.StencilEnable);
 	DEVICE_SET_BOOL_STATE(ScissorEnable, GL_SCISSOR_TEST, CurrentRenderState.ScissorEnable);
 	DEVICE_SET_BOOL_STATE(CullEnable, GL_CULL_FACE, CurrentRenderState.CullEnable);
 
@@ -495,7 +490,7 @@ void COpenGLMaterialRenderComponent::resetRSCache()
 	glGetIntegerv(GL_DEPTH_FUNC, &RsCache.ZFunc);
 	glGetBooleanv(GL_COLOR_WRITEMASK, RsCache.ColorMask);
 	glGetBooleanv(GL_DEPTH_WRITEMASK, &RsCache.ZWriteEnable);
-	RsCache.StencilEnable = glIsEnabled(GL_STENCIL_TEST);
+	//RsCache.StencilEnable = glIsEnabled(GL_STENCIL_TEST);
 	RsCache.ScissorEnable = glIsEnabled(GL_SCISSOR_TEST);
 	RsCache.CullEnable = glIsEnabled(GL_CULL_FACE);
 	glGetIntegerv(GL_CULL_FACE_MODE, &RsCache.CullMode);
