@@ -8,6 +8,7 @@
 
 #include "wowDbFile.h"
 #include "wowWMOFile.h"
+#include "wowM2File.h"
 
 #pragma comment(lib, "CascLib.lib")
 #pragma comment(lib, "pugixml.lib")
@@ -39,17 +40,32 @@ void testWowGameFile()
 	else
 		printf("init success!\n");
 
+	/*
 	if (!wowEnv->loadCascListFiles())
 		printf("listfile fail!\n");
 	else
 		printf("listfile success!\n");
 
 	wowEnv->buildWmoFileList();
+	*/
 
-	const char* path = "World\\wmo\\Northrend\\Dalaran\\ND_Dalaran.wmo";
-	wowWMOFile* wmoFile = new wowWMOFile(wowEnv);
-	wmoFile->loadFile(path);
-	delete wmoFile;
+	//wmo test
+	{
+		const char* path = "World\\wmo\\Northrend\\Dalaran\\ND_Dalaran.wmo";
+		wowWMOFile* wmoFile = new wowWMOFile(wowEnv);
+		wmoFile->loadFile(path);
+		delete wmoFile;
+
+		printf("wmo load success! %s\n", path);
+	}
+
+	//m2 test
+	{
+		const char* path = "Character\\ORC\\MALE\\OrcMale.m2";
+		wowM2File* m2File = new wowM2File(wowEnv);
+		m2File->loadFile(path);
+		delete m2File;
+	}
 
 	delete wowEnv;
 	delete fs;

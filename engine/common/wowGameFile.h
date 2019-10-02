@@ -9,13 +9,14 @@
 class GameFile
 {
 public:
-	explicit GameFile(CMemFile* memFile);
+	explicit GameFile(const CMemFile* memFile);
 
-	virtual ~GameFile();
+	virtual ~GameFile() {}
 
 public:
 	bool setChunk(const char* chunkName);
 	
+	const CMemFile* getMemFile() const { return m_pMemFile; }
 	const uint8_t* getFileData() const { return FileData; }
 	uint32_t getFileSize() const { return FileSize; }
 	uint32_t getFileOffset() const { return FileOffset; }
@@ -38,7 +39,7 @@ protected:
 	void afterOpen();
 
 protected:
-	CMemFile*	m_pMemFile;
+	const CMemFile*	m_pMemFile;
 	const uint8_t*	FileData;
 	uint32_t	FileSize;
 	uint32_t	FileOffset;

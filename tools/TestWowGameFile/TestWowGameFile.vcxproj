@@ -163,10 +163,13 @@
     <ClCompile Include="..\..\engine\common\CFileSystem.cpp" />
     <ClCompile Include="..\..\engine\common\CMemFile.cpp" />
     <ClCompile Include="..\..\engine\common\CReadFile.cpp" />
+    <ClCompile Include="..\..\engine\common\CSysCodeCvt.cpp" />
     <ClCompile Include="..\..\engine\common\CWriteFile.cpp" />
     <ClCompile Include="..\..\engine\common\wowDatabase.cpp" />
     <ClCompile Include="..\..\engine\common\wowDbFile.cpp" />
     <ClCompile Include="..\..\engine\common\wowEnvironment.cpp" />
+    <ClCompile Include="..\..\engine\common\wowGameFile.cpp" />
+    <ClCompile Include="..\..\engine\common\wowM2File.cpp" />
     <ClCompile Include="..\..\engine\common\wowTable.cpp" />
     <ClCompile Include="..\..\engine\common\wowWDB5File.cpp" />
     <ClCompile Include="..\..\engine\common\wowWDC3File.cpp" />
@@ -180,6 +183,7 @@
     <ClInclude Include="..\..\engine\common\CMemFile.h" />
     <ClInclude Include="..\..\engine\common\CReadFile.h" />
     <ClInclude Include="..\..\engine\common\CSysChrono.h" />
+    <ClInclude Include="..\..\engine\common\CSysCodeCvt.h" />
     <ClInclude Include="..\..\engine\common\CSysSync.h" />
     <ClInclude Include="..\..\engine\common\CWriteFile.h" />
     <ClInclude Include="..\..\engine\common\frustum.h" />
@@ -197,10 +201,15 @@
     <ClInclude Include="..\..\engine\common\varianttype.h" />
     <ClInclude Include="..\..\engine\common\vector2d.h" />
     <ClInclude Include="..\..\engine\common\vector3d.h" />
+    <ClInclude Include="..\..\engine\common\vector4d.h" />
     <ClInclude Include="..\..\engine\common\wowDatabase.h" />
     <ClInclude Include="..\..\engine\common\wowDbFile.h" />
     <ClInclude Include="..\..\engine\common\wowEnums.h" />
     <ClInclude Include="..\..\engine\common\wowEnvironment.h" />
+    <ClInclude Include="..\..\engine\common\wowGameFile.h" />
+    <ClInclude Include="..\..\engine\common\wowHeader.h" />
+    <ClInclude Include="..\..\engine\common\wowM2File.h" />
+    <ClInclude Include="..\..\engine\common\wowM2Struct.h" />
     <ClInclude Include="..\..\engine\common\wowTable.h" />
     <ClInclude Include="..\..\engine\common\wowWDB5File.h" />
     <ClInclude Include="..\..\engine\common\wowWDC3File.h" />

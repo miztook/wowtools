@@ -27,7 +27,7 @@ const char* GameFile::WowChunks[] =
 	"SKPD",
 };
 
-GameFile::GameFile(CMemFile * memFile)
+GameFile::GameFile(const CMemFile * memFile)
 	: m_pMemFile(memFile)
 {
 	FileData = nullptr;
@@ -35,11 +35,6 @@ GameFile::GameFile(CMemFile * memFile)
 	FileOffset = 0;
 
 	afterOpen();
-}
-
-GameFile::~GameFile()
-{
-	delete m_pMemFile;
 }
 
 bool GameFile::setChunk(const char* chunkName)
@@ -85,7 +80,7 @@ void GameFile::afterOpen()
 			while (offset < filesize)
 			{
 				ChunkHeader chunkHeader;
-				memcpy(&chunkHeader, buffer, sizeof(ChunkHeader));
+				memcpy(&chunkHeader, buffer + offset, sizeof(ChunkHeader));
 				offset += sizeof(ChunkHeader);
 
 				Chunk chunk;

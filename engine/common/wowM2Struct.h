@@ -4,7 +4,7 @@
 #include "vector3d.h"
 #include "quaternion.h"
 
-namespace WMO
+namespace M2
 {
 	inline vector3df fixCoordinate(const vector3df& v)
 	{

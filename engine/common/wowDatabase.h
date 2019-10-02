@@ -59,6 +59,8 @@ private:
 	CMemFile* loadDBMemFile(const CTableStruct* table) const;
 	bool loadAllTables();
 
+public:		//Êý¾Ý²éÑ¯
+
 public:
 	//tables
 	AnimationDataTable	m_AnimationDataTable;

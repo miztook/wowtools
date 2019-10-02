@@ -41,6 +41,15 @@
     <ClCompile Include="..\..\engine\common\wowWMOFile.cpp">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\common\CSysCodeCvt.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\wowGameFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\wowM2File.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\engine\common\aabbox3d.h">
@@ -137,6 +146,24 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\engine\common\wowWMOStruct.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\CSysCodeCvt.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\vector4d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowGameFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowHeader.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowM2File.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowM2Struct.h">
       <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>
