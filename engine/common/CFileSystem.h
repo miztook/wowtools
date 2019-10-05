@@ -3,9 +3,8 @@
 #include "CSysSync.h"
 #include <cstdint>
 #include <string>
-
-class CReadFile;
-class CWriteFile;
+#include "CReadFile.h"
+#include "CWriteFile.h"
 
 enum E_LOG_TYPE : int
 {

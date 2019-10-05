@@ -38,16 +38,22 @@ uint32_t CWriteFile::writeText(const char* buffer)
 	return (uint32_t)w1;
 }
 
-uint32_t CWriteFile::writeLine(const char* text)
+uint32_t CWriteFile::writeLine(const char* format, ...)
 {
-	if (!isOpen() || text == nullptr)
+	if (!isOpen() || format == nullptr)
 		return 0;
 
 	ASSERT(!IsBinary);
 
-	int32_t w = fprintf(File, "%s\r\n", text);
+	va_list va;
+	va_start(va, format);
+	int32_t w = vfprintf(File, format, va);
+	va_end(va);
+
 	if (w == EOF)
 		return 0;
+
+	fprintf(File, "\r\n");
 
 	return (uint32_t)w;
 }
