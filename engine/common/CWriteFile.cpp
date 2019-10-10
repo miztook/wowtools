@@ -53,7 +53,7 @@ uint32_t CWriteFile::writeLine(const char* format, ...)
 	if (w == EOF)
 		return 0;
 
-	fprintf(File, "\r\n");
+	fprintf(File, "\n");
 
 	return (uint32_t)w;
 }
