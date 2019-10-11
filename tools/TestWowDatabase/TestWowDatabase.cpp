@@ -168,8 +168,8 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 		CWriteFile* wf = fs->createAndWriteFile((dir + "ChrCustomization.txt").c_str(), false);
 		for (const auto& r : wowDB->m_ChrCustomizationTable.RecordList)
 		{
-			wf->writeLine("ID: %u, Name: %s",
-				r.ID, r.Name.c_str());
+			wf->writeLine("ID: %u, Name: %s, RaceID: %u",
+				r.ID, r.Name.c_str(), r.RaceId);
 		}
 		delete wf;
 	}
@@ -179,8 +179,9 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 		CWriteFile* wf = fs->createAndWriteFile((dir + "ChrRaces.txt").c_str(), false);
 		for (const auto& r : wowDB->m_ChrRacesTable.RecordList)
 		{
-			wf->writeLine("ID: %u, Name: %s",
-				r.ID, r.Name.c_str());
+			wf->writeLine(
+"ID: %u, Flags: %u, MaleDisaplayID: %u, FemaleDispalyID: %u, CharComponentTexLayoutID: %d, ClientPrefix: %s, HighResMaleDisplayId: %u, HighResFemaleDisplayId: %u, CharComponentTexLayoutHiResID: %d, BaseRaceID: %d",
+				r.ID, r.Flags, r.MaleDisplayID, r.FemaleDisplayID, r.CharComponentTexLayoutID, r.ClientPrefix.c_str(), r.HighResMaleDisplayId, r.HighResFemaleDisplayId, r.CharComponentTexLayoutHiResID, r.BaseRaceID);
 		}
 		delete wf;
 	}
@@ -190,8 +191,8 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 		CWriteFile* wf = fs->createAndWriteFile((dir + "ComponentModelFileData.txt").c_str(), false);
 		for (const auto& r : wowDB->m_ComponentModelFileDataTable.RecordList)
 		{
-			wf->writeLine("ID: %u, Name: %s",
-				r.ID, r.Name.c_str());
+			wf->writeLine("ID: %u, GenderIndex: %d, ClassID: %d, RaceID: %d, PositionIndex: %d",
+				r.ID, r.GenderIndex, r.ClassID, r.RaceID, r.PositionIndex);
 		}
 		delete wf;
 	}
@@ -201,8 +202,8 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 		CWriteFile* wf = fs->createAndWriteFile((dir + "ComponentTextureFileData.txt").c_str(), false);
 		for (const auto& r : wowDB->m_ComponentTextureFileDataTable.RecordList)
 		{
-			wf->writeLine("ID: %u, Name: %s",
-				r.ID, r.Name.c_str());
+			wf->writeLine("ID: %u, GenderIndex: %d, ClassID: %d, RaceID: %d",
+				r.ID, r.GenderIndex, r.ClassID, r.RaceID);
 		}
 		delete wf;
 	}
@@ -212,8 +213,8 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 		CWriteFile* wf = fs->createAndWriteFile((dir + "CreatureDisplayInfo.txt").c_str(), false);
 		for (const auto& r : wowDB->m_CreatureDisplayInfoTable.RecordList)
 		{
-			wf->writeLine("ID: %u, Name: %s",
-				r.ID, r.Name.c_str());
+			wf->writeLine("ID: %u, ModelID: %d, ExtendedDisplayInfoID: %u, Texture[0]: %u, Texture[1]: %u, Texture[2]: %u, ParticleColorID: %d",
+				r.ID, r.ModelID, r.ExtendedDisplayInfoID, r.Texture[0], r.Texture[1], r.Texture[2], r.ParticleColorID);
 		}
 		delete wf;
 	}
@@ -223,8 +224,8 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 		CWriteFile* wf = fs->createAndWriteFile((dir + "CreatureDisplayInfoExtra.txt").c_str(), false);
 		for (const auto& r : wowDB->m_CreatureDisplayInfoExtraTable.RecordList)
 		{
-			wf->writeLine("ID: %u, Name: %s",
-				r.ID, r.Name.c_str());
+			wf->writeLine("ID: %u, Skin: %d, Face: %d, HairStyle: %d, HairColor: %d, FacialHair: %d",
+				r.ID, r.Skin, r.Face, r.HairStyle, r.HairColor, r.FacialHair);
 		}
 		delete wf;
 	}
@@ -234,8 +235,8 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 		CWriteFile* wf = fs->createAndWriteFile((dir + "CreatureModelData.txt").c_str(), false);
 		for (const auto& r : wowDB->m_CreatureModelDataTable.RecordList)
 		{
-			wf->writeLine("ID: %u, Name: %s",
-				r.ID, r.Name.c_str());
+			wf->writeLine("ID: %u, FileID: %u",
+				r.ID, r.FileID);
 		}
 		delete wf;
 	}
@@ -245,8 +246,8 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 		CWriteFile* wf = fs->createAndWriteFile((dir + "CreatureType.txt").c_str(), false);
 		for (const auto& r : wowDB->m_CreatureTypeTable.RecordList)
 		{
-			wf->writeLine("ID: %u, Name: %s",
-				r.ID, r.Name.c_str());
+			wf->writeLine("ID: %u, Name: %s, Flags: %d",
+				r.ID, r.Name.c_str(), r.Flags);
 		}
 		delete wf;
 	}
@@ -256,8 +257,8 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 		CWriteFile* wf = fs->createAndWriteFile((dir + "HelmetGeosetData.txt").c_str(), false);
 		for (const auto& r : wowDB->m_HelmetGeosetDataTable.RecordList)
 		{
-			wf->writeLine("ID: %u, Name: %s",
-				r.ID, r.Name.c_str());
+			wf->writeLine("ID: %u, RaceID: %d, GeosetGroup: %d, GeosetVisDataID: %d",
+				r.ID, r.RaceID, r.GeosetGroup, r.GeosetVisDataID);
 		}
 		delete wf;
 	}
@@ -267,8 +268,8 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 		CWriteFile* wf = fs->createAndWriteFile((dir + "Item.txt").c_str(), false);
 		for (const auto& r : wowDB->m_ItemTable.RecordList)
 		{
-			wf->writeLine("ID: %u, Name: %s",
-				r.ID, r.Name.c_str());
+			wf->writeLine("ID: %u, Class: %d, SubClass: %d, Type: %d, Sheath: %d",
+				r.ID, r.Class, r.SubClass, r.Type, r.Sheath);
 		}
 		delete wf;
 	}
@@ -278,8 +279,8 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 		CWriteFile* wf = fs->createAndWriteFile((dir + "ItemAppearance.txt").c_str(), false);
 		for (const auto& r : wowDB->m_ItemAppearanceTable.RecordList)
 		{
-			wf->writeLine("ID: %u, Name: %s",
-				r.ID, r.Name.c_str());
+			wf->writeLine("ID: %u, ItemDisplayInfoID: %u",
+				r.ID, r.ItemDisplayInfoID);
 		}
 		delete wf;
 	}
@@ -289,8 +290,8 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 		CWriteFile* wf = fs->createAndWriteFile((dir + "ItemClass.txt").c_str(), false);
 		for (const auto& r : wowDB->m_ItemClassTable.RecordList)
 		{
-			wf->writeLine("ID: %u, Name: %s",
-				r.ID, r.Name.c_str());
+			wf->writeLine("ID: %u, Name: %s, Col0: %d",
+				r.ID, r.Name.c_str(), r.Col0);
 		}
 		delete wf;
 	}
@@ -300,8 +301,8 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 		CWriteFile* wf = fs->createAndWriteFile((dir + "ItemDisplayInfo.txt").c_str(), false);
 		for (const auto& r : wowDB->m_ItemDisplayInfoTable.RecordList)
 		{
-			wf->writeLine("ID: %u, Name: %s",
-				r.ID, r.Name.c_str());
+			wf->writeLine("ID: %u, Model0: %u, Model1: %u, TextureItemID0: %u, TextureItemID1: %u, HelmetGeosetVis0: %u, HelmetGeosetVis1: %u",
+				r.ID, r.Model[0], r.Model[1], r.TextureItemID[0], r.TextureItemID[1], r.HelmetGeosetVis[0], r.HelmetGeosetVis[1]);
 		}
 		delete wf;
 	}
@@ -311,8 +312,8 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 		CWriteFile* wf = fs->createAndWriteFile((dir + "ItemDisplayInfoMaterialRes.txt").c_str(), false);
 		for (const auto& r : wowDB->m_ItemDisplayInfoMaterialResTable.RecordList)
 		{
-			wf->writeLine("ID: %u, Name: %s",
-				r.ID, r.Name.c_str());
+			wf->writeLine("ID: %u, ItemDisplayInfoID: %u, TextureFileDataID: %u",
+				r.ID, r.ItemDisplayInfoID, r.TextureFileDataID);
 		}
 		delete wf;
 	}
