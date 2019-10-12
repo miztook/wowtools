@@ -17,15 +17,17 @@ int main(int argc, char* argv[])
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
+	/*
 	const std::regex pattern("^(\\d).(\\d).(\\d).(\\d+)");
 	std::match_results<std::string::const_iterator> sm;
 	std::string str("8.1.5.29814");
 	std::regex_match(str, sm, pattern);
 	for (int i = 0; i < sm.size(); ++i)
 		printf("%s\n", sm[i].str().c_str());
+		*/
 
 	const char* szStorage = R"(D:\World Of Warcraft 81\Data\)";
-	const char* filename = "character/human/male/humanmale.m2";
+	const char* filename = "Character\\HUMAN\\Male\\humanmale.m2";
 	int err = TestOpenStorage_OpenFile(szStorage, filename);
 
 	if (err == ERROR_SUCCESS)
@@ -55,7 +57,7 @@ static int TestOpenStorage_OpenFile(const TCHAR * szStorage, const char * szFile
 	}
 
 	DWORD dwFileCount = 0;
-	if (CascGetStorageInfo(hStorage, CascStorageFileCount, &dwFileCount, sizeof(DWORD), NULL))
+	if (CascGetStorageInfo(hStorage, CascStorageTotalFileCount, &dwFileCount, sizeof(DWORD), NULL))
 	{
 		printf("file count: %d\n", dwFileCount);
 	}
@@ -63,19 +65,18 @@ static int TestOpenStorage_OpenFile(const TCHAR * szStorage, const char * szFile
 	DWORD dwFeatures = 0;
 	if (CascGetStorageInfo(hStorage, CascStorageFeatures, &dwFeatures, sizeof(DWORD), NULL))
 	{
-		printf("has names? %s\n", (dwFeatures & CASC_FEATURE_HAS_NAMES) ? "YES" : "NO");
+		printf("has names? %s\n", (dwFeatures & CASC_FEATURE_FILE_NAMES) ? "YES" : "NO");
 	}
 
-	DWORD dwGameBuild = 0;
-	if (CascGetStorageInfo(hStorage, CascStorageGameBuild, &dwGameBuild, sizeof(DWORD), NULL))
+	CASC_STORAGE_PRODUCT product;
+	if (CascGetStorageInfo(hStorage, CascStorageProduct, &product, sizeof(CASC_STORAGE_PRODUCT), NULL))
 	{
-		printf("game build: %d\n", dwGameBuild);
+		printf("game build: %s, %d\n", product.szCodeName, product.BuildNumber);
 	}
 
 	if (nError == ERROR_SUCCESS)
 	{
-		int id = CascGetFileId(hStorage, szFileName);
-		printf("file name : %s, file id : %d\n", szFileName, id);
+		//CascGetFileInfo
 
 		// Open a file	
 		if (!CascOpenFile(hStorage, szFileName, CASC_LOCALE_ZHCN, 0, &hFile))
