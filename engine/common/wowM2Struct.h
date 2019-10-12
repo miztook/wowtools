@@ -24,7 +24,7 @@ namespace M2
 	//wow模型定义
 #	pragma pack (1)
 
-	struct Header20 {
+	struct Header {
 		/*0x000*/   uint8_t      _magic[4]; 	             // "MD20"																					  			
 		/*0x004*/   uint8_t   _version[4];		     // 0x80 10 00 00 (first digit of the build the format was last updated)												  	  			
 		/*0x008*/   uint32_t  _modelNameLength;		     // Length of the model's name																	  	  			

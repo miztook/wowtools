@@ -338,7 +338,7 @@ inline std::string getFileNameNoExtensionA(const char* filename)
 	if (lastSlash < lastBackSlash)
 		lastSlash = lastBackSlash;
 	const char* p = strrchr(filename, '.');
-	if (p < lastSlash)
+	if (p && p < lastSlash)
 	{
 		return std::string(filename);
 	}

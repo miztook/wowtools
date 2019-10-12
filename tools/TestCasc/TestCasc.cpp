@@ -24,8 +24,8 @@ int main(int argc, char* argv[])
 	for (int i = 0; i < sm.size(); ++i)
 		printf("%s\n", sm[i].str().c_str());
 
-	const char* szStorage = R"(E:\World Of Warcraft\Data\)";
-	const char* filename = "character/human/male/humanmale00.skin";
+	const char* szStorage = R"(D:\World Of Warcraft 81\Data\)";
+	const char* filename = "character/human/male/humanmale.m2";
 	int err = TestOpenStorage_OpenFile(szStorage, filename);
 
 	if (err == ERROR_SUCCESS)
@@ -90,10 +90,14 @@ static int TestOpenStorage_OpenFile(const TCHAR * szStorage, const char * szFile
 	{
 		DWORD dwFileSize, dwFileSizeHigh;
 		dwFileSize = CascGetFileSize(hFile, &dwFileSizeHigh);
-		printf("file name : %s, file size: %d\n", szFileName, dwFileSize);
 
 		// Read data from the file
-		CascReadFile(hFile, Buffer, sizeof(Buffer), &dwBytesRead);
+		bool ret = CascReadFile(hFile, Buffer, sizeof(Buffer), &dwBytesRead);
+		if (!ret)
+			printf("file name : %s, file size: %d, read failed!\n", szFileName, dwFileSize);
+		else
+			printf("file name : %s, file size: %d, read success!\n", szFileName, dwFileSize);
+
 		CascCloseFile(hFile);
 	}
 

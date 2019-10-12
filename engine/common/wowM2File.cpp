@@ -20,16 +20,33 @@ bool wowM2File::loadFile(const char* filename)
 	if (!memFile)
 		return false;
 
-	ASSERT(memFile->getSize() >= sizeof(M2::Header20));
+	ASSERT(memFile->getSize() >= sizeof(M2::Header));
 
 	GameFile gameFile(memFile);
-	if (gameFile.isChunked() && !gameFile.setChunk("MD21"))
+	if (gameFile.isChunked())
 	{
-		delete memFile;
-		return false;
+		if (gameFile.setChunk("MD21"))
+		{
+			memFile->seek(gameFile.getFileOffset());
+		}
+		else
+		{
+			delete memFile;
+			return false;
+		}
 	}
 
 	memcpy(&Header, gameFile.getFileData(), sizeof(Header));
+
+	char meshName[DEFAULT_SIZE];
+	Q_strncpy(meshName, DEFAULT_SIZE, (const char*)&gameFile.getFileData()[Header._modelNameOffset], Header._modelNameLength);
+	meshName[Header._modelNameLength] = '\0';
+
+	const char* sharp = strstr(meshName, "#");
+	if (sharp)
+		Name = std::string(meshName, sharp - meshName);
+	else
+		Name = meshName;
 
 	FileName = getFileNameNoExtensionA(filename);
 	Dir = getFileDirA(filename);
@@ -37,7 +54,18 @@ bool wowM2File::loadFile(const char* filename)
 
 	Type = getM2Type(Dir.c_str());				//½ÇÉ«npc
 
+	if (gameFile.isChunked() && gameFile.setChunk("SKID"))
+	{
+		memFile->seek(gameFile.getFileOffset());
 
+
+		gameFile.setChunk("MD21");
+		memFile->seek(gameFile.getFileOffset());
+	}
+	else
+	{
+
+	}
 
 	delete memFile;
 	return true;

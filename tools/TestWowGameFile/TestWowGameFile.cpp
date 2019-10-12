@@ -32,7 +32,7 @@ void testWowGameFile()
 	char		workingDirectory[QMAX_PATH];
 	Q_getcwd(workingDirectory, QMAX_PATH);
 
-	CFileSystem* fs = new CFileSystem(workingDirectory, R"(D:\World Of Warcraft)");
+	CFileSystem* fs = new CFileSystem(workingDirectory, R"(D:\World Of Warcraft 81)");
 	wowEnvironment* wowEnv = new wowEnvironment(fs);
 
 	if (!wowEnv->init())
@@ -61,7 +61,7 @@ void testWowGameFile()
 
 	//m2 test
 	{
-		const char* path = "Character\\ORC\\MALE\\OrcMale.m2";
+		const char* path = "Character\\HUMAN\\Male\\humanmale.m2";
 		wowM2File* m2File = new wowM2File(wowEnv);
 		m2File->loadFile(path);
 		delete m2File;

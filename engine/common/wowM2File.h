@@ -20,11 +20,12 @@ public:
 	bool loadFile(const char* filename);
 
 public:
+	std::string		Name;
 	std::string		Dir;
 	std::string		FileName;
 	M2Type		Type;
 	
-	M2::Header20	Header;
+	M2::Header	Header;
 
 	//
 	uint32_t		NumBoundingVerts;
@@ -52,12 +53,10 @@ public:
 	aabbox3df	BoundingAABBox;			//自身的包围
 	float		BoundingRadius;
 
-	//verts
 	std::vector<SVertex_PNT2WA>		Vertices;
+	std::vector<uint32_t>	SkinFileIDs;
+	std::vector<uint32_t>	GlobalSequences;
 
-	//bounds
-
-	//texture
 
 private:
 	void loadVertices();

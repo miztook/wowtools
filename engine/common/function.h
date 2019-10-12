@@ -654,7 +654,7 @@ inline void getFileNameNoExtensionA(const char* filename, char* outfilename, uns
 	if (lastSlash < lastBackSlash)
 		lastSlash = lastBackSlash;
 	const char* p = strrchr(filename, '.');
-	if (p < lastSlash)
+	if (p && p < lastSlash)
 	{
 		Q_strcpy(outfilename, size, filename);
 		return;
@@ -686,7 +686,7 @@ inline void getFileExtensionA(const char* filename, char* outfilename, unsigned 
 		lastSlash = lastBackSlash;
 
 	const char* p = strrchr(filename, '.');
-	if (p < lastSlash)
+	if (p && p < lastSlash)
 	{
 		Q_strcpy(outfilename, size, "");
 		return;
