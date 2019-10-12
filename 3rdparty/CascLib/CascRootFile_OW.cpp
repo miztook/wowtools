@@ -215,13 +215,8 @@ struct TApmFile
 
     ~TApmFile()
     {
-        if(pApmPackages != NULL)
-            CASC_FREE(pApmPackages);
-        pApmPackages = NULL;
-
-        if(pApmEntries != NULL)
-            CASC_FREE(pApmEntries);
-        pApmEntries = NULL;
+        CASC_FREE(pApmPackages);
+        CASC_FREE(pApmEntries);
     }
 
     LPBYTE CaptureHeader(LPBYTE pbApmData, LPBYTE pbApmEnd)
@@ -269,7 +264,7 @@ struct TApmFile
     LPBYTE CaptureArrayOfEntries(LPBYTE pbArrayOfEntries, LPBYTE pbApmEnd)
     {
         // Allocate array of entries
-        pApmEntries = CASC_ALLOC(APM_ENTRY, EntryCount);
+        pApmEntries = CASC_ALLOC<APM_ENTRY>(EntryCount);
         if(pApmEntries != NULL)
         {
             // The newest format
@@ -315,12 +310,9 @@ struct TApmFile
     LPBYTE CapturePackageEntries(LPBYTE pbArrayOfEntries, LPBYTE pbApmEnd)
     {
         // Allocate array of entries
-        pApmPackages = CASC_ALLOC(APM_PACKAGE_ENTRY, PackageCount);
+        pApmPackages = CASC_ALLOC_ZERO<APM_PACKAGE_ENTRY>(PackageCount);
         if(pApmPackages != NULL)
         {
-            // Zero the entire array
-            memset(pApmPackages, 0, PackageCount * sizeof(APM_PACKAGE_ENTRY));
-
             // The newest format
             if(BuildNumber > 45104 && BuildNumber != 45214)
             {
@@ -401,7 +393,10 @@ struct TApmFile
 struct TRootHandler_OW : public TFileTreeRoot
 {
     TRootHandler_OW() : TFileTreeRoot(0)
-    {}
+    {
+        // We have file names and return CKey as result of search
+        dwFeatures |= (CASC_FEATURE_FILE_NAMES | CASC_FEATURE_ROOT_CKEY);
+    }
 /*
     bool IsManifestFolderName(const char * szFileName, const char * szManifestFolder, size_t nLength)
     {
@@ -428,12 +423,12 @@ struct TRootHandler_OW : public TFileTreeRoot
         return false;
     }
 
-    int LoadApmFile(TCascStorage * hs, CONTENT_KEY & CKey, const char * szFileName)
+    DWORD LoadApmFile(TCascStorage * hs, CONTENT_KEY & CKey, const char * szFileName)
     {
         TApmFile ApmFile;
         LPBYTE pbApmData;
         DWORD cbApmData = 0;
-        int nError = ERROR_BAD_FORMAT;
+        DWORD dwErrCode = ERROR_BAD_FORMAT;
 
         pbApmData = LoadInternalFileToMemory(hs, CKey.Value, CASC_OPEN_BY_CKEY, &cbApmData);
         if(pbApmData != NULL)
@@ -458,16 +453,15 @@ struct TRootHandler_OW : public TFileTreeRoot
             CASC_FREE(pbApmData);
         }
 
-        return nError;
+        return dwErrCode;
     }
 
-    static int LoadCmfFile(TCascStorage * hs, CONTENT_KEY & CKey, const char * szFileName)
+    static DWORD LoadCmfFile(TCascStorage * hs, CONTENT_KEY & CKey, const char * szFileName)
     {
         TCmfFile CmfFile;
         LPBYTE pbCmfData;
         DWORD cbCmfData = 0;
-        
-        int nError = ERROR_BAD_FORMAT;
+        DWORD dwErrCode = ERROR_BAD_FORMAT;
 
         pbCmfData = LoadInternalFileToMemory(hs, CKey.Value, CASC_OPEN_BY_CKEY, &cbCmfData);
         if(pbCmfData != NULL)
@@ -486,37 +480,48 @@ struct TRootHandler_OW : public TFileTreeRoot
             CASC_FREE(pbCmfData);
         }
 
-        return nError;
+        return dwErrCode;
     }
 */
-    int Load(TCascStorage * hs, CASC_CSV & Csv, void * pvTextFile, size_t nFileNameIndex, size_t nCKeyIndex)
+    int Load(TCascStorage * hs, CASC_CSV & Csv, size_t nFileNameIndex, size_t nCKeyIndex)
     {
-        CONTENT_KEY CKey;
-        char szFileName[MAX_PATH+1];
+        PCASC_CKEY_ENTRY pCKeyEntry;
 //      size_t ApmFiles[0x80];
 //      size_t nApmFiles = 0;
+        BYTE CKey[MD5_HASH_SIZE];
 
         CASCLIB_UNUSED(hs);
 
         // Keep loading every line until there is something
-        while(Csv.LoadNextLine(pvTextFile) != 0)
+        while(Csv.LoadNextLine())
         {
-            // Retrieve the file name and the content key
-            if(Csv.GetString(szFileName, MAX_PATH, nFileNameIndex) == ERROR_SUCCESS && Csv.GetBinary(CKey.Value, MD5_HASH_SIZE, nCKeyIndex) == ERROR_SUCCESS)
-            {
-                // Insert the file name and the CKey into the tree
-                FileTree.Insert(&CKey, szFileName);
+            const CASC_CSV_COLUMN & FileName = Csv[CSV_ZERO][nFileNameIndex];
+            const CASC_CSV_COLUMN & CKeyStr = Csv[CSV_ZERO][nCKeyIndex];
 
-                // If the file name is actually an asset, we need to parse that asset and load files in it
-//              if(IsApmFileName(szFileName))
-//              {
-//                  ApmFiles[nApmFiles++] = FileTree_IndexOf(&pRootHandler->FileTree, pFileNode1);
-//              }
+            // Retrieve the file name and the content key
+            if(FileName.szValue && CKeyStr.szValue && CKeyStr.nLength == MD5_STRING_SIZE)
+            {
+                // Convert the string CKey to binary
+                if(ConvertStringToBinary(CKeyStr.szValue, MD5_STRING_SIZE, CKey) == ERROR_SUCCESS)
+                {
+                    // Find the item in the tree
+                    if((pCKeyEntry = FindCKeyEntry_CKey(hs, CKey)) != NULL)
+                    {
+                        // Insert the file name and the CKey into the tree
+                        FileTree.InsertByName(pCKeyEntry, FileName.szValue);
+
+                        // If the file name is actually an asset, we need to parse that asset and load files in it
+//                      if(IsApmFileName(szFileName))
+//                      {
+//                          ApmFiles[nApmFiles++] = FileTree_IndexOf(&pRootHandler->FileTree, pFileNode1);
+//                      }
+                    }
+                }
             }
         }
 /*
         // Load all CMF+APM files
-        if(nError == ERROR_SUCCESS)
+        if(dwErrCode == ERROR_SUCCESS)
         {
             for(size_t i = 0; i < nApmFiles; i++)
             {
@@ -532,15 +537,15 @@ struct TRootHandler_OW : public TFileTreeRoot
                     continue;
 
                 // Get the name of thew CMF file
-                strcpy(szCmfFile, szApmFile);
-                strcpy((char *)GetFileExtension(szCmfFile), ".cmf");
+                CascStrCopy(szCmfFile, _countof(szCmfFile), szApmFile);
+                CascStrCopy((char *)GetFileExtension(szCmfFile), 5, ".cmf");
                 pFileNode2 = (PCASC_FILE_NODE)FileTree_Find(&pRootHandler->FileTree, szCmfFile);
                 if(pFileNode2 == NULL)
                     break;
 
                 // Create the map of CMF entries
-                nError = LoadCmfFile(hs, pFileNode2->CKey, szCmfFile);
-                if(nError != ERROR_SUCCESS)
+                dwErrCode = LoadCmfFile(hs, pFileNode2->CKey, szCmfFile);
+                if(dwErrCode != ERROR_SUCCESS)
                     break;
 
             }
@@ -554,53 +559,43 @@ struct TRootHandler_OW : public TFileTreeRoot
 // Public functions
 
 // TODO: There is way more files in the Overwatch CASC storage than present in the ROOT file.
-int RootHandler_CreateOverwatch(TCascStorage * hs, LPBYTE pbRootFile, DWORD cbRootFile)
+DWORD RootHandler_CreateOverwatch(TCascStorage * hs, LPBYTE pbRootFile, DWORD cbRootFile)
 {
     TRootHandler_OW * pRootHandler = NULL;
-    CASC_CSV Csv;
-    const char * szLineBegin;
-    const char * szLineEnd;
-    void * pvTextFile;
+    CASC_CSV Csv(0, true);
     size_t Indices[2];
-    int nError = ERROR_BAD_FORMAT;
+    DWORD dwErrCode;
 
-    pvTextFile = ListFile_FromBuffer(pbRootFile, cbRootFile);
-    if(pvTextFile != NULL)
+    // Load the ROOT file
+    dwErrCode = Csv.Load(pbRootFile, cbRootFile);
+    if(dwErrCode == ERROR_SUCCESS)
     {
-        // Get the initial line, containing variable names
-        ListFile_GetNextLine(pvTextFile, &szLineBegin, &szLineEnd);
-        if (szLineEnd > szLineBegin)
+        // Retrieve the indices of the file name and MD5 columns
+        Indices[0] = Csv.GetColumnIndex("FILENAME");
+        Indices[1] = Csv.GetColumnIndex("MD5");
+
+        // If both indices were found OK, then load the root file
+        if(Indices[0] != CSV_INVALID_INDEX && Indices[1] != CSV_INVALID_INDEX)
         {
-            // Verify whether the first line begins with a hash tag
-            if (szLineBegin < szLineEnd && szLineBegin[0] == '#')
+            pRootHandler = new TRootHandler_OW();
+            if (pRootHandler != NULL)
             {
-                // Convert to CSV header
-                if(Csv.LoadHeader(szLineBegin + 1, szLineEnd) >= 4)
+                // Load the root directory. If load failed, we free the object
+                dwErrCode = pRootHandler->Load(hs, Csv, Indices[0], Indices[1]);
+                if (dwErrCode != ERROR_SUCCESS)
                 {
-                    // Retrieve the CSV indices for file name and MD5
-                    if(Csv.GetColumnIndices(Indices, "FILENAME", "MD5", NULL))
-                    {
-                        pRootHandler = new TRootHandler_OW();
-                        if (pRootHandler != NULL)
-                        {
-                            // Load the root directory. If load failed, we free the object
-                            nError = pRootHandler->Load(hs, Csv, pvTextFile, Indices[0], Indices[1]);
-                            if (nError != ERROR_SUCCESS)
-                            {
-                                delete pRootHandler;
-                                pRootHandler = NULL;
-                            }
-                        }
-                    }
+                    delete pRootHandler;
+                    pRootHandler = NULL;
                 }
             }
         }
-
-        // Free the listfile object
-        ListFile_Free(pvTextFile);
+        else
+        {
+            dwErrCode = ERROR_BAD_FORMAT;
+        }
     }
 
     // Assign the root directory (or NULL) and return error
     hs->pRootHandler = pRootHandler;
-    return nError;
+    return dwErrCode;
 }

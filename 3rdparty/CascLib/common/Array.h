@@ -19,6 +19,19 @@ class CASC_ARRAY
 {
     public:
 
+    CASC_ARRAY()
+    {
+        m_pItemArray = NULL;
+        m_ItemCountMax = 0;
+        m_ItemCount = 0;
+        m_ItemSize = 0;
+    }
+
+    ~CASC_ARRAY()
+    {
+        Free();
+    }
+
     // Creates an array with a custom element type
     template<typename TYPE>
     int Create(size_t ItemCountMax)
@@ -30,7 +43,7 @@ class CASC_ARRAY
     int Create(size_t ItemSize, size_t ItemCountMax)
     {
         // Create the array
-        if ((m_pItemArray = CASC_ALLOC(BYTE, ItemSize * ItemCountMax)) == NULL)
+        if ((m_pItemArray = CASC_ALLOC<BYTE>(ItemSize * ItemCountMax)) == NULL)
             return ERROR_NOT_ENOUGH_MEMORY;
 
         m_ItemCountMax = ItemCountMax;
@@ -40,61 +53,68 @@ class CASC_ARRAY
     }
 
     // Inserts one or more items; returns pointer to the first inserted item
-    void * Insert(const void * NewItems, size_t NewItemCount)
+    void * Insert(size_t NewItemCount, bool bEnlargeAllowed = true)
     {
-        void * pNewItem;
+        void * pNewItems;
 
         // Try to enlarge the buffer, if needed
-        if (!EnlargeArray(m_ItemCount + NewItemCount))
+        if (!EnlargeArray(m_ItemCount + NewItemCount, bEnlargeAllowed))
             return NULL;
-        pNewItem = m_pItemArray + (m_ItemCount * m_ItemSize);
-
-        // Copy the old item(s), if any
-        if (NewItems != NULL)
-            memcpy(pNewItem, NewItems, (NewItemCount * m_ItemSize));
+        pNewItems = m_pItemArray + (m_ItemCount * m_ItemSize);
 
         // Increment the size of the array
         m_ItemCount += NewItemCount;
+
+        // Return pointer to the new item
+        return pNewItems;
+    }
+
+    // Inserts one or more items; returns pointer to the first inserted item
+    void * Insert(const void * NewItems, size_t NewItemCount, bool bEnlargeAllowed = true)
+    {
+        void * pNewItem = Insert(NewItemCount, bEnlargeAllowed);
+
+        // Copy the item(s) to the array, if any
+        if (pNewItem && NewItems)
+            memcpy(pNewItem, NewItems, (NewItemCount * m_ItemSize));
         return pNewItem;
     }
 
     // Returns an item at a given index
     void * ItemAt(size_t ItemIndex)
     {
-        assert(ItemIndex < m_ItemCount);
-        return m_pItemArray + (ItemIndex * m_ItemSize);
+        return (ItemIndex < m_ItemCount) ? (m_pItemArray + (ItemIndex * m_ItemSize)) : NULL;
+    }
+
+    void * LastItem()
+    {
+        return m_pItemArray + (m_ItemCount * m_ItemSize);
     }
 
     // Inserts an item at a given index. If there is not enough items in the array,
     // the array will be enlarged. Should any gaps to be created, the function will zero them
     void * InsertAt(size_t ItemIndex)
     {
-        void * pNewItem;
-        size_t AddedItemCount;
+        LPBYTE pbLastItem;
+        LPBYTE pbNewItem;
 
-        // Is there enough items?
-        if (ItemIndex > m_ItemCount)
+        // Make sure we have array large enough
+        if(!EnlargeArray(ItemIndex + 1, true))
+            return NULL;
+        
+        // Get the items range
+        pbLastItem = m_pItemArray + (m_ItemCount * m_ItemSize);
+        pbNewItem = m_pItemArray + (ItemIndex * m_ItemSize);
+        m_ItemCount = CASCLIB_MAX(m_ItemCount, ItemIndex+1);
+
+        // If we inserted an item past the current end, we need to clear the items in-between
+        if (pbNewItem > pbLastItem)
         {
-            // Capture the new item count
-            AddedItemCount = ItemIndex - m_ItemCount;
-
-            // Insert the amount of items
-            pNewItem = Insert(NULL, AddedItemCount);
-            if (pNewItem == NULL)
-                return NULL;
-
-            // Zero the inserted items
-            memset(pNewItem, 0, m_ItemSize * AddedItemCount);
+            memset(pbLastItem, 0, (pbNewItem - pbLastItem));
+            m_ItemCount = ItemIndex + 1;
         }
 
-        // Is the item already inserted?
-        if (ItemIndex == m_ItemCount)
-        {
-            Insert(NULL, 1);
-        }
-
-        // Return the item at a given index
-        return ItemAt(ItemIndex);
+        return pbNewItem;
     }
 
     // Returns index of an item
@@ -106,7 +126,7 @@ class CASC_ARRAY
         assert(((pbItem - m_pItemArray) % m_ItemSize) == 0);
 
         return ((pbItem - m_pItemArray) / m_ItemSize);
-    }
+     }
 
     void * ItemArray()
     {
@@ -133,18 +153,23 @@ class CASC_ARRAY
         return (m_pItemArray && m_ItemCountMax);
     }
 
+    // Invalidates the entire array, but keeps memory allocated
+    void Reset()
+    {
+        memset(m_pItemArray, 0, m_ItemCountMax * m_ItemSize);
+        m_ItemCount = 0;
+    }
+
     // Frees the array
     void Free()
     {
-        if (m_pItemArray != NULL)
-            CASC_FREE(m_pItemArray);
-        m_pItemArray = NULL;
-        m_ItemCountMax = m_ItemCount = 0;
+        CASC_FREE(m_pItemArray);
+        m_ItemCountMax = m_ItemCount = m_ItemSize = 0;
     }
 
     protected:
 
-    bool EnlargeArray(size_t NewItemCount)
+    bool EnlargeArray(size_t NewItemCount, bool bEnlargeAllowed)
     {
         LPBYTE NewItemArray;
         size_t ItemCountMax;
@@ -156,6 +181,10 @@ class CASC_ARRAY
         // Shall we enlarge the table?
         if (NewItemCount > m_ItemCountMax)
         {
+            // Deny enlarge if not allowed
+            if(bEnlargeAllowed == false)
+                return false;
+
             // Calculate new table size
             ItemCountMax = m_ItemCountMax;
             while (ItemCountMax < NewItemCount)

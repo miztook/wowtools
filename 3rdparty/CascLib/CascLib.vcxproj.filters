@@ -15,29 +15,14 @@
     <Filter Include="Source Files\jenkins">
       <UniqueIdentifier>{6e51930b-9d87-430d-8f1f-31396814b243}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\libtomcrypt">
-      <UniqueIdentifier>{faae887e-453b-41b3-8476-4197e35d5527}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\zlib">
       <UniqueIdentifier>{c482b203-2811-464d-b99d-6d40cedf847f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\libtomcrypt\hashes">
-      <UniqueIdentifier>{09c7ee74-722d-49e0-9c5e-9582eb773dbd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\libtomcrypt\misc">
-      <UniqueIdentifier>{5eaf6b1e-f2e0-487c-b490-470c51cca23b}</UniqueIdentifier>
+    <Filter Include="Source Files\md5">
+      <UniqueIdentifier>{faae887e-453b-41b3-8476-4197e35d5527}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CascCommon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CascLib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CascPort.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="common\Array.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
@@ -56,37 +41,70 @@
     <ClInclude Include="common\FileTree.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
+    <ClInclude Include="common\IndexMap.h">
+      <Filter>Source Files\common</Filter>
+    </ClInclude>
     <ClInclude Include="common\ListFile.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
     <ClInclude Include="common\Map.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
+    <ClInclude Include="common\Path.h">
+      <Filter>Source Files\common</Filter>
+    </ClInclude>
     <ClInclude Include="common\RootHandler.h">
       <Filter>Source Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="jenkins\lookup.h">
+      <Filter>Source Files\jenkins</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\crc32.h">
+      <Filter>Source Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\gzguts.h">
+      <Filter>Source Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\inffast.h">
+      <Filter>Source Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\inffixed.h">
+      <Filter>Source Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\inflate.h">
+      <Filter>Source Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\inftrees.h">
+      <Filter>Source Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\zconf.h">
+      <Filter>Source Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\zlib.h">
+      <Filter>Source Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\zutil.h">
+      <Filter>Source Files\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="md5\md5.h">
+      <Filter>Source Files\md5</Filter>
+    </ClInclude>
+    <ClInclude Include="CascStructs.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CascCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CascLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CascPort.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="jenkins\lookup3.c">
       <Filter>Source Files\jenkins</Filter>
-    </ClCompile>
-    <ClCompile Include="libtomcrypt\src\hashes\hash_memory.c">
-      <Filter>Source Files\libtomcrypt\hashes</Filter>
-    </ClCompile>
-    <ClCompile Include="libtomcrypt\src\hashes\md5.c">
-      <Filter>Source Files\libtomcrypt\hashes</Filter>
-    </ClCompile>
-    <ClCompile Include="libtomcrypt\src\misc\crypt_argchk.c">
-      <Filter>Source Files\libtomcrypt\misc</Filter>
-    </ClCompile>
-    <ClCompile Include="libtomcrypt\src\misc\crypt_hash_descriptor.c">
-      <Filter>Source Files\libtomcrypt\misc</Filter>
-    </ClCompile>
-    <ClCompile Include="libtomcrypt\src\misc\crypt_hash_is_valid.c">
-      <Filter>Source Files\libtomcrypt\misc</Filter>
-    </ClCompile>
-    <ClCompile Include="libtomcrypt\src\misc\crypt_libc.c">
-      <Filter>Source Files\libtomcrypt\misc</Filter>
     </ClCompile>
     <ClCompile Include="zlib\adler32.c">
       <Filter>Source Files\zlib</Filter>
@@ -106,51 +124,6 @@
     <ClCompile Include="zlib\zutil.c">
       <Filter>Source Files\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="CascCommon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CascDecompress.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CascDumpData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CascFindFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CascOpenFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CascOpenStorage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CascReadFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CascRootFile_Diablo3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CascRootFile_Mndx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CascRootFile_WoW6.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CascDecrypt.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CascFiles.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CascRootFile_OW.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CascRootFile_Text.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CascRootFile_TVFS.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="common\Common.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -169,11 +142,59 @@
     <ClCompile Include="common\ListFile.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="common\Map.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="common\RootHandler.cpp">
       <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="md5\md5.cpp">
+      <Filter>Source Files\md5</Filter>
+    </ClCompile>
+    <ClCompile Include="CascDecompress.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CascDecrypt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CascDumpData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CascFiles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CascFindFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CascIndexFiles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CascOpenFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CascOpenStorage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CascReadFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CascRootFile_Diablo3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CascRootFile_Install.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CascRootFile_MNDX.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CascRootFile_OW.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CascRootFile_Text.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CascRootFile_TVFS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CascRootFile_WoW.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

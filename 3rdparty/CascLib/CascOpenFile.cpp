@@ -13,189 +13,309 @@
 #include "CascCommon.h"
 
 //-----------------------------------------------------------------------------
+// TCascFile class functions
+
+TCascFile::TCascFile(TCascStorage * ahs, PCASC_CKEY_ENTRY apCKeyEntry)
+{
+    // Reference the storage handle
+    if((hs = ahs) != NULL)
+        hs->AddRef();
+    ClassName = CASC_MAGIC_FILE;
+
+    FilePointer = 0;
+    pCKeyEntry = apCKeyEntry;
+    SpanCount = (pCKeyEntry->SpanCount != 0) ? pCKeyEntry->SpanCount : 1;
+    bVerifyIntegrity = false;
+    bDownloadFileIf = false;
+    bCloseFileStream = false;
+    bFreeCKeyEntries = false;
+
+    // Allocate the array of file spans
+    if((pFileSpan = CASC_ALLOC_ZERO<CASC_FILE_SPAN>(SpanCount)) != NULL)
+    {
+        InitFileSpans(pFileSpan, SpanCount);
+        InitCacheStrategy();
+    }
+}
+
+TCascFile::~TCascFile()
+{
+    // Free all stuff related to file spans
+    if (pFileSpan != NULL)
+    {
+        PCASC_FILE_SPAN pSpanPtr = pFileSpan;
+
+        for(DWORD i = 0; i < SpanCount; i++, pSpanPtr++)
+        {
+            // Close the span file stream if this is a local file
+            if(bCloseFileStream)
+                FileStream_Close(pSpanPtr->pStream);
+            pSpanPtr->pStream = NULL;
+
+            // Free the span frames
+            CASC_FREE(pSpanPtr->pFrames);
+        }
+
+        CASC_FREE(pFileSpan);
+    }
+
+    // Free the CKey entries, if needed
+    if(pCKeyEntry && bFreeCKeyEntries)
+        delete [] pCKeyEntry;
+    pCKeyEntry = NULL;
+
+    // Free the file cache
+    CASC_FREE(pbFileCache);
+
+    // Close (dereference) the archive handle
+    if(hs != NULL)
+        hs = hs->Release();
+    ClassName = 0;
+}
+
+DWORD TCascFile::OpenFileSpans(LPCTSTR szSpanList)
+{
+    TFileStream * pStream;
+    ULONGLONG FileSize = 0;
+    DWORD dwErrCode = ERROR_SUCCESS;
+
+    for(DWORD i = 0; i < SpanCount; i++)
+    {
+        // Open the file span
+        pFileSpan[i].pStream = pStream = FileStream_OpenFile(szSpanList, BASE_PROVIDER_FILE | STREAM_PROVIDER_FLAT);
+        if(pFileSpan[i].pStream == NULL)
+        {
+            dwErrCode = GetLastError();
+            break;
+        }
+
+        // If succeeded, we assign the span to the 
+        FileStream_GetSize(pStream, &FileSize);
+        if((FileSize >> 0x1E) != 0)
+        {
+            dwErrCode = ERROR_NOT_SUPPORTED;
+            break;
+        }
+
+        pCKeyEntry[i].EncodedSize = (DWORD)FileSize;
+    }
+
+    // Free the so-far-opened files
+    if(dwErrCode != ERROR_SUCCESS)
+    {
+        for(DWORD i = 0; i < SpanCount; i++)
+        {
+            if(pFileSpan[i].pStream != NULL)
+                FileStream_Close(pFileSpan[i].pStream);
+            pFileSpan[i].pStream = NULL;
+        }
+    }
+
+    return dwErrCode;
+}
+
+void TCascFile::InitFileSpans(PCASC_FILE_SPAN pSpans, DWORD dwSpanCount)
+{
+    ULONGLONG FileOffsetBits = 30;
+    ULONGLONG FileOffsetMask = 0;
+    ULONGLONG FileOffset = 0;
+
+    // Initialize the file sizes. Note that if any of the spans has invalid size,
+    // the entire file size will be set to CASC_INVALID_SIZE64.
+    GetFileSpanInfo(pCKeyEntry, &ContentSize, &EncodedSize);
+
+    // Resolve the file offset bits and file offset mask
+    if(hs != NULL)
+        FileOffsetBits = hs->FileOffsetBits;
+    FileOffsetMask = ((ULONGLONG)1 << FileOffsetBits) - 1;
+
+    // Add all span sizes
+    for(DWORD i = 0; i < dwSpanCount; i++, pSpans++)
+    {
+        // Put the archive index and archive offset
+        pSpans->ArchiveIndex = (DWORD)(pCKeyEntry[i].StorageOffset >> FileOffsetBits);
+        pSpans->ArchiveOffs = (DWORD)(pCKeyEntry[i].StorageOffset & FileOffsetMask);
+
+        // Add to the total encoded size
+        if(ContentSize != CASC_INVALID_SIZE64)
+        {
+            pSpans->StartOffset = FileOffset;
+            FileOffset = FileOffset + pCKeyEntry[i].ContentSize;
+            pSpans->EndOffset = FileOffset;
+        }
+    }
+}
+
+void TCascFile::InitCacheStrategy()
+{
+    CacheStrategy = CascCacheLastFrame;
+    FileCacheStart = FileCacheEnd = 0;
+    pbFileCache = NULL;
+}
+
+//-----------------------------------------------------------------------------
 // Local functions
 
-TCascFile * IsValidCascFileHandle(HANDLE hFile)
+static size_t GetSpanFileCount(LPTSTR szSpanList)
 {
-    TCascFile * hf = (TCascFile *)hFile;
+    LPTSTR szSpanPtr = szSpanList;
+    size_t nSpanCount = 1;
 
-    return (hf != NULL && hf->hs != NULL && hf->szClassName != NULL && !strcmp(hf->szClassName, "TCascFile")) ? hf : NULL;
-}
-
-PCASC_CKEY_ENTRY FindCKeyEntry(TCascStorage * hs, PQUERY_KEY pCKey, PDWORD PtrIndex)
-{
-    return (PCASC_CKEY_ENTRY)Map_FindObject(hs->pCKeyEntryMap, pCKey->pbData, PtrIndex);
-}
-
-PCASC_EKEY_ENTRY FindEKeyEntry(TCascStorage * hs, PQUERY_KEY pEKey, PDWORD PtrIndex)
-{
-    return (PCASC_EKEY_ENTRY)Map_FindObject(hs->pEKeyEntryMap, pEKey->pbData, PtrIndex);
-}
-
-static TCascFile * CreateFileHandle(TCascStorage * hs, PQUERY_KEY pCKey, PQUERY_KEY pEKey, PCASC_EKEY_ENTRY pEKeyEntry, DWORD dwOpenFlags, DWORD dwContentSize)
-{
-    ULONGLONG StorageOffset = ConvertBytesToInteger_5(pEKeyEntry->StorageOffset);
-    ULONGLONG FileOffsMask = ((ULONGLONG)1 << hs->IndexFile[0].FileOffsetBits) - 1;
-    TCascFile * hf;
-
-    // Allocate the CASC file structure
-    hf = (TCascFile *)CASC_ALLOC(TCascFile, 1);
-    if(hf != NULL)
+    while(szSpanPtr[0] != 0)
     {
-        // Initialize the structure
-        memset(hf, 0, sizeof(TCascFile));
-        hf->ArchiveIndex = (DWORD)(StorageOffset >> hs->IndexFile[0].FileOffsetBits);
-        hf->ArchiveOffset = (DWORD)(StorageOffset & FileOffsMask);
-        hf->szClassName = "TCascFile";
-        hf->OpenFlags = dwOpenFlags;
-
-        // Supply the content key, if available
-        if(pCKey != NULL)
+        // End of a file?
+        if(szSpanPtr[0] == ';' && szSpanPtr[1] != 0)
         {
-            assert(pCKey->pbData != NULL && pCKey->cbData == MD5_HASH_SIZE);
-            memcpy(hf->CKey.Value, pCKey->pbData, pCKey->cbData);
+            szSpanPtr[0] = 0;
+            nSpanCount++;
         }
 
-        // Supply the encoded key, if available
-        if(pEKey != NULL)
-        {
-            assert(pEKey->pbData != NULL && CASC_EKEY_SIZE <= pEKey->cbData && pEKey->cbData <= MD5_HASH_SIZE);
-            memcpy(hf->EKey.Value, pEKey->pbData, pEKey->cbData);
-        }
-
-        // Copy the encoded file size
-        if(pEKeyEntry != NULL)
-        {
-            hf->EncodedSize = ConvertBytesToInteger_4_LE(pEKeyEntry->EncodedSize);
-        }
-
-        // Set the content size
-        hf->ContentSize = dwContentSize;
-
-        // Increment the number of references to the archive
-        hs->dwRefCount++;
-        hf->hs = hs;
+        szSpanPtr++;
     }
 
-    return hf;
+    // Place an additional zero to make the list terminated by double EOS
+    szSpanPtr[1] = 0;
+    return nSpanCount;
 }
 
-static bool OpenFileByEKey(TCascStorage * hs, PQUERY_KEY pCKey, PQUERY_KEY pEKey, DWORD dwOpenFlags, DWORD dwContentSize, TCascFile ** PtrCascFile)
+PCASC_CKEY_ENTRY FindCKeyEntry_CKey(TCascStorage * hs, LPBYTE pbCKey, PDWORD PtrIndex)
 {
-    PCASC_EKEY_ENTRY pEKeyEntry;
+    return (PCASC_CKEY_ENTRY)hs->CKeyMap.FindObject(pbCKey, PtrIndex);
+}
+
+PCASC_CKEY_ENTRY FindCKeyEntry_EKey(TCascStorage * hs, LPBYTE pbEKey, PDWORD PtrIndex)
+{
+    return (PCASC_CKEY_ENTRY)hs->EKeyMap.FindObject(pbEKey, PtrIndex);
+}
+
+bool OpenFileByCKeyEntry(TCascStorage * hs, PCASC_CKEY_ENTRY pCKeyEntry, DWORD dwOpenFlags, HANDLE * PtrFileHandle)
+{
     TCascFile * hf = NULL;
+    DWORD dwErrCode = ERROR_FILE_NOT_FOUND;
 
-    // Find the EKey entry in the array of encoded keys
-    pEKeyEntry = FindEKeyEntry(hs, pEKey);
-    if(pEKeyEntry == NULL)
+    // If the CKey entry is NULL, we consider the file non-existant
+    if(pCKeyEntry != NULL)
     {
-        SetLastError(ERROR_FILE_NOT_FOUND);
-        return false;
+        // Create the file handle structure
+        if((hf = new TCascFile(hs, pCKeyEntry)) != NULL)
+        {
+            hf->bVerifyIntegrity   = (dwOpenFlags & CASC_STRICT_DATA_CHECK)  ? true : false;
+            hf->bDownloadFileIf    = (hs->dwFeatures & CASC_FEATURE_ONLINE)  ? true : false;
+            hf->bOvercomeEncrypted = (dwOpenFlags & CASC_OVERCOME_ENCRYPTED) ? true : false;
+            dwErrCode = ERROR_SUCCESS;
+        }
+        else
+        {
+            dwErrCode = ERROR_NOT_ENOUGH_MEMORY;
+        }
     }
 
-    // Create the file handle structure
-    hf = CreateFileHandle(hs, pCKey, pEKey, pEKeyEntry, dwOpenFlags, dwContentSize);
-    if(hf == NULL)
-    {
-        SetLastError(ERROR_NOT_ENOUGH_MEMORY);
-        return false;
-    }
+    // Give the output parameter, no matter what
+    PtrFileHandle[0] = (HANDLE)hf;
 
-    // Give the results
-    PtrCascFile[0] = hf;
-    return true;
+    // Handle last error
+    if(dwErrCode != ERROR_SUCCESS)
+        SetLastError(dwErrCode);
+    return (dwErrCode == ERROR_SUCCESS);
 }
 
-static bool OpenFileByCKey(TCascStorage * hs, PQUERY_KEY pCKey, DWORD dwOpenFlags, TCascFile ** PtrCascFile)
+bool OpenLocalFile(LPCTSTR szFileName, DWORD dwOpenFlags, HANDLE * PtrFileHandle)
 {
     PCASC_CKEY_ENTRY pCKeyEntry;
-    QUERY_KEY EKey;
-    DWORD dwContentSize;
+    TCascFile * hf = NULL;
+    LPTSTR szSpanList;
+    size_t nSpanCount;
+    DWORD dwErrCode = ERROR_NOT_ENOUGH_MEMORY;
 
-    // Find the encoding entry
-    pCKeyEntry = FindCKeyEntry(hs, pCKey, NULL);
-    if(pCKeyEntry == NULL)
+    // Create a copy of the file name. It is actually a file name list,
+    // separated by comma (for supporting multi-span files)
+    if((szSpanList = CascNewStr(szFileName, 1)) != NULL)
     {
-        SetLastError(ERROR_FILE_NOT_FOUND);
-        return false;
+        // Calculate the span count
+        if((nSpanCount = GetSpanFileCount(szSpanList)) != 0 || nSpanCount > 0xFF)
+        {
+            // Allocate CKey array for the file. Each entry describes one file span
+            if((pCKeyEntry = new CASC_CKEY_ENTRY[nSpanCount]) != NULL)
+            {
+                // Prepare the span count to the first item
+                pCKeyEntry->SpanCount = (BYTE)nSpanCount;
+
+                // Prepare the archive offset in each CKey entry
+                for(size_t i = 0; i < nSpanCount; i++)
+                    pCKeyEntry[i].StorageOffset = 0;
+
+                // Create an instance of the TCascFile
+                if((hf = new TCascFile(NULL, pCKeyEntry)) != NULL)
+                {
+                    // Prepare the structure
+                    hf->bVerifyIntegrity   = (dwOpenFlags & CASC_STRICT_DATA_CHECK)  ? true : false;
+                    hf->bOvercomeEncrypted = (dwOpenFlags & CASC_OVERCOME_ENCRYPTED) ? true : false;
+                    hf->bCloseFileStream = true;
+
+                    // Open all local file spans
+                    dwErrCode = hf->OpenFileSpans(szSpanList);
+                    if(dwErrCode != ERROR_SUCCESS)
+                    {
+                        delete hf;
+                        hf = NULL;
+                    }
+                }
+            }
+        }
+        else
+        {
+            dwErrCode = ERROR_INVALID_PARAMETER;
+        }
+
+        delete [] szSpanList;
     }
 
-    // Retrieve the content size from the CKey entry
-    dwContentSize = ConvertBytesToInteger_4(pCKeyEntry->ContentSize);
+    // Give the output parameter, no matter what
+    PtrFileHandle[0] = (HANDLE)hf;
 
-    // Prepare the file index and open the file by index
-    // Note: We don't know what to do if there is more than just one EKey
-    // We always take the first file present. Is that correct?
-    EKey.pbData = pCKeyEntry->EKey;
-    EKey.cbData = MD5_HASH_SIZE;
-    return OpenFileByEKey(hs, pCKey, &EKey, dwOpenFlags, dwContentSize, PtrCascFile);
+    // Handle last error
+    if(dwErrCode != ERROR_SUCCESS)
+        SetLastError(dwErrCode);
+    return (dwErrCode == ERROR_SUCCESS);
+}
+
+bool SetCacheStrategy(HANDLE hFile, CSTRTG CacheStrategy)
+{
+    TCascFile * hf;
+
+    // Validate the file handle
+    if((hf = TCascFile::IsValid(hFile)) != NULL)
+    {
+        // The cache must not be initialized yet
+        if(hf->pbFileCache == NULL)
+        {
+            hf->CacheStrategy = CacheStrategy;
+            return true;
+        }
+    }
+
+    // Failed. This should never happen
+    assert(false);
+    return false;
 }
 
 //-----------------------------------------------------------------------------
 // Public functions
 
-bool WINAPI CascOpenFileByEKey(HANDLE hStorage, PQUERY_KEY pCKey, PQUERY_KEY pEKey, DWORD dwOpenFlags, DWORD dwContentSize, HANDLE * phFile)
+bool WINAPI CascOpenFile(HANDLE hStorage, const void * pvFileName, DWORD dwLocaleFlags, DWORD dwOpenFlags, HANDLE * PtrFileHandle)
 {
+    PCASC_CKEY_ENTRY pCKeyEntry = NULL;
     TCascStorage * hs;
-
-    // Validate the storage handle
-    hs = IsValidCascStorageHandle(hStorage);
-    if(hs == NULL)
-    {
-        SetLastError(ERROR_INVALID_HANDLE);
-        return false;
-    }
-
-    // Validate the other parameters
-    // Note that the 
-    if(pEKey == NULL || pEKey->pbData == NULL || pEKey->cbData == 0 || phFile == NULL)
-    {
-        SetLastError(ERROR_INVALID_PARAMETER);
-        return false;
-    }
-
-    // Use the internal function to open the file
-    return OpenFileByEKey(hs, pCKey, pEKey, dwOpenFlags, dwContentSize, (TCascFile **)phFile);
-}
-
-bool WINAPI CascOpenFileByCKey(HANDLE hStorage, PQUERY_KEY pCKey, DWORD dwOpenFlags, HANDLE * phFile)
-{
-    TCascStorage * hs;
-
-    // Validate the storage handle
-    hs = IsValidCascStorageHandle(hStorage);
-    if(hs == NULL)
-    {
-        SetLastError(ERROR_INVALID_HANDLE);
-        return false;
-    }
-
-    // Validate the other parameters
-    if(pCKey == NULL || pCKey->pbData == NULL || pCKey->cbData == 0 || phFile == NULL)
-    {
-        SetLastError(ERROR_INVALID_PARAMETER);
-        return false;
-    }
-
-    // Use the internal function fo open the file
-    return OpenFileByCKey(hs, pCKey, dwOpenFlags, (TCascFile **)phFile);
-}
-
-bool WINAPI CascOpenFile(HANDLE hStorage, const char * szFileName, DWORD dwLocaleFlags, DWORD dwOpenFlags, HANDLE * phFile)
-{
-    TCascStorage * hs;
-    QUERY_KEY QueryKey;
-    LPBYTE pbQueryKey = NULL;
-    BYTE KeyBuffer[MD5_HASH_SIZE];
-    DWORD dwContentSize = CASC_INVALID_SIZE;
-    bool bOpenResult = false;
-    int nError = ERROR_SUCCESS;
+    const char * szFileName;
+    DWORD FileDataId = CASC_INVALID_ID;
+    BYTE CKeyEKeyBuffer[MD5_HASH_SIZE];
+    DWORD dwErrCode = ERROR_SUCCESS;
 
     // This parameter is not used
     CASCLIB_UNUSED(dwLocaleFlags);
 
     // Validate the storage handle
-    hs = IsValidCascStorageHandle(hStorage);
+    hs = TCascStorage::IsValid(hStorage);
     if(hs == NULL)
     {
         SetLastError(ERROR_INVALID_HANDLE);
@@ -203,7 +323,7 @@ bool WINAPI CascOpenFile(HANDLE hStorage, const char * szFileName, DWORD dwLocal
     }
 
     // Validate the other parameters
-    if(szFileName == NULL || szFileName[0] == 0 || phFile == NULL)
+    if(PtrFileHandle == NULL)
     {
         SetLastError(ERROR_INVALID_PARAMETER);
         return false;
@@ -213,118 +333,106 @@ bool WINAPI CascOpenFile(HANDLE hStorage, const char * szFileName, DWORD dwLocal
     switch(dwOpenFlags & CASC_OPEN_TYPE_MASK)
     {
         case CASC_OPEN_BY_NAME:
-            
-            // Retrieve the file CKey/EKey
-            pbQueryKey = hs->pRootHandler->GetKey(szFileName, &dwContentSize);
-            if(pbQueryKey == NULL)
+
+            // The 'pvFileName' must be zero terminated ANSI file name
+            szFileName = (const char *)pvFileName;
+            if(szFileName == NULL || szFileName[0] == 0)
             {
-                nError = ERROR_FILE_NOT_FOUND;
-                break;
+                SetLastError(ERROR_INVALID_PARAMETER);
+                return false;
             }
 
-            // Change the proper open flags
-            dwOpenFlags |= (hs->pRootHandler->GetFlags() & ROOT_FLAG_USES_EKEY) ? CASC_OPEN_BY_EKEY : CASC_OPEN_BY_CKEY;
-            break;
+            // The first chance: Try to find the file by name (using the root handler)
+            pCKeyEntry = hs->pRootHandler->GetFile(hs, szFileName);
+            if(pCKeyEntry != NULL)
+                break;
+
+            // Second chance: If the file name is actually a file data id, we convert it to file data ID
+            if(IsFileDataIdName(szFileName, FileDataId))
+            {
+                pCKeyEntry = hs->pRootHandler->GetFile(hs, FileDataId);
+                if(pCKeyEntry != NULL)
+                    break;
+            }
+
+            // Third chance: If the file name is a string representation of CKey/EKey, we try to query for CKey
+            if(IsFileCKeyEKeyName(szFileName, CKeyEKeyBuffer))
+            {
+                pCKeyEntry = FindCKeyEntry_CKey(hs, CKeyEKeyBuffer);
+                if(pCKeyEntry != NULL)
+                    break;
+
+                pCKeyEntry = FindCKeyEntry_EKey(hs, CKeyEKeyBuffer);
+                if(pCKeyEntry != NULL)
+                    break;
+            }
+
+            SetLastError(ERROR_FILE_NOT_FOUND);
+            return false;
 
         case CASC_OPEN_BY_CKEY:
+
+            // The 'pvFileName' must be a pointer to 16-byte CKey or EKey
+            if(pvFileName == NULL)
+            {
+                SetLastError(ERROR_INVALID_PARAMETER);
+                return false;
+            }
+
+            // Search the CKey map in order to find the CKey entry
+            pCKeyEntry = FindCKeyEntry_CKey(hs, (LPBYTE)pvFileName);
+            break;
+
         case CASC_OPEN_BY_EKEY:
 
-            // Convert the string to binary
-            nError = ConvertStringToBinary(szFileName, MD5_STRING_SIZE, KeyBuffer);
-            if(nError != ERROR_SUCCESS)
-                break;
-            
-            // Proceed opening by CKey
-            pbQueryKey = KeyBuffer;
+            // The 'pvFileName' must be a pointer to 16-byte CKey or EKey
+            if(pvFileName == NULL)
+            {
+                SetLastError(ERROR_INVALID_PARAMETER);
+                return false;
+            }
+
+            // Search the CKey map in order to find the CKey entry
+            pCKeyEntry = FindCKeyEntry_EKey(hs, (LPBYTE)pvFileName);
+            break;
+
+        case CASC_OPEN_BY_FILEID:
+
+            // Retrieve the file CKey/EKey
+            pCKeyEntry = hs->pRootHandler->GetFile(hs, CASC_FILE_DATA_ID_FROM_STRING(pvFileName));
             break;
 
         default:
 
             // Unknown open mode
-            nError = ERROR_INVALID_PARAMETER;
+            dwErrCode = ERROR_INVALID_PARAMETER;
             break;
     }
 
     // Perform the open operation
-    if(nError == ERROR_SUCCESS)
-    {
-        // Setup the CKey/EKey
-        QueryKey.pbData = pbQueryKey;
-        QueryKey.cbData = MD5_HASH_SIZE;
-
-        // Either open by CKey or EKey
-        switch(dwOpenFlags & CASC_OPEN_TYPE_MASK)
-        {
-            case CASC_OPEN_BY_CKEY:
-                bOpenResult = OpenFileByCKey(hs, &QueryKey, dwOpenFlags, (TCascFile **)phFile);
-                break;
-
-            case CASC_OPEN_BY_EKEY:
-                bOpenResult = OpenFileByEKey(hs, NULL, &QueryKey, dwOpenFlags, dwContentSize, (TCascFile **)phFile);
-                break;
-
-            default:
-                SetLastError(ERROR_INVALID_PARAMETER);
-                break;
-        }
-
-        // Handle the error code
-        if(!bOpenResult)
-        {
-            assert(GetLastError() != ERROR_SUCCESS);
-            nError = GetLastError();
-        }
-    }
-
-    // Set the last error and return
-    if(nError != ERROR_SUCCESS)
-        SetLastError(nError);
-    return (nError == ERROR_SUCCESS);
+    return OpenFileByCKeyEntry(hs, pCKeyEntry, dwOpenFlags, PtrFileHandle);
 }
 
-DWORD WINAPI CascGetFileId(HANDLE hStorage, const char * szFileName)
+bool WINAPI CascOpenLocalFile(LPCTSTR szFileName, DWORD dwOpenFlags, HANDLE * PtrFileHandle)
 {
-    TCascStorage * hs;
-
-    // Validate the storage handle
-    hs = IsValidCascStorageHandle(hStorage);
-    if (hs == NULL)
-    {
-        SetLastError(ERROR_INVALID_HANDLE);
-        return false;
-    }
-
-    // Validate the other parameters
-    if (szFileName == NULL || szFileName[0] == 0)
+    // Verify parameters
+    if(szFileName == NULL || szFileName[0] == 0 || PtrFileHandle == NULL)
     {
         SetLastError(ERROR_INVALID_PARAMETER);
         return false;
     }
 
-    return hs->pRootHandler->GetFileId(szFileName);
+    return OpenLocalFile(szFileName, dwOpenFlags, PtrFileHandle);
 }
 
 bool WINAPI CascCloseFile(HANDLE hFile)
 {
     TCascFile * hf;
 
-    hf = IsValidCascFileHandle(hFile);
-    if(hf != NULL)
+    hf = TCascFile::IsValid(hFile);
+    if (hf != NULL)
     {
-        // Close (dereference) the archive handle
-        if(hf->hs != NULL)
-            CascCloseStorage((HANDLE)hf->hs);
-        hf->hs = NULL;
-
-        // Free the file cache and frame array
-        if(hf->pbFileCache != NULL)
-            CASC_FREE(hf->pbFileCache);
-        if(hf->pFrames != NULL)
-            CASC_FREE(hf->pFrames);
-
-        // Free the structure itself
-        hf->szClassName = NULL;
-        CASC_FREE(hf);
+        delete hf;
         return true;
     }
 

@@ -17,7 +17,10 @@
 // Local defines
 
 #define MNDX_MAR_SIGNATURE 0x0052414d           // 'MAR\0'
-#define MAX_MAR_FILES               3           // Maximum of 3 MAR files are supported
+#define MAR_PACKAGE_NAMES           0           // MAR with package names only
+#define MAR_STRIPPED_NAMES          1           // MAR with names where packages were stripped
+#define MAR_FULL_NAMES              2           // MAR with full file names
+#define MAR_COUNT                   3           // Maximum of 3 MAR files are supported
 
 #define MNDX_SEARCH_INITIALIZING    0
 #define MNDX_SEARCH_SEARCHING       2
@@ -26,6 +29,8 @@
 #define MNDX_MAX_ENTRIES(type)  (0xFFFFFFFF / sizeof(type))
 
 #define MNDX_INVALID_SIZE_T        ((size_t)(-1))
+
+#define MNDX_LAST_CKEY_ENTRY       0x80000000
 
 //-----------------------------------------------------------------------------
 // Local structures
@@ -70,19 +75,19 @@ typedef struct _MNDX_PACKAGE
 {
     char * szFileName;                              // Pointer to file name
     size_t nLength;                                 // Length of the file name
-    DWORD nIndex;                                   // Package index
+    size_t nIndex;                                  // Package index
 
 } MNDX_PACKAGE, *PMNDX_PACKAGE;
 
 // Root file entry for CASC storages with MNDX root file (Heroes of the Storm)
 // Corresponds to the in-file structure
-typedef struct _MNDX_ROOT_ENTRY
+typedef struct _MNDX_CKEY_ENTRY
 {
     DWORD Flags;                                    // High 8 bits: Flags, low 24 bits: package index
     BYTE  CKey[MD5_HASH_SIZE];                      // Content key for the file
     DWORD ContentSize;                              // Uncompressed file size, in bytes
 
-} MNDX_ROOT_ENTRY, *PMNDX_ROOT_ENTRY;
+} MNDX_CKEY_ENTRY, *PMNDX_CKEY_ENTRY;
 
 typedef struct _FILE_MAR_INFO
 {
@@ -363,14 +368,14 @@ class TByteStream
 
     // HOTS: 1957160 <DWORD>
     template <typename T>
-    int GetValue(T & Value)
+    DWORD GetValue(T & Value)
     {
         T * Pointer;
-        int nError;
+        DWORD dwErrCode;
 
-        nError = GetBytes(sizeof(T), (LPBYTE *)(&Pointer));
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = GetBytes(sizeof(T), (LPBYTE *)(&Pointer));
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
         Value = Pointer[0];
         return ERROR_SUCCESS;
@@ -378,15 +383,15 @@ class TByteStream
 
     // Retrieves the item count in the array
     template <typename T>
-    int GetArrayItemCount(DWORD & ArraySize, DWORD & ItemCount)
+    DWORD GetArrayItemCount(DWORD & ArraySize, DWORD & ItemCount)
     {
         ULONGLONG ByteCount;
-        int nError;
+        DWORD dwErrCode;
 
         // The first 8 bytes is the byte size of the array
-        nError = GetValue<ULONGLONG>(ByteCount);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = GetValue<ULONGLONG>(ByteCount);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
         // Extract the number of bytes
         if(ByteCount > 0xFFFFFFFF || (ByteCount % sizeof(T)) != 0)
@@ -403,9 +408,9 @@ class TByteStream
     // HOTS: 1957230: <BYTE>
     // HOTS: 1957280: <HASH_ENTRY>
     template <typename T>
-    int GetArray(T ** Pointer, size_t ItemCount)
+    DWORD GetArray(T ** Pointer, size_t ItemCount)
     {
-        int nError = ERROR_SUCCESS;
+        DWORD dwErrCode = ERROR_SUCCESS;
 
         // Verify parameters
         if(Pointer == NULL && ItemCount != 0)
@@ -416,15 +421,15 @@ class TByteStream
         // Allocate bytes for the array
         if (Pointer != NULL)
         {
-            Pointer[0] = CASC_ALLOC(T, ItemCount);
+            Pointer[0] = CASC_ALLOC<T>(ItemCount);
             if (Pointer[0] == NULL)
                 return ERROR_NOT_ENOUGH_MEMORY;
 
             // Get the pointer to the array
-            nError = CopyBytes(Pointer[0], sizeof(T) * ItemCount);
+            dwErrCode = CopyBytes(Pointer[0], sizeof(T) * ItemCount);
         }
 
-        return nError;
+        return dwErrCode;
     }
 
     LPBYTE pbByteData;
@@ -453,10 +458,7 @@ class TGenericArray
 
     ~TGenericArray()
     {
-        if(ItemArray != NULL)
-        {
-            CASC_FREE(ItemArray);
-        }
+        CASC_FREE(ItemArray);
     }
 
     T & operator[] (size_t index)
@@ -486,7 +488,7 @@ class TGenericArray
         T * NewArray;
 
         // Allocate new data buffer
-        NewArray = CASC_ALLOC(T, NewMaxItemCount);
+        NewArray = CASC_ALLOC<T>(NewMaxItemCount);
         if(NewArray != NULL)
         {
             // Copy the old items to the buffer
@@ -553,24 +555,24 @@ class TGenericArray
     // HOTS: 1957700 <HASH_ENTRY>
     // HOTS: 195A220 <char>
     // HOTS: 1958580 <TBitStream, DWORD>
-    int LoadFromStream(TByteStream & InStream)
+    DWORD LoadFromStream(TByteStream & InStream)
     {
         DWORD NumberOfBytes;
-        int nError;
+        DWORD dwErrCode;
 
         // Get and verify the number of items
-        nError = InStream.GetArrayItemCount<T>(NumberOfBytes, ItemCount);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = InStream.GetArrayItemCount<T>(NumberOfBytes, ItemCount);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
         // Get the pointer to the array
-        nError = InStream.GetArray<T>(&ItemArray, ItemCount);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = InStream.GetArray<T>(&ItemArray, ItemCount);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
-        nError = InStream.SkipBytes((0 - (DWORD)NumberOfBytes) & 0x07);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = InStream.SkipBytes((0 - (DWORD)NumberOfBytes) & 0x07);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
         return SetArrayValid();
     }
@@ -617,28 +619,28 @@ class TBitEntryArray : public TGenericArray<DWORD>
         return dwResult & EntryBitMask;
     }
 
-    int LoadBitsFromStream(TByteStream & InStream)
+    DWORD LoadBitsFromStream(TByteStream & InStream)
     {
         ULONGLONG Value64 = 0;
-        int nError;
+        DWORD dwErrCode;
 
-        nError = LoadFromStream(InStream);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = LoadFromStream(InStream);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
-        nError = InStream.GetValue<DWORD>(BitsPerEntry);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = InStream.GetValue<DWORD>(BitsPerEntry);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
         if(BitsPerEntry > 0x20)
             return ERROR_BAD_FORMAT;
 
-        nError = InStream.GetValue<DWORD>(EntryBitMask);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = InStream.GetValue<DWORD>(EntryBitMask);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
-        nError = InStream.GetValue<ULONGLONG>(Value64);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = InStream.GetValue<ULONGLONG>(Value64);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
         if(Value64 > 0xFFFFFFFF)
             return ERROR_BAD_FORMAT;
         TotalEntries = (DWORD)Value64;
@@ -685,39 +687,39 @@ class TSparseArray
     }
 
     // HOTS: 1958630
-    int LoadFromStream(TByteStream & InStream)
+    DWORD LoadFromStream(TByteStream & InStream)
     {
         DWORD total_count = 0;
         DWORD valid_count = 0;
-        int nError;
+        DWORD dwErrCode;
 
-        nError = ItemBits.LoadFromStream(InStream);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = ItemBits.LoadFromStream(InStream);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
-        nError = InStream.GetValue<DWORD>(total_count);
-        if(nError != ERROR_SUCCESS)
-            return nError;
-        nError = InStream.GetValue<DWORD>(valid_count);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = InStream.GetValue<DWORD>(total_count);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
+        dwErrCode = InStream.GetValue<DWORD>(valid_count);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
         if(valid_count > total_count)
             return ERROR_FILE_CORRUPT;
 
         TotalItemCount = total_count;
         ValidItemCount = valid_count;
 
-        nError = BaseVals.LoadFromStream(InStream);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = BaseVals.LoadFromStream(InStream);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
-        nError = IndexToItem0.LoadFromStream(InStream);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = IndexToItem0.LoadFromStream(InStream);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
-        nError = IndexToItem1.LoadFromStream(InStream);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = IndexToItem1.LoadFromStream(InStream);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
         return ERROR_SUCCESS;
     }
@@ -887,14 +889,12 @@ class TSparseArray
         DWORD edx = index;
 
 #ifdef _DEBUG
-/*
-        if (TotalItemCount > 0x200)
-        {
-            FILE * fp = fopen("e:\\Ladik\\Appdir\\CascLib\\doc\\mndx-sparse-array.txt", "wt");
-            Dump(fp);
-            fclose(fp);
-        }
-*/
+        //if (TotalItemCount > 0x200)
+        //{
+        //    FILE * fp = fopen("e:\\Ladik\\Appdir\\CascLib\\doc\\mndx-sparse-array.txt", "wt");
+        //    Dump(fp);
+        //    fclose(fp);
+        //}
 #endif
 
         // If the index is at begin of the group, we just return the start value
@@ -1245,7 +1245,7 @@ class TSparseArray
 
                 if (ArrayNormal[i] == MNDX_INVALID_SIZE_T && ArrayInvert[i] == MNDX_INVALID_SIZE_T)
                     break;
-                fprintf(fp, "[%08zX]: %8s  %8s\n", i, DumpValue(InvertValue, ArrayInvert[i]), DumpValue(NormalValue, ArrayNormal[i]));
+                fprintf(fp, "[%08zX]: %8s  %8s\n", i, DumpValue(InvertValue, _countof(InvertValue), ArrayInvert[i]), DumpValue(NormalValue, _countof(NormalValue), ArrayNormal[i]));
             }
             fprintf(fp, "\n");
         }
@@ -1270,9 +1270,9 @@ class TSparseArray
         fprintf(fp, "\n");
     }
 
-    char * DumpValue(char * szBuffer, size_t value)
+    char * DumpValue(char * szBuffer, size_t cchBuffer, size_t value)
     {
-        sprintf(szBuffer, (value != MNDX_INVALID_SIZE_T) ? "%08zX" : "   -    ", value);
+        CascStrPrintf(szBuffer, cchBuffer, (value != MNDX_INVALID_SIZE_T) ? "%08zX" : "   -    ", value);
         return szBuffer;
     }
 #endif
@@ -1345,32 +1345,12 @@ class TMndxSearch
         cchSearchMask = 0;
         szFoundPath = NULL;
         cchFoundPath = 0;
-        FileNameIndex = 0;
-        pStruct40 = NULL;
+        nIndex = 0;
     }
 
     // HOTS: 01956F00
     ~TMndxSearch()
-    {
-        FreeStruct40();
-    }
-
-    // HOTS: 01956F30
-    int CreateStruct40()
-    {
-        if(pStruct40 != NULL)
-            return ERROR_INVALID_PARAMETER;
-
-        pStruct40 = new TStruct40();
-        return (pStruct40 != NULL) ? ERROR_SUCCESS : ERROR_NOT_ENOUGH_MEMORY;
-    }
-
-    void FreeStruct40()
-    {
-        if(pStruct40 != NULL)
-            delete pStruct40;
-        pStruct40 = NULL;
-    }
+    {}
 
     // HOTS: 01956E70
     int SetSearchMask(
@@ -1380,20 +1360,19 @@ class TMndxSearch
         if(szSearchMask == NULL && cchSearchMask != 0)
             return ERROR_INVALID_PARAMETER;
 
-        if(pStruct40 != NULL)
-            pStruct40->SearchPhase = MNDX_SEARCH_INITIALIZING;
+        Struct40.SearchPhase = MNDX_SEARCH_INITIALIZING;
 
         szSearchMask = szNewSearchMask;
         cchSearchMask = cchNewSearchMask;
         return ERROR_SUCCESS;
     }
 
+    TStruct40 Struct40;
     const char * szSearchMask;          // Search mask without wildcards
     size_t cchSearchMask;               // Length of the search mask
     const char * szFoundPath;           // Found path name
     size_t cchFoundPath;                // Length of the found path name
-    DWORD FileNameIndex;                // Index of the file name
-    TStruct40 * pStruct40;
+    DWORD nIndex;                       // Index of the file name
 };
 
 //-----------------------------------------------------------------------------
@@ -1416,7 +1395,7 @@ class TPathFragmentTable
     // HOTS: 195A180
     bool ComparePathFragment(TMndxSearch * pSearch, size_t nFragmentOffset)
     {
-        TStruct40 * pStruct40 = pSearch->pStruct40;
+        TStruct40 * pStruct40 = &pSearch->Struct40;
 
         // Do we have path fragment separators in an external structure?
         if(PathMarks.IsEmpty())
@@ -1459,7 +1438,7 @@ class TPathFragmentTable
     // HOTS: 195A3F0
     void CopyPathFragment(TMndxSearch * pSearch, size_t nFragmentOffset)
     {
-        TStruct40 * pStruct40 = pSearch->pStruct40;
+        TStruct40 * pStruct40 = &pSearch->Struct40;
 
         // Do we have path fragment separators in an external structure?
         if (PathMarks.IsEmpty())
@@ -1485,7 +1464,7 @@ class TPathFragmentTable
     // HOTS: 195A570
     bool CompareAndCopyPathFragment(TMndxSearch * pSearch, size_t nFragmentOffset)
     {
-        TStruct40 * pStruct40 = pSearch->pStruct40;
+        TStruct40 * pStruct40 = &pSearch->Struct40;
 
         // Do we have path fragment separators in an external structure?
         if(PathMarks.IsEmpty())
@@ -1542,13 +1521,13 @@ class TPathFragmentTable
     }
 
     // HOTS: 0195A820
-    int LoadFromStream(TByteStream & InStream)
+    DWORD LoadFromStream(TByteStream & InStream)
     {
-        int nError;
+        DWORD dwErrCode;
 
-        nError = PathFragments.LoadFromStream(InStream);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = PathFragments.LoadFromStream(InStream);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
         return PathMarks.LoadFromStream(InStream);
     }
@@ -1627,10 +1606,10 @@ class TStruct10
     }
 
     // HOTS: 19572E0
-    int sub_19572E0(DWORD dwBitMask)
+    DWORD sub_19572E0(DWORD dwBitMask)
     {
         DWORD dwSubMask;
-        int nError;
+        DWORD dwErrCode;
 
         if(dwBitMask & 0xFFF00000)
             return ERROR_INVALID_PARAMETER;
@@ -1639,9 +1618,9 @@ class TStruct10
         if(dwSubMask)
             field_0 = dwSubMask;
 
-        nError = sub_1956FD0(dwBitMask);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = sub_1956FD0(dwBitMask);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
         dwSubMask = dwBitMask & 0xF000;
         if(dwSubMask == 0 || dwSubMask == 0x1000)
@@ -1739,32 +1718,32 @@ class TFileNameDatabase
     }
 
     // HOTS: 1956DA0
-    int CreateDatabase(LPBYTE pbMarData, size_t cbMarData)
+    DWORD Load(LPBYTE pbMarData, size_t cbMarData)
     {
         TByteStream ByteStream;
         DWORD dwSignature;
-        int nError;
+        DWORD dwErrCode;
 
         if(pbMarData == NULL && cbMarData != 0)
             return ERROR_INVALID_PARAMETER;
 
-        nError = ByteStream.SetByteBuffer(pbMarData, cbMarData);
-        if(nError == ERROR_SUCCESS)
+        dwErrCode = ByteStream.SetByteBuffer(pbMarData, cbMarData);
+        if(dwErrCode == ERROR_SUCCESS)
         {
             // Get pointer to MAR signature
-            nError = ByteStream.GetValue<DWORD>(dwSignature);
-            if(nError != ERROR_SUCCESS)
-                return nError;
+            dwErrCode = ByteStream.GetValue<DWORD>(dwSignature);
+            if(dwErrCode != ERROR_SUCCESS)
+                return dwErrCode;
 
             // Verify the signature
             if(dwSignature != MNDX_MAR_SIGNATURE)
                 return ERROR_BAD_FORMAT;
 
             // HOTS: 1956E11
-            nError = LoadFromStream(ByteStream);
+            dwErrCode = LoadFromStream(ByteStream);
         }
 
-        return nError;
+        return dwErrCode;
     }
 
     // HOTS: 19584B0
@@ -1782,7 +1761,7 @@ class TFileNameDatabase
     // HOTS: 1957970
     bool ComparePathFragment(TMndxSearch * pSearch)
     {
-        TStruct40 * pStruct40 = pSearch->pStruct40;
+        TStruct40 * pStruct40 = &pSearch->Struct40;
         PHASH_ENTRY pHashEntry;
         DWORD ColTableIndex;
         DWORD HiBitsIndex;
@@ -1879,7 +1858,7 @@ class TFileNameDatabase
     // HOTS: 1957B80
     bool ComparePathFragmentByIndex(TMndxSearch * pSearch, DWORD TableIndex)
     {
-        TStruct40 * pStruct40 = pSearch->pStruct40;
+        TStruct40 * pStruct40 = &pSearch->Struct40;
         PHASH_ENTRY pHashEntry;
         DWORD eax;
 
@@ -1971,7 +1950,7 @@ class TFileNameDatabase
     // HOTS: 1958D70
     void CopyPathFragmentByIndex(TMndxSearch * pSearch, DWORD TableIndex)
     {
-        TStruct40 * pStruct40 = pSearch->pStruct40;
+        TStruct40 * pStruct40 = &pSearch->Struct40;
         PHASH_ENTRY pHashEntry;
 
         // HOTS: 1958D84
@@ -2041,7 +2020,7 @@ class TFileNameDatabase
     // HOTS: 1958B00
     bool CompareAndCopyPathFragment(TMndxSearch * pSearch)
     {
-        TStruct40 * pStruct40 = pSearch->pStruct40;
+        TStruct40 * pStruct40 = &pSearch->Struct40;
         PHASH_ENTRY pHashEntry;
         DWORD HiBitsIndex;
         DWORD ColTableIndex;
@@ -2159,7 +2138,7 @@ class TFileNameDatabase
     // HOTS: 1959010
     bool CompareAndCopyPathFragmentByIndex(TMndxSearch * pSearch, DWORD TableIndex)
     {
-        TStruct40 * pStruct40 = pSearch->pStruct40;
+        TStruct40 * pStruct40 = &pSearch->Struct40;
         PHASH_ENTRY pHashEntry;
 
         // HOTS: 1959024
@@ -2248,7 +2227,7 @@ class TFileNameDatabase
     // HOTS: 1959460
     bool DoSearch(TMndxSearch * pSearch)
     {
-        TStruct40 * pStruct40 = pSearch->pStruct40;
+        TStruct40 * pStruct40 = &pSearch->Struct40;
         TPathStop * pPathStop;
         DWORD edi;
 
@@ -2279,7 +2258,7 @@ class TFileNameDatabase
                 {
                     pSearch->szFoundPath = &pStruct40->PathBuffer[0];
                     pSearch->cchFoundPath = pStruct40->PathBuffer.ItemCount;
-                    pSearch->FileNameIndex = FileNameIndexes.GetItemValueAt(pStruct40->NodeIndex);
+                    pSearch->nIndex = FileNameIndexes.GetItemValueAt(pStruct40->NodeIndex);
                     return true;
                 }
             }
@@ -2357,7 +2336,7 @@ class TFileNameDatabase
                             // HOTS: 1959755
                             pSearch->szFoundPath = &pStruct40->PathBuffer[0];
                             pSearch->cchFoundPath = pStruct40->PathBuffer.ItemCount;
-                            pSearch->FileNameIndex = pPathStop->field_10;
+                            pSearch->nIndex = pPathStop->field_10;
                             return true;
                         }
                     }
@@ -2392,7 +2371,7 @@ class TFileNameDatabase
     // HOTS: 1957EF0
     bool FindFileInDatabase(TMndxSearch * pSearch)
     {
-        TStruct40 * pStruct40 = pSearch->pStruct40;
+        TStruct40 * pStruct40 = &pSearch->Struct40;
 
         pStruct40->NodeIndex = 0;
         pStruct40->PathLength = 0;
@@ -2414,41 +2393,41 @@ class TFileNameDatabase
 
         pSearch->szFoundPath   = pSearch->szSearchMask;
         pSearch->cchFoundPath  = pSearch->cchSearchMask;
-        pSearch->FileNameIndex = FileNameIndexes.GetItemValueAt(pStruct40->NodeIndex);
+        pSearch->nIndex = FileNameIndexes.GetItemValueAt(pStruct40->NodeIndex);
         return true;
     }
 
     // HOTS: 1959790
-    int LoadFromStream(TByteStream & InStream)
+    DWORD LoadFromStream(TByteStream & InStream)
     {
         DWORD dwBitMask;
-        int nError;
+        DWORD dwErrCode;
 
-        nError = CollisionTable.LoadFromStream(InStream);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = CollisionTable.LoadFromStream(InStream);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
-        nError = FileNameIndexes.LoadFromStream(InStream);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = FileNameIndexes.LoadFromStream(InStream);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
-        nError = CollisionHiBitsIndexes.LoadFromStream(InStream);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = CollisionHiBitsIndexes.LoadFromStream(InStream);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
         // HOTS: 019597CD
-        nError = LoBitsTable.LoadFromStream(InStream);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = LoBitsTable.LoadFromStream(InStream);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
-        nError = HiBitsTable.LoadBitsFromStream(InStream);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = HiBitsTable.LoadBitsFromStream(InStream);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
         // HOTS: 019597F5
-        nError = PathFragmentTable.LoadFromStream(InStream);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = PathFragmentTable.LoadFromStream(InStream);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
         // HOTS: 0195980A
         if(CollisionHiBitsIndexes.ValidItemCount != 0 && PathFragmentTable.PathFragments.ItemCount == 0)
@@ -2459,29 +2438,29 @@ class TFileNameDatabase
             if (pNewDB == NULL)
                 return ERROR_NOT_ENOUGH_MEMORY;
 
-            nError = SetChildDatabase(pNewDB);
-            if(nError != ERROR_SUCCESS)
-                return nError;
+            dwErrCode = SetChildDatabase(pNewDB);
+            if(dwErrCode != ERROR_SUCCESS)
+                return dwErrCode;
 
-            nError = pChildDB->LoadFromStream(InStream);
-            if(nError != ERROR_SUCCESS)
-                return nError;
+            dwErrCode = pChildDB->LoadFromStream(InStream);
+            if(dwErrCode != ERROR_SUCCESS)
+                return dwErrCode;
         }
 
         // HOTS: 0195986B
-        nError = HashTable.LoadFromStream(InStream);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = HashTable.LoadFromStream(InStream);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
         HashTableMask = HashTable.ItemCount - 1;
 
-        nError = InStream.GetValue<DWORD>(field_214);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = InStream.GetValue<DWORD>(field_214);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
-        nError = InStream.GetValue<DWORD>(dwBitMask);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        dwErrCode = InStream.GetValue<DWORD>(dwBitMask);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
 
         return Struct10.sub_1957800(dwBitMask);
     }
@@ -2522,15 +2501,14 @@ class TMndxMarFile
     {
         if(pDatabase != NULL)
             delete pDatabase;
-        if(pbMarData != NULL)
-            CASC_FREE(pbMarData);
+        CASC_FREE(pbMarData);
     }
 
     // HOTS: 00E94180
     int LoadRootData(FILE_MAR_INFO & MarInfo, LPBYTE pbRootFile, LPBYTE pbRootEnd)
     {
         // Allocate the MAR data
-        pbMarData = CASC_ALLOC(BYTE, MarInfo.MarDataSize);
+        pbMarData = CASC_ALLOC<BYTE>(MarInfo.MarDataSize);
         cbMarData = MarInfo.MarDataSize;
         if(pbMarData == NULL)
             return ERROR_NOT_ENOUGH_MEMORY;
@@ -2544,46 +2522,33 @@ class TMndxMarFile
         if(pDatabase == NULL)
             return ERROR_NOT_ENOUGH_MEMORY;
 
-        return pDatabase->CreateDatabase(pbMarData, cbMarData);
+        return pDatabase->Load(pbMarData, cbMarData);
     }
 
     // HOTS: 1956C60
-    int SearchFile(TMndxSearch * pSearch)
+    DWORD SearchFile(TMndxSearch * pSearch)
     {
-        int nError = ERROR_SUCCESS;
+        DWORD dwErrCode = ERROR_SUCCESS;
 
         if(pDatabase == NULL)
             return ERROR_INVALID_PARAMETER;
 
-        nError = pSearch->CreateStruct40();
-        if(nError != ERROR_SUCCESS)
-            return nError;
-
         if(!pDatabase->FindFileInDatabase(pSearch))
-            nError = ERROR_FILE_NOT_FOUND;
+            dwErrCode = ERROR_FILE_NOT_FOUND;
 
-        pSearch->FreeStruct40();
-        return nError;
+        return dwErrCode;
     }
 
     // HOTS: 1956CE0
-    int DoSearch(TMndxSearch * pSearch, bool * pbFindResult)
+    DWORD DoSearch(TMndxSearch * pSearch, bool * pbFindResult)
     {
-        int nError = ERROR_SUCCESS;
+        DWORD dwErrCode = ERROR_SUCCESS;
 
         if(pDatabase == NULL)
             return ERROR_INVALID_PARAMETER;
 
-        // Create the pStruct40, if not initialized yet
-        if(pSearch->pStruct40 == NULL)
-        {
-            nError = pSearch->CreateStruct40();
-            if(nError != ERROR_SUCCESS)
-                return nError;
-        }
-
         *pbFindResult = pDatabase->DoSearch(pSearch);
-        return nError;
+        return dwErrCode;
     }
 
     // HOTS: 1956D20
@@ -2597,7 +2562,6 @@ class TMndxMarFile
     }
 
 //  protected:
-
     TFileNameDatabase * pDatabase;
     LPBYTE pbMarData;
     size_t cbMarData;
@@ -2616,18 +2580,15 @@ typedef struct _FILE_MNDX_INFO
     DWORD MarInfoOffset;                            // Offset of the first MAR entry info
     DWORD MarInfoCount;                             // Number of the MAR info entries
     DWORD MarInfoSize;                              // Size of the MAR info entry
-    DWORD MndxEntriesOffset;
-    DWORD MndxEntriesTotal;                         // Total number of MNDX root entries
-    DWORD MndxEntriesValid;                         // Number of valid MNDX root entries
-    DWORD MndxEntrySize;                            // Size of one MNDX root entry
-    TMndxMarFile * MarFiles[MAX_MAR_FILES];         // File name list for the packages
-//  PMNDX_ROOT_ENTRY pMndxEntries;
-//  PMNDX_ROOT_ENTRY * ppValidEntries;
-    bool bRootFileLoaded;                           // true if the root info file was properly loaded
+    DWORD CKeyEntriesOffset;                        // Offset of the CKey entries, relative to begin of the root file
+    DWORD CKeyEntriesCount;                         // Number of CKeys (files) in the root file
+    DWORD FileNameCount;                            // Number of unique file names. More files with the same name in the different packages can exist
+    DWORD CKeyEntrySize;                            // Size of one CKey root entry
+    TMndxMarFile * MarFiles[MAR_COUNT];             // File name list for the packages
 
 } FILE_MNDX_INFO, *PFILE_MNDX_INFO;
 
-struct TRootHandler_MNDX : public TRootHandler
+struct TMndxHandler
 {
     public:
 
@@ -2635,23 +2596,20 @@ struct TRootHandler_MNDX : public TRootHandler
     //  Constructor and destructor
     //
 
-    TRootHandler_MNDX()
+    TMndxHandler()
     {
-        memset(&MndxInfo, 0, sizeof(TRootHandler_MNDX) - FIELD_OFFSET(TRootHandler_MNDX, MndxInfo));
-        dwRootFlags |= ROOT_FLAG_HAS_NAMES;
+        memset(this, 0, sizeof(TMndxHandler));
     }
 
-    ~TRootHandler_MNDX()
+    ~TMndxHandler()
     {
         PMNDX_PACKAGE pPackage;
         size_t i;
 
-        for(i = 0; i < MAX_MAR_FILES; i++)
+        for(i = 0; i < MAR_COUNT; i++)
             delete MndxInfo.MarFiles[i];
-        if(ppValidEntries != NULL)
-            CASC_FREE(ppValidEntries);
-        if(pMndxEntries != NULL)
-            CASC_FREE(pMndxEntries);
+        CASC_FREE(FileNameIndexToCKeyIndex);
+        pCKeyEntries = NULL;
 
         for(i = 0; i < Packages.ItemCount(); i++)
         {
@@ -2669,232 +2627,114 @@ struct TRootHandler_MNDX : public TRootHandler
     {
         // Capture the root header
         pbRootPtr = CaptureData(pbRootPtr, pbRootEnd, &MndxHeader, sizeof(FILE_MNDX_HEADER));
-        if(pbRootPtr == NULL)
+        if (pbRootPtr == NULL)
             return NULL;
 
         // Check signature and version
-        if(MndxHeader.Signature != CASC_MNDX_ROOT_SIGNATURE || MndxHeader.FormatVersion > 2 || MndxHeader.FormatVersion < 1)
+        if (MndxHeader.Signature != CASC_MNDX_ROOT_SIGNATURE || MndxHeader.FormatVersion > 2 || MndxHeader.FormatVersion < 1)
             return NULL;
 
         // Passed
         return pbRootPtr + sizeof(FILE_MNDX_HEADER);
     }
 
-    PMNDX_PACKAGE FindMndxPackage(const char * szFileName)
+    DWORD LoadPackageNames()
     {
-        PMNDX_PACKAGE pMatching = NULL;
-        size_t nMaxLength = 0;
-        size_t nLength = strlen(szFileName);
-
-        // Packages must be loaded
-        assert(Packages.ItemCount() != 0);
-
-        //FILE * fp = fopen("E:\\packages.txt", "wt");
-        //for(size_t i = 0; i < hs->pPackages->NameEntries; i++, pPackage++)
-        //{
-        //    if(pPackage->szFileName != NULL)
-        //        fprintf(fp, "%s\n", pPackage->szFileName);
-        //}
-        //fclose(fp);
-
-        // Find the longest matching name
-        for(size_t i = 0; i < Packages.ItemCount(); i++)
-        {
-            PMNDX_PACKAGE pPackage = (PMNDX_PACKAGE)Packages.ItemAt(i);
-
-            if(pPackage->nLength < nLength && pPackage->nLength > nMaxLength)
-            {
-                // Compare the package name
-                if(!strncmp(szFileName, pPackage->szFileName, pPackage->nLength))
-                {
-                    nMaxLength = pPackage->nLength;
-                    pMatching = pPackage;
-                }
-            }
-        }
-
-        // Give the package pointer or NULL if not found
-        return pMatching;
-    }
-
-    int SearchMndxInfo(const char * szFileName, DWORD dwPackage, PMNDX_ROOT_ENTRY * ppRootEntry)
-    {
-        PMNDX_ROOT_ENTRY pRootEntry;
+        TMndxMarFile * pMarFile = MndxInfo.MarFiles[MAR_PACKAGE_NAMES];
         TMndxSearch Search;
-
-        // Search the database for the file name
-        if(MndxInfo.bRootFileLoaded)
-        {
-            Search.SetSearchMask(szFileName, strlen(szFileName));
-
-            // Search the file name in the second MAR info (the one with stripped package names)
-            if(MndxInfo.MarFiles[1]->SearchFile(&Search) != ERROR_SUCCESS)
-                return ERROR_FILE_NOT_FOUND;
-
-            // The found MNDX index must fall into range of valid MNDX entries
-            if(Search.FileNameIndex < MndxInfo.MndxEntriesValid)
-            {
-                // HOTS: E945F4
-                pRootEntry = ppValidEntries[Search.FileNameIndex];
-                while((pRootEntry->Flags & 0x00FFFFFF) != dwPackage)
-                {
-                    // The highest bit serves as a terminator if set
-                    if(pRootEntry->Flags & 0x80000000)
-                        return ERROR_FILE_NOT_FOUND;
-
-                    pRootEntry++;
-                }
-
-                // Give the root entry pointer to the caller
-                if(ppRootEntry != NULL)
-                    ppRootEntry[0] = pRootEntry;
-                return ERROR_SUCCESS;
-            }
-        }
-
-        return ERROR_FILE_NOT_FOUND;
-    }
-
-    LPBYTE FillFindData(TCascSearch * hs, TMndxSearch * pSearch)
-    {
-        PMNDX_ROOT_ENTRY pRootEntry = NULL;
         PMNDX_PACKAGE pPackage;
-        char * szStrippedPtr;
-        char szStrippedName[MAX_PATH+1];
-        int nError;
-
-        // Sanity check
-        assert(pSearch->cchFoundPath < MAX_PATH);
-        CASCLIB_UNUSED(pSearch);
-
-        // Fill the file name
-        memcpy(hs->szFileName, pSearch->szFoundPath, pSearch->cchFoundPath);
-        hs->szFileName[pSearch->cchFoundPath] = 0;
-
-        // Fill the file size
-        pPackage = FindMndxPackage(hs->szFileName);
-        if(pPackage == NULL)
-            return NULL;
-
-        // Cut the package name off the full path
-        szStrippedPtr = hs->szFileName + pPackage->nLength;
-        while(szStrippedPtr[0] == '/')
-            szStrippedPtr++;
-
-        // We need to convert the stripped name to lowercase, replacing backslashes with slashes
-        NormalizeFileName_LowerSlash(szStrippedName, szStrippedPtr, MAX_PATH);
-
-        // Search the package
-        nError = SearchMndxInfo(szStrippedName, pPackage->nIndex, &pRootEntry);
-        if(nError != ERROR_SUCCESS)
-            return NULL;
-
-        // Give the file size
-        hs->dwFileSize = pRootEntry->ContentSize;
-        return pRootEntry->CKey;
-    }
-
-    int LoadPackageNames()
-    {
-        TMndxSearch Search;
-        int nError;
+        size_t nPackageCount = 0x40;
+        bool bFindResult = false;
+        DWORD dwErrCode;
 
         // Prepare the file name search in the top level directory
         Search.SetSearchMask("", 0);
 
-#ifdef _DEBUG
-//      Search.SetSearchMask("mods/heroes.stormmod/base.stormmaps/maps/heroes/builtin/startingexperience/practicemode01.stormmap/dede.stormdata", 113);
-#endif
         // Allocate initial name list structure
-        nError = Packages.Create<MNDX_PACKAGE>(0x40);
-        if(nError != ERROR_SUCCESS)
-            return nError;
+        pMarFile->GetFileNameCount(&nPackageCount);
+        dwErrCode = Packages.Create<MNDX_PACKAGE>(nPackageCount);
+        if(dwErrCode != ERROR_SUCCESS)
+            return dwErrCode;
+
+        // Reset the package array
+        Packages.Reset();
 
         // Keep searching as long as we find something
-        for(;;)
+        while(pMarFile->DoSearch(&Search, &bFindResult) == ERROR_SUCCESS && bFindResult)
         {
-            PMNDX_PACKAGE pPackage;
-            char * szFileName;
-            bool bFindResult = false;
+            // Insert new package to the array
+            assert(Search.nIndex < nPackageCount);
+            pPackage = (PMNDX_PACKAGE)Packages.InsertAt(Search.nIndex);
+            if (pPackage != NULL)
+            {
+                // The package mut not be initialized yet
+                assert(pPackage->szFileName == NULL);
 
-            // Search the next file name
-            MndxInfo.MarFiles[0]->DoSearch(&Search, &bFindResult);
-            if(bFindResult == false)
-                break;
+                // Allocate space for the file name
+                pPackage->szFileName = CASC_ALLOC<char>(Search.cchFoundPath + 1);
+                if (pPackage->szFileName == NULL)
+                    return ERROR_NOT_ENOUGH_MEMORY;
 
-            // Create file name
-            szFileName = CASC_ALLOC(char, Search.cchFoundPath + 1);
-            if(szFileName == NULL)
-                return ERROR_NOT_ENOUGH_MEMORY;
-
-            // Insert the found name to the top level directory list
-            pPackage = (PMNDX_PACKAGE)Packages.Insert(NULL, 1);
-            if(pPackage == NULL)
-                return ERROR_NOT_ENOUGH_MEMORY;
-
-            // Fill the file name
-            memcpy(szFileName, Search.szFoundPath, Search.cchFoundPath);
-            szFileName[Search.cchFoundPath] = 0;
-
-            // Fill the package structure
-            pPackage->szFileName = szFileName;
-            pPackage->nLength = Search.cchFoundPath;
-            pPackage->nIndex = Search.FileNameIndex;
+                // Fill the package structure
+                memcpy(pPackage->szFileName, Search.szFoundPath, Search.cchFoundPath);
+                pPackage->szFileName[Search.cchFoundPath] = 0;
+                pPackage->nLength = Search.cchFoundPath;
+                pPackage->nIndex = Search.nIndex;
+            }
         }
 
         // Give the packages to the caller
         return ERROR_SUCCESS;
     }
 
-    int Load(FILE_MNDX_HEADER MndxHeader, LPBYTE pbRootFile, LPBYTE pbRootEnd)
+    DWORD Load(const FILE_MNDX_HEADER & MndxHeader, LPBYTE pbRootFile, LPBYTE pbRootEnd)
     {
         TMndxMarFile * pMarFile;
         FILE_MAR_INFO MarInfo;
-        size_t cbToAllocate;
-        DWORD dwFilePointer = 0;
+        size_t nFilePointer = 0;
         DWORD i;
-        int nError = ERROR_SUCCESS;
+        DWORD dwErrCode = ERROR_SUCCESS;
 
         // Copy the header into the MNDX info
         MndxInfo.HeaderVersion = MndxHeader.HeaderVersion;
         MndxInfo.FormatVersion = MndxHeader.FormatVersion;
-        dwFilePointer += sizeof(FILE_MNDX_HEADER);
+        nFilePointer += sizeof(FILE_MNDX_HEADER);
 
         // Header version 2 has 2 extra fields that we need to load
         if(MndxInfo.HeaderVersion == 2)
         {
-            if(!CaptureData(pbRootFile + dwFilePointer, pbRootEnd, &MndxInfo.field_1C, sizeof(DWORD) + sizeof(DWORD)))
+            if(!CaptureData(pbRootFile + nFilePointer, pbRootEnd, &MndxInfo.field_1C, sizeof(DWORD) + sizeof(DWORD)))
                 return ERROR_FILE_CORRUPT;
-            dwFilePointer += sizeof(DWORD) + sizeof(DWORD);
+            nFilePointer += sizeof(DWORD) + sizeof(DWORD);
         }
 
         // Load the rest of the file header
-        if(!CaptureData(pbRootFile + dwFilePointer, pbRootEnd, &MndxInfo.MarInfoOffset, 0x1C))
+        if(!CaptureData(pbRootFile + nFilePointer, pbRootEnd, &MndxInfo.MarInfoOffset, 0x1C))
             return ERROR_FILE_CORRUPT;
 
         // Verify the structure
-        if(MndxInfo.MarInfoCount > MAX_MAR_FILES || MndxInfo.MarInfoSize != sizeof(FILE_MAR_INFO))
+        if(MndxInfo.MarInfoCount > MAR_COUNT || MndxInfo.MarInfoSize != sizeof(FILE_MAR_INFO))
             return ERROR_FILE_CORRUPT;
 
         // Load all MAR infos
         for(i = 0; i < MndxInfo.MarInfoCount; i++)
         {
             // Capture the n-th MAR info
-            dwFilePointer = MndxInfo.MarInfoOffset + (MndxInfo.MarInfoSize * i);
-            if(!CaptureData(pbRootFile + dwFilePointer, pbRootEnd, &MarInfo, sizeof(FILE_MAR_INFO)))
+            nFilePointer = MndxInfo.MarInfoOffset + (MndxInfo.MarInfoSize * i);
+            if(!CaptureData(pbRootFile + nFilePointer, pbRootEnd, &MarInfo, sizeof(FILE_MAR_INFO)))
                 return ERROR_FILE_CORRUPT;
 
             // Allocate MAR_FILE structure
             pMarFile = new TMndxMarFile();
             if(pMarFile == NULL)
             {
-                nError = ERROR_NOT_ENOUGH_MEMORY;
+                dwErrCode = ERROR_NOT_ENOUGH_MEMORY;
                 break;
             }
 
             // Create the database from the MAR data
-            nError = pMarFile->LoadRootData(MarInfo, pbRootFile, pbRootEnd);
-            if(nError != ERROR_SUCCESS)
+            dwErrCode = pMarFile->LoadRootData(MarInfo, pbRootFile, pbRootEnd);
+            if(dwErrCode != ERROR_SUCCESS)
                 break;
 
             // Assign the MAR file to the MNDX info structure
@@ -2903,201 +2743,231 @@ struct TRootHandler_MNDX : public TRootHandler
 
         // All three MAR files must be loaded
         // HOTS: 00E9503B
-        if(nError == ERROR_SUCCESS)
+        if(dwErrCode == ERROR_SUCCESS)
         {
-            if(MndxInfo.MarFiles[0] == NULL || MndxInfo.MarFiles[1] == NULL || MndxInfo.MarFiles[2] == NULL)
-                nError = ERROR_BAD_FORMAT;
-            if(MndxInfo.MndxEntrySize != sizeof(MNDX_ROOT_ENTRY))
-                nError = ERROR_BAD_FORMAT;
+            if(MndxInfo.MarFiles[MAR_PACKAGE_NAMES] == NULL || MndxInfo.MarFiles[MAR_STRIPPED_NAMES] == NULL || MndxInfo.MarFiles[MAR_FULL_NAMES] == NULL)
+                dwErrCode = ERROR_BAD_FORMAT;
+            if(MndxInfo.CKeyEntrySize != sizeof(MNDX_CKEY_ENTRY))
+                dwErrCode = ERROR_BAD_FORMAT;
         }
 
-        // Load the complete array of MNDX entries
-        if(nError == ERROR_SUCCESS)
+        // Load the array of Ckey entries. All present files are in the array,
+        // the same names (differentiated by package ID) are groupped together
+        if(dwErrCode == ERROR_SUCCESS)
         {
-            size_t FileNameCount;
+            size_t CKeyEntriesSize;
+            size_t FileNameCount = 0;
 
-            pMarFile = MndxInfo.MarFiles[1];
+            pMarFile = MndxInfo.MarFiles[MAR_STRIPPED_NAMES];
+            dwErrCode = ERROR_FILE_CORRUPT;
 
-            nError = pMarFile->GetFileNameCount(&FileNameCount);
-            if(nError == ERROR_SUCCESS && FileNameCount == MndxInfo.MndxEntriesValid)
+            // Capture the array of CKey entries
+            if(pMarFile->GetFileNameCount(&FileNameCount) == ERROR_SUCCESS && FileNameCount == MndxInfo.FileNameCount)
             {
-                cbToAllocate = MndxInfo.MndxEntriesTotal * MndxInfo.MndxEntrySize;
-                pMndxEntries = (PMNDX_ROOT_ENTRY)CASC_ALLOC(BYTE, cbToAllocate);
-                if(pMndxEntries != NULL)
+                CKeyEntriesSize = MndxInfo.CKeyEntriesCount * MndxInfo.CKeyEntrySize;
+                if ((pbRootFile + MndxInfo.CKeyEntriesOffset + CKeyEntriesSize) <= pbRootEnd)
                 {
-                    if(!CaptureData(pbRootFile + MndxInfo.MndxEntriesOffset, pbRootEnd, pMndxEntries, cbToAllocate))
-                        nError = ERROR_FILE_CORRUPT;
+                    pCKeyEntries = (PMNDX_CKEY_ENTRY)(pbRootFile + MndxInfo.CKeyEntriesOffset);
+                    dwErrCode = ERROR_SUCCESS;
                 }
-                else
-                    nError = ERROR_NOT_ENOUGH_MEMORY;
             }
-            else
-                nError = ERROR_FILE_CORRUPT;
         }
 
-        // Pick the valid MNDX entries and put them to a separate array
-        if(nError == ERROR_SUCCESS)
+        // Pick the CKey entries that are the first with a given name
+        if(dwErrCode == ERROR_SUCCESS)
         {
-            assert(MndxInfo.MndxEntriesValid <= MndxInfo.MndxEntriesTotal);
-            ppValidEntries = CASC_ALLOC(PMNDX_ROOT_ENTRY, MndxInfo.MndxEntriesValid + 1);
-            if(ppValidEntries != NULL)
+            assert(MndxInfo.FileNameCount <= MndxInfo.CKeyEntriesCount);
+            FileNameIndexToCKeyIndex = CASC_ALLOC<PMNDX_CKEY_ENTRY>(MndxInfo.FileNameCount + 1);
+            if(FileNameIndexToCKeyIndex != NULL)
             {
-                PMNDX_ROOT_ENTRY pRootEntry = pMndxEntries;
-                DWORD ValidEntryCount = 1; // edx
-                DWORD nIndex1 = 0;
+                PMNDX_CKEY_ENTRY pRootEntry = pCKeyEntries;
+                DWORD nFileNameIndex = 0;
 
-                // The first entry is always valid
-                ppValidEntries[nIndex1++] = pRootEntry;
+                // The first entry is always beginning of a file name group
+                FileNameIndexToCKeyIndex[nFileNameIndex++] = pRootEntry;
 
-                // Put the remaining entries
-                for(i = 0; i < MndxInfo.MndxEntriesTotal; i++, pRootEntry++)
+                // Get the remaining file name groups
+                for(i = 0; i < MndxInfo.CKeyEntriesCount; i++, pRootEntry++)
                 {
-                    if (ValidEntryCount > MndxInfo.MndxEntriesValid)
+                    if (nFileNameIndex > MndxInfo.FileNameCount)
                         break;
 
-                    if (pRootEntry->Flags & 0x80000000)
+                    if (pRootEntry->Flags & MNDX_LAST_CKEY_ENTRY)
                     {
-                        ppValidEntries[nIndex1++] = pRootEntry + 1;
-                        ValidEntryCount++;
+                        FileNameIndexToCKeyIndex[nFileNameIndex++] = pRootEntry + 1;
                     }
                 }
 
-                // Verify the final number of valid entries
-                if ((ValidEntryCount - 1) != MndxInfo.MndxEntriesValid)
-                    nError = ERROR_BAD_FORMAT;
+                // Verify the final number of file names
+                if ((nFileNameIndex - 1) != MndxInfo.FileNameCount)
+                    dwErrCode = ERROR_BAD_FORMAT;
             }
             else
-                nError = ERROR_NOT_ENOUGH_MEMORY;
+                dwErrCode = ERROR_NOT_ENOUGH_MEMORY;
         }
 
-        // Load the MNDX packages
-        if(nError == ERROR_SUCCESS)
+        // Load the package names from the 0-th MAR file
+        if(dwErrCode == ERROR_SUCCESS)
         {
-            nError = LoadPackageNames();
-            MndxInfo.bRootFileLoaded = (nError == ERROR_SUCCESS);
+            dwErrCode = LoadPackageNames();
         }
 
-        return nError;
+        return dwErrCode;
     }
 
-    //
-    //  Virtual root functions
-    //
-
-    LPBYTE Search(TCascSearch * hs)
+    DWORD LoadFileNames(TCascStorage * hs, CASC_FILE_TREE & FileTree)
     {
-        TMndxMarFile * pMarFile = MndxInfo.MarFiles[2];
-        TMndxSearch * pSearch = NULL;
-        bool bFindResult = false;
-
-        // If the first time, allocate the structure for the search result
-        if(hs->pRootContext == NULL)
-        {
-            // Create the new search structure
-            pSearch = new TMndxSearch;
-            if(pSearch == NULL)
-                return NULL;
-
-            // Setup the search mask
-            pSearch->SetSearchMask("", 0);
-            hs->pRootContext = pSearch;
-        }
-
-        // Make shortcut for the search structure
-        assert(hs->pRootContext != NULL);
-        pSearch = (TMndxSearch *)hs->pRootContext;
-
-        // Keep searching
-        for(;;)
-        {
-            // Search the next file name
-            pMarFile->DoSearch(pSearch, &bFindResult);
-            if (bFindResult == false)
-                return NULL;
-
-            // If we have no wild mask, we found it
-            if (hs->szMask == NULL || hs->szMask[0] == 0)
-                break;
-
-            // Copy the found name to the buffer
-            memcpy(hs->szFileName, pSearch->szFoundPath, pSearch->cchFoundPath);
-            hs->szFileName[pSearch->cchFoundPath] = 0;
-            if (CheckWildCard(hs->szFileName, hs->szMask))
-                break;
-        }
-
-        // Give the file size and CKey
-        return FillFindData(hs, pSearch);
-    }
-
-    void EndSearch(TCascSearch * pSearch)
-    {
-        if(pSearch != NULL)
-        {
-            delete (TMndxSearch *)pSearch->pRootContext;
-            pSearch->pRootContext = NULL;
-        }
-    }
-
-    LPBYTE GetKey(const char * szFileName, PDWORD /* PtrFileSize */)
-    {
-        PMNDX_ROOT_ENTRY pRootEntry = NULL;
+        PCASC_CKEY_ENTRY pCKeyEntry;
+        PMNDX_CKEY_ENTRY pRootEntry;
+        PMNDX_CKEY_ENTRY pRootEnd = pCKeyEntries + MndxInfo.CKeyEntriesCount;
         PMNDX_PACKAGE pPackage;
-        char * szStrippedName;
-        char szNormName[MAX_PATH+1];
-        int nError;
+        TMndxMarFile * pMarFile = MndxInfo.MarFiles[MAR_STRIPPED_NAMES];
+        TMndxSearch Search;
+        char szFileName[MAX_PATH];
+        bool bFindResult = false;
+        DWORD dwErrCode;
 
-        // Convert the file name to lowercase + slashes
-        NormalizeFileName_LowerSlash(szNormName, szFileName, MAX_PATH);
+        // Setup the search mask
+        Search.SetSearchMask("", 0);
 
-        // Find the package number
-        pPackage = FindMndxPackage(szNormName);
-        if(pPackage == NULL)
-            return NULL;
+        // Keep searching ad long as we found something
+        while ((dwErrCode = pMarFile->DoSearch(&Search, &bFindResult)) == ERROR_SUCCESS && bFindResult)
+        {
+            // Sanity check
+            assert(Search.cchFoundPath < MAX_PATH);
 
-        // Cut the package name off the full path
-        szStrippedName = szNormName + pPackage->nLength;
-        while(szStrippedName[0] == '/')
-            szStrippedName++;
+            // The found file name index must fall into range of file names
+            if (Search.nIndex < MndxInfo.FileNameCount)
+            {
+                // Retrieve the first-in-group CKey entry of that name
+                pRootEntry = FileNameIndexToCKeyIndex[Search.nIndex];
 
-        // Find the root entry
-        nError = SearchMndxInfo(szStrippedName, (DWORD)(pPackage->nIndex), &pRootEntry);
-        if(nError != ERROR_SUCCESS || pRootEntry == NULL)
-            return NULL;
+                // Now take all files of that name, prepend their package name and insert to file tree
+                while(pRootEntry < pRootEnd)
+                {
+                    // Find the appropriate CKey entry in the central storage
+                    pCKeyEntry = FindCKeyEntry_CKey(hs, pRootEntry->CKey);
+                    if (pCKeyEntry != NULL)
+                    {
+                        size_t nPackageIndex = pRootEntry->Flags & 0x00FFFFFF;
 
-        // Return the CKey
-        return pRootEntry->CKey;
+                        // Retrieve the package for this entry
+                        pPackage = (PMNDX_PACKAGE)Packages.ItemAt(nPackageIndex);
+                        if (pPackage != NULL)
+                        {
+                            // Sanity check
+                            assert(pPackage->nIndex == nPackageIndex);
+
+                            // Merge the package name and file name
+                            MakeFileName(szFileName, _countof(szFileName), pPackage, &Search);
+
+                            // Insert the entry to the file tree
+                            FileTree.InsertByName(pCKeyEntry, szFileName);
+                        }
+                    }
+
+                    // Is this the last-in-group entry?
+                    if (pRootEntry->Flags & MNDX_LAST_CKEY_ENTRY)
+                        break;
+                    pRootEntry++;
+                }
+            }
+        }
+
+        return dwErrCode;
+    }
+
+    //
+    //  Helper functions
+    //
+
+    void MakeFileName(char * szBuffer, size_t cchBuffer, PMNDX_PACKAGE pPackage, TMndxSearch * pSearch)
+    {
+        char * szBufferEnd = szBuffer + cchBuffer - 1;
+
+        // Buffer length check
+        assert((pPackage->nLength + 1 + pSearch->cchFoundPath + 1) < cchBuffer);
+
+        // Copy the package name
+        if ((szBuffer + pPackage->nLength) < szBufferEnd)
+        {
+            memcpy(szBuffer, pPackage->szFileName, pPackage->nLength);
+            szBuffer += pPackage->nLength;
+        }
+
+        // Append slash
+        if ((szBuffer + 1) < szBufferEnd)
+            *szBuffer++ = '/';
+
+        // Append file name
+        if ((szBuffer + pSearch->cchFoundPath) < szBufferEnd)
+        {
+            memcpy(szBuffer, pSearch->szFoundPath, pSearch->cchFoundPath);
+            szBuffer += pSearch->cchFoundPath;
+        }
+
+        szBuffer[0] = 0;
     }
 
     protected:
 
     FILE_MNDX_INFO MndxInfo;
 
-    PMNDX_ROOT_ENTRY * ppValidEntries;
-    PMNDX_ROOT_ENTRY pMndxEntries;
+    PMNDX_CKEY_ENTRY * FileNameIndexToCKeyIndex;
+    PMNDX_CKEY_ENTRY pCKeyEntries;
     CASC_ARRAY Packages;                        // Linear list of present packages
+};
+
+//-----------------------------------------------------------------------------
+// Handler definition for MNDX root file
+
+struct TRootHandler_MNDX : public TFileTreeRoot
+{
+    public:
+
+    TRootHandler_MNDX() : TFileTreeRoot(0)
+    {
+        // MNDX supports file names and CKeys
+        dwFeatures |= CASC_FEATURE_FILE_NAMES | CASC_FEATURE_ROOT_CKEY;
+    }
+
+    DWORD Load(TCascStorage * hs, const FILE_MNDX_HEADER & MndxHeader, LPBYTE pbRootFile, LPBYTE pbRootEnd)
+    {
+        TMndxHandler Handler;
+        DWORD dwErrCode;
+
+        // Load and parse the entire MNDX structure
+        dwErrCode = Handler.Load(MndxHeader, pbRootFile, pbRootEnd);
+        if (dwErrCode == ERROR_SUCCESS)
+        {
+            // Search all file names and insert them into the file tree
+            dwErrCode = Handler.LoadFileNames(hs, FileTree);
+        }
+
+        return dwErrCode;
+    }
 };
 
 //-----------------------------------------------------------------------------
 // Public functions - MNDX info
 
-int RootHandler_CreateMNDX(TCascStorage * hs, LPBYTE pbRootFile, DWORD cbRootFile)
+DWORD RootHandler_CreateMNDX(TCascStorage * hs, LPBYTE pbRootFile, DWORD cbRootFile)
 {
     TRootHandler_MNDX * pRootHandler = NULL;
     FILE_MNDX_HEADER MndxHeader;
     LPBYTE pbRootEnd = pbRootFile + cbRootFile;
-    int nError = ERROR_BAD_FORMAT;
+    DWORD dwErrCode = ERROR_BAD_FORMAT;
 
     // Verify the header of the ROOT file
-    if(TRootHandler_MNDX::CaptureRootHeader(MndxHeader, pbRootFile, pbRootEnd) != NULL)
+    if(TMndxHandler::CaptureRootHeader(MndxHeader, pbRootFile, pbRootEnd) != NULL)
     {
         // Allocate the root handler object
         pRootHandler = new TRootHandler_MNDX();
         if(pRootHandler != NULL)
         {
             // Load the root directory. If load failed, we free the object
-            nError = pRootHandler->Load(MndxHeader, pbRootFile, pbRootEnd);
-            if(nError != ERROR_SUCCESS)
+            dwErrCode = pRootHandler->Load(hs, MndxHeader, pbRootFile, pbRootEnd);
+            if(dwErrCode != ERROR_SUCCESS)
             {
                 delete pRootHandler;
                 pRootHandler = NULL;
@@ -3107,5 +2977,5 @@ int RootHandler_CreateMNDX(TCascStorage * hs, LPBYTE pbRootFile, DWORD cbRootFil
 
     // Assign the root directory (or NULL) and return error
     hs->pRootHandler = pRootHandler;
-    return nError;
+    return dwErrCode;
 }
