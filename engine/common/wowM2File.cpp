@@ -58,16 +58,86 @@ bool wowM2File::loadFile(const char* filename)
 	{
 		memFile->seek(gameFile.getFileOffset());
 
+		ASSERT_TODO
 
 		gameFile.setChunk("MD21");
 		memFile->seek(gameFile.getFileOffset());
 	}
-	else
-	{
 
+	if (gameFile.isChunked() && gameFile.setChunk("SFID"))
+	{
+		memFile->seek(gameFile.getFileOffset());
+
+		if (Header._nViews > 0)
+		{
+			for (uint32_t i = 0; i < Header._nViews; ++i)
+			{
+				uint32_t skinFile;
+				memFile->read(&skinFile, sizeof(uint32_t));
+				SkinFileIDs.push_back(skinFile);
+			}
+		}
+
+		gameFile.setChunk("MD21");
+		memFile->seek(gameFile.getFileOffset());
 	}
+
+	//
+	loadVertices(memFile);
+
+	loadBounds(memFile);
+
+	loadTextures(memFile);
+
 
 	delete memFile;
 	return true;
+}
+
+void wowM2File::loadVertices(CMemFile* memFile)
+{
+	const uint8_t* fileData = memFile->getBuffer();
+
+	if (Header._nVertices == 0)
+		return;
+
+	Vertices.resize(Header._nVertices);
+
+	M2::vertex* v = (M2::vertex*)(&fileData[Header._ofsVertices]);
+	for (uint32_t i = 0; i < Header._nVertices; ++i)
+	{
+		Vertices[i].Pos = M2::fixCoordinate(v[i]._Position);
+		Vertices[i].Normal = M2::fixCoordinate(v[i]._Normal);
+		Vertices[i].TCoords0 = v[i]._TextureCoords0;
+		Vertices[i].TCoords1 = v[i]._TextureCoords1;
+		for (uint32_t j = 0; j < 4; ++j)
+		{
+			Vertices[i].Weights[j] = v[i]._BoneWeight[j];
+			Vertices[i].BoneIndices[j] = v[i]._BoneIndices[j];
+		}
+
+		BoundingBox.addInternalPoint(Vertices[i].Pos);
+	}
+}
+
+void wowM2File::loadBounds(CMemFile* memFile)
+{
+	if (Header._nBoundingVertices > 0)
+	{
+	}
+
+	if (Header._nBoundingTriangles > 0)
+	{
+	}
+
+	BoundingAABBox = aabbox3df(M2::fixCoordinate(Header._boundingbox.MinEdge), M2::fixCoordinate(Header._boundingbox.MaxEdge));
+	BoundingRadius = Header._boundingRadius;
+	CollisionAABBox = aabbox3df(M2::fixCoordinate(Header._vertexBox.MinEdge), M2::fixCoordinate(Header._vertexBox.MaxEdge));
+	CollisionRadius = Header._vertexRadius;
+}
+
+void wowM2File::loadTextures(CMemFile* memFile)
+{
+
 }
 

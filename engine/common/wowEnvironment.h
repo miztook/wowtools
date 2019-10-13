@@ -28,6 +28,7 @@ public:
 	bool loadCascListFiles();
 
 	CMemFile* openFile(const char* filename) const;
+	CMemFile* openFile(int fileid) const;
 	bool exists(const char* filename) const;
 
 	const CFileSystem* getFileSystem() const { return FileSystem; }
@@ -59,9 +60,9 @@ private:
 	std::string		Locale;
 	std::array<int, 4>			Version;
 	HANDLE	hStorage;
-	std::unordered_map<uint32_t, uint32_t>	FileIdMap;
-	std::vector<std::string>	CascListFiles;
-	std::map<std::string, int>	DirIndexMap;
+	std::unordered_map<uint32_t, std::string>	FileId2NameMap;
+	std::map<std::string, uint32_t>	FileName2IdMap;
+	std::map<std::string, std::string>	DirIndexMap;
 
 	//
 	std::vector<std::string>		WmoFileList;

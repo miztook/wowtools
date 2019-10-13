@@ -280,26 +280,22 @@ inline void std_string_split(const std::string& _str, char split, std::vector<st
 {
 	retVString.clear();
 
-	char* str = new char[_str.length() + 1];
-	ASSERT(str);
-	strcpy(str, _str.data());
-
-	char* pchStart = str;
+	const char* pchStart = _str.data();
 	char* pch = NULL;
 	while (true)
 	{
-		pch = strchr(pchStart, split);
-		if (pch)
-			*pch = '\0';
+		const char* pch = strchr(pchStart, split);
 
-		retVString.push_back(pchStart);
+		if (pch)
+			retVString.push_back(std::string(pchStart, pch - pchStart));
+		else
+			retVString.push_back(pchStart);
 
 		if (!pch)
 			break;
 
 		pchStart = pch + 1;
 	}
-	delete[] str;
 }
 
 inline std::string getFileDirA(const char* filename)

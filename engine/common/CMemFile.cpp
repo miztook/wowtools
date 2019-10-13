@@ -1,9 +1,8 @@
 #include "CMemFile.h"
 
-CMemFile::CMemFile(const uint8_t* buf, uint32_t size, const char* fname)
+CMemFile::CMemFile(const uint8_t* buf, uint32_t size)
 	: buffer(buf), size(size), pointer(0), eof(false)
 {
-	filename = fname;
 }
 
 CMemFile::~CMemFile()

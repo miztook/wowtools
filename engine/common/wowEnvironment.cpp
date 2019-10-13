@@ -9,7 +9,7 @@
 #include "CascLib.h"
 #include "CascCommon.h"
 
-#define LISTFILE "listfile.txt"
+#define LISTFILE "listfile.csv"
 
 //
 wowEnvironment* g_WowEnvironment = nullptr;
@@ -93,8 +93,8 @@ bool wowEnvironment::init()
 
 bool wowEnvironment::loadCascListFiles()
 {
-	CascListFiles.clear();
-	FileIdMap.clear();
+	FileName2IdMap.clear();
+	FileId2NameMap.clear();
 
 	std::string dir = FileSystem->getDataDirectory();
 	normalizeDirName(dir);
@@ -107,24 +107,24 @@ bool wowEnvironment::loadCascListFiles()
 	if (!file)
 		return false;
 
-	CascListFiles.reserve(800000);
-	FileIdMap.reserve(800000);
 	char buffer[1024] = { 0 };
+	std::vector<std::string> stringList;
 	while (file->readLine(buffer, 1024))
 	{
-		std::string filename(buffer);
+		std_string_split(buffer, ';', stringList);
 
-		if (filename.length() == 0)
-			break;
+		if (stringList.size() < 2)
+			continue;
 
+		std::string filename = stringList[1];
 		normalizeFileName(filename);
 		str_tolower(filename);
 
-		int id = (int)CascGetFileId(hStorage, filename.c_str());
+		int id = atoi(stringList[0].c_str());
 		if (id >= 0)
 		{
-			CascListFiles.emplace_back(filename);
-			FileIdMap[id] = (int)CascListFiles.size() - 1;
+			FileName2IdMap[filename] = id;
+			FileId2NameMap[id] = filename;
 		}
 	}
 
@@ -132,16 +132,15 @@ bool wowEnvironment::loadCascListFiles()
 
 	DirIndexMap.clear();
 	{
-		int nFiles = (int)CascListFiles.size();
-		for (int i = 0; i < nFiles; ++i)
+		for (const auto& itr : FileName2IdMap)
 		{
-			const char* szFile = CascListFiles[i].c_str();
+			const char* szFile = itr.first.c_str();
 			const char* p = strchr(szFile, '/');
 			while (p)
 			{
 				std::string dir(szFile, (uint32_t)(p - szFile));
 				if (DirIndexMap.find(dir) == DirIndexMap.end())
-					DirIndexMap[dir] = i;														//add dir to index
+					DirIndexMap[dir] = szFile;														//add dir to index
 
 				if (*(p + 1) == '0')
 					break;
@@ -188,7 +187,41 @@ CMemFile * wowEnvironment::openFile(const char * filename) const
 
 	CascCloseFile(hFile);
 
-	return new CMemFile(buffer, size, realfilename);
+	return new CMemFile(buffer, size);
+}
+
+CMemFile* wowEnvironment::openFile(int fileid) const
+{
+	HANDLE hFile;
+
+	if (!CascOpenFile(hStorage, CASC_FILE_DATA_ID(fileid), CascLocale, CASC_OPEN_BY_FILEID, &hFile))
+	{
+		return nullptr;
+	}
+
+	DWORD dwHigh;
+	uint32_t size = CascGetFileSize(hFile, &dwHigh);
+
+	// HACK: in patch.mpq some files don't want to open and give 1 for filesize
+	if (size <= 1 || size == 0xffffffff) {
+		CascCloseFile(hFile);
+		return nullptr;
+	}
+
+	uint8_t* buffer = new uint8_t[size];
+
+	bool ret = CascReadFile(hFile, buffer, (DWORD)size, nullptr);
+	if (!ret)
+	{
+		delete[] buffer;
+
+		CascCloseFile(hFile);
+		return nullptr;
+	}
+
+	CascCloseFile(hFile);
+
+	return new CMemFile(buffer, size);
 }
 
 bool wowEnvironment::exists(const char * filename) const
@@ -206,10 +239,9 @@ bool wowEnvironment::exists(const char * filename) const
 
 void wowEnvironment::iterateFiles(const char* ext, WOWFILECALLBACK callback) const
 {
-	uint32_t count = (uint32_t)CascListFiles.size();
-	for (uint32_t i = 0; i < count; ++i)
+	for (const auto& itr : FileName2IdMap)
 	{
-		const char* filename = CascListFiles[i].c_str();
+		const char* filename = itr.first.c_str();
 		if (hasFileExtensionA(filename, ext))
 		{
 			callback(filename);
@@ -226,12 +258,12 @@ void wowEnvironment::iterateFiles(const char* path, const char * ext, WOWFILECAL
 		return;
 
 	//calc start
-	int nStart = itr->second;
+	std::string firstFile = itr->second;
 
-	uint32_t count = (uint32_t)CascListFiles.size();
-	for (uint32_t i = nStart; i < count; ++i)
+	auto it = FileName2IdMap.find(firstFile);
+	while (it != FileName2IdMap.end())
 	{
-		const char* filename = CascListFiles[i].c_str();
+		const char* filename = itr->first.c_str();
 		if (hasFileExtensionA(filename, ext))
 		{
 			callback(filename);
@@ -239,14 +271,16 @@ void wowEnvironment::iterateFiles(const char* path, const char * ext, WOWFILECAL
 
 		if (strstr(filename, strBaseDir.c_str()) == nullptr)
 			break;
+
+		++itr;
 	}
 }
 
-const char * wowEnvironment::getFileNameById(uint32_t id) const
+const char* wowEnvironment::getFileNameById(uint32_t id) const
 {
-	auto itr = FileIdMap.find(id);
-	if (itr != FileIdMap.end())
-		return CascListFiles[itr->second].c_str();
+	auto itr = FileId2NameMap.find(id);
+	if (itr != FileId2NameMap.end())
+		return itr->second.c_str();
 	return nullptr;
 }
 

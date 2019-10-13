@@ -21,8 +21,7 @@ bool wowWMOFile::loadFile(const char* filename)
 		return false;
 
 	char tmp[QMAX_PATH];
-	const char* name = memFile->getFileName();
-	getFullFileNameNoExtensionA(name, tmp, QMAX_PATH);
+	getFullFileNameNoExtensionA(filename, tmp, QMAX_PATH);
 	Name = tmp;
 
 	char fourcc[5];
