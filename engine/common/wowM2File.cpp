@@ -82,28 +82,28 @@ bool wowM2File::loadFile(const char* filename)
 		memFile->seek(gameFile.getFileOffset());
 	}
 
+	const uint8_t* filebuffer = memFile->getPointer();
+
 	//
-	loadVertices(memFile);
+	loadVertices(filebuffer);
 
-	loadBounds(memFile);
+	loadBounds(filebuffer);
 
-	loadTextures(memFile);
+	loadTextures(filebuffer);
 
 
 	delete memFile;
 	return true;
 }
 
-void wowM2File::loadVertices(CMemFile* memFile)
+void wowM2File::loadVertices(const uint8_t* fileStart)
 {
-	const uint8_t* fileData = memFile->getBuffer();
-
 	if (Header._nVertices == 0)
 		return;
 
 	Vertices.resize(Header._nVertices);
 
-	M2::vertex* v = (M2::vertex*)(&fileData[Header._ofsVertices]);
+	M2::vertex* v = (M2::vertex*)(&fileStart[Header._ofsVertices]);
 	for (uint32_t i = 0; i < Header._nVertices; ++i)
 	{
 		Vertices[i].Pos = M2::fixCoordinate(v[i]._Position);
@@ -120,7 +120,7 @@ void wowM2File::loadVertices(CMemFile* memFile)
 	}
 }
 
-void wowM2File::loadBounds(CMemFile* memFile)
+void wowM2File::loadBounds(const uint8_t* fileStart)
 {
 	if (Header._nBoundingVertices > 0)
 	{
@@ -136,7 +136,7 @@ void wowM2File::loadBounds(CMemFile* memFile)
 	CollisionRadius = Header._vertexRadius;
 }
 
-void wowM2File::loadTextures(CMemFile* memFile)
+void wowM2File::loadTextures(const uint8_t* fileStart)
 {
 
 }

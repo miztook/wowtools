@@ -41,21 +41,21 @@ public:
 
 
 private:
-	void loadVertices(CMemFile* memFile);
+	void loadVertices(const uint8_t* fileStart);
 
-	void loadBounds(CMemFile* memFile);
+	void loadBounds(const uint8_t* fileStart);
 
-	void loadTextures(CMemFile* memFile);
+	void loadTextures(const uint8_t* fileStart);
 
-	void loadSequences(CMemFile* memFile);
+	void loadSequences(const uint8_t* fileStart);
 
-	void loadColor(CMemFile* memFile);
+	void loadColor(const uint8_t* fileStart);
 
-	void loadTransparency(CMemFile* memFile);
+	void loadTransparency(const uint8_t* fileStart);
 
-	void loadTextureAnimation(CMemFile* memFile);
+	void loadTextureAnimation(const uint8_t* fileStart);
 
-	void loadBones(CMemFile* memFile);
+	void loadBones(const uint8_t* fileStart);
 
 private:
 	const wowEnvironment* WowEnvironment;
