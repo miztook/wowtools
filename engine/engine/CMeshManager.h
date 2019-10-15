@@ -23,7 +23,7 @@ public:
 	void removeMesh(const char* name);
 
 	bool addGridLineMesh(const char* name, uint32_t xzCount, float gridSize, SColor color);
-	bool addDecal(const char* name, float width, float height, SColor color);
+	bool addPlane(const char* name, float width, float height, SColor color);
 	bool addCube(const char* name, const vector3df& size, SColor color);
 	bool addSphere(const char* name, float radius, uint32_t polyCountX, uint32_t polyCountY, SColor color);
 	bool addCylinder(const char* name, float radius, float height, uint32_t numSegment, SColor color);

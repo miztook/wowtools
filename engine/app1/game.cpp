@@ -58,7 +58,7 @@ void CGame::createScene()
 	g_Engine->getMeshManager()->addGridLineMesh("$grid20", 20, 1, SColor(128, 128, 128));
 
 	CMeshSceneNode* gridSceneNode = m_pScene->addMeshSceneNode("$grid20");
-	gridSceneNode->addMesh(g_Engine->getMeshManager()->getMesh("$grid20"));
+	gridSceneNode->setMesh(g_Engine->getMeshManager()->getMesh("$grid20"));
 }
 
 void CGame::update()

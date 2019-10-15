@@ -27,8 +27,8 @@ public:
 	~CMeshSceneNode();
 
 public:
-	CMeshRenderer* addMesh(const CMesh* pMesh);
-	void removeMesh(const CMesh* pMesh);
+	CMeshRenderer* setMesh(const CMesh* pMesh);
+	IRenderer* getMeshRenderer() const;
 
 public:
 	SRenderUnit* render(const IRenderer* renderer, const CCamera* cam) override;

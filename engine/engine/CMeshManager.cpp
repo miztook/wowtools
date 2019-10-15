@@ -58,7 +58,7 @@ bool CMeshManager::addGridLineMesh(const char* name, uint32_t xzCount, float gri
 	return addMesh(name, vbuffer, nullptr, EPT_LINES, vcount / 2, getGridLineAABBox(xzCount, gridSize));
 }
 
-bool CMeshManager::addDecal(const char* name, float width, float height, SColor color)
+bool CMeshManager::addPlane(const char* name, float width, float height, SColor color)
 {
 	IVertexBuffer* vbuffer = g_Engine->getDriver()->createVertexBuffer(EMM_STATIC);
 	{

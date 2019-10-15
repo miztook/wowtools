@@ -26,34 +26,27 @@ CMeshSceneNode::~CMeshSceneNode()
 	m_RendererList.clear();
 }
 
-CMeshRenderer* CMeshSceneNode::addMesh(const CMesh* pMesh)
+CMeshRenderer* CMeshSceneNode::setMesh(const CMesh* pMesh)
 {
 	if (!pMesh)
 		return nullptr;
+
+	for (IRenderer* renderer : m_RendererList)
+	{
+		delete renderer;
+	}
+	m_RendererList.clear();
 
 	auto meshRenderer = new CMeshRenderer(pMesh, this);
 	m_RendererList.push_back(meshRenderer);
 	return meshRenderer;
 }
 
-void CMeshSceneNode::removeMesh(const CMesh* pMesh)
+IRenderer* CMeshSceneNode::getMeshRenderer() const
 {
-	if (!pMesh)
-		return;
-
-	for (auto itr = m_RendererList.begin(); itr != m_RendererList.end();)
-	{
-		auto meshRenderer = static_cast<CMeshRenderer*>(*itr);
-		if (meshRenderer && meshRenderer->getMesh() == pMesh)
-		{
-			m_RendererList.erase(itr++);
-			delete meshRenderer;
-		}
-		else
-		{
-			++itr;
-		}
-	}
+	if (!m_RendererList.empty())
+		return *m_RendererList.begin();
+	return nullptr;
 }
 
 SRenderUnit* CMeshSceneNode::render(const IRenderer* renderer, const CCamera* cam)
