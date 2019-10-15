@@ -104,11 +104,6 @@ void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial* material, 
 		CurrentRenderState.ZWriteEnable = material->ZWriteEnable ? GL_TRUE : GL_FALSE;
 	}
 
-	// scissor
-	{
-		CurrentRenderState.ScissorEnable = material->ScissorEnable ? GL_TRUE : GL_FALSE;
-	}
-
 	// backface culling
 	{
 		GLenum cullmode;
@@ -220,7 +215,7 @@ void COpenGLMaterialRenderComponent::applyRenderStates()
 
 	DEVICE_SET_DEPTHMASK_STATE(ZWriteEnable, CurrentRenderState.ZWriteEnable);
 	//DEVICE_SET_BOOL_STATE(StencilEnable, GL_STENCIL_TEST, CurrentRenderState.StencilEnable);
-	DEVICE_SET_BOOL_STATE(ScissorEnable, GL_SCISSOR_TEST, CurrentRenderState.ScissorEnable);
+	//DEVICE_SET_BOOL_STATE(ScissorEnable, GL_SCISSOR_TEST, CurrentRenderState.ScissorEnable);
 	DEVICE_SET_BOOL_STATE(CullEnable, GL_CULL_FACE, CurrentRenderState.CullEnable);
 
 	if (CurrentRenderState.CullEnable)
@@ -491,7 +486,7 @@ void COpenGLMaterialRenderComponent::resetRSCache()
 	glGetBooleanv(GL_COLOR_WRITEMASK, RsCache.ColorMask);
 	glGetBooleanv(GL_DEPTH_WRITEMASK, &RsCache.ZWriteEnable);
 	//RsCache.StencilEnable = glIsEnabled(GL_STENCIL_TEST);
-	RsCache.ScissorEnable = glIsEnabled(GL_SCISSOR_TEST);
+	//RsCache.ScissorEnable = glIsEnabled(GL_SCISSOR_TEST);
 	RsCache.CullEnable = glIsEnabled(GL_CULL_FACE);
 	glGetIntegerv(GL_CULL_FACE_MODE, &RsCache.CullMode);
 	glGetIntegerv(GL_FRONT_FACE, &RsCache.FrontFace);

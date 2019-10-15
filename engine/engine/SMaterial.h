@@ -102,8 +102,6 @@ struct SMaterial
 
 	E_CULL_MODE		Cull;
 	E_ANTI_ALIASING_MODE		AntiAliasing;
-	bool		Wireframe;
-	bool		ScissorEnable;
 	E_COMPARISON_FUNC		ZBuffer;
 	bool		ZWriteEnable;
 
@@ -121,8 +119,6 @@ struct SMaterial
 		RenderQueue = ERQ_GEOMETRY;
 		Cull = ECM_BACK;
 		AntiAliasing = EAAM_OFF;
-		Wireframe = false;
-		ScissorEnable = false;
 		ZBuffer = ECFN_LESSEQUAL;
 		ZWriteEnable = true;
 	}
