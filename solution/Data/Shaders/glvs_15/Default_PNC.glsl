@@ -13,7 +13,7 @@ void main(void)
 {
 	gl_Position = g_ObjectToClipPos(Pos);
 
-	v_Normal = Mul3(g_ObjectToWorld, Normal);
+	v_Normal = Mul(mat3(g_ObjectToWorld), Normal);
 
 	v_Diffuse = Col0.zyxw;
 }
