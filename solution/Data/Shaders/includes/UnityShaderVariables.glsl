@@ -1,7 +1,14 @@
-#ifndef COMMON_INCLUDED
-#define COMMON_INCLUDED
+#ifndef UNITY_SHADER_VARIABLES_INCLUDED
+#define UNITY_SHADER_VARIABLES_INCLUDED
 
-#define CBUFFER_START(name) uniform name {
+#define fixed mediump float
+#define fixed3 mediump vec3
+#define fixed4 mediump vec4
+#define half mediump float
+#define half3 mediump vec3
+#define half4 mediump vec4
+
+#define CBUFFER_START(name) struct name {
 #define CBUFFER_END };
 
 uniform mat4 g_ObjectToWorld;
@@ -42,6 +49,8 @@ CBUFFER_START(UnityPerCamera)
 	
 CBUFFER_END
 
+uniform UnityPerCamera g_UnityPerCamera;
+
 CBUFFER_START(UnityLighting)
 	#ifdef USING_DIRECTIONAL_LIGHT
     mediump vec4 _WorldSpaceLightPos0;
@@ -50,9 +59,13 @@ CBUFFER_START(UnityLighting)
     #endif
 CBUFFER_END
 
+uniform UnityLighting g_UnityLighting;
+
 CBUFFER_START(UnityPerFrame)
 	mediump vec4 unity_ShadowColor;
 CBUFFER_END
+
+uniform UnityPerFrame g_UnityPerFrame;
 
 CBUFFER_START(UnityFog)
     mediump vec4 unity_FogColor;
@@ -65,6 +78,8 @@ CBUFFER_START(UnityFog)
 	
 CBUFFER_END
 
+uniform UnityFog g_UnityFog;
+
 //Lightmaps
 uniform sampler2D 	unity_Lightmap;
 uniform sampler2D	unity_ShadowMask;
@@ -72,5 +87,7 @@ uniform sampler2D	unity_ShadowMask;
 CBUFFER_START(UnityLightmaps)
     vec4 unity_LightmapST;
 CBUFFER_END
+	
+uniform UnityLightmaps g_UnityLightmaps;	
 	
 #endif

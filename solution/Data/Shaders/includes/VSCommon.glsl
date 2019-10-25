@@ -2,11 +2,7 @@
 #define VSCOMMON_INCLUDED
 
 #include "UnityShaderVariables.glsl"
-
-float Saturate(float x)
-{
-    return max(0.0, min(1.0, x));
-}
+#include "Lighting.glsl"
 
 vec3 Mul( mat3 matrix, vec3 pos )
 {
