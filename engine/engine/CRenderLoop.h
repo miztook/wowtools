@@ -15,7 +15,7 @@ public:
 	~CRenderLoop();
 
 public:
-	void addRenderUnit(const SRenderUnit* unit);
+	void addRenderUnit(SRenderUnit* unit);
 	
 	void doRenderLoopPrepass(const CCamera* cam);
 	void doRenderLoopForward(const CCamera* cam);
@@ -25,6 +25,8 @@ public:
 private:
 	void renderOpaques(const CCamera* cam);
 	void renderAfterOpaues(const CCamera* cam);
+
+	void processRenderUnit(SRenderUnit* unit);
 
 private:
 	IVideoDriver*	Driver;

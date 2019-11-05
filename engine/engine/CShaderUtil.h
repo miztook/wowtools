@@ -49,79 +49,11 @@ public:
 	static SShaderKey getShaderKey(const char* vsFile, const char* vsMacroString, const char* psFile, const char* psMacroString, E_VERTEX_TYPE vertexType);
 	static int getShaderProgramSortId(const char* vsFile, const char* vsMacroString, const char* psFile, const char* psMacroString, E_VERTEX_TYPE vertexType);
 
-	static std::string getUIPSMacroString(bool alpha, bool alphaChannel)
-	{
-		if (alphaChannel)
-		{
-			if (alpha)
-				return std::string("_USE_ALPHA_") + "#" + std::string("_USE_ALPHA_CHANNEL_");
-			else
-				return std::string("_USE_ALPHA_CHANNEL_");
-		}
-		else
-		{
-			if (alpha)
-				return std::string("_USE_ALPHA_");
-			else
-				return "";
-		}
-	}
+	static std::string getUIPSMacroString(bool alpha, bool alphaChannel);
 
-	static const char* getDefaultVSFileName(E_VERTEX_TYPE vType)
-	{
-		switch (vType)
-		{
-		case EVT_P:
-			return "Default_P";
-		case EVT_PC:
-			return "Default_PC";
-		case EVT_PCT:
-			return "Default_PCT";
-		case EVT_PN:
-			return "Default_PN";
-		case EVT_PNC:
-			return "Default_PNC";
-		case EVT_PNCT:
-		case EVT_PNCT2:
-			return "Default_PNCT";
-		case EVT_PT:
-			return "Default_PT";
-		case EVT_PNT:
-		case EVT_PNT2WA:
-			return "Default_PNT";
-		default:
-			break;
-		}
-		return "";
-	}
+	static const char* getDefaultVSFileName(E_VERTEX_TYPE vType);
 
-	static const char* getDefaultPSFileName(E_VERTEX_TYPE vType)
-	{
-		switch (vType)
-		{
-		case EVT_P:
-			return "Default_P";
-		case EVT_PC:
-			return "Default_PC";
-		case EVT_PCT:
-			return "Default_PCT";
-		case EVT_PN:
-			return "Default_PN";
-		case EVT_PNC:
-			return "Default_PNC";
-		case EVT_PNCT:
-		case EVT_PNCT2:
-			return "Default_PNCT";
-		case EVT_PT:
-			return "Default_PT";
-		case EVT_PNT:
-		case EVT_PNT2WA:
-			return "Default_PNT";
-		default:
-			break;
-		}
-		return "";
-	}
+	static const char* getDefaultPSFileName(E_VERTEX_TYPE vType);
 
 private:
 	static bool processDirectiveInclude(const char* pAfterInclude, const char* szDirInclude, std::string& strInclude);

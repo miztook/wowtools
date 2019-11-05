@@ -169,7 +169,7 @@ public:
 	virtual void setDisplayMode(const dimension2d& size) = 0;
 	virtual bool setDriverSetting(const SDriverSetting& setting) = 0;
 
-	virtual void draw(IVertexBuffer* vbuffer, IIndexBuffer* ibuffer,
+	virtual void draw(const IVertexBuffer* vbuffer, const IIndexBuffer* ibuffer,
 		E_PRIMITIVE_TYPE primType,
 		uint32_t primCount,
 		const SDrawParam& drawParam, bool is2D) = 0;

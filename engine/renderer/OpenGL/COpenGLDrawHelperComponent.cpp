@@ -3,6 +3,7 @@
 #include "COpenGLDriver.h"
 #include "COpenGLVertexIndexBuffer.h"
 #include "ITexture.h"
+#include "EngineUtil.h"
 
 COpenGLDrawHelperComponent::COpenGLDrawHelperComponent(COpenGLDriver* driver)
 	: Driver(driver)
@@ -361,11 +362,15 @@ void COpenGLDrawHelperComponent::do_draw2DImageBatch(uint32_t batchCount, uint32
 	Driver->setMaterial(InitMaterial2D);
 	Driver->setGlobalMaterial(Driver->getGlobalMaterial2D());
 
+	IVertexBuffer* vbuffer = VBImage.get();
+	IIndexBuffer* ibuffer = getStaticIndexBufferQuadList();
+	EngineUtil::buildVideoResources(vbuffer, ibuffer, &InitMaterial2D);
+
 	SDrawParam drawParam;
 	drawParam.numVertices = batchCount * 4;
 	drawParam.baseVertIndex = 0;
 
-	Driver->draw(VBImage.get(), getStaticIndexBufferQuadList(), EPT_TRIANGLES,
+	Driver->draw(vbuffer, ibuffer, EPT_TRIANGLES,
 		batchCount * 2, drawParam, true);
 }
 
@@ -379,10 +384,14 @@ void COpenGLDrawHelperComponent::do_draw2DSquadBatch(uint32_t batchCount, ITextu
 	Driver->setMaterial(InitMaterial2D);
 	Driver->setGlobalMaterial(Driver->getGlobalMaterial2D());
 
+	IVertexBuffer* vbuffer = VBImage.get();
+	IIndexBuffer* ibuffer = getStaticIndexBufferQuadList();
+	EngineUtil::buildVideoResources(vbuffer, ibuffer, &InitMaterial2D);
+
 	SDrawParam drawParam;
 	drawParam.numVertices = batchCount * 4;
 	drawParam.baseVertIndex = 0;
 
-	Driver->draw(VBImage.get(), getStaticIndexBufferQuadList(), EPT_TRIANGLES,
+	Driver->draw(vbuffer, ibuffer, EPT_TRIANGLES,
 		batchCount * 2, drawParam, true);
 }

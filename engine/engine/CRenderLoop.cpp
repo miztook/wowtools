@@ -4,6 +4,7 @@
 #include "Engine.h"
 #include "IVideoDriver.h"
 #include "CCamera.h"
+#include "EngineUtil.h"
 
 bool OpaqueCompare(const SRenderUnit* a, const SRenderUnit* b)
 {
@@ -82,16 +83,18 @@ CRenderLoop::~CRenderLoop()
 
 }
 
-void CRenderLoop::addRenderUnit(const SRenderUnit* unit)
+void CRenderLoop::addRenderUnit(SRenderUnit* unit)
 {
 	int renderQueue = unit->renderer->getRenderQueue();
 
 	if (renderQueue <= ERQ_GEOMETRY_INDEX_MAX)		//solid
 	{
+		processRenderUnit(unit);
 		m_RenderUnits_Opaque.push_back(unit);
 	}
 	else if (renderQueue <= ERQ_INDEX_MAX)		//transparent
 	{
+		processRenderUnit(unit);
 		m_RenderUnits_AfterOpaque.push_back(unit);
 	}
 }
@@ -148,5 +151,11 @@ void CRenderLoop::renderOpaques(const CCamera* cam)
 void CRenderLoop::renderAfterOpaues(const CCamera* cam)
 {
 	std::sort(m_RenderUnits_AfterOpaque.begin(), m_RenderUnits_AfterOpaque.end(), AfterOpaqueCompare);
+}
+
+void CRenderLoop::processRenderUnit(SRenderUnit* unit)
+{
+	const SMaterial& mat = unit->renderer->getMaterial();
+	EngineUtil::buildVideoResources(unit->vbuffer, unit->ibuffer, &mat);
 }
 
