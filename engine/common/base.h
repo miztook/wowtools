@@ -26,6 +26,8 @@ typedef		void*				glcontext_type;
 #define INT32_TO_PTR(x)		((intptr_t)((intptr_t)((int32_t)x) & 0xffffffff))
 #define UINT32_TO_PTR(x)	((uintptr_t)((uintptr_t)((uint32_t)x) & 0xffffffff))
 
+#define  MATERIAL_MAX_TEXTURES		7
+
 struct SWindowInfo
 {
 	SWindowInfo() : hwnd(nullptr), width(0), height(0) {}

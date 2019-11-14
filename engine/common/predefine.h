@@ -91,4 +91,3 @@
 TypeName(const TypeName&) = delete;               \
 TypeName& operator=(const TypeName&) = delete;
 
-#define  MATERIAL_MAX_TEXTURES		7
