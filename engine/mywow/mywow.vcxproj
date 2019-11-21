@@ -27,6 +27,7 @@
     <ClInclude Include="..\common\CSysChrono.h" />
     <ClInclude Include="..\common\CSysCodeCvt.h" />
     <ClInclude Include="..\common\CSysSync.h" />
+    <ClInclude Include="..\common\CSysThread.h" />
     <ClInclude Include="..\common\CWriteFile.h" />
     <ClInclude Include="..\common\frustum.h" />
     <ClInclude Include="..\common\function.h" />
@@ -103,6 +104,7 @@
     <ClCompile Include="..\common\CMemFile.cpp" />
     <ClCompile Include="..\common\CReadFile.cpp" />
     <ClCompile Include="..\common\CSysCodeCvt.cpp" />
+    <ClCompile Include="..\common\CSysThread.cpp" />
     <ClCompile Include="..\common\CWriteFile.cpp" />
     <ClCompile Include="..\common\wowDatabase.cpp" />
     <ClCompile Include="..\common\wowDbFile.cpp" />

@@ -245,6 +245,9 @@
     <ClInclude Include="..\common\wowM2Struct.h">
       <Filter>common</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\CSysThread.h">
+      <Filter>common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">
@@ -359,6 +362,9 @@
       <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="..\common\wowM2File.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CSysThread.cpp">
       <Filter>common</Filter>
     </ClCompile>
   </ItemGroup>
