@@ -155,8 +155,6 @@ inline GLint COpenGLHelper::getGLBlend(E_BLEND_FACTOR factor)
 		r = GL_DST_ALPHA; break;
 	case EBF_ONE_MINUS_DST_ALPHA:
 		r = GL_ONE_MINUS_DST_ALPHA; break;
-	case EBF_SRC_ALPHA_SATURATE:
-		r = GL_SRC_ALPHA_SATURATE; break;
 	default:
 		ASSERT(false);
 	}

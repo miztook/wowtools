@@ -54,54 +54,53 @@ public:
 	std::map<std::string, int> textureNameIndexMap;
 };
 
-class COpenGLVertexShader : public IVideoResource
+class COpenGLShader : public IVideoResource
 {
 public:
-	COpenGLVertexShader(const COpenGLDriver* driver, const char* name, const char* macroString);
-	~COpenGLVertexShader();
+	COpenGLShader(const COpenGLDriver* driver, const char* name, const char* macroString);
+	virtual ~COpenGLShader();
 
 public:
-	bool isValid() const { return VertexShader != 0; }
-	GLuint getGLShader() const { return VertexShader; }
-
-	bool compile();
+	bool isValid() const { return GLShader != 0; }
+	GLuint getGLShader() const { return GLShader; }
 
 protected:
-	bool buildVideoResources() override;
+	bool buildVideoResources(const char* dir, GLenum shaderType);
 	void releaseVideoResources() override;
 	bool hasVideoBuilt() const override { return VideoBuilt; }
 
-private:
+protected:
 	const COpenGLDriver* Driver;
-	GLuint	VertexShader;
+	GLuint	GLShader;
 	std::string Name;
 	std::string MacroString;
 	bool	VideoBuilt;
 };
 
-class COpenGLPixelShader : public IVideoResource
+class COpenGLVertexShader : public COpenGLShader
 {
 public:
-	COpenGLPixelShader(const COpenGLDriver* driver, const char* name, const char* macroString);
-	~COpenGLPixelShader();
+	COpenGLVertexShader(const COpenGLDriver* driver, const char* name, const char* macroString)
+		: COpenGLShader(driver, name, macroString) {}
 
 public:
-	bool isValid() const { return PixelShader != 0; }
-	GLuint getGLShader() const { return PixelShader; }
-
 	bool compile();
 
 protected:
 	bool buildVideoResources() override;
-	void releaseVideoResources() override;
-	bool hasVideoBuilt() const override { return VideoBuilt; }
+};
 
-private:
-	const COpenGLDriver* Driver;
-	GLuint	PixelShader;
-	std::string Name;
-	std::string MacroString;
-	bool	VideoBuilt;
+class COpenGLPixelShader : public COpenGLShader
+{
+public:
+	COpenGLPixelShader(const COpenGLDriver* driver, const char* name, const char* macroString)
+		: COpenGLShader(driver, name, macroString) {}
+
+public:
+	bool compile();
+
+protected:
+	bool buildVideoResources() override;
 };
 
 class COpenGLShaderManageComponent

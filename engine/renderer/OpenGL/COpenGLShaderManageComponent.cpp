@@ -4,6 +4,7 @@
 #include "COpenGLDriver.h"
 #include "CShaderUtil.h"
 #include "CFileSystem.h"
+#include "stringext.h"
 
 COpenGLShaderManageComponent::COpenGLShaderManageComponent(const COpenGLDriver* driver)
 	: Driver(driver), CurrentProgram(nullptr)
@@ -349,17 +350,6 @@ void COpenGLShaderManageComponent::setMaterialVariables(const CGLProgram* progra
 	}
 }
 
-COpenGLVertexShader::COpenGLVertexShader(const COpenGLDriver* driver, const char* name, const char* macroString)
-	: Driver(driver), Name(name), MacroString(macroString), VideoBuilt(false)
-{
-	VertexShader = 0;
-}
-
-COpenGLVertexShader::~COpenGLVertexShader()
-{
-	releaseVideoResources();
-}
-
 bool COpenGLVertexShader::compile()
 {
 	return buildVideoResources();
@@ -367,74 +357,7 @@ bool COpenGLVertexShader::compile()
 
 bool COpenGLVertexShader::buildVideoResources()
 {
-	if (VideoBuilt)
-		return false;
-
-	std::string absFileName = Driver->getShaderManageComponent()->getVSDir();
-	absFileName.append(Name);
-	absFileName.append(".glsl");
-
-	g_FileSystem->writeLog(ELOG_GX, "COpenGLVertexShader buildVideoResources: %s, %s", absFileName.c_str(), MacroString.c_str());
-
-	SShaderFile result;
-	if (!CShaderUtil::loadFile_OpenGL(absFileName.c_str(), CShaderUtil::getShaderMacroSet(MacroString.c_str()), result))
-	{
-		g_FileSystem->writeLog(ELOG_GX, "GLSL shader failed to load: %s, %s", absFileName.c_str(), MacroString.c_str());
-		return false;
-	}
-
-	const char* buffer = result.Buffer.data();
-
-	GLhandleARB shaderHandle = Driver->GLExtension.extGlCreateShaderObject(GL_VERTEX_SHADER_ARB);
-	Driver->GLExtension.extGlShaderSourceARB(shaderHandle, 1, &buffer, nullptr);
-	Driver->GLExtension.extGlCompileShaderARB(shaderHandle);
-
-	GLint status = 0;
-
-	Driver->GLExtension.extGlGetObjectParameteriv(shaderHandle, GL_OBJECT_COMPILE_STATUS_ARB, &status);
-
-	if (!status)
-	{
-		g_FileSystem->writeLog(ELOG_GX, "GLSL shader failed to compile: %s, %s", absFileName.c_str(), MacroString.c_str());
-		// check error message and log it
-		GLint maxLength = 0;
-		GLsizei length;
-
-		Driver->GLExtension.extGlGetObjectParameteriv(shaderHandle, GL_OBJECT_INFO_LOG_LENGTH_ARB, &maxLength);
-
-		GLcharARB* infoLog = new GLcharARB[maxLength];
-		Driver->GLExtension.extGlGetInfoLog(shaderHandle, maxLength, &length, infoLog);
-		g_FileSystem->writeLog(ELOG_GX, reinterpret_cast<const char*>(infoLog));
-		delete[] infoLog;
-
-		shaderHandle = 0;
-		return false;
-	}
-
-	VertexShader = shaderHandle;
-	VideoBuilt = true;
-	return true;
-}
-
-void COpenGLVertexShader::releaseVideoResources()
-{
-	if (!VideoBuilt)
-		return;
-
-	Driver->GLExtension.extGlDeleteObject((GLhandleARB)VertexShader);
-
-	VideoBuilt = false;
-}
-
-COpenGLPixelShader::COpenGLPixelShader(const COpenGLDriver* driver, const char* name, const char* macroString)
-	: Driver(driver), Name(name), MacroString(macroString), VideoBuilt(false)
-{
-	PixelShader = 0;
-}
-
-COpenGLPixelShader::~COpenGLPixelShader()
-{
-	releaseVideoResources();
+	return COpenGLShader::buildVideoResources(Driver->getShaderManageComponent()->getVSDir(), GL_VERTEX_SHADER_ARB);
 }
 
 bool COpenGLPixelShader::compile()
@@ -444,14 +367,31 @@ bool COpenGLPixelShader::compile()
 
 bool COpenGLPixelShader::buildVideoResources()
 {
+	return COpenGLShader::buildVideoResources(Driver->getShaderManageComponent()->getPSDir(), GL_FRAGMENT_SHADER_ARB);
+}
+
+COpenGLShader::COpenGLShader(const COpenGLDriver* driver, const char* name, const char* macroString)
+	: Driver(driver), Name(name), MacroString(macroString), VideoBuilt(false)
+{
+	GLShader = 0;
+}
+
+COpenGLShader::~COpenGLShader()
+{
+	releaseVideoResources();
+}
+
+bool COpenGLShader::buildVideoResources(const char* dir, GLenum shaderType)
+{
 	if (VideoBuilt)
 		return false;
 
-	std::string absFileName = Driver->getShaderManageComponent()->getPSDir();
+	std::string absFileName = dir;
+	normalizeDirName(absFileName);
 	absFileName.append(Name);
 	absFileName.append(".glsl");
 
-	g_FileSystem->writeLog(ELOG_GX, "COpenGLPixelShader buildVideoResources: %s, %s", absFileName.c_str(), MacroString.c_str());
+	g_FileSystem->writeLog(ELOG_GX, "COpenGLShader buildVideoResources: %s, %s", absFileName.c_str(), MacroString.c_str());
 
 	SShaderFile result;
 	if (!CShaderUtil::loadFile_OpenGL(absFileName.c_str(), CShaderUtil::getShaderMacroSet(MacroString.c_str()), result))
@@ -462,7 +402,7 @@ bool COpenGLPixelShader::buildVideoResources()
 
 	const char* buffer = result.Buffer.data();
 
-	GLhandleARB shaderHandle = Driver->GLExtension.extGlCreateShaderObject(GL_FRAGMENT_SHADER_ARB);
+	GLhandleARB shaderHandle = Driver->GLExtension.extGlCreateShaderObject(shaderType);
 	Driver->GLExtension.extGlShaderSourceARB(shaderHandle, 1, &buffer, nullptr);
 	Driver->GLExtension.extGlCompileShaderARB(shaderHandle);
 
@@ -489,17 +429,17 @@ bool COpenGLPixelShader::buildVideoResources()
 		return false;
 	}
 
-	PixelShader = shaderHandle;
+	GLShader = shaderHandle;
 	VideoBuilt = true;
 	return true;
 }
 
-void COpenGLPixelShader::releaseVideoResources()
+void COpenGLShader::releaseVideoResources()
 {
 	if (!VideoBuilt)
 		return;
 
-	Driver->GLExtension.extGlDeleteObject((GLhandleARB)PixelShader);
+	Driver->GLExtension.extGlDeleteObject((GLhandleARB)GLShader);
 
 	VideoBuilt = false;
 }

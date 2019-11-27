@@ -107,14 +107,12 @@ struct SMaterial
 
 	E_BLEND_TYPE	BlendType;	//blend desc
 	E_COLOR_WRITE	colorWrite;
-	float		AlphaTestRef;
 
 	SMaterial()
 		: 
 		RenderQueue(ERQ_GEOMETRY),
 		BlendType(EMT_SOLID),
-		colorWrite(COLORWRITE_ALL),
-		AlphaTestRef(0)
+		colorWrite(COLORWRITE_ALL)
 	{
 		RenderQueue = ERQ_GEOMETRY;
 		Cull = ECM_BACK;
