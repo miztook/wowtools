@@ -248,6 +248,9 @@
     <ClInclude Include="..\common\CSysThread.h">
       <Filter>common</Filter>
     </ClInclude>
+    <ClInclude Include="..\engine\CMaterial.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">
@@ -366,6 +369,9 @@
     </ClCompile>
     <ClCompile Include="..\common\CSysThread.cpp">
       <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CMaterial.cpp">
+      <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
