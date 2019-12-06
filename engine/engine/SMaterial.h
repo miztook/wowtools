@@ -2,6 +2,18 @@
 
 #include "CMaterial.h"
 
+struct SGlobalMaterial
+{
+	SGlobalMaterial()
+	{
+		TextureFilter = ETF_TRILINEAR;
+		MipMapLodBias = 0;
+	}
+
+	E_TEXTURE_FILTER TextureFilter;
+	int MipMapLodBias;
+};
+
 struct SMaterial
 {
 	E_RENDER_QUEUE	RenderQueue;
@@ -43,18 +55,6 @@ struct SMaterial
 	{
 		setTexture("_MainTex", tex, wrapU, wrapV);
 	}
-};
-
-struct SGlobalMaterial
-{
-	SGlobalMaterial()
-	{
-		TextureFilter = ETF_TRILINEAR;
-		MipMapLodBias = 0;
-	}
-
-	E_TEXTURE_FILTER TextureFilter;
-	int MipMapLodBias;
 };
 
 inline void SMaterial::setVariable(const char* name, const float* src, uint32_t size)

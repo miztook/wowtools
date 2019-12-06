@@ -142,7 +142,7 @@ void CRenderLoop::renderOpaques(const CCamera* cam)
 		Driver->setWorldViewProjection(renderer->getLocalToWorldMatrix(), matView, matProjection);
 
 		Driver->setMaterial(renderer->getMaterial());
-		Driver->setGlobalMaterial(Driver->getGlobalMaterial3D());
+		Driver->setGlobalMaterial(g_Engine->getRenderSetting().getGlobalMaterial3D());
 
 		Driver->draw(unit->vbuffer, unit->ibuffer, unit->primType, unit->primCount, unit->drawParam, cam->IsOrthogonal());
 	}

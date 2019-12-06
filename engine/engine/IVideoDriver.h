@@ -115,13 +115,6 @@ public:
 		DrawCall = 0;
 
 		OrthoCenterOffset.set(0, 0);
-
-		//
-		GlobalMaterial3D.TextureFilter = ETF_TRILINEAR;
-		GlobalMaterial3D.MipMapLodBias = 0;
-
-		GlobalMaterial2D.MipMapLodBias = 0;
-		GlobalMaterial2D.TextureFilter = ETF_NONE;
 	}
 
 	virtual ~IVideoDriver() {}
@@ -148,12 +141,6 @@ public:
 	bool isMultiSampleEnabled() const { return IsMultiSampleEnabled; }
 	bool isSupportDepthTexture() const { return IsSupportDepthTexture; }
 	bool isSupportA8L8() const { return IsSupportA8L8; }
-
-	const SGlobalMaterial& getGlobalMaterial3D() const { return GlobalMaterial3D; }
-	const SGlobalMaterial& getGlobalMaterial2D() const { return GlobalMaterial2D; }
-
-	SGlobalMaterial& getGlobalMaterial3D() { return GlobalMaterial3D; }
-	SGlobalMaterial& getGlobalMaterial2D() { return GlobalMaterial2D; }
 
 public:
 	virtual bool beginScene() = 0;
@@ -215,9 +202,6 @@ public:
 
 protected:
 	const E_DRIVER_TYPE	DriverType;
-
-	SGlobalMaterial	GlobalMaterial3D;
-	SGlobalMaterial	GlobalMaterial2D;
 
 	const SMaterial*	Material;
 	const SGlobalMaterial*	GlobalMaterial;

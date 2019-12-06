@@ -4,6 +4,7 @@
 #include "COpenGLVertexIndexBuffer.h"
 #include "ITexture.h"
 #include "EngineUtil.h"
+#include "Engine.h"
 
 COpenGLDrawHelperComponent::COpenGLDrawHelperComponent(COpenGLDriver* driver)
 	: Driver(driver)
@@ -360,7 +361,7 @@ void COpenGLDrawHelperComponent::do_draw2DImageBatch(uint32_t batchCount, uint32
 	blendParam.setMaterial(InitMaterial2D);
 
 	Driver->setMaterial(InitMaterial2D);
-	Driver->setGlobalMaterial(Driver->getGlobalMaterial2D());
+	Driver->setGlobalMaterial(g_Engine->getRenderSetting().getGlobalMaterial2D());
 
 	IVertexBuffer* vbuffer = VBImage.get();
 	IIndexBuffer* ibuffer = getStaticIndexBufferQuadList();
@@ -382,7 +383,7 @@ void COpenGLDrawHelperComponent::do_draw2DSquadBatch(uint32_t batchCount, ITextu
 	blendParam.setMaterial(InitMaterial2D);
 
 	Driver->setMaterial(InitMaterial2D);
-	Driver->setGlobalMaterial(Driver->getGlobalMaterial2D());
+	Driver->setGlobalMaterial(g_Engine->getRenderSetting().getGlobalMaterial2D());
 
 	IVertexBuffer* vbuffer = VBImage.get();
 	IIndexBuffer* ibuffer = getStaticIndexBufferQuadList();
