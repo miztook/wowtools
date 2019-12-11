@@ -3,8 +3,175 @@
   <ItemGroup>
     <ClCompile Include="TestLexer.cpp" />
     <ClCompile Include="ScriptLexer.cpp" />
+    <ClCompile Include="..\..\engine\common\CFileSystem.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\CMemFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\CReadFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\CSysCodeCvt.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\CSysThread.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\CWriteFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\wowDatabase.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\wowDbFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\wowEnvironment.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\wowGameFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\wowM2File.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\wowTable.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\wowWDB5File.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\wowWDC3File.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\wowWMOFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ScriptLexer.h" />
+    <ClInclude Include="..\..\engine\common\aabbox3d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\base.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\CFileSystem.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\CMemFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\CReadFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\CResourceCache.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\CSysChrono.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\CSysCodeCvt.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\CSysSync.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\CSysThread.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\CWriteFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\frustum.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\function.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\function3d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\line3d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\matrix4.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\plane3d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\predefine.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\quaternion.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\rect.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\S3DVertex.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\SColor.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\stringext.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\varianttype.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\vector2d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\vector3d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\vector4d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowDatabase.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowDbFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowEnvironment.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowGameFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowHeader.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowM2File.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowM2Struct.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowTable.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowWDB5File.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowWDC3File.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowWMOFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowWMOStruct.h">
+      <Filter>common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="common">
+      <UniqueIdentifier>{30c4bb0c-e326-4452-b896-db9676f24c4a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
