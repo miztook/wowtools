@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="TestLexer.cpp" />
-    <ClCompile Include="ScriptLexer.cpp" />
     <ClCompile Include="..\..\engine\common\CFileSystem.cpp">
       <Filter>common</Filter>
     </ClCompile>
@@ -48,9 +47,11 @@
     <ClCompile Include="..\..\engine\common\wowWMOFile.cpp">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\common\ScriptLexer.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ScriptLexer.h" />
     <ClInclude Include="..\..\engine\common\aabbox3d.h">
       <Filter>common</Filter>
     </ClInclude>
@@ -166,6 +167,9 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\engine\common\wowWMOStruct.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\ScriptLexer.h">
       <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>

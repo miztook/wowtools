@@ -44,18 +44,21 @@ void testLexer()
 	Q_MakeDirForFileName(dir.c_str());
 
 	{
-		CReadFile* rf = fs->createAndOpenFile((dir + "Redify.shader").c_str(), false);
-		char* content = new char[rf->getSize()];
-		rf->readText(content, rf->getSize());
+		const char* filename = "test.shader";
+		CReadFile* rf = fs->createAndOpenFile((dir + filename).c_str(), false);
+		uint32_t len = rf->getSize();
+		char* content = new char[len];
+		memset(content, 0, len);
+		rf->read(content, len);
 
 		//read lexer
 		std::string error;
-		std::vector<ScriptToken> tokenList = ScriptLexer::tokenize(content, "Redify.shader", error);
+		std::vector<ScriptToken> tokenList = ScriptLexer::tokenize(content, filename, error);
 		if (error.empty())
 		{
 			for (const auto& token : tokenList)
 			{
-				printf("token type: %d, %s, %s, %d", token.type, token.lexeme.c_str(), token.file.c_str(), token.line);
+				printf("token type: %d, %s, %s, %d\n", token.type, token.lexeme.c_str(), token.file.c_str(), token.line);
 			}
 		}
 

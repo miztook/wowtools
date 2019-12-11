@@ -102,6 +102,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)\3rdparty_$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -117,6 +118,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)\3rdparty_$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -136,6 +138,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)\3rdparty_$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -155,10 +158,71 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)\3rdparty_$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\engine\common\CFileSystem.cpp" />
+    <ClCompile Include="..\..\engine\common\CMemFile.cpp" />
+    <ClCompile Include="..\..\engine\common\CReadFile.cpp" />
+    <ClCompile Include="..\..\engine\common\CSysCodeCvt.cpp" />
+    <ClCompile Include="..\..\engine\common\CSysThread.cpp" />
+    <ClCompile Include="..\..\engine\common\CWriteFile.cpp" />
+    <ClCompile Include="..\..\engine\common\ScriptLexer.cpp" />
+    <ClCompile Include="..\..\engine\common\wowDatabase.cpp" />
+    <ClCompile Include="..\..\engine\common\wowDbFile.cpp" />
+    <ClCompile Include="..\..\engine\common\wowEnvironment.cpp" />
+    <ClCompile Include="..\..\engine\common\wowGameFile.cpp" />
+    <ClCompile Include="..\..\engine\common\wowM2File.cpp" />
+    <ClCompile Include="..\..\engine\common\wowTable.cpp" />
+    <ClCompile Include="..\..\engine\common\wowWDB5File.cpp" />
+    <ClCompile Include="..\..\engine\common\wowWDC3File.cpp" />
+    <ClCompile Include="..\..\engine\common\wowWMOFile.cpp" />
+    <ClCompile Include="ScriptParser.cpp" />
     <ClCompile Include="TestParser.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\engine\common\aabbox3d.h" />
+    <ClInclude Include="..\..\engine\common\base.h" />
+    <ClInclude Include="..\..\engine\common\CFileSystem.h" />
+    <ClInclude Include="..\..\engine\common\CMemFile.h" />
+    <ClInclude Include="..\..\engine\common\CReadFile.h" />
+    <ClInclude Include="..\..\engine\common\CResourceCache.h" />
+    <ClInclude Include="..\..\engine\common\CSysChrono.h" />
+    <ClInclude Include="..\..\engine\common\CSysCodeCvt.h" />
+    <ClInclude Include="..\..\engine\common\CSysSync.h" />
+    <ClInclude Include="..\..\engine\common\CSysThread.h" />
+    <ClInclude Include="..\..\engine\common\CWriteFile.h" />
+    <ClInclude Include="..\..\engine\common\frustum.h" />
+    <ClInclude Include="..\..\engine\common\function.h" />
+    <ClInclude Include="..\..\engine\common\function3d.h" />
+    <ClInclude Include="..\..\engine\common\line3d.h" />
+    <ClInclude Include="..\..\engine\common\matrix4.h" />
+    <ClInclude Include="..\..\engine\common\plane3d.h" />
+    <ClInclude Include="..\..\engine\common\predefine.h" />
+    <ClInclude Include="..\..\engine\common\quaternion.h" />
+    <ClInclude Include="..\..\engine\common\rect.h" />
+    <ClInclude Include="..\..\engine\common\S3DVertex.h" />
+    <ClInclude Include="..\..\engine\common\SColor.h" />
+    <ClInclude Include="..\..\engine\common\ScriptLexer.h" />
+    <ClInclude Include="..\..\engine\common\stringext.h" />
+    <ClInclude Include="..\..\engine\common\varianttype.h" />
+    <ClInclude Include="..\..\engine\common\vector2d.h" />
+    <ClInclude Include="..\..\engine\common\vector3d.h" />
+    <ClInclude Include="..\..\engine\common\vector4d.h" />
+    <ClInclude Include="..\..\engine\common\wowDatabase.h" />
+    <ClInclude Include="..\..\engine\common\wowDbFile.h" />
+    <ClInclude Include="..\..\engine\common\wowEnvironment.h" />
+    <ClInclude Include="..\..\engine\common\wowGameFile.h" />
+    <ClInclude Include="..\..\engine\common\wowHeader.h" />
+    <ClInclude Include="..\..\engine\common\wowM2File.h" />
+    <ClInclude Include="..\..\engine\common\wowM2Struct.h" />
+    <ClInclude Include="..\..\engine\common\wowTable.h" />
+    <ClInclude Include="..\..\engine\common\wowWDB5File.h" />
+    <ClInclude Include="..\..\engine\common\wowWDC3File.h" />
+    <ClInclude Include="..\..\engine\common\wowWMOFile.h" />
+    <ClInclude Include="..\..\engine\common\wowWMOStruct.h" />
+    <ClInclude Include="ScriptParser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

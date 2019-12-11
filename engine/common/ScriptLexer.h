@@ -4,7 +4,8 @@
 #include <cstdint>
 #include <vector>
 
-enum {
+enum : int 
+{
 	TID_LBRACKET = 0, // {
 	TID_RBRACKET, // }
 	TID_COLON, // :

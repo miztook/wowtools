@@ -4,6 +4,9 @@
 #include <iostream>
 #include <list>
 
+#pragma comment(lib, "CascLib.lib")
+#pragma comment(lib, "pugixml.lib")
+
 int main(int argc, char* argv[])
 {
 #if defined(DEBUG) | defined(_DEBUG)
