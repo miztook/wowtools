@@ -27,10 +27,10 @@ struct ScriptToken
 class ScriptLexer
 {
 public:
-	std::vector<ScriptToken> tokenize(const char* str, const char* source, std::string& error);
+	static std::vector<ScriptToken> tokenize(const char* str, const char* source, std::string& error);
 
 private:
-	void setToken(const std::string& lexeme, uint32_t line, const char* source, std::vector<ScriptToken>& tokens);
-	bool isWhitespace(char c) const { return c == ' ' || c == '\r' || c == '\t'; }
-	bool isNewline(char c) const { return c == '\n' || c == '\r'; }
+	static void setToken(const std::string& lexeme, uint32_t line, const char* source, std::vector<ScriptToken>& tokens);
+	static bool isWhitespace(char c) { return c == ' ' || c == '\r' || c == '\t'; }
+	static bool isNewline(char c) { return c == '\n' || c == '\r'; }
 };

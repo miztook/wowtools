@@ -1,4 +1,5 @@
-﻿Shader "Unity Shaders Book/Chapter 3/Redify" {
+Shader "Unity Shaders Book/Chapter 3/Redify"
+{
     Properties {
         _MainTex ("Base (RGB)", 2D) = "white" {}
     }

@@ -12,6 +12,9 @@
 
 #include "ScriptLexer.h"
 
+#pragma comment(lib, "CascLib.lib")
+#pragma comment(lib, "pugixml.lib")
+
 void testLexer();
 
 int main(int argc, char* argv[])
@@ -19,6 +22,8 @@ int main(int argc, char* argv[])
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
+
+	testLexer();
 
 	getchar();
 	return 0;
@@ -42,6 +47,17 @@ void testLexer()
 		CReadFile* rf = fs->createAndOpenFile((dir + "Redify.shader").c_str(), false);
 		char* content = new char[rf->getSize()];
 		rf->readText(content, rf->getSize());
+
+		//read lexer
+		std::string error;
+		std::vector<ScriptToken> tokenList = ScriptLexer::tokenize(content, "Redify.shader", error);
+		if (error.empty())
+		{
+			for (const auto& token : tokenList)
+			{
+				printf("token type: %d, %s, %s, %d", token.type, token.lexeme.c_str(), token.file.c_str(), token.line);
+			}
+		}
 
 		delete[] content;
 		delete rf;
