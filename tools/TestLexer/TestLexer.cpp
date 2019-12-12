@@ -30,6 +30,8 @@ int main(int argc, char* argv[])
 }
 
 void testLexer()
+
+
 {
 	char workingDirectory[QMAX_PATH];
 	Q_getcwd(workingDirectory, QMAX_PATH);
