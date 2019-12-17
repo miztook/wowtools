@@ -94,12 +94,41 @@ std::list<ConcreteNode*> ScriptParser::parse(const std::vector<ScriptToken>& tok
 		break;
 		case OBJECT:
 		{
-
+			if (token.type == TID_NEWLINE)
+			{
+				auto next = skipNewLines(itr, tokens.end());
+				if (next == tokens.end() || itr->type != TID_LBRACKET)
+				{
+					if (parent)
+						parent = parent->parent;
+					state = READY;
+				}
+			} 
+			else if (token.type == TID_COLON)
+			{
+			}
+			else if (token.type == TID_LBRACKET)
+			{
+			}
+			else if (token.type == TID_RBRACKET)
+			{
+			}
+			else if (token.type == TID_VARIABLE)
+			{
+			}
+			else if (token.type == TID_QUOTE)
+			{
+			}
+			else if (token.type == TID_WORD)
+			{
+			}
 		}
 		break;
 		default:
 			break;
 		}
+
+		++itr;
 	}
 
 	return nodes;
