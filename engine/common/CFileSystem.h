@@ -32,9 +32,13 @@ public:
 	 const char* getDataDirectory() const { return DataDirectory.c_str(); }
 	 const char* getWowBaseDirectory() const { return WowBaseDirectory.c_str(); }
 	 const char* getWowDataDirectory() const { return WowDataDirectory.c_str(); }
-	 bool isFileExists(const char* filename);
-
+	 
 	 void writeLog(E_LOG_TYPE type, const char* format, ...);
+
+	 bool isFileExists(const char* filename) const;
+	 uint32_t getFileSize(const char* filename) const;
+	 bool changeFileMode(const char* filename, int mode) const;
+	 bool deleteFile(const char* filename) const;
 
 private:
 	bool createLogFiles();

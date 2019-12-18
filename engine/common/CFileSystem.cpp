@@ -100,11 +100,28 @@ std::string CFileSystem::getWorkingDirectory()
 	return ret;
 }
 
-bool CFileSystem::isFileExists(const char* filename)
+bool CFileSystem::isFileExists(const char* filename) const
 {
 	if (strlen(filename) == 0)
 		return false;
 	return Q_access(filename, 0) == 0;
+}
+
+uint32_t CFileSystem::getFileSize(const char* filename) const
+{
+	struct stat fileStat;
+	stat(filename, &fileStat);
+	return (uint32_t)(fileStat.st_size);
+}
+
+bool CFileSystem::changeFileMode(const char* filename, int mode) const
+{
+	return chmod(filename, mode) != -1;
+}
+
+bool CFileSystem::deleteFile(const char* filename) const
+{
+	return remove(filename) != -1;
 }
 
 void CFileSystem::writeLog(E_LOG_TYPE type, const char* format, ...)
