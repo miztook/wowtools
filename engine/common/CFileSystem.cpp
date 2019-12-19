@@ -161,9 +161,9 @@ bool CFileSystem::copyFile(const char* src, const char* des) const
 
 bool CFileSystem::moveFile(const char* src, const char* des) const
 {
-	if (!CopyFile(src, des, false))
+	if (!copyFile(src, des))
 		return false;
-	if (!DeleteFile(src))
+	if (!deleteFile(src))
 		return false;
 	return  true;
 }
