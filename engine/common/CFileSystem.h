@@ -22,10 +22,9 @@ public:
 	 CReadFile* createAndOpenFile(const char* filename, bool binary);
 	 CWriteFile* createAndWriteFile(const char* filename, bool binary, bool append = false);
 
-	 bool createDirectory(const char* dirname);
-	 bool deleteDirectory(const char* dirname);
-
-	 void getAbsolutePath(const char* filename, char* outfilename, uint32_t size);
+	 bool createDirectory(const char* dirname) const;
+	 bool deleteDirectory(const char* dirname) const;
+	 void getAbsolutePath(const char* filename, char* outfilename, uint32_t size) const;
 
 	 const char* getWorkingDirectory() const { return WorkingDirectory.c_str(); }
 	 const char* getDataDirectory() const { return DataDirectory.c_str(); }
@@ -40,6 +39,8 @@ public:
 	 bool deleteFile(const char* filename) const;
 	 bool copyFile(const char* src, const char* des) const;
 	 bool moveFile(const char* src, const char* des) const;
+	 void makeDirectory(const char* dir) const;
+	 void makeDirectory(const char* dir, int r) const;
 
 private:
 	bool createLogFiles();

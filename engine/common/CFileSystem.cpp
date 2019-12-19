@@ -73,7 +73,7 @@ CWriteFile* CFileSystem::createAndWriteFile(const char* filename, bool binary, b
 	return nullptr;
 }
 
-bool CFileSystem::createDirectory(const char * dirname)
+bool CFileSystem::createDirectory(const char * dirname) const
 {
 	int ret = Q_mkdir(dirname);
 
@@ -82,12 +82,12 @@ bool CFileSystem::createDirectory(const char * dirname)
 	return false;
 }
 
-bool CFileSystem::deleteDirectory(const char * dirname)
+bool CFileSystem::deleteDirectory(const char * dirname) const
 {
 	return Q_rmdir(dirname) == 0;
 }
 
-void CFileSystem::getAbsolutePath(const char* filename, char* outfilename, uint32_t size)
+void CFileSystem::getAbsolutePath(const char* filename, char* outfilename, uint32_t size) const
 {
 	Q_fullpath(filename, outfilename, size);
 }
@@ -166,6 +166,25 @@ bool CFileSystem::moveFile(const char* src, const char* des) const
 	if (!DeleteFile(src))
 		return false;
 	return  true;
+}
+
+void CFileSystem::makeDirectory(const char* dir) const
+{
+	makeDirectory(dir, (int)strlen(dir));
+}
+
+void CFileSystem::makeDirectory(const char* dir, int r) const
+{
+	--r;
+	while (r > 0 && dir[r] != '/'&&dir[r] != '\\')
+		--r;
+	if (r == 0)
+		return;
+	makeDirectory(dir, r);
+	char t[400];
+	strcpy(t, dir);
+	t[r] = '\0';
+	createDirectory(t);
 }
 
 void CFileSystem::writeLog(E_LOG_TYPE type, const char* format, ...)
