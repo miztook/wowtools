@@ -33,10 +33,7 @@ int main(int argc, char* argv[])
 
 void testWowDatabase()
 {
-	char workingDirectory[QMAX_PATH];
-	Q_getcwd(workingDirectory, QMAX_PATH);
-
-	CFileSystem* fs = new CFileSystem(workingDirectory, R"(D:\World Of Warcraft 81)");
+	CFileSystem* fs = new CFileSystem(R"(D:\World Of Warcraft 81)");
 	wowEnvironment* wowEnv = new wowEnvironment(fs);
 	wowDatabase* wowDB = new wowDatabase(wowEnv);
 

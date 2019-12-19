@@ -26,10 +26,7 @@ int main(int argc, char* argv[])
 
 void testWowEnvironment()
 {
-	char		workingDirectory[QMAX_PATH];
-	Q_getcwd(workingDirectory, QMAX_PATH);
-
-	CFileSystem* fs = new CFileSystem(workingDirectory, R"(E:\World Of Warcraft)");
+	CFileSystem* fs = new CFileSystem(R"(E:\World Of Warcraft)");
 	wowEnvironment* wowEnv = new wowEnvironment(fs);
 
 	if (!wowEnv->init())

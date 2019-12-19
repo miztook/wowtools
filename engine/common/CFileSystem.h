@@ -15,7 +15,7 @@ enum E_LOG_TYPE : int
 class CFileSystem
 {
 public:
-	CFileSystem(const char* baseDir, const char* wowDir);
+	explicit CFileSystem(const char* wowDir);
 	~CFileSystem();
 
 public:
@@ -27,8 +27,7 @@ public:
 
 	 void getAbsolutePath(const char* filename, char* outfilename, uint32_t size);
 
-	 static std::string getWorkingDirectory();
-	 const char* getBaseDirectory() const { return BaseDirectory.c_str(); }
+	 const char* getWorkingDirectory() const { return WorkingDirectory.c_str(); }
 	 const char* getDataDirectory() const { return DataDirectory.c_str(); }
 	 const char* getWowBaseDirectory() const { return WowBaseDirectory.c_str(); }
 	 const char* getWowDataDirectory() const { return WowDataDirectory.c_str(); }
@@ -39,26 +38,26 @@ public:
 	 uint32_t getFileSize(const char* filename) const;
 	 bool changeFileMode(const char* filename, int mode) const;
 	 bool deleteFile(const char* filename) const;
+	 bool copyFile(const char* src, const char* des) const;
+	 bool moveFile(const char* src, const char* des) const;
 
 private:
 	bool createLogFiles();
-	const char* getLogFileName(E_LOG_TYPE type) const;
 
 private:
-	std::string		BaseDirectory;
+	std::string		WorkingDirectory;
 	std::string		DataDirectory;
+	std::string		LogDirectory;
 	std::string		WowBaseDirectory;
 	std::string		WowDataDirectory;
-	std::string		LogDirectory;
-
-	CWriteFile*		LogGxFile;
-	CWriteFile*		LogResFile;
+	
+	CWriteFile*		LogFile;
 	char	LogString[2048];
 
 	lock_type	LogCS;
 };
 
-bool createFileSystem(const char* baseDir, const char* wowDir);
+bool createFileSystem(const char* wowDir);
 void destroyFileSystem();
 
 extern CFileSystem* g_FileSystem;

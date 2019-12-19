@@ -12,7 +12,7 @@ FT_Error MyFTCFaceRequest(FTC_FaceID  face_id,
 
 	FT_Error error = 0;
 
-	std::string strFullFontPath = g_FileSystem->getBaseDirectory();
+	std::string strFullFontPath = g_FileSystem->getWorkingDirectory();
 	normalizeDirName(strFullFontPath);
 	strFullFontPath.append(myFaceID->file_path);
 

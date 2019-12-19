@@ -9,9 +9,9 @@
 
 CFileSystem* g_FileSystem = nullptr;
 
-bool createFileSystem(const char* baseDir, const char* wowDir)
+bool createFileSystem(const char* wowDir)
 {
-	g_FileSystem = new CFileSystem(baseDir, wowDir);
+	g_FileSystem = new CFileSystem(wowDir);
 
 	return true;
 }
@@ -22,22 +22,24 @@ void destroyFileSystem()
 	g_FileSystem = nullptr;
 }
 
-CFileSystem::CFileSystem(const char * baseDir, const char* wowDir)
+CFileSystem::CFileSystem(const char* wowDir)
 {
-	BaseDirectory = baseDir;
-	normalizeDirName(BaseDirectory);
+	char workingDir[QMAX_PATH];
+	Q_getcwd(workingDir, QMAX_PATH);
+	WorkingDirectory = workingDir;
+	normalizeDirName(WorkingDirectory);
 
-	DataDirectory = BaseDirectory + DATA_SUBDIR;
+	DataDirectory = WorkingDirectory + DATA_SUBDIR;
 	normalizeDirName(DataDirectory);
+
+	LogDirectory = WorkingDirectory + LOG_SUBDIR;
+	normalizeDirName(LogDirectory);
 
 	WowBaseDirectory = wowDir;
 	normalizeDirName(WowBaseDirectory);
 
 	WowDataDirectory = WowBaseDirectory + DATA_SUBDIR;
 	normalizeDirName(WowDataDirectory);
-
-	LogDirectory = BaseDirectory + LOG_SUBDIR;
-	normalizeDirName(LogDirectory);
 
 	createLogFiles();
 
@@ -48,11 +50,10 @@ CFileSystem::~CFileSystem()
 {
 	DESTROY_LOCK(&LogCS);
 
-	delete LogResFile;
-	delete LogGxFile;
+	delete LogFile;
 }
 
-CReadFile * CFileSystem::createAndOpenFile(const char * filename, bool binary)
+CReadFile * CFileSystem::createAndOpenFile(const char* filename, bool binary)
 {
 	CReadFile* file = new CReadFile(filename, binary);
 	if (file->isOpen())
@@ -91,15 +92,6 @@ void CFileSystem::getAbsolutePath(const char* filename, char* outfilename, uint3
 	Q_fullpath(filename, outfilename, size);
 }
 
-std::string CFileSystem::getWorkingDirectory()
-{
-	char workingDirectory[QMAX_PATH];
-	Q_getcwd(workingDirectory, QMAX_PATH);
-
-	std::string ret = workingDirectory;
-	return ret;
-}
-
 bool CFileSystem::isFileExists(const char* filename) const
 {
 	if (strlen(filename) == 0)
@@ -124,6 +116,58 @@ bool CFileSystem::deleteFile(const char* filename) const
 	return remove(filename) != -1;
 }
 
+bool CFileSystem::copyFile(const char* src, const char* des) const
+{
+	const int BUF_SIZE = 1024;
+	FILE* fromfd = NULL;
+	FILE*  tofd = NULL;
+	size_t bytes_read = 0;
+	size_t bytes_write = 0;
+	char buffer[BUF_SIZE];
+
+	/*open source file*/
+	if ((fromfd = fopen(src, "r")) == NULL)
+	{
+		//fprintf(stderr,"Open source file failed:%s\n",strerror(errno));
+		return false;
+	}
+	/*create dest file*/
+	if ((tofd = fopen(des, "wb")) == NULL)
+	{
+		//fprintf(stderr,"Create dest file failed:%s\n",strerror(errno));
+		fclose(fromfd);
+		return false;
+	}
+
+	/*copy file code*/
+	while ((bytes_read = fread(buffer, 1, BUF_SIZE, fromfd)))
+	{
+		if (bytes_read == -1 && errno != EINTR)
+			break; /*an important mistake occured*/
+		else if (bytes_read == 0)
+		{
+			break;
+		}
+		else if (bytes_read > 0)
+		{
+			bytes_write = fwrite(buffer, 1, bytes_read, tofd);
+			ASSERT(bytes_write == bytes_read);
+		}
+	}
+	fclose(fromfd);
+	fclose(tofd);
+	return true;
+}
+
+bool CFileSystem::moveFile(const char* src, const char* des) const
+{
+	if (!CopyFile(src, des, false))
+		return false;
+	if (!DeleteFile(src))
+		return false;
+	return  true;
+}
+
 void CFileSystem::writeLog(E_LOG_TYPE type, const char* format, ...)
 {
 	CLock lock(LogCS);
@@ -145,24 +189,10 @@ void CFileSystem::writeLog(E_LOG_TYPE type, const char* format, ...)
 
 	std::string text = timebuf;
 	text.append(content);
-	switch (type)
+	if (LogFile)
 	{
-	case ELOG_GX:
-		if (LogGxFile)
-		{
-			LogGxFile->writeText(text.c_str());
-			LogGxFile->flush();
-		}
-		break;
-	case ELOG_RES:
-		if (LogResFile)
-		{
-			LogResFile->writeText(text.c_str());
-			LogResFile->flush();
-		}
-		break;
-	default:
-		break;
+		LogFile->writeText(text.c_str());
+		LogFile->flush();
 	}
 }
 
@@ -180,29 +210,10 @@ bool CFileSystem::createLogFiles()
 	{
 		std::string  path = LogDirectory;
 		normalizeDirName(path);
-		path.append(getLogFileName(ELOG_RES));
-		LogResFile = createAndWriteFile(path.c_str(), false, false);
-	}
-	//gx log
-	{
-		std::string path = LogDirectory;
-		normalizeDirName(path);
-		path.append(getLogFileName(ELOG_GX));
-		LogGxFile = createAndWriteFile(path.c_str(), false, false);
+		path.append("MyCTP.log");
+		LogFile = createAndWriteFile(path.c_str(), false, false);
 	}
 
 	return true;
 }
 
-const char* CFileSystem::getLogFileName(E_LOG_TYPE type) const
-{
-	switch (type)
-	{
-	case ELOG_GX:
-		return "gx.log";
-	case ELOG_RES:
-		return "resource.log";
-	default:
-		return "";
-	}
-}
