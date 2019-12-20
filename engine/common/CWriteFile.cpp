@@ -16,7 +16,7 @@ CWriteFile::~CWriteFile()
 		fclose(File);
 }
 
-uint32_t CWriteFile::write(const void* buffer, uint32_t sizeToWrite)
+uint32_t CWriteFile::writeBuffer(const void* buffer, uint32_t sizeToWrite)
 {
 	if (!isOpen() || buffer == nullptr)
 		return 0;
@@ -36,6 +36,24 @@ uint32_t CWriteFile::writeText(const char* buffer)
 		return 0;
 
 	return (uint32_t)w1;
+}
+
+uint32_t CWriteFile::write(const char* format, ...)
+{
+	if (!isOpen() || format == nullptr)
+		return 0;
+
+	ASSERT(!IsBinary);
+
+	va_list va;
+	va_start(va, format);
+	int32_t w = vfprintf(File, format, va);
+	va_end(va);
+
+	if (w == EOF)
+		return 0;
+
+	return (uint32_t)w;
 }
 
 uint32_t CWriteFile::writeLine(const char* format, ...)

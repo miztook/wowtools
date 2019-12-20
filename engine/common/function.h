@@ -482,7 +482,7 @@ inline bool isLowerFileName(const char* filename)
 
 using ITERATEFILECALLBACK = std::function<void(const char* filename)>;
 
-inline bool Q_iterateFiles(const char* dirname, const char* ext, ITERATEFILECALLBACK callback, const char* initdir = "")
+inline bool Q_iterateFiles(const char* dirname, const char* ext, bool recursive, const char* initdir, ITERATEFILECALLBACK callback)
 {
 	if (!initdir)
 		initdir = "";
@@ -522,7 +522,8 @@ inline bool Q_iterateFiles(const char* dirname, const char* ext, ITERATEFILECALL
 
 		if (finddata.attrib & _A_SUBDIR)
 		{
-			Q_iterateFiles(subpath, ext, callback, initdir);
+			if (recursive)
+				Q_iterateFiles(subpath, ext, recursive, initdir, callback);
 		}
 		else
 		{
@@ -581,7 +582,8 @@ inline bool Q_iterateFiles(const char* dirname, const char* ext, ITERATEFILECALL
 
 		if (S_ISDIR(buf.st_mode))
 		{
-			Q_iterateFiles(subpath, ext, callback, initdir);
+			if (recursive)
+				Q_iterateFiles(subpath, ext, recusive, initdir, callback);
 		}
 		else
 		{
@@ -605,17 +607,15 @@ inline bool Q_iterateFiles(const char* dirname, const char* ext, ITERATEFILECALL
 #endif
 }
 
-inline bool Q_iterateFiles(const char* dirname, ITERATEFILECALLBACK callback, const char* initdir = "")
+inline bool Q_iterateFiles(const char* dirname, bool recursive, const char* initdir, ITERATEFILECALLBACK callback)
 {
-	return Q_iterateFiles(dirname,
-#ifdef A_PLATFORM_WIN_DESKTOP
-		"*",
+#if A_PLATFORM_WIN_DESKTOP
+	return Q_iterateFiles(dirname, "*", recursive, initdir, callback);
 #else
-		"",
+	return Q_iterateFiles(dirname, "", recursive, initdir, callback);
 #endif
-		callback,
-		initdir);
 }
+
 
 inline void getFileDirA(const char* filename, char* outfilename, unsigned int size)
 {
