@@ -10,7 +10,7 @@ std::list<ConcreteNode*> ScriptParser::parse(const std::vector<ScriptToken>& tok
 
 	ConcreteNode* parent = nullptr;
 	ConcreteNode* node;
-	
+	auto end = tokens.end();
 	for (auto itr = tokens.begin(); itr != tokens.end();)
 	{
 		const ScriptToken& token = *itr;
@@ -72,7 +72,7 @@ std::list<ConcreteNode*> ScriptParser::parse(const std::vector<ScriptToken>& tok
 				node->line = token.line;
 				node->type = CNT_RBRACE;
 
-				itr = skipNewLines(itr, tokens.end());
+				itr = skipNewLines(itr, end);
 
 				if (parent)
 				{
@@ -96,8 +96,8 @@ std::list<ConcreteNode*> ScriptParser::parse(const std::vector<ScriptToken>& tok
 		{
 			if (token.type == TID_NEWLINE)
 			{
-				auto next = skipNewLines(itr, tokens.end());
-				if (next == tokens.end() || itr->type != TID_LBRACKET)
+				auto next = skipNewLines(itr, end);
+				if (next == end || itr->type != TID_LBRACKET)
 				{
 					if (parent)
 						parent = parent->parent;
@@ -106,21 +106,168 @@ std::list<ConcreteNode*> ScriptParser::parse(const std::vector<ScriptToken>& tok
 			} 
 			else if (token.type == TID_COLON)
 			{
+				node = new ConcreteNode;
+				node->token = token.lexeme;
+				node->file = token.file;
+				node->line = token.line;
+				node->type = CNT_COLON;
+
+				auto j = itr + 1;
+				j = skipNewLines(j, end);
+				if (j == end || (j->type != TID_WORD && j->type != TID_QUOTE))
+				{
+					assert(false);
+				}
+
+				while (j != end && (j->type == TID_WORD || j->type == TID_QUOTE))
+				{
+					ConcreteNode* tempNode = new ConcreteNode;
+					tempNode->token = j->lexeme;
+					tempNode->file = j->file;
+					tempNode->line = j->line;
+					tempNode->type = j->type == TID_WORD ? CNT_WORD : CNT_QUOTE;
+					tempNode->parent = node;
+					node->children.push_back(tempNode);
+					++j;
+				}
+				itr = --j;
+
+				if (parent)
+				{
+					node->parent = parent;
+					parent->children.push_back(node);
+				}
+				else
+				{
+					node->parent = nullptr;
+					nodes.push_back(node);
+				}
+
+				node = nullptr;
 			}
 			else if (token.type == TID_LBRACKET)
 			{
+				node = new ConcreteNode;
+				node->token = token.lexeme;
+				node->file = token.file;
+				node->line = token.line;
+				node->type = CNT_LBRACE;
+
+				itr = skipNewLines(itr, end);
+
+				if (parent)
+				{
+					node->parent = parent;
+					parent->children.push_back(node);
+				}
+				else
+				{
+					node->parent = nullptr;
+					nodes.push_back(node);
+				}
+
+				parent = node;
+
+				state = READY;
+
+				node = nullptr;
 			}
 			else if (token.type == TID_RBRACKET)
 			{
+				if (parent)
+					parent = parent->parent;
+
+				if (parent && parent->type == CNT_LBRACE && parent->parent)
+					parent = parent->parent;
+
+				node = new ConcreteNode;
+				node->token = token.lexeme;
+				node->file = token.file;
+				node->line = token.line;
+				node->type = CNT_RBRACE;
+
+				itr = skipNewLines(itr, end);
+
+				if (parent)
+				{
+					node->parent = parent;
+					parent->children.push_back(node);
+				}
+				else
+				{
+					node->parent = nullptr;
+					nodes.push_back(node);
+				}
+
+				if (parent)
+					parent = parent->parent;
+
+				state = READY;
+
+				node = nullptr;
 			}
 			else if (token.type == TID_VARIABLE)
 			{
+				node = new ConcreteNode;
+				node->token = token.lexeme;
+				node->file = token.file;
+				node->line = token.line;
+				node->type = CNT_COLON;
+
+				if (parent)
+				{
+					node->parent = parent;
+					parent->children.push_back(node);
+				}
+				else
+				{
+					node->parent = nullptr;
+					nodes.push_back(node);
+				}
+
+				node = nullptr;
 			}
 			else if (token.type == TID_QUOTE)
 			{
+				node = new ConcreteNode;
+				node->token = token.lexeme.substr(1, token.lexeme.length() - 2);
+				node->file = token.file;
+				node->line = token.line;
+				node->type = CNT_QUOTE;
+
+				if (parent)
+				{
+					node->parent = parent;
+					parent->children.push_back(node);
+				}
+				else
+				{
+					node->parent = nullptr;
+					nodes.push_back(node);
+				}
+
+				node = nullptr;
 			}
 			else if (token.type == TID_WORD)
 			{
+				node = new ConcreteNode;
+				node->token = token.lexeme;
+				node->file = token.file;
+				node->line = token.line;
+				node->type = CNT_WORD;
+
+				if (parent)
+				{
+					node->parent = parent;
+					parent->children.push_back(node);
+				}
+				else
+				{
+					node->parent = nullptr;
+					nodes.push_back(node);
+				}
+
+				node = nullptr;
 			}
 		}
 		break;
