@@ -1,7 +1,7 @@
 Shader "TEST"
 {
 	SubShader {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType": "Opaque" }
         LOD 200
 	
 		

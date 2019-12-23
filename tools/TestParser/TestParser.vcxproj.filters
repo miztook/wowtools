@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="TestParser.cpp" />
-    <ClCompile Include="ScriptParser.cpp" />
     <ClCompile Include="..\..\engine\common\CFileSystem.cpp">
       <Filter>common</Filter>
     </ClCompile>
@@ -51,6 +50,9 @@
     <ClCompile Include="..\..\engine\common\wowWMOFile.cpp">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\common\ScriptParser.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="common">
@@ -58,7 +60,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ScriptParser.h" />
     <ClInclude Include="..\..\engine\common\aabbox3d.h">
       <Filter>common</Filter>
     </ClInclude>
@@ -177,6 +178,9 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\engine\common\wowWMOStruct.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\ScriptParser.h">
       <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>

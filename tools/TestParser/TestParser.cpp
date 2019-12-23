@@ -68,7 +68,8 @@ void testParser()
 void printNode(const ConcreteNode* node)
 {
 	int n = 0;
-	const ConcreteNode* p = node;
+	const ConcreteNode* p = node->parent
+		;
 	std::string str;
 	while (p)
 	{

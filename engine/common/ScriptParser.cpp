@@ -19,13 +19,9 @@ std::list<ConcreteNode*> ScriptParser::parse(const std::vector<ScriptToken>& tok
 		{
 		case READY:
 		{
-			if (token.type == TID_WORD)
+			if (token.type == TID_WORD || token.type == TID_QUOTE)
 			{
-				if (token.lexeme == "import")
-				{
-					assert(false);
-				}
-				else if (token.lexeme == "set")
+				if (token.lexeme == "import" || token.lexeme == "set")
 				{
 					assert(false);
 				}
@@ -146,7 +142,10 @@ std::list<ConcreteNode*> ScriptParser::parse(const std::vector<ScriptToken>& tok
 				while (j != end && (j->type == TID_WORD || j->type == TID_QUOTE))
 				{
 					ConcreteNode* tempNode = new ConcreteNode;
-					tempNode->token = j->lexeme;
+					if (j->type == TID_WORD)
+						tempNode->token = j->lexeme;
+					else
+						tempNode->token = j->lexeme.substr(1, j->lexeme.length() - 2);
 					tempNode->file = j->file;
 					tempNode->line = j->line;
 					tempNode->type = j->type == TID_WORD ? CNT_WORD : CNT_QUOTE;
