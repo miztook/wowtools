@@ -35,9 +35,9 @@ public:
 	virtual ~ScriptParser() = default;
 
 public:
-	std::list<ConcreteNode*> parse(const std::vector<ScriptToken>& tokens);
-	std::list<ConcreteNode*> parseChunk(const std::vector<ScriptToken>& tokens);
+	static std::list<ConcreteNode*> parse(const std::vector<ScriptToken>& tokens);
+	static std::list<ConcreteNode*> parseChunk(const std::vector<ScriptToken>& tokens);
 
 private:
-	std::vector<ScriptToken>::const_iterator skipNewLines(std::vector<ScriptToken>::const_iterator itr, std::vector<ScriptToken>::const_iterator end);
+	static std::vector<ScriptToken>::const_iterator skipNewLines(std::vector<ScriptToken>::const_iterator itr, std::vector<ScriptToken>::const_iterator end);
 };

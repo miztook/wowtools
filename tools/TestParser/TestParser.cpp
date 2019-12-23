@@ -11,17 +11,21 @@
 #include "stringext.h"
 
 #include "ScriptLexer.h"
+#include "ScriptParser.h"
 
 #pragma comment(lib, "CascLib.lib")
 #pragma comment(lib, "pugixml.lib")
 
 void testParser();
+void printNode(const ConcreteNode* node);
 
 int main(int argc, char* argv[])
 {
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
+
+	testParser();
 
 	getchar();
 	return 0;
@@ -49,15 +53,34 @@ void testParser()
 		//read lexer
 		std::string error;
 		std::vector<ScriptToken> tokenList = ScriptLexer::tokenize(content, filename, error);
-		if (error.empty())
+		std::list<ConcreteNode*> nodes = ScriptParser::parse(tokenList);
+
+		for (const ConcreteNode* node : nodes)
 		{
-			for (const auto& token : tokenList)
-			{
-				printf("token type: %d, %s, %s, %d\n", token.type, token.lexeme.c_str(), token.file.c_str(), token.line);
-			}
+			printNode(node);
 		}
 
 		delete[] content;
 		delete rf;
 	}
 }
+
+void printNode(const ConcreteNode* node)
+{
+	int n = 0;
+	const ConcreteNode* p = node;
+	std::string str;
+	while (p)
+	{
+		++n;
+		str += "\t";
+		p = p->parent;
+	}
+	printf("%s token: %s, type: %d, line: %d\n", str.c_str(), node->token.c_str(), node->type, node->line);
+
+	for (const ConcreteNode* child : node->children)
+	{
+		printNode(child);
+	}
+}
+

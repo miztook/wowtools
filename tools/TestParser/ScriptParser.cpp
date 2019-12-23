@@ -61,6 +61,30 @@ std::list<ConcreteNode*> ScriptParser::parse(const std::vector<ScriptToken>& tok
 					state = OBJECT;
 				}
 			}
+			else if (token.type == TID_LBRACKET)
+			{
+				node = new ConcreteNode;
+				node->token = token.lexeme;
+				node->file = token.file;
+				node->line = token.line;
+				node->type = CNT_LBRACE;
+
+				itr = skipNewLines(itr, end);
+
+				if (parent)
+				{
+					node->parent = parent;
+					parent->children.push_back(node);
+				}
+				else
+				{
+					node->parent = nullptr;
+					nodes.push_back(node);
+				}
+
+				parent = node;
+				node = nullptr;
+			}
 			else if (token.type == TID_RBRACKET)
 			{
 				if (parent)
