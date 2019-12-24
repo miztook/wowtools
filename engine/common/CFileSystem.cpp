@@ -229,7 +229,7 @@ bool CFileSystem::createLogFiles()
 	{
 		std::string  path = LogDirectory;
 		normalizeDirName(path);
-		path.append("MyCTP.log");
+		path.append("gamelog.txt");
 		LogFile = createAndWriteFile(path.c_str(), false, false);
 	}
 

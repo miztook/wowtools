@@ -62,7 +62,7 @@ struct S2DBlendParam
 	{
 		material.VSFile = "";
 		material.PSFile = "UI";
-		material.PSMacroString = CShaderUtil::getUIPSMacroString(alpha, alphaChannel);
+		material.MacroString = CShaderUtil::getUIMacroString(alpha, alphaChannel);
 
 		if (!alpha && !alphaChannel)
 		{

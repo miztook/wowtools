@@ -294,9 +294,9 @@ std::set<std::string> CShaderUtil::getShaderMacroSet(const char* macroString)
 	return macroSet;
 }
 
-CShaderUtil::SShaderKey CShaderUtil::getShaderKey(const char* vsFile, const char* vsMacroString, const char* psFile, const char* psMacroString, E_VERTEX_TYPE vertexType)
+CShaderUtil::SShaderKey CShaderUtil::getShaderKey(const char* vsFile, const char* psFile, const char* macroString, E_VERTEX_TYPE vertexType)
 {
-	SShaderKey key(vsFile, vsMacroString, psFile, psMacroString);
+	SShaderKey key(vsFile, psFile, macroString);
 	if (key.VSFile.empty())
 		key.VSFile = getDefaultVSFileName(vertexType);
 	if (key.PSFile.empty())
@@ -304,9 +304,9 @@ CShaderUtil::SShaderKey CShaderUtil::getShaderKey(const char* vsFile, const char
 	return key;
 }
 
-int CShaderUtil::getShaderProgramSortId(const char* vsFile, const char* vsMacroString, const char* psFile, const char* psMacroString, E_VERTEX_TYPE vertexType)
+int CShaderUtil::getShaderProgramSortId(const char* vsFile, const char* psFile, const char* macroString, E_VERTEX_TYPE vertexType)
 {
-	SShaderKey key = getShaderKey(vsFile, vsMacroString, psFile, psMacroString, vertexType);
+	SShaderKey key = getShaderKey(vsFile, psFile, macroString, vertexType);
 
 	auto itr = ShaderIdMap.find(key);
 	if (itr == ShaderIdMap.end())
@@ -318,7 +318,7 @@ int CShaderUtil::getShaderProgramSortId(const char* vsFile, const char* vsMacroS
 	return itr->second;
 }
 
-std::string CShaderUtil::getUIPSMacroString(bool alpha, bool alphaChannel)
+std::string CShaderUtil::getUIMacroString(bool alpha, bool alphaChannel)
 {
 	if (alphaChannel)
 	{

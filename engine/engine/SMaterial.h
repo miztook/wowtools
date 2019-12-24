@@ -19,9 +19,8 @@ struct SMaterial
 	E_RENDER_QUEUE	RenderQueue;
 
 	std::string		VSFile;
-	std::string		VSMacroString;
 	std::string		PSFile;
-	std::string		PSMacroString;
+	std::string		MacroString;
 	std::map<std::string, std::vector<float>>	ShaderVariableMap;
 	std::map<std::string, STextureUnit> TextureVariableMap;
 

@@ -49,11 +49,10 @@ bool COpenGLShaderManageComponent::init()
 const CGLProgram* COpenGLShaderManageComponent::applyShaders(const SMaterial* material, E_VERTEX_TYPE vertexType)
 {
 	auto shaderKey = CShaderUtil::getShaderKey(
-		material->VSFile.c_str(), material->VSMacroString.c_str(),
-		material->PSFile.c_str(), material->PSMacroString.c_str(), vertexType);
+		material->VSFile.c_str(), material->PSFile.c_str(), material->MacroString.c_str(), vertexType);
 
-	const COpenGLVertexShader* vertexShader = getVertexShader(shaderKey.VSFile.c_str(), shaderKey.VSMacroString.c_str());
-	const COpenGLPixelShader* pixelShader = getPixelShader(shaderKey.PSFile.c_str(), shaderKey.PSMacroString.c_str());
+	const COpenGLVertexShader* vertexShader = getVertexShader(shaderKey.VSFile.c_str(), shaderKey.MacroString.c_str());
+	const COpenGLPixelShader* pixelShader = getPixelShader(shaderKey.PSFile.c_str(), shaderKey.MacroString.c_str());
 
 	if (ShaderState.vshader != vertexShader || ShaderState.pshader != pixelShader)
 	{
