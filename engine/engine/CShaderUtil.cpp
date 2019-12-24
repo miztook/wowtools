@@ -280,7 +280,7 @@ std::string CShaderUtil::getShaderMacroString(const std::set<std::string>& shade
 		str += macro;
 		if (count + 1 < shaderMacro.size())
 		{
-			str += " ";
+			str += "#";
 		}
 		++count;
 	}
@@ -290,13 +290,7 @@ std::string CShaderUtil::getShaderMacroString(const std::set<std::string>& shade
 std::set<std::string> CShaderUtil::getShaderMacroSet(const char* macroString)
 {
 	std::set<std::string> macroSet;
-	std::vector<std::string> macroList;
-	std_string_split(macroString, '#', macroList);
-	for (const auto& str : macroList)
-	{
-		if (!str.empty())
-			macroSet.insert(str);
-	}
+	std_string_split(macroString, '#', macroSet);
 	return macroSet;
 }
 

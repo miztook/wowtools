@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <set>
 #include <cassert>
 
 inline bool isAbsoluteFileName(const std::string& filename)
@@ -276,7 +277,7 @@ inline std::string std_string_format(const char* _Format, ...) {
 	return tmp;
 }
 
-inline void std_string_split(const std::string& _str, char split, std::vector<std::string>& retVString)
+inline void std_string_split(const std::string& _str, char split, std::vector<std::string>& retVString, bool includeEmptyStr = false)
 {
 	retVString.clear();
 
@@ -287,9 +288,43 @@ inline void std_string_split(const std::string& _str, char split, std::vector<st
 		const char* pch = strchr(pchStart, split);
 
 		if (pch)
-			retVString.push_back(std::string(pchStart, pch - pchStart));
+		{
+			if (includeEmptyStr || pch > pchStart)
+				retVString.push_back(std::string(pchStart, pch - pchStart));
+		}
 		else
-			retVString.push_back(pchStart);
+		{
+			if (includeEmptyStr || strlen(pchStart) > 0)
+				retVString.push_back(pchStart);
+		}
+
+		if (!pch)
+			break;
+
+		pchStart = pch + 1;
+	}
+}
+
+inline void std_string_split(const std::string& _str, char split, std::set<std::string>& retVString, bool includeEmptyStr = false)
+{
+	retVString.clear();
+
+	const char* pchStart = _str.data();
+	char* pch = NULL;
+	while (true)
+	{
+		const char* pch = strchr(pchStart, split);
+
+		if (pch)
+		{
+			if (includeEmptyStr || pch > pchStart)
+				retVString.insert(std::string(pchStart, pch - pchStart));
+		}
+		else
+		{
+			if (includeEmptyStr || strlen(pchStart) > 0)
+				retVString.insert(pchStart);
+		}
 
 		if (!pch)
 			break;

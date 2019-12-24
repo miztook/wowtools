@@ -25,7 +25,7 @@ int main()
 	SWindowInfo wndInfo = CSysUtil::createWindow("shader1", 1136, 640, false, false);
 	HWND hwnd = wndInfo.hwnd;
 
-	createFileSystem(CFileSystem::getWorkingDirectory().c_str(), R"(E:\World Of Warcraft)");
+	createFileSystem(R"(E:\World Of Warcraft)");
 	if (!createEngine(wndInfo, EDT_OPENGL, true, E_AA_FXAA, mywow_InitDriver))
 	{
 		destroyEngine();
