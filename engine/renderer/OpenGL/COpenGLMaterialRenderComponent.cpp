@@ -198,11 +198,9 @@ void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial* material, 
 	}
 
 	//blend state
-	const auto& desc = getRenderTargetBlendDesc(material->BlendType);
-
-	CurrentRenderState.AlphaBlendEnable = desc.alphaBlendEnabled ? GL_TRUE : GL_FALSE;
-	CurrentRenderState.SrcBlend = COpenGLHelper::getGLBlend(desc.srcBlend);
-	CurrentRenderState.DestBlend = COpenGLHelper::getGLBlend(desc.destBlend);
+	CurrentRenderState.AlphaBlendEnable = material->alphaBlendEnabled ? GL_TRUE : GL_FALSE;
+	CurrentRenderState.SrcBlend = COpenGLHelper::getGLBlend(material->srcBlend);
+	CurrentRenderState.DestBlend = COpenGLHelper::getGLBlend(material->destBlend);
 }
 
 void COpenGLMaterialRenderComponent::applyRenderStates()

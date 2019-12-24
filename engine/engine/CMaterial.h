@@ -55,15 +55,6 @@ enum E_LIGHT_MODE : int
 	ELM_SHADOW_CASTER,
 };
 
-struct SMRenderTargetBlendDesc
-{
-	E_BLEND_FACTOR	srcBlend;
-	E_BLEND_FACTOR	destBlend;
-	bool	alphaBlendEnabled;
-};
-
-SMRenderTargetBlendDesc getRenderTargetBlendDesc(E_BLEND_TYPE blendType);
-
 class CPass
 {
 public:
@@ -73,8 +64,10 @@ public:
 		AntiAliasing = EAAM_OFF;
 		ZBuffer = ECFN_LESSEQUAL;
 		ZWriteEnable = true;
-		BlendType = EMT_SOLID;
 		ColorWrite = COLORWRITE_ALL;
+		alphaBlendEnabled = false;
+		srcBlend = EBF_ONE;
+		destBlend = EBF_ZERO;
 	}
 
 public:
@@ -90,8 +83,10 @@ public:		//render state
 	E_ANTI_ALIASING_MODE		AntiAliasing;
 	E_COMPARISON_FUNC		ZBuffer;
 	bool		ZWriteEnable;
-	E_BLEND_TYPE	BlendType;	//blend desc
 	E_COLOR_WRITE	ColorWrite;
+	E_BLEND_FACTOR	srcBlend;
+	E_BLEND_FACTOR	destBlend;
+	bool	alphaBlendEnabled;
 };
 
 struct STextureUnit

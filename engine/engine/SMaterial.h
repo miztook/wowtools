@@ -30,13 +30,15 @@ struct SMaterial
 	E_COMPARISON_FUNC		ZBuffer;
 	bool		ZWriteEnable;
 
-	E_BLEND_TYPE	BlendType;	//blend desc
 	E_COLOR_WRITE	ColorWrite;
+
+	E_BLEND_FACTOR	srcBlend;
+	E_BLEND_FACTOR	destBlend;
+	bool	alphaBlendEnabled;
 
 	SMaterial()
 		: 
 		RenderQueue(ERQ_GEOMETRY),
-		BlendType(EMT_SOLID),
 		ColorWrite(COLORWRITE_ALL)
 	{
 		RenderQueue = ERQ_GEOMETRY;
@@ -44,6 +46,9 @@ struct SMaterial
 		AntiAliasing = EAAM_OFF;
 		ZBuffer = ECFN_LESSEQUAL;
 		ZWriteEnable = true;
+		alphaBlendEnabled = false;
+		srcBlend = EBF_ONE;
+		destBlend = EBF_ZERO;
 	}
 
 	void setVariable(const char* name, const float* src, uint32_t size);

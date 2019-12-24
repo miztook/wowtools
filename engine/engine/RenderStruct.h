@@ -14,11 +14,6 @@ enum E_2DBlendMode : int8_t
 	E_Solid = 0,
 	E_AlphaBlend,
 	E_OneAlpha,
-	E_AddAlpha,
-	E_AddColor,
-	E_Modulate,
-	E_ModulateX2,
-	E_OneOne,
 };
 
 struct S2DBlendParam
@@ -40,32 +35,6 @@ struct S2DBlendParam
 	int getHashValue() const
 	{
 		return ((blendMode << 8) + ((alpha ? 1 : 0) << 4) + (alphaChannel ? 1 : 0));
-	}
-
-	E_BLEND_TYPE getBlendType() const
-	{
-		if (!alpha && !alphaChannel)
-			return EMT_SOLID;
-
-		switch (blendMode)
-		{
-		case E_AlphaBlend:
-			return EMT_TRANSPARENT_ALPHA_BLEND;
-		case E_OneAlpha:
-			return EMT_TRANSPARENT_ONE_ALPHA;
-		case E_AddAlpha:
-			return EMT_TRANSPARENT_ADD_ALPHA;
-		case E_AddColor:
-			return EMT_TRANSPARENT_ADD_COLOR;
-		case E_Modulate:
-			return EMT_TRANSPARENT_MODULATE;
-		case E_ModulateX2:
-			return EMT_TRANSPARENT_MODULATE_X2;
-		case E_OneOne:
-			return EMT_TRANSPARENT_ONE_ONE;
-		default:
-			return EMT_SOLID;
-		}
 	}
 
 	bool operator!=(const S2DBlendParam& b) const
@@ -92,9 +61,33 @@ struct S2DBlendParam
 	void setMaterial(SMaterial& material) const
 	{
 		material.VSFile = "";
-		material.BlendType = getBlendType();
 		material.PSFile = "UI";
 		material.PSMacroString = CShaderUtil::getUIPSMacroString(alpha, alphaChannel);
+
+		if (!alpha && !alphaChannel)
+		{
+			material.alphaBlendEnabled = false;
+			material.srcBlend = EBF_ONE;
+			material.destBlend = EBF_ZERO;
+		}
+		else if (blendMode == E_AlphaBlend)
+		{
+			material.alphaBlendEnabled = true;
+			material.srcBlend = EBF_SRC_ALPHA;
+			material.destBlend = EBF_ONE_MINUS_SRC_ALPHA;
+		}
+		else if (blendMode == E_OneAlpha)
+		{
+			material.alphaBlendEnabled = true;
+			material.srcBlend = EBF_ONE;
+			material.destBlend = EBF_ONE_MINUS_SRC_ALPHA;
+		}
+		else
+		{
+			material.alphaBlendEnabled = false;
+			material.srcBlend = EBF_ONE;
+			material.destBlend = EBF_ZERO;
+		}
 	}
 
 	static const S2DBlendParam& OpaqueSource()

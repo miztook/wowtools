@@ -1,57 +1,5 @@
 #include "CMaterial.h"
 
-SMRenderTargetBlendDesc getRenderTargetBlendDesc(E_BLEND_TYPE blendType)
-{
-	SMRenderTargetBlendDesc desc;
-
-	switch (blendType)
-	{
-	case EMT_SOLID:
-		desc.srcBlend = EBF_ONE;
-		desc.destBlend = EBF_ZERO;
-		desc.alphaBlendEnabled = false;
-		break;
-	case EMT_TRANSPARENT_ALPHA_BLEND:
-		desc.srcBlend = EBF_SRC_ALPHA;
-		desc.destBlend = EBF_ONE_MINUS_SRC_ALPHA;
-		desc.alphaBlendEnabled = true;
-		break;
-	case EMT_TRANSPARENT_ONE_ALPHA:
-		desc.srcBlend = EBF_ONE;
-		desc.destBlend = EBF_ONE_MINUS_SRC_ALPHA;
-		desc.alphaBlendEnabled = true;
-		break;
-	case EMT_TRANSPARENT_ADD_ALPHA:
-		desc.srcBlend = EBF_SRC_ALPHA;
-		desc.destBlend = EBF_ONE;
-		desc.alphaBlendEnabled = true;
-		break;
-	case EMT_TRANSPARENT_ADD_COLOR:
-		desc.srcBlend = EBF_SRC_COLOR;
-		desc.destBlend = EBF_ONE;
-		desc.alphaBlendEnabled = true;
-		break;
-	case EMT_TRANSPARENT_MODULATE:
-		desc.srcBlend = EBF_ZERO;
-		desc.destBlend = EBF_SRC_COLOR;
-		desc.alphaBlendEnabled = true;
-		break;
-	case EMT_TRANSPARENT_MODULATE_X2:
-		desc.srcBlend = EBF_DST_COLOR;
-		desc.destBlend = EBF_SRC_COLOR;
-		desc.alphaBlendEnabled = true;
-		break;
-	case EMT_TRANSPARENT_ONE_ONE:
-		desc.srcBlend = EBF_ONE;
-		desc.destBlend = EBF_ONE;
-		desc.alphaBlendEnabled = true;
-		break;
-	default:
-		break;
-	}
-	return desc;
-}
-
 void CMaterial::setVariable(const char* name, const float* src, uint32_t size)
 {
 	auto itr = ShaderVariableMap.find(name);

@@ -24,6 +24,7 @@
     <ClInclude Include="..\common\CFileSystem.h" />
     <ClInclude Include="..\common\CMemFile.h" />
     <ClInclude Include="..\common\CReadFile.h" />
+    <ClInclude Include="..\common\CResourceCache.h" />
     <ClInclude Include="..\common\CSysChrono.h" />
     <ClInclude Include="..\common\CSysCodeCvt.h" />
     <ClInclude Include="..\common\CSysSync.h" />
@@ -40,6 +41,8 @@
     <ClInclude Include="..\common\rect.h" />
     <ClInclude Include="..\common\S3DVertex.h" />
     <ClInclude Include="..\common\SColor.h" />
+    <ClInclude Include="..\common\ScriptLexer.h" />
+    <ClInclude Include="..\common\ScriptParser.h" />
     <ClInclude Include="..\common\stringext.h" />
     <ClInclude Include="..\common\varianttype.h" />
     <ClInclude Include="..\common\vector2d.h" />
@@ -63,7 +66,6 @@
     <ClInclude Include="..\engine\CFPSCounter.h" />
     <ClInclude Include="..\engine\CFTFont.h" />
     <ClInclude Include="..\engine\CFTGlyphCache.h" />
-    <ClInclude Include="..\engine\CGeometryCreator.h" />
     <ClInclude Include="..\engine\CCImage.h" />
     <ClInclude Include="..\engine\CInputReader.h" />
     <ClInclude Include="..\engine\CMaterial.h" />
@@ -107,6 +109,8 @@
     <ClCompile Include="..\common\CSysCodeCvt.cpp" />
     <ClCompile Include="..\common\CSysThread.cpp" />
     <ClCompile Include="..\common\CWriteFile.cpp" />
+    <ClCompile Include="..\common\ScriptLexer.cpp" />
+    <ClCompile Include="..\common\ScriptParser.cpp" />
     <ClCompile Include="..\common\wowDatabase.cpp" />
     <ClCompile Include="..\common\wowDbFile.cpp" />
     <ClCompile Include="..\common\wowEnvironment.cpp" />
