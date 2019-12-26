@@ -56,11 +56,8 @@ public:
 	};
 
 public:
-	void drawA(const char* utf8text, SColor color, vector2di position, int nCharCount = -1, const recti* pClip = nullptr);
-	void drawW(const char16_t* text, SColor color, vector2di position, int nCharCount = -1, const recti* pClip = nullptr);
-	void addTextA(const char* text, SColor color, vector2di position, int nCharCount = -1, const recti* pClip = nullptr, bool bVertical = false);
-	void addTextW(const char16_t* text, SColor color, vector2di position, int nCharCount = -1, const recti* pClip = nullptr, bool bVertical = false);
-	void flushText();
+	void drawA(const char* utf8text, SColor color, vector2di position, int nCharCount = -1);
+	void drawW(const char16_t* text, SColor color, vector2di position, int nCharCount = -1);
 
 	dimension2d getTextExtent(const char* utf8text, int nCharCount = -1, bool vertical = false);
 	dimension2d getWTextExtent(const char16_t* text, int nCharCount = -1, bool vertical = false);
@@ -100,10 +97,6 @@ private:
 private:
 	bool addFontTexture();
 	FT_BitmapGlyph renderChar(uint32_t ch, bool bRenderAsOutline);
-	void drawTextWBatch();
-
-	void drawText(const SDrawText& d, const char16_t* txt, float fInv);
-	void drawTextVertical(const SDrawText& d, const char16_t* txt, float fInv);
 
 private:
 	const std::string	FontFacePath;

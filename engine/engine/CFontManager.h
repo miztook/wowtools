@@ -77,7 +77,6 @@ public:
 	CFTFont* createFont(const SFontKey& type);
 	void destroyFont(const SFontKey& type);
 	void onWindowSizeChanged(const dimension2d& size);
-	void flushAll2DText();
 	bool createDefaultFonts();
 
 	const FT_Library&	 getFTLibrary() const { return FTLibrary; }

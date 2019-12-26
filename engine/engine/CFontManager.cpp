@@ -260,12 +260,3 @@ void CFontManager::RemoveFaceID(My_FaceID faceId)
 		}
 	}
 }
-
-void CFontManager::flushAll2DText()
-{
-	for (auto itr = FontMap.begin(); itr != FontMap.end(); ++itr)
-	{
-		CFTFont* font = itr->second;
-		font->flushText();
-	}
-}

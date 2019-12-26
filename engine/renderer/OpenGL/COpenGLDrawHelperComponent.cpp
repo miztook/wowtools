@@ -129,7 +129,7 @@ void COpenGLDrawHelperComponent::destroyStaticIndexBufferTriangleList()
 void COpenGLDrawHelperComponent::createDynamicVertexBuffers()
 {
 	VBImage = std::make_unique<COpenGLVertexBuffer>(Driver, EMM_DYNAMIC);
-	ImageVertices = VBImage->alloc<SVertex_PCT>(MAX_QUADS * 4);
+	VBImage->alloc<SVertex_PCT>(MAX_QUADS * 4);
 }
 
 void COpenGLDrawHelperComponent::destroyDynamicVertexBuffers()
@@ -179,7 +179,7 @@ rectf COpenGLDrawHelperComponent::setUVCoords(E_RECT_UVCOORDS uvcoords, float x0
 	return tcoords;
 }
 
-void COpenGLDrawHelperComponent::add2DColor(const recti & rect, SColor color, E_2DBlendMode mode)
+void COpenGLDrawHelperComponent::add2DColor(const recti& rect, SColor color, E_2DBlendMode mode)
 {
 	ITexture* texture = Driver->getTextureWhite();
 

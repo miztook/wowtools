@@ -51,15 +51,10 @@ CFTFont::~CFTFont()
 		FontManager->RemoveFaceID(MyFaceID);
 }
 
-void CFTFont::drawA(const char* utf8text, SColor color, vector2di position, int nCharCount /*= -1*/, const recti* pClip /*= nullptr*/)
+void CFTFont::drawA(const char* utf8text, SColor color, vector2di position, int nCharCount /*= -1*/)
 {
 	int32_t x = position.x;
 	int32_t y = position.y;
-
-	//clip
-	if (pClip &&
-		(y >= pClip->bottom || y + m_iFontHeight <= pClip->top || x >= pClip->right))
-		return;
 
 	const S2DBlendParam& blendParam = S2DBlendParam::UIFontBlendParam();
 	float fInv = 1.0f / FONT_TEXTURE_SIZE;
@@ -130,36 +125,6 @@ void CFTFont::drawA(const char* utf8text, SColor color, vector2di position, int 
 		float tv1 = 0.0f;
 		float tv2 = 0.0f;
 
-		if (pClip)			//clip
-		{
-			if (posX1 <= pClip->left || posX0 >= pClip->right)
-				continue;
-
-			if (posX0 < pClip->left)
-			{
-				fLeft = (float)pClip->left;
-				tu1 = (pClip->left - posX0) * fInv;
-			}
-
-			if (posX1 > pClip->right)
-			{
-				fRight = (float)pClip->right;
-				tu2 = (posX1 - pClip->right) * fInv;
-			}
-
-			if (posY0 < pClip->top)
-			{
-				fTop = (float)pClip->top;
-				tv1 = (pClip->top - posY0) * fInv;
-			}
-
-			if (posY1 > pClip->bottom)
-			{
-				fBottom = (float)pClip->bottom;
-				tv2 = (posY1 - pClip->bottom) * fInv;
-			}
-		}
-
 		float du = texX1 - texX0;
 		float dv = texY1 - texY0;
 
@@ -207,15 +172,10 @@ void CFTFont::drawA(const char* utf8text, SColor color, vector2di position, int 
 	g_Engine->getDriver()->flushAll2DQuads();
 }
 
-void CFTFont::drawW(const char16_t* text, SColor color, vector2di position, int nCharCount /*= -1*/, const recti* pClip /*= nullptr*/)
+void CFTFont::drawW(const char16_t* text, SColor color, vector2di position, int nCharCount /*= -1*/)
 {
 	int32_t x = position.x;
 	int32_t y = position.y;
-
-	//clip
-	if (pClip &&
-		(y >= pClip->bottom || y + m_iFontHeight <= pClip->top || x >= pClip->right))
-		return;
 
 	const S2DBlendParam& blendParam = S2DBlendParam::UIFontBlendParam();
 	float fInv = 1.0f / FONT_TEXTURE_SIZE;
@@ -279,36 +239,6 @@ void CFTFont::drawW(const char16_t* text, SColor color, vector2di position, int 
 		float tv1 = 0.0f;
 		float tv2 = 0.0f;
 
-		if (pClip)			//clip
-		{
-			if (posX1 <= pClip->left || posX0 >= pClip->right)
-				continue;
-
-			if (posX0 < pClip->left)
-			{
-				fLeft = (float)pClip->left;
-				tu1 = (pClip->left - posX0) * fInv;
-			}
-
-			if (posX1 > pClip->right)
-			{
-				fRight = (float)pClip->right;
-				tu2 = (posX1 - pClip->right) * fInv;
-			}
-
-			if (posY0 < pClip->top)
-			{
-				fTop = (float)pClip->top;
-				tv1 = (pClip->top - posY0) * fInv;
-			}
-
-			if (posY1 > pClip->bottom)
-			{
-				fBottom = (float)pClip->bottom;
-				tv2 = (posY1 - pClip->bottom) * fInv;
-			}
-		}
-
 		float du = texX1 - texX0;
 		float dv = texY1 - texY0;
 
@@ -354,74 +284,6 @@ void CFTFont::drawW(const char16_t* text, SColor color, vector2di position, int 
 	}
 
 	g_Engine->getDriver()->flushAll2DQuads();
-}
-
-void CFTFont::addTextA(const char* text, SColor color, vector2di position, int nCharCount /*= -1*/, const recti* pClip /*= nullptr*/, bool bVertical /*= false*/)
-{
-	if (nCharCount == 0)			//-1表示实际长度，0或以上是指定长度
-		return;
-
-	uint32_t offset = (uint32_t)Texts.size();
-	const char* p = text;
-	int nLen = nCharCount > 0 ? nCharCount : (int)strlen(text);
-	uint32_t uCharCount = 0;
-	while (*p && nLen >= 0)
-	{
-		char16_t ch;
-		int nadv;
-		ch = (char16_t)CSysCodeCvt::ParseUnicodeFromUTF8Str(p, &nadv, nLen);
-		if (nadv == 0)		//parse end
-			break;
-		p += nadv;
-		nLen -= nadv;
-		if (ch == 0)		//string end
-			break;
-
-		Texts.push_back(ch);
-		++uCharCount;
-	}
-
-	SDrawText d;
-	d.offset = offset;
-	d.length = uCharCount;
-	d.color = color;
-	d.position = position;
-	d.bVertical = bVertical;
-	d.bClip = pClip != nullptr;
-	if (pClip)
-		d.rcClip = *pClip;
-	DrawTexts.emplace_back(d);
-}
-
-void CFTFont::addTextW(const char16_t* text, SColor color, vector2di position, int nCharCount /*= -1*/, const recti* pClip /*= nullptr*/, bool bVertical /*= false*/)
-{
-	if (nCharCount == 0)		//-1表示实际长度，0或以上是指定长度
-		return;
-
-	uint32_t offset = (uint32_t)Texts.size();
-	uint32_t uCharCount = nCharCount > 0 ? (uint32_t)nCharCount : (uint32_t)CSysCodeCvt::UTF16Len(text);
-
-	for (uint32_t i = 0; i < uCharCount; ++i)
-		Texts.push_back(text[i]);
-
-	SDrawText d;
-	d.offset = offset;
-	d.length = uCharCount;
-	d.color = color;
-	d.position = position;
-	d.bVertical = bVertical;
-	d.bClip = pClip != nullptr;
-	if (pClip)
-		d.rcClip = *pClip;
-	DrawTexts.emplace_back(d);
-}
-
-void CFTFont::flushText()
-{
-	drawTextWBatch();
-
-	DrawTexts.clear();
-	Texts.clear();
 }
 
 dimension2d CFTFont::getTextExtent(const char* utf8text, int nCharCount /*= -1*/, bool vertical /*= false*/)
@@ -915,29 +777,3 @@ FT_BitmapGlyph CFTFont::renderChar(uint32_t ch, bool bRenderAsOutline)
 	return MyFTGlyphCache->LookupGlyph(index, bRenderAsOutline);
 }
 
-void CFTFont::drawTextWBatch()
-{
-	float fInv = 1.0f / FONT_TEXTURE_SIZE;
-
-	for (const SDrawText& d : DrawTexts)
-	{
-		const char16_t* txt = &Texts[d.offset];
-
-		if (!d.bVertical)
-			drawText(d, txt, fInv);
-		else
-			drawTextVertical(d, txt, fInv);
-	}
-
-	g_Engine->getDriver()->flushAll2DQuads();
-}
-
-void CFTFont::drawText(const SDrawText& d, const char16_t* txt, float fInv)
-{
-
-}
-
-void CFTFont::drawTextVertical(const SDrawText& d, const char16_t* txt, float fInv)
-{
-
-}

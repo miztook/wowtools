@@ -724,7 +724,7 @@ ITexture* COpenGLDriver::getTextureWhite() const
 	return TextureManageComponent->getDefaultWhite();
 }
 
-void COpenGLDriver::add2DColor(const recti & rect, SColor color, E_2DBlendMode mode)
+void COpenGLDriver::add2DColor(const recti& rect, SColor color, E_2DBlendMode mode)
 {
 	DrawHelperComponent->add2DColor(rect, color, mode);
 }

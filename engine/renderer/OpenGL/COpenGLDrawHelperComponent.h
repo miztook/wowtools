@@ -43,7 +43,7 @@ public:
 	IIndexBuffer* getStaticIndexBufferTriangleList() const { return StaticIndexBufferTriangleList.get(); }
 
 	//
-	void add2DColor(const recti& rect, SColor color, E_2DBlendMode mode = E_Solid);
+	void add2DColor(const recti&rect, SColor color, E_2DBlendMode mode = E_Solid);
 	void add2DQuads(ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam = S2DBlendParam::OpaqueSource());
 	void flushAll2DQuads();
 
@@ -101,8 +101,6 @@ private:
 		std::vector<SVertex_PCT>	drawVerts;
 	};
 
-	using T_QuadDrawMap = std::map<SQuadDrawBatchKey, SQuadBatchDraw>;
-
 private:
 	COpenGLDriver* Driver;
 
@@ -111,12 +109,10 @@ private:
 	std::unique_ptr<IIndexBuffer>			StaticIndexBufferQuadList;
 	std::unique_ptr<IIndexBuffer>			StaticIndexBufferTriangleList;
 
-	SVertex_PCT*		ImageVertices;
-
 	std::unique_ptr<IVertexBuffer>		VBImage;
 
 	SMaterial	InitMaterial2D;
 
 	//
-	T_QuadDrawMap		m_2DQuadDrawMap;
+	std::map<SQuadDrawBatchKey, SQuadBatchDraw>		m_2DQuadDrawMap;
 };
