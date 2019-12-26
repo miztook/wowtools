@@ -27,11 +27,11 @@ public:
 	CCamera* get2DCamera() const { return m_p2DCamera.get(); }
 	void onScreenResize(const dimension2d& size);
 	
-	void cleanSceneNodes();
+	void cleanupSceneNodes();
 	void deleteAllSceneNodes();
 	const std::list<ISceneNode*>& getTopSceneNodeList() const { return m_SceneNodes; }
 
-	void afterFrame() { cleanSceneNodes(); }
+	void afterFrame() { cleanupSceneNodes(); }
 
 	//
 	CMeshSceneNode* addMeshSceneNode(const char* name);

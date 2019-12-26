@@ -24,7 +24,7 @@ public:
 	bool init();
 
 	ITexture* getDefaultWhite() const { return DefaultWhite; }
-
+	
 	ITexture* getManualTexture(const char* name) const;
 	ITexture* addTexture(const char* name, std::shared_ptr<CCImage> image, bool mipmap);
 	void removeTexture(const char* name);

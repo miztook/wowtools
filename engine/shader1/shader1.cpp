@@ -80,10 +80,10 @@ void compileShaders()
 		shaderManagerComponent->getPixelShader(psFile);
 	}
 
-	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getUIPSMacroString(false, false).c_str());
-	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getUIPSMacroString(false, true).c_str());
-	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getUIPSMacroString(true, false).c_str());
-	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getUIPSMacroString(true, true).c_str());
+	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getUIMacroString(false, false).c_str());
+	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getUIMacroString(false, true).c_str());
+	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getUIMacroString(true, false).c_str());
+	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getUIMacroString(true, true).c_str());
 
 	//const CGLProgram* program = shaderManagerComponent->getGlProgram(vs, ps);
 }

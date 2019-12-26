@@ -62,38 +62,6 @@ public:
 	std::string		description;
 	std::string		name;
 	std::string		vendorName;
-
-	std::list<SDisplayMode> displayModes;
-
-	void addDisplayMode(const SDisplayMode& mode)
-	{
-		if (displayModes.end() == std::find(displayModes.begin(), displayModes.end(), mode))
-		{
-			displayModes.push_back(mode);
-		}
-	}
-
-	SDisplayMode getCloseMatchDisplayMode(uint32_t width, uint32_t height) const
-	{
-		SDisplayMode ret;
-		//select first
-		auto itr = displayModes.begin();
-		uint32_t diff = abs(((int)itr->width - (int)width)) + abs(((int)itr->height - (int)height));
-		ret = (*itr);
-
-		++itr;
-		for (; itr != displayModes.end(); ++itr)
-		{
-			uint32_t d = abs(((int)itr->width - (int)width)) + abs(((int)itr->height - (int)height));
-			if (d < diff)
-			{
-				diff = d;
-				ret = (*itr);
-			}
-		}
-
-		return ret;
-	}
 };
 
 class IVideoDriver
@@ -177,23 +145,6 @@ public:
 	virtual void add2DColor(const recti& rect, SColor color, E_2DBlendMode mode = E_Solid) = 0;
 	virtual void add2DQuads(ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam = S2DBlendParam::OpaqueSource()) = 0;
 	virtual void flushAll2DQuads() = 0;
-	virtual void draw2DImageBatch(ITexture* texture,
-		const vector2di positions[],
-		const recti* sourceRects[],
-		uint32_t batchCount,
-		SColor color,
-		E_RECT_UVCOORDS uvcoords,
-		const S2DBlendParam& blendParam) = 0;
-
-public:
-	void draw2DImage(ITexture* texture, const vector2di& pos,
-		const recti* sourceRect = nullptr,
-		SColor color = SColor::White(),
-		E_RECT_UVCOORDS uvcoords = ERU_00_11,
-		const S2DBlendParam& blendParam = S2DBlendParam::OpaqueSource())
-	{
-		draw2DImageBatch(texture, &pos, sourceRect ? &sourceRect : nullptr, 1, color, uvcoords, blendParam);
-	}
 	
 public:
 	CAdapterInfo	AdapterInfo;

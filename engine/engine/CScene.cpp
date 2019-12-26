@@ -54,7 +54,7 @@ void CScene::onScreenResize(const dimension2d& size)
 	}
 }
 
-void CScene::cleanSceneNodes()
+void CScene::cleanupSceneNodes()
 {
 	for (auto itr = m_SceneNodes.begin(); itr != m_SceneNodes.end();)
 	{

@@ -1,0 +1,29 @@
+矩阵部分 	列优先	和unity一致
+
+渲染结构
+		Camera.Render
+			Drawing
+				Render.OpaqueGeometry
+					RenderForwardOpaque.Render
+						Shadows.RenderShadowMap
+						RenderForwardOpaque.CollectShadows
+						Clear
+						RenderForward.RenderLoopJob
+				Camera.ImageEffects
+				Render.TransparentGeometry
+					RenderForwardAlpha.Render
+						RenderForward.RenderLoopJob
+			Camera.ImageEffects
+			Drawing
+				Render.TransparentGeometry
+					RenderForwardAlpha.Render
+						RenderForward.RenderLoopJob
+							Canvas.RenderSubBatch
+			
+2D和3D渲染统一
+			
+材质系统  和unity一致
+			material 	pass
+			
+代码尽可能清晰简化
+			

@@ -741,11 +741,3 @@ void COpenGLDriver::flushAll2DQuads()
 {
 	DrawHelperComponent->flushAll2DQuads();
 }
-
-void COpenGLDriver::draw2DImageBatch(ITexture* texture, const vector2di positions[], const recti* sourceRects[], uint32_t batchCount, SColor color, E_RECT_UVCOORDS uvcoords, const S2DBlendParam& blendParam)
-{
-	if (!texture)
-		texture = getTextureWhite();
-
-	DrawHelperComponent->draw2DImageBatch(texture, positions, sourceRects, batchCount, color, uvcoords, blendParam);
-}

@@ -239,32 +239,6 @@ void COpenGLDrawHelperComponent::flushAll2DQuads()
 	m_2DQuadDrawMap.clear();
 }
 
-void COpenGLDrawHelperComponent::draw2DImageBatch(ITexture* texture, const vector2di positions[], const recti* sourceRects[], uint32_t batchCount, SColor color, E_RECT_UVCOORDS uvcoords, const S2DBlendParam& blendParam)
-{
-	ASSERT(texture || sourceRects);
-	if (!texture && !sourceRects)
-		return;
-
-	uint32_t nMaxBatch = batchCount / MAX_QUADS;
-	uint32_t nLeftBatch = batchCount % MAX_QUADS;
-
-	for (uint32_t n = 0; n < nMaxBatch; ++n)
-	{
-		const uint32_t batchCount = MAX_QUADS;
-		const int nOffset = n * MAX_QUADS;
-
-		do_draw2DImageBatch(batchCount, nOffset, positions, sourceRects, texture, uvcoords, color, blendParam);
-	}
-
-	if (nLeftBatch)
-	{
-		const uint32_t batchCount = nLeftBatch;
-
-		const int nOffset = nMaxBatch * MAX_QUADS;
-		do_draw2DImageBatch(batchCount, nOffset, positions, sourceRects, texture, uvcoords, color, blendParam);
-	}
-}
-
 void COpenGLDrawHelperComponent::draw2DSquadBatch(ITexture * texture, const SVertex_PCT* verts, uint32_t numQuads, const S2DBlendParam & blendParam)
 {
 	uint32_t nMaxBatch = numQuads / MAX_IMAGE_BATCH_COUNT;
@@ -285,94 +259,6 @@ void COpenGLDrawHelperComponent::draw2DSquadBatch(ITexture * texture, const SVer
 		
 		do_draw2DSquadBatch(batchCount, texture, &verts[nOffset], batchCount, blendParam);
 	}
-}
-
-void COpenGLDrawHelperComponent::do_draw2DImageBatch(uint32_t batchCount, uint32_t nOffset, const vector2di* positions, const recti** sourceRects, ITexture* texture, E_RECT_UVCOORDS uvcoords, SColor color, const S2DBlendParam& blendParam)
-{
-	for (uint32_t i = 0; i < batchCount; ++i)
-	{
-		uint32_t srcIndex = i + nOffset;
-		const vector2di& destPos = positions[srcIndex];
-		vector2di sourcePos = sourceRects ? vector2di(sourceRects[srcIndex]->left, sourceRects[srcIndex]->top) : vector2di(0, 0);
-		dimension2d sourceSize;
-		if (sourceRects)
-		{
-			sourceSize = dimension2d(sourceRects[srcIndex]->getWidth(), sourceRects[srcIndex]->getHeight());
-		}
-		else if (texture)
-		{
-			sourceSize = texture->getSize();
-		}
-		else
-		{
-			ASSERT(false);
-			break;
-		}
-
-		//tcoords
-		float x0, x1, y0, y1;
-
-		if (texture)
-		{
-			const dimension2d& texSize = texture->getSize();
-
-			x0 = ((float)sourcePos.x) / (float)texSize.width;
-			y0 = ((float)sourcePos.y) / (float)texSize.height;
-			x1 = ((float)(sourcePos.x + (int)sourceSize.width)) / (float)texSize.width;
-			y1 = ((float)(sourcePos.y + (int)sourceSize.height)) / (float)texSize.height;
-		}
-		else
-		{
-			x0 = 0.0f;
-			y0 = 0.0f;
-			x1 = 1.0f;
-			y1 = 1.0f;
-		}
-
-		rectf tcoords = setUVCoords(uvcoords, x0, y0, x1, y1);
-
-		//vertices
-		rectf poss((float)destPos.x, (float)destPos.y, (float)(destPos.x + (int)sourceSize.width), (float)(destPos.y + (int)sourceSize.height));
-
-		ImageVertices[i * 4].set(
-			vector3df((float)poss.left, (float)poss.top, 0),
-			color,
-			vector2df(tcoords.left, tcoords.top));
-
-		ImageVertices[i * 4 + 1].set(
-			vector3df((float)poss.right, (float)poss.top, 0),
-			color,
-			vector2df(tcoords.right, tcoords.top));
-
-		ImageVertices[i * 4 + 2].set(
-			vector3df((float)poss.left, (float)poss.bottom, 0),
-			color,
-			vector2df(tcoords.left, tcoords.bottom));
-
-		ImageVertices[i * 4 + 3].set(
-			vector3df((float)poss.right, (float)poss.bottom, 0),
-			color,
-			vector2df(tcoords.right, tcoords.bottom));
-	}
-
-	VBImage->updateBuffer<SVertex_PCT>(ImageVertices, batchCount * 4);
-
-	InitMaterial2D.setMainTexture(texture);
-	blendParam.setMaterial(InitMaterial2D);
-
-	Driver->setMaterial(InitMaterial2D);
-	Driver->setGlobalMaterial(g_Engine->getRenderSetting().getGlobalMaterial2D());
-
-	IVertexBuffer* vbuffer = VBImage.get();
-	IIndexBuffer* ibuffer = getStaticIndexBufferQuadList();
-	EngineUtil::buildVideoResources(vbuffer, ibuffer, &InitMaterial2D);
-
-	SDrawParam drawParam;
-	drawParam.numVertices = batchCount * 4;
-	drawParam.baseVertIndex = 0;
-
-	Driver->draw(vbuffer, ibuffer, EPT_TRIANGLES,
-		batchCount * 2, drawParam, true);
 }
 
 void COpenGLDrawHelperComponent::do_draw2DSquadBatch(uint32_t batchCount, ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam)

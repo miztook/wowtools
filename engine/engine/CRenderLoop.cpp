@@ -75,7 +75,6 @@ bool AfterOpaqueCompare(const SRenderUnit* a, const SRenderUnit* b)
 
 CRenderLoop::CRenderLoop()
 {
-	Driver = g_Engine->getDriver();
 }
 
 CRenderLoop::~CRenderLoop()
@@ -129,6 +128,7 @@ void CRenderLoop::renderOpaques(const CCamera* cam)
 {
 	std::sort(m_RenderUnits_Opaque.begin(), m_RenderUnits_Opaque.end(), OpaqueCompare);
 
+	IVideoDriver* driver = g_Engine->getDriver();
 	const auto& matView = cam->getViewTM();
 	const auto& matProjection = cam->getProjectionTM();
 
@@ -139,12 +139,12 @@ void CRenderLoop::renderOpaques(const CCamera* cam)
 
 		const IRenderer* renderer = unit->renderer;
 
-		Driver->setWorldViewProjection(renderer->getLocalToWorldMatrix(), matView, matProjection);
+		driver->setWorldViewProjection(renderer->getLocalToWorldMatrix(), matView, matProjection);
 
-		Driver->setMaterial(renderer->getMaterial());
-		Driver->setGlobalMaterial(g_Engine->getRenderSetting().getGlobalMaterial3D());
+		driver->setMaterial(renderer->getMaterial());
+		driver->setGlobalMaterial(g_Engine->getRenderSetting().getGlobalMaterial3D());
 
-		Driver->draw(unit->vbuffer, unit->ibuffer, unit->primType, unit->primCount, unit->drawParam, cam->IsOrthogonal());
+		driver->draw(unit->vbuffer, unit->ibuffer, unit->primType, unit->primCount, unit->drawParam, cam->IsOrthogonal());
 	}
 }
 

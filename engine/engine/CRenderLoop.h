@@ -6,7 +6,7 @@
 #include <map>
 #include <algorithm>
 
-class IVideoDriver;
+class CCamera;
 
 class CRenderLoop
 {
@@ -29,10 +29,9 @@ private:
 	void processRenderUnit(SRenderUnit* unit);
 
 private:
-	IVideoDriver*	Driver;
-	const SRenderUnit*			CurrentUnit;
-
 	//
 	std::vector<const SRenderUnit*>		m_RenderUnits_Opaque;
 	std::vector<const SRenderUnit*>		m_RenderUnits_AfterOpaque;
+
+	//
 };

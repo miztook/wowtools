@@ -1,6 +1,5 @@
 #pragma once
 #include "base.h"
-#include "COSInfo.h"
 #include "CTimer.h"
 #include "CInputReader.h"
 #include "IVideoDriver.h"
@@ -33,7 +32,6 @@ public:
 public:
 	IVideoDriver* getDriver() const { return Driver; }
 	const SWindowInfo& getWindowInfo() const { return WindowInfo; }
-	const COSInfo&	getOSInfo() const { return OSInfo; }
 	CInputReader* getInputReader() { return &InputReader; }
 	CFontManager* getFontManager() const { return FontManager; }
 	CMeshManager* getMeshManager() const { return MeshManager; }
@@ -42,7 +40,6 @@ public:
 private:
 	IVideoDriver*	Driver;
 	SWindowInfo		WindowInfo;
-	COSInfo		OSInfo;
 	CTimer		Timer;
 	CInputReader		InputReader;
 	IMessageHandler*		MessageHandler;

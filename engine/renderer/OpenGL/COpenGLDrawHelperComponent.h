@@ -48,14 +48,6 @@ public:
 	void flushAll2DQuads();
 
 
-	//
-	void draw2DImageBatch(ITexture* texture,
-		const vector2di positions[],
-		const recti* sourceRects[],
-		uint32_t batchCount,
-		SColor color,
-		E_RECT_UVCOORDS uvcoords,
-		const S2DBlendParam& blendParam);
 	void draw2DSquadBatch(ITexture* texture,
 		const SVertex_PCT* verts,
 		uint32_t numQuads,
@@ -79,7 +71,6 @@ private:
 
 	rectf setUVCoords(E_RECT_UVCOORDS uvcoords, float x0, float y0, float x1, float y1);
 	
-	void do_draw2DImageBatch(uint32_t batchCount, uint32_t nOffset, const vector2di* positions, const recti** sourceRects, ITexture* texture, E_RECT_UVCOORDS uvcoords, SColor color, const S2DBlendParam& blendParam);
 	void do_draw2DSquadBatch(uint32_t batchCount, ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam);
 	
 private:
@@ -128,5 +119,4 @@ private:
 
 	//
 	T_QuadDrawMap		m_2DQuadDrawMap;
-	T_QuadDrawMap		m_3DQuadDrawMap;
 };

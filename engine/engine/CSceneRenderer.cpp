@@ -25,81 +25,105 @@ CSceneRenderer * CSceneRenderer::createSceneRenderer()
 }
 
 CSceneRenderer::CSceneRenderer()
-	: BackgroundColor(64, 64, 64)
 {
-	Driver = g_Engine->getDriver();
+
+}
+
+CSceneRenderer::~CSceneRenderer()
+{
+	for (auto itr : CameraRenderMap)
+	{
+		SCameraRender* cameraRender = itr.second;
+		delete cameraRender;
+	}
+	CameraRenderMap.clear();
 }
 
 void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 {
 	beginFrame();
 
-	uint32_t tickTime = m_Timer.getTimeSinceLastFrame();
-
-	//collect scene node
-	m_ProcessList.clear();
-	const std::list<ISceneNode*>& sceneNodeList = scene->getTopSceneNodeList();
-	for (ISceneNode* node : sceneNodeList)
+	IVideoDriver* driver = g_Engine->getDriver();
+	if (driver->checkValid() && driver->beginScene())
 	{
-		node->traverse([this](ISceneNode* n) 
-		{ 
-			if (n->activeSelf() && !n->isToDelete())
-				m_ProcessList.push_back(n); 
-		});
-	}
-
-	//scene node tick
-	std::sort(m_ProcessList.begin(), m_ProcessList.end(), SceneNodeCompare);
-	for (const auto& node : m_ProcessList)
-	{
-		node->tick(tickTime);
-	}
-
-	//3d camera
-	const CCamera* cam = scene->get3DCamera();
-	if (cam->IsInited())
-	{
-		//cull renderers
-		CullResult.VisibleRenderers.clear();
-		for (const auto& node : m_ProcessList)
+		//3D Camera
 		{
-			const std::list<IRenderer*>& rendererList = node->getRendererList();
-			for (const IRenderer* renderer : rendererList)
+			const CCamera* cam = scene->get3DCamera();
+			if (cam->IsInited())
 			{
-				const aabbox3df& box = renderer->getBoundingBox();
-				if (cam->getWorldFrustum().isInFrustum(box))
-					CullResult.VisibleRenderers.push_back(renderer);
+				SCameraRender* camRender = getCameraRender(cam);
+				camRender->BackgroundColor = SColor(64, 64, 64);
+
+
+				//ÊÕ¼¯scene node
+				camRender->SceneNodeList.clear();
+				const std::list<ISceneNode*>& sceneNodeList = scene->getTopSceneNodeList();
+				for (ISceneNode* node : sceneNodeList)
+				{
+					node->traverse([camRender](ISceneNode* n)
+					{
+						if (n->activeSelf() && !n->isToDelete())
+							camRender->SceneNodeList.push_back(n);
+					});
+				}
+
+				//scene node tick
+				const uint32_t tickTime = m_Timer.getTimeSinceLastFrame();
+				std::sort(camRender->SceneNodeList.begin(), camRender->SceneNodeList.end(), SceneNodeCompare);
+				for (const auto& node : camRender->SceneNodeList)
+				{
+					node->tick(tickTime, cam);
+				}
+
+				//cull renderers
+				camRender->CullResult.VisibleRenderers.clear();
+				for (const auto& node : camRender->SceneNodeList)
+				{
+					for (const IRenderer* renderer : node->getRendererList())
+					{
+						const aabbox3df& box = renderer->getBoundingBox();
+						if (cam->getWorldFrustum().isInFrustum(box))
+							camRender->CullResult.VisibleRenderers.push_back(renderer);
+					}
+				}
+
+				//scene node renderer
+				camRender->RenderLoop.clearRenderUnits();
+				for (const IRenderer* renderer : camRender->CullResult.VisibleRenderers)
+				{
+					ISceneNode* node = renderer->getSceneNode();
+					SRenderUnit* renderUnit = node->render(renderer, cam);
+					if (renderUnit)
+						camRender->RenderLoop.addRenderUnit(renderUnit);
+				}
+
+				//actual render
+				{
+					driver->setRenderTarget(nullptr);
+					driver->clear(true, true, false, camRender->BackgroundColor);
+
+					camRender->RenderLoop.doRenderLoopPrepass(cam);
+					camRender->RenderLoop.doRenderLoopForward(cam);
+				}
+
+				camRender->RenderLoop.clearRenderUnits();
 			}
 		}
 
-		//scene node renderer
-		for (const IRenderer* renderer : CullResult.VisibleRenderers)
+		//2D Camera
 		{
-			ISceneNode* node = renderer->getSceneNode();
-			SRenderUnit* renderUnit = node->render(renderer, cam);
-			if (renderUnit)
-				RenderLoop.addRenderUnit(renderUnit);
+			const CCamera* cam = scene->get2DCamera();
+			if (cam->IsInited())
+			{
+				SCameraRender* camRender = getCameraRender(cam);
+				camRender->BackgroundColor = SColor(64, 64, 64);
+
+				renderDebugInfo();
+			}
 		}
+
+		driver->endScene();
 	}
-	
-	//actual render
-	if (Driver->checkValid())
-	{
-		Driver->setRenderTarget(nullptr);
-
-		if (Driver->beginScene())
-		{
-			Driver->clear(true, true, false, BackgroundColor);
-
-			RenderLoop.doRenderLoopPrepass(cam);
-			RenderLoop.doRenderLoopForward(cam);
-
-			renderDebugInfo();
-
-			Driver->endScene();
-		}
-	}
-	RenderLoop.clearRenderUnits();
 
 	endFrame();
 }
@@ -127,4 +151,20 @@ void CSceneRenderer::renderDebugInfo() const
 		driver->PrimitivesDrawn,
 		driver->DrawCall);
 	EngineUtil::drawDebugInfo(debugMsg);
+}
+
+CSceneRenderer::SCameraRender* CSceneRenderer::getCameraRender(const CCamera* cam)
+{
+	CSceneRenderer::SCameraRender* camRender = nullptr;
+	auto itr = CameraRenderMap.find(cam);
+	if (itr == CameraRenderMap.end())
+	{
+		camRender = new CSceneRenderer::SCameraRender(cam);
+		CameraRenderMap[cam] = camRender;
+	}
+	else
+	{
+		camRender = itr->second;
+	}
+	return camRender;
 }

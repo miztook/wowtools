@@ -60,13 +60,6 @@ public:
 	void add2DColor(const recti& rect, SColor color, E_2DBlendMode mode = E_Solid) override;
 	void add2DQuads(ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam = S2DBlendParam::OpaqueSource()) override;
 	void flushAll2DQuads() override;
-	void draw2DImageBatch(ITexture* texture,
-		const vector2di positions[],
-		const recti* sourceRects[],
-		uint32_t batchCount,
-		SColor color,
-		E_RECT_UVCOORDS uvcoords,
-		const S2DBlendParam& blendParam) override;
 
 public:
 	COpenGLMaterialRenderComponent* getMaterialRenderComponent() const { return MaterialRenderComponent.get();}
