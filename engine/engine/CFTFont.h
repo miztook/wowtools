@@ -135,9 +135,4 @@ private:
 	int32_t  CurrentX;
 	int32_t  CurrentY;
 	int32_t  MaxY;
-
-	//
-	std::vector<char16_t>		Texts;
-	std::vector<SDrawText>	DrawTexts;
-	std::vector<SVertex_PCT>	m_TmpVerts;
 };

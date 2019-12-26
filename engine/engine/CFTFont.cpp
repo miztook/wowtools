@@ -28,10 +28,6 @@ CFTFont::CFTFont(CFontManager* fontManager, const char* faceName, int faceIndex,
 	FTCScaler = nullptr;
 	UnicodeCMapIndex = -1;
 	BoldWidth = 0;
-
-	Texts.reserve(1024);
-	DrawTexts.reserve(32);
-	m_TmpVerts.reserve(512);
 }
 
 CFTFont::~CFTFont()
@@ -62,9 +58,7 @@ void CFTFont::drawA(const char* utf8text, SColor color, vector2di position, int 
 	const char* p = utf8text;
 	int nLen = nCharCount > 0 ? nCharCount : (int)strlen(utf8text);
 
-	m_TmpVerts.clear();
 	SVertex_PCT verts[4];			//left top, right top, left bottom, right bottom
-	ITexture* lastTexture = nullptr;
 	while (*p && nLen >= 0)
 	{
 		char16_t ch;
@@ -93,19 +87,6 @@ void CFTFont::drawA(const char* utf8text, SColor color, vector2di position, int 
 		ASSERT(idx >= 0 && idx < (int32_t)FontTextures.size());
 
 		ITexture* texture = FontTextures[idx];
-		if (lastTexture != texture)
-		{
-			if (!m_TmpVerts.empty())
-			{
-				g_Engine->getDriver()->add2DQuads(lastTexture,
-					&m_TmpVerts[0],
-					(uint32_t)m_TmpVerts.size() / 4,
-					blendParam);
-				m_TmpVerts.clear();
-			}
-			lastTexture = texture;
-		}
-
 		float posX0 = (float)(x + charInfo->offsetX);
 		float posX1 = (float)(posX0 + charInfo->UVRect.getWidth());
 		float posY0 = (float)(y + charInfo->offsetY);
@@ -152,21 +133,12 @@ void CFTFont::drawA(const char* utf8text, SColor color, vector2di position, int 
 			texX1 - tu2 * du,
 			texY1 - tv2 * dv);
 
-		m_TmpVerts.push_back(verts[0]);
-		m_TmpVerts.push_back(verts[1]);
-		m_TmpVerts.push_back(verts[2]);
-		m_TmpVerts.push_back(verts[3]);
+		g_Engine->getDriver()->add2DQuads(texture,
+			&verts[0],
+			1,
+			blendParam);
 
 		x += charInfo->width;
-	}
-
-	if (!m_TmpVerts.empty())
-	{
-		g_Engine->getDriver()->add2DQuads(lastTexture,
-			&m_TmpVerts[0],
-			(uint32_t)m_TmpVerts.size() / 4,
-			blendParam);
-		m_TmpVerts.clear();
 	}
 
 	g_Engine->getDriver()->flushAll2DQuads();
@@ -182,9 +154,7 @@ void CFTFont::drawW(const char16_t* text, SColor color, vector2di position, int 
 
 	uint32_t len = nCharCount > 0 ? (uint32_t)nCharCount : (uint32_t)CSysCodeCvt::UTF16Len(text);
 
-	m_TmpVerts.clear();
 	SVertex_PCT verts[4];			//left top, right top, left bottom, right bottom
-	ITexture* lastTexture = nullptr;
 	for (uint32_t i = 0; i < len; ++i)
 	{
 		char16_t c = text[i];
@@ -207,18 +177,6 @@ void CFTFont::drawW(const char16_t* text, SColor color, vector2di position, int 
 		ASSERT(idx >= 0 && idx < (int32_t)FontTextures.size());
 
 		ITexture* texture = FontTextures[idx];
-		if (lastTexture != texture)
-		{
-			if (!m_TmpVerts.empty())
-			{
-				g_Engine->getDriver()->add2DQuads(lastTexture,
-					&m_TmpVerts[0],
-					(uint32_t)m_TmpVerts.size() / 4,
-					blendParam);
-				m_TmpVerts.clear();
-			}
-			lastTexture = texture;
-		}
 
 		float posX0 = (float)(x + charInfo->offsetX);
 		float posX1 = (float)(posX0 + charInfo->UVRect.getWidth());
@@ -266,21 +224,12 @@ void CFTFont::drawW(const char16_t* text, SColor color, vector2di position, int 
 			texX1 - tu2 * du,
 			texY1 - tv2 * dv);
 
-		m_TmpVerts.push_back(verts[0]);
-		m_TmpVerts.push_back(verts[1]);
-		m_TmpVerts.push_back(verts[2]);
-		m_TmpVerts.push_back(verts[3]);
+		g_Engine->getDriver()->add2DQuads(texture,
+			&verts[0],
+			1,
+			blendParam);
 
 		x += charInfo->width;
-	}
-
-	if (!m_TmpVerts.empty())
-	{
-		g_Engine->getDriver()->add2DQuads(lastTexture,
-			&m_TmpVerts[0],
-			(uint32_t)m_TmpVerts.size() / 4,
-			blendParam);
-		m_TmpVerts.clear();
 	}
 
 	g_Engine->getDriver()->flushAll2DQuads();
