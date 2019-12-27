@@ -407,7 +407,12 @@ void COpenGLDriver::createResources(const dimension2d& windowSize)
 
 void COpenGLDriver::destroyResources()
 {
-
+	StaticVertexBufferScreenQuad.reset();
+	StaticVertexBufferScreenQuadFlip.reset();
+	StaticIndexBufferQuadList.reset();
+	StaticIndexBufferTriangleList.reset();
+	DynamicVertexBuffer.reset();
+	FrameBufferRT.reset();
 }
 
 
