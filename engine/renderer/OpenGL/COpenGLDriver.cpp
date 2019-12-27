@@ -358,6 +358,7 @@ void COpenGLDriver::createResources(const dimension2d& windowSize)
 		vertices[3].Pos.set(1.f, -1.f, 0.0f);
 		vertices[3].TCoords.set(1, 1);
 	}
+	IVideoResource::buildVideoResources(StaticVertexBufferScreenQuad.get());
 
 	StaticVertexBufferScreenQuadFlip = std::make_unique<COpenGLVertexBuffer>(this, EMM_STATIC);
 	{
@@ -371,6 +372,7 @@ void COpenGLDriver::createResources(const dimension2d& windowSize)
 		vertices[3].Pos.set(1.f, -1.f, 0.0f);
 		vertices[3].TCoords.set(1, 0);
 	}
+	IVideoResource::buildVideoResources(StaticVertexBufferScreenQuadFlip.get());
 
 	StaticIndexBufferQuadList = std::make_unique<COpenGLIndexBuffer>(this, EMM_STATIC);
 	{
@@ -391,6 +393,7 @@ void COpenGLDriver::createResources(const dimension2d& windowSize)
 			firstIndex += 6;
 		}
 	}
+	IVideoResource::buildVideoResources(StaticIndexBufferQuadList.get());
 
 	StaticIndexBufferTriangleList = std::make_unique<COpenGLIndexBuffer>(this, EMM_STATIC);
 	{
@@ -400,9 +403,11 @@ void COpenGLDriver::createResources(const dimension2d& windowSize)
 			indices[i] = i;
 		}
 	}
+	IVideoResource::buildVideoResources(StaticIndexBufferTriangleList.get());
 
 	DynamicVertexBuffer = std::make_unique<COpenGLVertexBuffer>(this, EMM_DYNAMIC);
 	DynamicVertexBuffer->alloc<SVertex_PCT>(MAX_QUADS * 4);
+	IVideoResource::buildVideoResources(DynamicVertexBuffer.get());
 }
 
 void COpenGLDriver::destroyResources()

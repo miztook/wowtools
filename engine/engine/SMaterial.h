@@ -2,18 +2,6 @@
 
 #include "CMaterial.h"
 
-struct SGlobalMaterial
-{
-	SGlobalMaterial()
-	{
-		TextureFilter = ETF_TRILINEAR;
-		MipMapLodBias = 0;
-	}
-
-	E_TEXTURE_FILTER TextureFilter;
-	int MipMapLodBias;
-};
-
 struct SMaterial
 {
 	E_RENDER_QUEUE	RenderQueue;
@@ -31,9 +19,9 @@ struct SMaterial
 
 	E_COLOR_WRITE	ColorWrite;
 
-	E_BLEND_FACTOR	srcBlend;
-	E_BLEND_FACTOR	destBlend;
-	bool	alphaBlendEnabled;
+	E_BLEND_FACTOR	SrcBlend;
+	E_BLEND_FACTOR	DestBlend;
+	bool	AlphaBlendEnabled;
 
 	SMaterial()
 		: 
@@ -45,9 +33,9 @@ struct SMaterial
 		AntiAliasing = EAAM_OFF;
 		ZBuffer = ECFN_LESSEQUAL;
 		ZWriteEnable = true;
-		alphaBlendEnabled = false;
-		srcBlend = EBF_ONE;
-		destBlend = EBF_ZERO;
+		AlphaBlendEnabled = false;
+		SrcBlend = EBF_ONE;
+		DestBlend = EBF_ZERO;
 	}
 
 	void setVariable(const char* name, const float* src, uint32_t size);

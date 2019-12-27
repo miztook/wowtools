@@ -160,7 +160,9 @@ void CRenderLoop::renderAfterOpaues(const CCamera* cam)
 
 void CRenderLoop::processRenderUnit(SRenderUnit* unit)
 {
-	const SMaterial& mat = unit->renderer->getMaterial();
-	EngineUtil::buildVideoResources(unit->vbuffer, unit->ibuffer, &mat);
+	if (unit->vbuffer)
+		IVideoResource::buildVideoResources(unit->vbuffer);
+	if (unit->ibuffer)
+		IVideoResource::buildVideoResources(unit->ibuffer);
 }
 

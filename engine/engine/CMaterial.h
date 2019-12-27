@@ -55,6 +55,18 @@ enum E_LIGHT_MODE : int
 	ELM_SHADOW_CASTER,
 };
 
+struct SGlobalMaterial
+{
+	SGlobalMaterial()
+	{
+		TextureFilter = ETF_TRILINEAR;
+		MipMapLodBias = 0;
+	}
+
+	E_TEXTURE_FILTER TextureFilter;
+	int MipMapLodBias;
+};
+
 class CPass
 {
 public:
@@ -65,9 +77,9 @@ public:
 		ZBuffer = ECFN_LESSEQUAL;
 		ZWriteEnable = true;
 		ColorWrite = COLORWRITE_ALL;
-		alphaBlendEnabled = false;
-		srcBlend = EBF_ONE;
-		destBlend = EBF_ZERO;
+		AlphaBlendEnabled = false;
+		SrcBlend = EBF_ONE;
+		DestBlend = EBF_ZERO;
 	}
 
 public:
@@ -84,9 +96,9 @@ public:		//render state
 	E_COMPARISON_FUNC		ZBuffer;
 	bool		ZWriteEnable;
 	E_COLOR_WRITE	ColorWrite;
-	E_BLEND_FACTOR	srcBlend;
-	E_BLEND_FACTOR	destBlend;
-	bool	alphaBlendEnabled;
+	E_BLEND_FACTOR	SrcBlend;
+	E_BLEND_FACTOR	DestBlend;
+	bool	AlphaBlendEnabled;
 };
 
 struct STextureUnit
@@ -121,7 +133,7 @@ public:
 
 public:
 	int		RenderQueue;
-	std::vector<CPass>	PassList;
+	CPass	FirstPass;
 
 public:
 	std::map<std::string, std::vector<float>>	ShaderVariableMap;

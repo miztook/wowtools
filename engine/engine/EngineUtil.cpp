@@ -13,17 +13,3 @@ void EngineUtil::drawDebugInfo(CCanvas* canvas, const char* strMsg)
 	font->drawA(canvas, strMsg, SColor::Green(), vector2di(5, 5));
 }
 
-void EngineUtil::buildVideoResources(IVertexBuffer* vbuffer, IIndexBuffer* ibuffer, const SMaterial* material)
-{
-	if (vbuffer)
-		IVideoResource::buildVideoResources(vbuffer);
-	if (ibuffer)
-		IVideoResource::buildVideoResources(ibuffer);
-
-	for (const auto& kv : material->TextureVariableMap)
-	{
-		ITexture* tex = kv.second.Texture;
-		if (tex)
-			IVideoResource::buildVideoResources(tex);
-	}
-}

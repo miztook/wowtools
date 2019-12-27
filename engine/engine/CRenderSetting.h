@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SMaterial.h"
+#include "CMaterial.h"
 
 class CRenderSetting
 {

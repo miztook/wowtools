@@ -327,6 +327,10 @@ void COpenGLShaderManageComponent::setShaderVariables(const CGLProgram* program,
 					const std::vector<float>& v = itr->second;
 					setShaderUniformF(uniform, v.data(), (uint32_t)v.size() * sizeof(float));
 				}
+				else
+				{
+					ASSERT(false);
+				}
 			}
 		}
 	}

@@ -158,8 +158,6 @@ void CCanvas::draw2DSquad(const CCamera* cam, uint32_t batchCount, ITexture* tex
 	driver->setMaterial(Material);
 	driver->setGlobalMaterial(g_Engine->getRenderSetting().getGlobalMaterial2D());
 
-	EngineUtil::buildVideoResources(vbuffer, ibuffer, &Material);
-
 	SDrawParam drawParam;
 	drawParam.numVertices = batchCount * 4;
 	drawParam.baseVertIndex = 0;
@@ -177,26 +175,26 @@ void CCanvas::applyBlendParam(const S2DBlendParam& blendParam, SMaterial& materi
 
 	if (!blendParam.alpha && !blendParam.alphaChannel)
 	{
-		material.alphaBlendEnabled = false;
-		material.srcBlend = EBF_ONE;
-		material.destBlend = EBF_ZERO;
+		material.AlphaBlendEnabled = false;
+		material.SrcBlend = EBF_ONE;
+		material.DestBlend = EBF_ZERO;
 	}
 	else if (blendParam.blendMode == E_AlphaBlend)
 	{
-		material.alphaBlendEnabled = true;
-		material.srcBlend = EBF_SRC_ALPHA;
-		material.destBlend = EBF_ONE_MINUS_SRC_ALPHA;
+		material.AlphaBlendEnabled = true;
+		material.SrcBlend = EBF_SRC_ALPHA;
+		material.DestBlend = EBF_ONE_MINUS_SRC_ALPHA;
 	}
 	else if (blendParam.blendMode == E_OneAlpha)
 	{
-		material.alphaBlendEnabled = true;
-		material.srcBlend = EBF_ONE;
-		material.destBlend = EBF_ONE_MINUS_SRC_ALPHA;
+		material.AlphaBlendEnabled = true;
+		material.SrcBlend = EBF_ONE;
+		material.DestBlend = EBF_ONE_MINUS_SRC_ALPHA;
 	}
 	else
 	{
-		material.alphaBlendEnabled = false;
-		material.srcBlend = EBF_ONE;
-		material.destBlend = EBF_ZERO;
+		material.AlphaBlendEnabled = false;
+		material.SrcBlend = EBF_ONE;
+		material.DestBlend = EBF_ZERO;
 	}
 }
