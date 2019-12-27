@@ -14,6 +14,7 @@
 
 class ITexture;
 class ITextureWriter;
+class CCamera;
 
 struct SDriverSetting
 {
@@ -81,8 +82,6 @@ public:
 
 		PrimitivesDrawn = 0;
 		DrawCall = 0;
-
-		OrthoCenterOffset.set(0, 0);
 	}
 
 	virtual ~IVideoDriver() {}
@@ -90,7 +89,6 @@ public:
 public:
 	E_DRIVER_TYPE getDriverType() const { return DriverType; }
 
-	const vector2df& getOrthoCenterOffset() const { return OrthoCenterOffset; }
 	const recti& getViewPort() const { return Viewport; }
 	const dimension2d& getDisplayMode() const { return ScreenSize; }
 	const SDriverSetting& getDriverSetting() const { return DriverSetting; }
@@ -99,9 +97,6 @@ public:
 	const SMaterial* getMaterial() const { return Material; }
 	void setGlobalMaterial(const SGlobalMaterial& globalMaterial) { GlobalMaterial = &globalMaterial; }
 	const SGlobalMaterial* getGlobalMaterial() const { return GlobalMaterial; }
-
-	const matrix4& getView2DTM() const { return View2DTM; }
-	const matrix4& getProject2DTM() const { return Project2DTM; }
 
 	IRenderTarget* getFrameBufferRT() const { return FrameBufferRT.get(); }
 
@@ -123,8 +118,6 @@ public:
 	virtual bool checkValid() = 0;
 	virtual bool setRenderTarget(const IRenderTarget* texture, bool bindDepth = true) = 0;
 
-	virtual void setWorldViewProjection(const matrix4& world, const matrix4& view, const matrix4& projection) = 0;
-
 	virtual void setViewPort(const recti& area) = 0;
 	virtual void setDisplayMode(const dimension2d& size) = 0;
 	virtual bool setDriverSetting(const SDriverSetting& setting) = 0;
@@ -132,7 +125,7 @@ public:
 	virtual void draw(const IVertexBuffer* vbuffer, const IIndexBuffer* ibuffer,
 		E_PRIMITIVE_TYPE primType,
 		uint32_t primCount,
-		const SDrawParam& drawParam, bool is2D) = 0;
+		const SDrawParam& drawParam) = 0;
 
 public:
 	virtual IVertexBuffer* createVertexBuffer(E_MESHBUFFER_MAPPING mapping) = 0;
@@ -149,7 +142,7 @@ public:
 	//
 	virtual void add2DColor(const recti& rect, SColor color, E_2DBlendMode mode = E_Solid) = 0;
 	virtual void add2DQuads(ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam = S2DBlendParam::OpaqueSource()) = 0;
-	virtual void flushAll2DQuads() = 0;
+	virtual void flushAll2DQuads(const CCamera* cam2D) = 0;
 	
 public:
 	CAdapterInfo	AdapterInfo;
@@ -164,8 +157,6 @@ protected:
 
 	const SMaterial*	Material;
 	const SGlobalMaterial*	GlobalMaterial;
-
-	vector2df	OrthoCenterOffset;		//dx9有0.5像素的偏移
 
 	const IRenderTarget*		CurrentRenderTarget;		//当前render target, 若为nullptr则表示frame buffer
 	std::unique_ptr<IRenderTarget>		FrameBufferRT;

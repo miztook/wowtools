@@ -135,8 +135,6 @@ public:
 	const char* getPSDir() const { return PixelShaderDir.c_str(); }
 	
 public:
-	//
-	void setGlobalVariables(const CGLProgram* program, bool is2D);
 	void setShaderVariables(const CGLProgram* program, const SMaterial* material);
 
 private:

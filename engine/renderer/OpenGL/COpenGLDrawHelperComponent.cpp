@@ -5,6 +5,7 @@
 #include "ITexture.h"
 #include "EngineUtil.h"
 #include "Engine.h"
+#include "CCamera.h"
 
 COpenGLDrawHelperComponent::COpenGLDrawHelperComponent(COpenGLDriver* driver)
 	: Driver(driver)
@@ -222,7 +223,7 @@ void COpenGLDrawHelperComponent::add2DQuads(ITexture* texture, const SVertex_PCT
 	}
 }
 
-void COpenGLDrawHelperComponent::flushAll2DQuads()
+void COpenGLDrawHelperComponent::flushAll2DQuads(const CCamera* cam)
 {
 	for (const auto& kv : m_2DQuadDrawMap)
 	{
@@ -233,12 +234,12 @@ void COpenGLDrawHelperComponent::flushAll2DQuads()
 		if (!numQuads)
 			continue;
 
-		draw2DSquadBatch(key.texture, &batchDraw.drawVerts[0], numQuads, key.blendParam);
+		draw2DSquadBatch(cam, key.texture, &batchDraw.drawVerts[0], numQuads, key.blendParam);
 	}
 	m_2DQuadDrawMap.clear();
 }
 
-void COpenGLDrawHelperComponent::draw2DSquadBatch(ITexture * texture, const SVertex_PCT* verts, uint32_t numQuads, const S2DBlendParam & blendParam)
+void COpenGLDrawHelperComponent::draw2DSquadBatch(const CCamera* cam, ITexture * texture, const SVertex_PCT* verts, uint32_t numQuads, const S2DBlendParam & blendParam)
 {
 	uint32_t nMaxBatch = numQuads / MAX_IMAGE_BATCH_COUNT;
 	uint32_t nLeftBatch = numQuads % MAX_IMAGE_BATCH_COUNT;
@@ -248,7 +249,7 @@ void COpenGLDrawHelperComponent::draw2DSquadBatch(ITexture * texture, const SVer
 		const uint32_t batchCount = MAX_IMAGE_BATCH_COUNT;
 		const int nOffset = n * MAX_IMAGE_BATCH_COUNT * 4;
 
-		draw2DSquad(batchCount, texture, &verts[nOffset], batchCount, blendParam);
+		draw2DSquad(cam, batchCount, texture, &verts[nOffset], batchCount, blendParam);
 	}
 
 	if (nLeftBatch)
@@ -256,11 +257,11 @@ void COpenGLDrawHelperComponent::draw2DSquadBatch(ITexture * texture, const SVer
 		const uint32_t batchCount = nLeftBatch;
 		const int nOffset = nMaxBatch * MAX_QUADS;
 		
-		draw2DSquad(batchCount, texture, &verts[nOffset], batchCount, blendParam);
+		draw2DSquad(cam, batchCount, texture, &verts[nOffset], batchCount, blendParam);
 	}
 }
 
-void COpenGLDrawHelperComponent::draw2DSquad(uint32_t batchCount, ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam)
+void COpenGLDrawHelperComponent::draw2DSquad(const CCamera* cam, uint32_t batchCount, ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam)
 {
 	VBImage->updateBuffer<SVertex_PCT>(vertices, batchCount * 4);
 
@@ -279,8 +280,8 @@ void COpenGLDrawHelperComponent::draw2DSquad(uint32_t batchCount, ITexture* text
 	drawParam.baseVertIndex = 0;
 
 	Driver->setShaderVariable("g_ObjectToWorld", matrix4::Identity());
-	Driver->setShaderVariable("g_MatrixVP", Driver->M_VP2D);
+	Driver->setShaderVariable("g_MatrixVP", cam->getVPTM());
 
 	Driver->draw(vbuffer, ibuffer, EPT_TRIANGLES,
-		batchCount * 2, drawParam, true);
+		batchCount * 2, drawParam);
 }

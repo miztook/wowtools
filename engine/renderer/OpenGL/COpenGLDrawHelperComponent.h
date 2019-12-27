@@ -12,6 +12,7 @@ class COpenGLDriver;
 class ITexture;
 class IVertexBuffer;
 class IIndexBuffer;
+class CCamera;
 
 class COpenGLDrawHelperComponent
 {
@@ -45,10 +46,10 @@ public:
 	//
 	void add2DColor(const recti&rect, SColor color, E_2DBlendMode mode = E_Solid);
 	void add2DQuads(ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam = S2DBlendParam::OpaqueSource());
-	void flushAll2DQuads();
+	void flushAll2DQuads(const CCamera* cam);
 
 
-	void draw2DSquadBatch(ITexture* texture,
+	void draw2DSquadBatch(const CCamera* cam, ITexture* texture,
 		const SVertex_PCT* verts,
 		uint32_t numQuads,
 		const S2DBlendParam& blendParam);
@@ -71,7 +72,7 @@ private:
 
 	rectf setUVCoords(E_RECT_UVCOORDS uvcoords, float x0, float y0, float x1, float y1);
 	
-	void draw2DSquad(uint32_t batchCount, ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam);
+	void draw2DSquad(const CCamera* cam, uint32_t batchCount, ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam);
 	
 private:
 	struct SQuadDrawBatchKey

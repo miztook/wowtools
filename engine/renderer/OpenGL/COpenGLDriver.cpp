@@ -419,14 +419,6 @@ bool COpenGLDriver::setRenderTarget(const IRenderTarget * texture, bool bindDept
 	return true;
 }
 
-void COpenGLDriver::setWorldViewProjection(const matrix4& world, const matrix4& view, const matrix4& projection)
-{
-	M_W = world;
-	M_V = view;
-	M_P = projection;
-	M_VP = M_V * M_P;
-}
-
 dimension2d COpenGLDriver::getWindowSize() const
 {
 	RECT rc;
@@ -595,15 +587,6 @@ void COpenGLDriver::setViewPort(const recti& area)
 	MaterialRenderComponent->setViewport(vp);
 
 	Viewport = vp;
-
-	float fWidth = vp.getWidth() * 0.5f;
-	float fHeight = vp.getHeight() * 0.5f;
-
-	View2DTM = f3d::makeViewMatrix(vector3df(fWidth + OrthoCenterOffset.x, fHeight + OrthoCenterOffset.y, 0),
-		vector3df::UnitZ(), vector3df::UnitY(), 0.0f);
-	Project2DTM = f3d::makeOrthoOffCenterMatrixLH(-fWidth, fWidth, -fHeight, fHeight, 0.0f, 1.0f);
-
-	M_VP2D = View2DTM * Project2DTM;
 }
 
 void COpenGLDriver::setDisplayMode(const dimension2d& size)
@@ -679,7 +662,7 @@ IIndexBuffer* COpenGLDriver::createIndexBuffer(E_MESHBUFFER_MAPPING mapping)
 	return new COpenGLIndexBuffer(this, mapping);
 }
 
-void COpenGLDriver::draw(const IVertexBuffer* vbuffer, const IIndexBuffer* ibuffer, E_PRIMITIVE_TYPE primType, uint32_t primCount, const SDrawParam& drawParam, bool is2D)
+void COpenGLDriver::draw(const IVertexBuffer* vbuffer, const IIndexBuffer* ibuffer, E_PRIMITIVE_TYPE primType, uint32_t primCount, const SDrawParam& drawParam)
 {
 	ASSERT(IVideoResource::hasVideoBuilt(vbuffer));
 	ASSERT(!ibuffer || IVideoResource::hasVideoBuilt(ibuffer));
@@ -736,7 +719,7 @@ void COpenGLDriver::add2DQuads(ITexture* texture, const SVertex_PCT* vertices, u
 	DrawHelperComponent->add2DQuads(texture, vertices, numQuads, blendParam);
 }
 
-void COpenGLDriver::flushAll2DQuads()
+void COpenGLDriver::flushAll2DQuads(const CCamera* cam2D)
 {
-	DrawHelperComponent->flushAll2DQuads();
+	DrawHelperComponent->flushAll2DQuads(cam2D);
 }

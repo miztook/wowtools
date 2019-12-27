@@ -140,8 +140,6 @@ void CFTFont::drawA(const char* utf8text, SColor color, vector2di position, int 
 
 		x += charInfo->width;
 	}
-
-	g_Engine->getDriver()->flushAll2DQuads();
 }
 
 void CFTFont::drawW(const char16_t* text, SColor color, vector2di position, int nCharCount /*= -1*/)
@@ -231,8 +229,6 @@ void CFTFont::drawW(const char16_t* text, SColor color, vector2di position, int 
 
 		x += charInfo->width;
 	}
-
-	g_Engine->getDriver()->flushAll2DQuads();
 }
 
 dimension2d CFTFont::getTextExtent(const char* utf8text, int nCharCount /*= -1*/, bool vertical /*= false*/)

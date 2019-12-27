@@ -119,6 +119,8 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 				camRender->BackgroundColor = SColor(64, 64, 64);
 
 				renderDebugInfo();
+
+				driver->flushAll2DQuads(cam);
 			}
 		}
 

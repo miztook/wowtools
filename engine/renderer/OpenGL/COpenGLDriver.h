@@ -35,8 +35,6 @@ public:
 	bool checkValid() override { return true; }
 	bool setRenderTarget(const IRenderTarget* texture, bool bindDepth = true) override;
 
-	void setWorldViewProjection(const matrix4& world, const matrix4& view, const matrix4& projection) override;
-
 	void setViewPort(const recti& area) override;
 	void setDisplayMode(const dimension2d& size) override;
 	bool setDriverSetting(const SDriverSetting& setting) override;
@@ -44,7 +42,7 @@ public:
 	void draw(const IVertexBuffer* vbuffer, const IIndexBuffer* ibuffer,
 		E_PRIMITIVE_TYPE primType,
 		uint32_t primCount,
-		const SDrawParam& drawParam, bool is2D) override;
+		const SDrawParam& drawParam) override;
 
 public:
 	IVertexBuffer* createVertexBuffer(E_MESHBUFFER_MAPPING mapping) override;
@@ -59,7 +57,7 @@ public:
 public:
 	void add2DColor(const recti& rect, SColor color, E_2DBlendMode mode = E_Solid) override;
 	void add2DQuads(ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam = S2DBlendParam::OpaqueSource()) override;
-	void flushAll2DQuads() override;
+	void flushAll2DQuads(const CCamera* cam2D) override;
 
 public:
 	COpenGLMaterialRenderComponent* getMaterialRenderComponent() const { return MaterialRenderComponent.get();}
@@ -94,12 +92,6 @@ public:
 	GLint		DefaultFrameBuffer;
 
 	COpenGLExtension	GLExtension;
-
-	matrix4		M_VP;
-	matrix4		M_W;
-	matrix4		M_V;
-	matrix4		M_P;
-	matrix4		M_VP2D;
 
 private:
 	//component

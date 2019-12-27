@@ -303,38 +303,6 @@ void COpenGLShaderManageComponent::setShaderUniformF(uint32_t location, GLenum t
 	}
 }
 
-void COpenGLShaderManageComponent::setGlobalVariables(const CGLProgram* program, bool is2D)
-{
-	if (is2D)
-	{
-		auto uf0 = program->getUniform("g_ObjectToWorld");
-		if (uf0)
-			setShaderUniformF(uf0, matrix4::Identity());
-
-		auto uf1 = program->getUniform("g_MatrixVP");
-		if (uf1)
-			setShaderUniformF(uf1, Driver->M_VP2D);
-	}
-	else
-	{
-		auto uf0 = program->getUniform("g_ObjectToWorld");
-		if (uf0)
-			setShaderUniformF(uf0, Driver->M_W);
-
-		auto uf1 = program->getUniform("g_MatrixVP");
-		if (uf1)
-			setShaderUniformF(uf1, Driver->M_VP);
-
-		auto uf2 = program->getUniform("g_MatrixV");
-		if (uf2)
-			setShaderUniformF(uf2, Driver->M_V);
-
-		auto uf3 = program->getUniform("g_MatrixP");
-		if (uf3)
-			setShaderUniformF(uf3, Driver->M_P);
-	}
-}
-
 void COpenGLShaderManageComponent::setShaderVariables(const CGLProgram* program, const SMaterial* material)
 {
 	//set program shader variable
@@ -349,7 +317,7 @@ void COpenGLShaderManageComponent::setShaderVariables(const CGLProgram* program,
 			if (itr != material->ShaderVariableMap.end())			//现在material中查找
 			{
 				const std::vector<float>& v = itr->second;
-				setShaderUniformF(uniform, v.data(), (uint32_t)v.size());
+				setShaderUniformF(uniform, v.data(), (uint32_t)v.size() * sizeof(float));
 			}
 			else              //如果找不到，在全局变量中查找
 			{
@@ -357,7 +325,7 @@ void COpenGLShaderManageComponent::setShaderVariables(const CGLProgram* program,
 				if (itr != Driver->ShaderVariableMap.end())
 				{
 					const std::vector<float>& v = itr->second;
-					setShaderUniformF(uniform, v.data(), (uint32_t)v.size());
+					setShaderUniformF(uniform, v.data(), (uint32_t)v.size() * sizeof(float));
 				}
 			}
 		}

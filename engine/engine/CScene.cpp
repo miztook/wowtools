@@ -32,6 +32,8 @@ void CScene::init2DCamera(const dimension2d& screenSize, float vFront, float vBa
 	float fHalfWidth = screenSize.width * 0.5f; 
 	float fHalfHeight = screenSize.height * 0.5f;
 	m_p2DCamera->Init(-fHalfWidth, fHalfWidth, -fHalfHeight, fHalfHeight, vFront, vBack);
+	
+	//dx9ÓÐ0.5ÏñËØµÄÆ«ÒÆ
 	m_p2DCamera->setPos(vector3df(fHalfWidth, fHalfHeight, vFront));
 	m_p2DCamera->setDirAndUp(vector3df::UnitZ(), vector3df::UnitY());
 }
