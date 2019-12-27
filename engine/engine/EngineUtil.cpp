@@ -6,11 +6,11 @@
 #include "SMaterial.h"
 #include "ITexture.h"
 
-void EngineUtil::drawDebugInfo(const char* strMsg)
+void EngineUtil::drawDebugInfo(CCanvas* canvas, const char* strMsg)
 {
 	CFTFont* font = g_Engine->getFontManager()->getDefaultFont();
 	ASSERT(font);
-	font->drawA(strMsg, SColor::Green(), vector2di(5, 5));
+	font->drawA(canvas, strMsg, SColor::Green(), vector2di(5, 5));
 }
 
 void EngineUtil::buildVideoResources(IVertexBuffer* vbuffer, IIndexBuffer* ibuffer, const SMaterial* material)

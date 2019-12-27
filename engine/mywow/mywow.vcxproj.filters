@@ -257,6 +257,9 @@
     <ClInclude Include="..\common\ScriptParser.h">
       <Filter>common</Filter>
     </ClInclude>
+    <ClInclude Include="..\engine\CCanvas.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">
@@ -384,6 +387,9 @@
     </ClCompile>
     <ClCompile Include="..\common\ScriptParser.cpp">
       <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CCanvas.cpp">
+      <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -75,11 +75,12 @@ bool AfterOpaqueCompare(const SRenderUnit* a, const SRenderUnit* b)
 
 CRenderLoop::CRenderLoop()
 {
+	m_Canvas = std::make_unique<CCanvas>();
 }
 
 CRenderLoop::~CRenderLoop()
 {
-
+	m_Canvas.reset();
 }
 
 void CRenderLoop::addRenderUnit(SRenderUnit* unit)

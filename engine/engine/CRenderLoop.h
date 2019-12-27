@@ -2,6 +2,7 @@
 
 #include "ISceneNode.h"
 #include "RenderStruct.h"
+#include "CCanvas.h"
 #include <vector>
 #include <map>
 #include <algorithm>
@@ -22,6 +23,8 @@ public:
 
 	void clearRenderUnits();
 
+	CCanvas* getCanvas() const { return m_Canvas.get(); }
+
 private:
 	void renderOpaques(const CCamera* cam);
 	void renderAfterOpaues(const CCamera* cam);
@@ -34,4 +37,5 @@ private:
 	std::vector<const SRenderUnit*>		m_RenderUnits_AfterOpaque;
 
 	//
+	std::unique_ptr<CCanvas>		m_Canvas;
 };

@@ -7,7 +7,6 @@
 class COpenGLMaterialRenderComponent;
 class COpenGLTextureWriteComponent;
 class COpenGLShaderManageComponent;
-class COpenGLDrawHelperComponent;
 class COpenGLTextureManageComponent;
 class COpenGLVertexDeclaration;
 class IVertexBuffer;
@@ -55,15 +54,9 @@ public:
 	ITexture* getTextureWhite() const override;
 	
 public:
-	void add2DColor(const recti& rect, SColor color, E_2DBlendMode mode = E_Solid) override;
-	void add2DQuads(ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam = S2DBlendParam::OpaqueSource()) override;
-	void flushAll2DQuads(const CCamera* cam2D) override;
-
-public:
 	COpenGLMaterialRenderComponent* getMaterialRenderComponent() const { return MaterialRenderComponent.get();}
 	COpenGLTextureWriteComponent* getTextureWriteComponent() const { return TextureWriteComponent.get(); }
 	COpenGLShaderManageComponent* getShaderManageComponent() const { return ShaderManageComponent.get(); }
-	COpenGLDrawHelperComponent* getDrawHelperComponent() const { return DrawHelperComponent.get(); }
 
 	void deleteVao(const IVertexBuffer* vbuffer);
 
@@ -80,6 +73,10 @@ private:
 		E_PRIMITIVE_TYPE primType,
 		uint32_t primCount,
 		const SDrawParam& drawParam);
+
+	//
+	void createResources(const dimension2d& windowSize);
+	void destroyResources();
 
 public:
 	//device settings
@@ -98,7 +95,6 @@ private:
 	std::unique_ptr<COpenGLMaterialRenderComponent>  MaterialRenderComponent;
 	std::unique_ptr<COpenGLTextureWriteComponent> TextureWriteComponent;
 	std::unique_ptr<COpenGLShaderManageComponent> ShaderManageComponent;
-	std::unique_ptr<COpenGLDrawHelperComponent> DrawHelperComponent;
 	std::unique_ptr<COpenGLTextureManageComponent>	TextureManageComponent;
 
 	std::array<std::unique_ptr<COpenGLVertexDeclaration>, EVT_COUNT>		VertexDeclarations;

@@ -19,6 +19,7 @@ class CFontManager;
 class CFTGlyphCache;
 struct S2DBlendParam;
 class ITexture;
+class CCanvas;
 
 class CFTFont
 {
@@ -56,8 +57,8 @@ public:
 	};
 
 public:
-	void drawA(const char* utf8text, SColor color, vector2di position, int nCharCount = -1);
-	void drawW(const char16_t* text, SColor color, vector2di position, int nCharCount = -1);
+	void drawA(CCanvas* canvas, const char* utf8text, SColor color, vector2di position, int nCharCount = -1);
+	void drawW(CCanvas* canvas, const char16_t* text, SColor color, vector2di position, int nCharCount = -1);
 
 	dimension2d getTextExtent(const char* utf8text, int nCharCount = -1, bool vertical = false);
 	dimension2d getWTextExtent(const char16_t* text, int nCharCount = -1, bool vertical = false);

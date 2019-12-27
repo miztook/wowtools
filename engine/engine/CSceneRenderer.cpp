@@ -118,9 +118,9 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 				SCameraRender* camRender = getCameraRender(cam);
 				camRender->BackgroundColor = SColor(64, 64, 64);
 
-				renderDebugInfo();
-
-				driver->flushAll2DQuads(cam);
+				CCanvas* canvas = camRender->RenderLoop.getCanvas();
+				renderDebugInfo(driver, canvas);
+				canvas->renderSubBatch(cam);
 			}
 		}
 
@@ -140,10 +140,9 @@ void CSceneRenderer::endFrame()
 	m_FPSCounter.registerFrame(CSysChrono::getTimePointNow());
 }
 
-void CSceneRenderer::renderDebugInfo() const
+void CSceneRenderer::renderDebugInfo(IVideoDriver* driver, CCanvas* canvas) const
 {
 	char debugMsg[512];
-	const IVideoDriver* driver = g_Engine->getDriver();
 	Q_sprintf(debugMsg, 512, "Dev: %s\nGraphics: %s\nRes: %d X %d\nFPS: %0.1f\nTriangles: %u\nDraw Call: %u\n",
 		driver->AdapterInfo.description.c_str(),
 		driver->AdapterInfo.name.c_str(),
@@ -152,7 +151,7 @@ void CSceneRenderer::renderDebugInfo() const
 		m_FPSCounter.getFPS(),
 		driver->PrimitivesDrawn,
 		driver->DrawCall);
-	EngineUtil::drawDebugInfo(debugMsg);
+	EngineUtil::drawDebugInfo(canvas, debugMsg);
 }
 
 CSceneRenderer::SCameraRender* CSceneRenderer::getCameraRender(const CCamera* cam)

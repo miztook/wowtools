@@ -8,6 +8,7 @@
 #include "IRenderTarget.h"
 #include "SColor.h"
 #include "RenderStruct.h"
+#include "IVertexIndexBuffer.h"
 #include "S3DVertex.h"
 #include <string>
 #include <list>
@@ -65,6 +66,20 @@ public:
 	std::string		vendorName;
 };
 
+enum EConstant : uint32_t
+{
+	MAX_QUADS = 128,
+	MAX_VERTEXCOUNT = 1024 * 3,			//dynamic vertex count
+
+
+	MAX_2DLINE_BATCH_COUNT = 512,
+	MAX_3DLINE_BATCH_COUNT = 2048,
+	MAX_IMAGE_BATCH_COUNT = MAX_QUADS,
+	MAX_VERTEX_COUNT = MAX_VERTEXCOUNT,
+	MAX_VERTEX_2D_COUNT = 64,
+	MAX_INDEX_2D_COUNT = 128,
+};
+
 class IVideoDriver
 {
 private:
@@ -99,6 +114,8 @@ public:
 	const SGlobalMaterial* getGlobalMaterial() const { return GlobalMaterial; }
 
 	IRenderTarget* getFrameBufferRT() const { return FrameBufferRT.get(); }
+	IIndexBuffer*  getStaticIndexBufferQuadList() const { return StaticIndexBufferQuadList.get(); }
+	IVertexBuffer* getDynamicVertexBuffer() const { return DynamicVertexBuffer.get(); }
 
 	bool isFXAAEnabled() const { return DriverSetting.aaMode >= E_AA_FXAA && DriverSetting.aaMode <= E_AA_FXAA; }
 	bool isMultiSampleEnabled() const { return IsMultiSampleEnabled; }
@@ -139,11 +156,6 @@ public:
 	virtual ITexture* createEmptyTexture(const dimension2d& size, ECOLOR_FORMAT format) = 0;
 	virtual ITexture* getTextureWhite() const = 0;
 	
-	//
-	virtual void add2DColor(const recti& rect, SColor color, E_2DBlendMode mode = E_Solid) = 0;
-	virtual void add2DQuads(ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam = S2DBlendParam::OpaqueSource()) = 0;
-	virtual void flushAll2DQuads(const CCamera* cam2D) = 0;
-	
 public:
 	CAdapterInfo	AdapterInfo;
 	uint32_t		PrimitivesDrawn;
@@ -161,8 +173,12 @@ protected:
 	const IRenderTarget*		CurrentRenderTarget;		//当前render target, 若为nullptr则表示frame buffer
 	std::unique_ptr<IRenderTarget>		FrameBufferRT;
 
-	matrix4		View2DTM;
-	matrix4		Project2DTM;
+	std::unique_ptr<IVertexBuffer>			StaticVertexBufferScreenQuad;
+	std::unique_ptr<IVertexBuffer>			StaticVertexBufferScreenQuadFlip;
+	std::unique_ptr<IIndexBuffer>			StaticIndexBufferQuadList;
+	std::unique_ptr<IIndexBuffer>			StaticIndexBufferTriangleList;
+
+	std::unique_ptr<IVertexBuffer>			DynamicVertexBuffer;
 
 	recti			Viewport;
 	dimension2d		ScreenSize;

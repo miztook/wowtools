@@ -2,8 +2,6 @@
 
 #include "base.h"
 #include "matrix4.h"
-#include "SMaterial.h"
-#include "CShaderUtil.h"
 
 class IVertexBuffer;
 class IIndexBuffer;
@@ -56,38 +54,6 @@ struct S2DBlendParam
 		int a = ((blendMode << 8) + ((alpha ? 1 : 0) << 4) + (alphaChannel ? 1 : 0));
 		int b = ((c.blendMode << 8) + ((c.alpha ? 1 : 0) << 4) + (c.alphaChannel ? 1 : 0));
 		return a < b;
-	}
-
-	void setMaterial(SMaterial& material) const
-	{
-		material.VSFile = "";
-		material.PSFile = "UI";
-		material.MacroString = CShaderUtil::getUIMacroString(alpha, alphaChannel);
-
-		if (!alpha && !alphaChannel)
-		{
-			material.alphaBlendEnabled = false;
-			material.srcBlend = EBF_ONE;
-			material.destBlend = EBF_ZERO;
-		}
-		else if (blendMode == E_AlphaBlend)
-		{
-			material.alphaBlendEnabled = true;
-			material.srcBlend = EBF_SRC_ALPHA;
-			material.destBlend = EBF_ONE_MINUS_SRC_ALPHA;
-		}
-		else if (blendMode == E_OneAlpha)
-		{
-			material.alphaBlendEnabled = true;
-			material.srcBlend = EBF_ONE;
-			material.destBlend = EBF_ONE_MINUS_SRC_ALPHA;
-		}
-		else
-		{
-			material.alphaBlendEnabled = false;
-			material.srcBlend = EBF_ONE;
-			material.destBlend = EBF_ZERO;
-		}
 	}
 
 	static const S2DBlendParam& OpaqueSource()

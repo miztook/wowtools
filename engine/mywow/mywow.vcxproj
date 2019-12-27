@@ -62,6 +62,7 @@
     <ClInclude Include="..\common\wowWMOStruct.h" />
     <ClInclude Include="..\engine\CBLPImage.h" />
     <ClInclude Include="..\engine\CCamera.h" />
+    <ClInclude Include="..\engine\CCanvas.h" />
     <ClInclude Include="..\engine\CFontManager.h" />
     <ClInclude Include="..\engine\CFPSCounter.h" />
     <ClInclude Include="..\engine\CFTFont.h" />
@@ -123,6 +124,7 @@
     <ClCompile Include="..\engine\CBlit.cpp" />
     <ClCompile Include="..\engine\CBLPImage.cpp" />
     <ClCompile Include="..\engine\CCamera.cpp" />
+    <ClCompile Include="..\engine\CCanvas.cpp" />
     <ClCompile Include="..\engine\CCImage.cpp" />
     <ClCompile Include="..\engine\CFontManager.cpp" />
     <ClCompile Include="..\engine\CFTFont.cpp" />

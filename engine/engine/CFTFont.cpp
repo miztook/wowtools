@@ -1,11 +1,12 @@
 #include "CFTFont.h"
-#include "Engine.h"
 #include "CFTGlyphCache.h"
 #include "CFontManager.h"
 #include "CSysCodeCvt.h"
 #include "ITexture.h"
 #include "ITextureWriter.h"
 #include "CFileSystem.h"
+#include "Engine.h"
+#include "CCanvas.h"
 
 #define FONTSIZE_ROUND(x)  (((x) + 32) & ~63)
 #define FONTSIZE_FLOOR(x) ((x) & ~63)
@@ -47,7 +48,7 @@ CFTFont::~CFTFont()
 		FontManager->RemoveFaceID(MyFaceID);
 }
 
-void CFTFont::drawA(const char* utf8text, SColor color, vector2di position, int nCharCount /*= -1*/)
+void CFTFont::drawA(CCanvas* canvas, const char* utf8text, SColor color, vector2di position, int nCharCount /*= -1*/)
 {
 	int32_t x = position.x;
 	int32_t y = position.y;
@@ -133,7 +134,7 @@ void CFTFont::drawA(const char* utf8text, SColor color, vector2di position, int 
 			texX1 - tu2 * du,
 			texY1 - tv2 * dv);
 
-		g_Engine->getDriver()->add2DQuads(texture,
+		canvas->add2DQuads(texture,
 			&verts[0],
 			1,
 			blendParam);
@@ -142,7 +143,7 @@ void CFTFont::drawA(const char* utf8text, SColor color, vector2di position, int 
 	}
 }
 
-void CFTFont::drawW(const char16_t* text, SColor color, vector2di position, int nCharCount /*= -1*/)
+void CFTFont::drawW(CCanvas* canvas, const char16_t* text, SColor color, vector2di position, int nCharCount /*= -1*/)
 {
 	int32_t x = position.x;
 	int32_t y = position.y;
@@ -222,7 +223,7 @@ void CFTFont::drawW(const char16_t* text, SColor color, vector2di position, int 
 			texX1 - tu2 * du,
 			texY1 - tv2 * dv);
 
-		g_Engine->getDriver()->add2DQuads(texture,
+		canvas->add2DQuads(texture,
 			&verts[0],
 			1,
 			blendParam);

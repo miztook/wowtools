@@ -41,9 +41,6 @@
     <ClInclude Include="OpenGL\COpenGLVertexDeclaration.h">
       <Filter>OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="OpenGL\COpenGLDrawHelperComponent.h">
-      <Filter>OpenGL</Filter>
-    </ClInclude>
     <ClInclude Include="OpenGL\COpenGLTextureManageComponent.h">
       <Filter>OpenGL</Filter>
     </ClInclude>
@@ -75,9 +72,6 @@
       <Filter>OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="OpenGL\COpenGLVertexDeclaration.cpp">
-      <Filter>OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenGL\COpenGLDrawHelperComponent.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="OpenGL\COpenGLTextureManageComponent.cpp">

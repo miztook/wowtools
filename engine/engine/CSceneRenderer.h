@@ -11,6 +11,8 @@
 class CScene;
 class ISceneNode;
 class CCamera;
+class CCanvas;
+class IVideoDriver;
 
 class CSceneRenderer
 {
@@ -41,7 +43,7 @@ private:
 	void beginFrame();
 	void endFrame();
 
-	void renderDebugInfo() const;
+	void renderDebugInfo(IVideoDriver* driver, CCanvas* canvas) const;
 	SCameraRender* getCameraRender(const CCamera* cam);
 
 private:
