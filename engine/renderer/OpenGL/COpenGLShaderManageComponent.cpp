@@ -335,17 +335,32 @@ void COpenGLShaderManageComponent::setGlobalVariables(const CGLProgram* program,
 	}
 }
 
-void COpenGLShaderManageComponent::setMaterialVariables(const CGLProgram* program, const SMaterial* material)
+void COpenGLShaderManageComponent::setShaderVariables(const CGLProgram* program, const SMaterial* material)
 {
-	for (auto kv : material->ShaderVariableMap)
+	//set program shader variable
+	for (const auto& pair : program->uniformNameIndexMap)
 	{
-		const char* name = kv.first.c_str();
-		const SGLUniformInfo* uniform = program->getUniform(name);
-		if (uniform)
+		const char* name = pair.first.c_str();
+		const SGLUniformInfo* uniform = &program->uniformList[pair.second];
+
+		if (!uniform->isTexture())
 		{
-			const std::vector<float>& v = kv.second;
-			setShaderUniformF(uniform, v.data(), (uint32_t)v.size());
-		}		
+			auto itr = material->ShaderVariableMap.find(name);
+			if (itr != material->ShaderVariableMap.end())			//现在material中查找
+			{
+				const std::vector<float>& v = itr->second;
+				setShaderUniformF(uniform, v.data(), (uint32_t)v.size());
+			}
+			else              //如果找不到，在全局变量中查找
+			{
+				itr = Driver->ShaderVariableMap.find(name);
+				if (itr != Driver->ShaderVariableMap.end())
+				{
+					const std::vector<float>& v = itr->second;
+					setShaderUniformF(uniform, v.data(), (uint32_t)v.size());
+				}
+			}
+		}
 	}
 }
 

@@ -110,6 +110,11 @@ public:
 	bool isSupportDepthTexture() const { return IsSupportDepthTexture; }
 	bool isSupportA8L8() const { return IsSupportA8L8; }
 
+	void setShaderVariable(const char* name, const float* src, uint32_t size);
+	void setShaderVariable(const char* name, const matrix4& mat) { setShaderVariable(name, mat.M, 16); }
+	void setShaderVariable(const char* name, const vector4df& vec) { setShaderVariable(name, &vec.x, 4); }
+	void clearShaderVariables() { ShaderVariableMap.clear(); }
+
 public:
 	virtual bool beginScene() = 0;
 	virtual bool endScene() = 0;
@@ -151,6 +156,9 @@ public:
 	uint32_t		PrimitivesDrawn;
 	uint32_t		DrawCall;
 
+	//global variable 
+	std::map<std::string, std::vector<float>>	ShaderVariableMap;
+
 protected:
 	const E_DRIVER_TYPE	DriverType;
 
@@ -174,3 +182,20 @@ protected:
 	bool	IsSupportA8L8;
 };
 
+inline void IVideoDriver::setShaderVariable(const char* name, const float* src, uint32_t size)
+{
+	auto itr = ShaderVariableMap.find(name);
+	if (itr == ShaderVariableMap.end())
+	{
+		std::vector<float> buffer;
+		buffer.resize(size);
+		memcpy(buffer.data(), src, sizeof(float) * size);
+		ShaderVariableMap[name] = buffer;
+	}
+	else
+	{
+		std::vector<float>& buffer = itr->second;
+		ASSERT(buffer.size() >= size);
+		memcpy(buffer.data(), src, sizeof(float) * size);
+	}
+}

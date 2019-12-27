@@ -234,7 +234,6 @@ void COpenGLDrawHelperComponent::flushAll2DQuads()
 			continue;
 
 		draw2DSquadBatch(key.texture, &batchDraw.drawVerts[0], numQuads, key.blendParam);
-		//batchDraw.drawVerts.clear();
 	}
 	m_2DQuadDrawMap.clear();
 }
@@ -249,7 +248,7 @@ void COpenGLDrawHelperComponent::draw2DSquadBatch(ITexture * texture, const SVer
 		const uint32_t batchCount = MAX_IMAGE_BATCH_COUNT;
 		const int nOffset = n * MAX_IMAGE_BATCH_COUNT * 4;
 
-		do_draw2DSquadBatch(batchCount, texture, &verts[nOffset], batchCount, blendParam);
+		draw2DSquad(batchCount, texture, &verts[nOffset], batchCount, blendParam);
 	}
 
 	if (nLeftBatch)
@@ -257,11 +256,11 @@ void COpenGLDrawHelperComponent::draw2DSquadBatch(ITexture * texture, const SVer
 		const uint32_t batchCount = nLeftBatch;
 		const int nOffset = nMaxBatch * MAX_QUADS;
 		
-		do_draw2DSquadBatch(batchCount, texture, &verts[nOffset], batchCount, blendParam);
+		draw2DSquad(batchCount, texture, &verts[nOffset], batchCount, blendParam);
 	}
 }
 
-void COpenGLDrawHelperComponent::do_draw2DSquadBatch(uint32_t batchCount, ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam)
+void COpenGLDrawHelperComponent::draw2DSquad(uint32_t batchCount, ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam)
 {
 	VBImage->updateBuffer<SVertex_PCT>(vertices, batchCount * 4);
 
@@ -278,6 +277,9 @@ void COpenGLDrawHelperComponent::do_draw2DSquadBatch(uint32_t batchCount, ITextu
 	SDrawParam drawParam;
 	drawParam.numVertices = batchCount * 4;
 	drawParam.baseVertIndex = 0;
+
+	Driver->setShaderVariable("g_ObjectToWorld", matrix4::Identity());
+	Driver->setShaderVariable("g_MatrixVP", Driver->M_VP2D);
 
 	Driver->draw(vbuffer, ibuffer, EPT_TRIANGLES,
 		batchCount * 2, drawParam, true);

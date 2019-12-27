@@ -134,9 +134,10 @@ public:
 	const char* getVSDir() const { return VertexShaderDir.c_str(); }
 	const char* getPSDir() const { return PixelShaderDir.c_str(); }
 	
+public:
 	//
 	void setGlobalVariables(const CGLProgram* program, bool is2D);
-	void setMaterialVariables(const CGLProgram* program, const SMaterial* material);
+	void setShaderVariables(const CGLProgram* program, const SMaterial* material);
 
 private:
 	struct SShaderState
@@ -184,10 +185,11 @@ private:
 	const CGLProgram*		CurrentProgram;
 	SShaderState	ShaderState;
 
-	std::string VertexShaderDir;
-	std::string PixelShaderDir;
+	std::string		VertexShaderDir;
+	std::string		PixelShaderDir;
 
 	std::map<SShaderKey, const COpenGLVertexShader*> VertexShaderMap;
 	std::map<SShaderKey, const COpenGLPixelShader*> PixelShaderMap;
 	std::map<SProgramKey, const CGLProgram*> ProgramMap;
+
 };

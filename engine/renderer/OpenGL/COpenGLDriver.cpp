@@ -687,8 +687,7 @@ void COpenGLDriver::draw(const IVertexBuffer* vbuffer, const IIndexBuffer* ibuff
 	const CGLProgram* program = ShaderManageComponent->applyShaders(Material, vbuffer->getVertexType());
 	MaterialRenderComponent->setRenderStates(Material, GlobalMaterial, program);
 
-	ShaderManageComponent->setGlobalVariables(program, is2D);
-	ShaderManageComponent->setMaterialVariables(program, Material);
+	ShaderManageComponent->setShaderVariables(program, Material);
 
 	MaterialRenderComponent->applyRenderStates();
 

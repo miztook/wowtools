@@ -131,6 +131,7 @@ void CRenderLoop::renderOpaques(const CCamera* cam)
 	IVideoDriver* driver = g_Engine->getDriver();
 	const auto& matView = cam->getViewTM();
 	const auto& matProjection = cam->getProjectionTM();
+	const auto matVP = matView * matProjection;
 
 	for (const SRenderUnit* unit : m_RenderUnits_Opaque)
 	{
@@ -143,6 +144,11 @@ void CRenderLoop::renderOpaques(const CCamera* cam)
 
 		driver->setMaterial(renderer->getMaterial());
 		driver->setGlobalMaterial(g_Engine->getRenderSetting().getGlobalMaterial3D());
+
+		driver->setShaderVariable("g_ObjectToWorld", renderer->getLocalToWorldMatrix());
+		driver->setShaderVariable("g_MatrixVP", matVP);
+		driver->setShaderVariable("g_MatrixV", matView);
+		driver->setShaderVariable("g_MatrixP", matProjection);
 
 		driver->draw(unit->vbuffer, unit->ibuffer, unit->primType, unit->primCount, unit->drawParam, cam->IsOrthogonal());
 	}
