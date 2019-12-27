@@ -156,8 +156,7 @@ void CCanvas::draw2DSquad(const CCamera* cam, uint32_t batchCount, ITexture* tex
 	Material.setMainTexture(texture);
 
 	driver->setMaterial(Material);
-	driver->setGlobalMaterial(g_Engine->getRenderSetting().getGlobalMaterial2D());
-
+	
 	SDrawParam drawParam;
 	drawParam.numVertices = batchCount * 4;
 	drawParam.baseVertIndex = 0;

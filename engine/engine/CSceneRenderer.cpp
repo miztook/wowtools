@@ -51,6 +51,8 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 			const CCamera* cam = scene->get3DCamera();
 			if (cam->IsInited())
 			{
+				driver->setGlobalMaterial(g_Engine->getRenderSetting().getGlobalMaterial3D());
+
 				SCameraRender* camRender = getCameraRender(cam);
 				camRender->BackgroundColor = SColor(64, 64, 64);
 
@@ -115,6 +117,8 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 			const CCamera* cam = scene->get2DCamera();
 			if (cam->IsInited())
 			{
+				driver->setGlobalMaterial(g_Engine->getRenderSetting().getGlobalMaterial2D());
+
 				SCameraRender* camRender = getCameraRender(cam);
 				camRender->BackgroundColor = SColor(64, 64, 64);
 
