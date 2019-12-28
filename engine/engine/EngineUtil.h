@@ -1,8 +1,5 @@
 #pragma once
 
-class IVertexBuffer;
-class IIndexBuffer;
-struct SMaterial;
 class CCanvas;
 
 class EngineUtil

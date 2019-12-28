@@ -4,7 +4,7 @@
 
 struct SMaterial
 {
-	E_RENDER_QUEUE	RenderQueue;
+	int	RenderQueue;
 
 	std::string		VSFile;
 	std::string		PSFile;

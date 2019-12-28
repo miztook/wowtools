@@ -36,7 +36,7 @@ bool OpaqueCompare(const SRenderUnit* a, const SRenderUnit* b)
 	if (a->distance != b->distance)
 		return a->distance > b->distance;
 
-	return &a < &b;
+	return a < b;
 }
 
 bool AfterOpaqueCompare(const SRenderUnit* a, const SRenderUnit* b)
@@ -70,7 +70,7 @@ bool AfterOpaqueCompare(const SRenderUnit* a, const SRenderUnit* b)
 	//pass
 
 
-	return &a < &b;
+	return a < b;
 }
 
 CRenderLoop::CRenderLoop()

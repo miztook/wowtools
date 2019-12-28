@@ -131,9 +131,12 @@ public:
 		setTexture("_MainTex", tex, wrapU, wrapV);
 	}
 
+	const CPass* getPass(E_LIGHT_MODE mode) const;
+	CPass& addPass(E_LIGHT_MODE lightMode);
+
 public:
 	int		RenderQueue;
-	CPass	FirstPass;
+	std::vector<CPass>	PassList;
 
 public:
 	std::map<std::string, std::vector<float>>	ShaderVariableMap;

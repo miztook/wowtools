@@ -47,13 +47,13 @@ void CMeshManager::removeMesh(const char* name)
 	MeshMap.erase(name);
 }
 
-bool CMeshManager::addGridLineMesh(const char* name, uint32_t xzCount, float gridSize, SColor color)
+bool CMeshManager::addGridLineMesh(const char* name, uint32_t xzCount, float gridSize, SColor color, SColor centerColor)
 {
 	uint32_t vcount = getGridLineVCount(xzCount);
 	IVertexBuffer* vbuffer = g_Engine->getDriver()->createVertexBuffer(EMM_STATIC);
 	{
 		SVertex_PC* vertices = vbuffer->alloc<SVertex_PC>(vcount);
-		fillGridLineMeshV(vertices, vcount, xzCount, gridSize, color);
+		fillGridLineMeshV(vertices, vcount, xzCount, gridSize, color, centerColor);
 	}
 	return addMesh(name, vbuffer, nullptr, EPT_LINES, vcount / 2, getGridLineAABBox(xzCount, gridSize));
 }
@@ -400,7 +400,7 @@ uint32_t CMeshManager::getGridLineVCount(uint32_t xzCount)
 	return (2 * xzCount + 1) * 4;
 }
 
-bool CMeshManager::fillGridLineMeshV(SVertex_PC* gVertices, uint32_t vcount, uint32_t xzCount, float gridSize, SColor color)
+bool CMeshManager::fillGridLineMeshV(SVertex_PC* gVertices, uint32_t vcount, uint32_t xzCount, float gridSize, SColor color, SColor centerColor)
 {
 	uint32_t vLimit = (2 * xzCount + 1) * 4;
 	if (vcount < vLimit)
@@ -412,8 +412,8 @@ bool CMeshManager::fillGridLineMeshV(SVertex_PC* gVertices, uint32_t vcount, uin
 	float halfWidth = xzCount * gridSize;
 
 	//x
-	gVertices[vcount++].set(vector3df(-halfWidth, 0, 0), color);
-	gVertices[vcount++].set(vector3df(halfWidth, 0, 0), color);
+	gVertices[vcount++].set(vector3df(-halfWidth, 0, 0), centerColor);
+	gVertices[vcount++].set(vector3df(halfWidth, 0, 0), centerColor);
 
 	for (uint32_t i = 1; i <= xzCount; ++i)
 	{
@@ -425,8 +425,8 @@ bool CMeshManager::fillGridLineMeshV(SVertex_PC* gVertices, uint32_t vcount, uin
 	}
 
 	//z
-	gVertices[vcount++].set(vector3df(0, 0, -halfWidth), color);
-	gVertices[vcount++].set(vector3df(0, 0, halfWidth), color);
+	gVertices[vcount++].set(vector3df(0, 0, -halfWidth), centerColor);
+	gVertices[vcount++].set(vector3df(0, 0, halfWidth), centerColor);
 
 	for (uint32_t i = 1; i <= xzCount; ++i)
 	{

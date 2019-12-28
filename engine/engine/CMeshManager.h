@@ -22,7 +22,7 @@ public:
 	const CMesh* getMesh(const char* name) const;
 	void removeMesh(const char* name);
 
-	bool addGridLineMesh(const char* name, uint32_t xzCount, float gridSize, SColor color);
+	bool addGridLineMesh(const char* name, uint32_t xzCount, float gridSize, SColor color, SColor centerColor);
 	bool addPlane(const char* name, float width, float height, SColor color);
 	bool addCube(const char* name, const vector3df& size, SColor color);
 	bool addSphere(const char* name, float radius, uint32_t polyCountX, uint32_t polyCountY, SColor color);
@@ -52,7 +52,7 @@ public:
 	}
 
 	static uint32_t getGridLineVCount(uint32_t xzCount);
-	static bool fillGridLineMeshV(SVertex_PC* gVertices, uint32_t vcount, uint32_t xzCount, float gridSize, SColor color);
+	static bool fillGridLineMeshV(SVertex_PC* gVertices, uint32_t vcount, uint32_t xzCount, float gridSize, SColor color, SColor centerColor);
 	static aabbox3df getGridLineAABBox(uint32_t xzCount, float gridSize)
 	{
 		float halfWidth = xzCount * gridSize;

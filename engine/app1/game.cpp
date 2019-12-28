@@ -55,10 +55,23 @@ void CGame::createScene()
 	m_pScene->init2DCamera(dim, 0, 1);
 
 	//add mesh
-	g_Engine->getMeshManager()->addGridLineMesh("$grid20", 20, 1, SColor(128, 128, 128));
+	g_Engine->getMeshManager()->addGridLineMesh("$grid20", 20, 1, SColor(128, 128, 128), SColor::Yellow());
+	g_Engine->getMeshManager()->addSphere("$sphere", 1, 20, 11, SColor::White());
 
-	CMeshSceneNode* gridSceneNode = m_pScene->addMeshSceneNode("$grid20");
-	gridSceneNode->setMesh(g_Engine->getMeshManager()->getMesh("$grid20"));
+	{
+		CMeshSceneNode* gridSceneNode = m_pScene->addMeshSceneNode("$grid20");
+		gridSceneNode->setMesh(g_Engine->getMeshManager()->getMesh("$grid20"));
+		SMaterial& mat = gridSceneNode->getMeshRenderer()->getMaterial();
+		mat.RenderQueue = (ERQ_GEOMETRY - 50);
+	}
+
+	{
+		CMeshSceneNode* sphereSceneNode = m_pScene->addMeshSceneNode("$sphere");
+		sphereSceneNode->setMesh(g_Engine->getMeshManager()->getMesh("$sphere"));
+		SMaterial& mat = sphereSceneNode->getMeshRenderer()->getMaterial();
+		mat.setMainTexture(g_Engine->getDriver()->getTextureWhite());
+		sphereSceneNode->getTransform()->setPos(vector3df(1, 1, 0));
+	}
 }
 
 void CGame::update()
