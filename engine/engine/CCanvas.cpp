@@ -170,7 +170,11 @@ void CCanvas::draw2DSquad(const CCamera* cam, uint32_t batchCount, ITexture* tex
 
 void CCanvas::applyBlendParam(const S2DBlendParam& blendParam, SMaterial& material)
 {
-	material.MacroString = CShaderUtil::getUIMacroString(blendParam.alpha, blendParam.alphaChannel);
+	material.clearMacroSet();
+	if (blendParam.alpha)
+		material.addMacro("_USE_ALPHA_");
+	if (blendParam.alphaChannel)
+		material.addMacro("_USE_ALPHA_CHANNEL_");
 
 	if (!blendParam.alpha && !blendParam.alphaChannel)
 	{

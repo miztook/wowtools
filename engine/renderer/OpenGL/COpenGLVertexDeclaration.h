@@ -78,13 +78,9 @@ private:
 	void bindVbo(const CGLProgram* program, const IVertexBuffer* vbuffer0, uint32_t offset0);
 
 private:
-	SVertexInfo createVertexInfo_P(const CGLProgram* program);
 	SVertexInfo createVertexInfo_PC(const CGLProgram* program);
 	SVertexInfo createVertexInfo_PCT(const CGLProgram* program);
-	SVertexInfo createVertexInfo_PN(const CGLProgram* program);
 	SVertexInfo createVertexInfo_PNC(const CGLProgram* program);
-	SVertexInfo createVertexInfo_PNT(const CGLProgram* program);
-	SVertexInfo createVertexInfo_PT(const CGLProgram* program);
 	SVertexInfo createVertexInfo_PNCT(const CGLProgram* program);
 	SVertexInfo createVertexInfo_PNCT2(const CGLProgram* program);
 	SVertexInfo createVertexInfo_PNT2WA(const CGLProgram* program);

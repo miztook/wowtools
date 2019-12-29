@@ -112,26 +112,14 @@ COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo
 	SVertexInfo vertexInfo;
 	switch (VertexType)
 	{
-	case EVT_P:
-		vertexInfo = createVertexInfo_P(program);
-		break;
 	case EVT_PC:
 		vertexInfo = createVertexInfo_PC(program);
 		break;
 	case EVT_PCT:
 		vertexInfo = createVertexInfo_PCT(program);
 		break;
-	case EVT_PN:
-		vertexInfo = createVertexInfo_PN(program);
-		break;
 	case EVT_PNC:
 		vertexInfo = createVertexInfo_PNC(program);
-		break;
-	case EVT_PNT:
-		vertexInfo = createVertexInfo_PNT(program);
-		break;
-	case EVT_PT:
-		vertexInfo = createVertexInfo_PT(program);
 		break;
 	case EVT_PNCT:
 		vertexInfo = createVertexInfo_PNCT(program);
@@ -173,19 +161,6 @@ void COpenGLVertexDeclaration::bindVbo(const CGLProgram* program, const IVertexB
 	applyVbo(vertexInfo, offset0);
 
 	Driver->GLExtension.extGlBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_P(const CGLProgram* program)
-{
-	SVertexInfo vertexInfo;
-	vertexInfo.vertexSize = sizeof(SVertex_P);
-
-	//position
-	SElementInfo element(0, 3, GL_FLOAT, GL_FALSE);
-	element.location = (int32_t)Driver->GLExtension.extGlGetAttribLocationARB(program->handle, NAME_POS);
-	vertexInfo.elementInfos.emplace_back(element);
-
-	return vertexInfo;
 }
 
 COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PC(const CGLProgram * program)
@@ -239,28 +214,6 @@ COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo
 	return vertexInfo;
 }
 
-COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PN(const CGLProgram * program)
-{
-	SVertexInfo vertexInfo;
-	vertexInfo.vertexSize = sizeof(SVertex_PN);
-
-	//position
-	{
-		SElementInfo element(0, 3, GL_FLOAT, GL_FALSE);
-		element.location = (int32_t)Driver->GLExtension.extGlGetAttribLocationARB(program->handle, NAME_POS);
-		vertexInfo.elementInfos.emplace_back(element);
-	}
-
-	//normal
-	{
-		SElementInfo element(12, 3, GL_FLOAT, GL_FALSE);
-		element.location = (int32_t)Driver->GLExtension.extGlGetAttribLocationARB(program->handle, NAME_NORMAL);
-		vertexInfo.elementInfos.emplace_back(element);
-	}
-
-	return vertexInfo;
-}
-
 COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PNC(const CGLProgram * program)
 {
 	SVertexInfo vertexInfo;
@@ -284,57 +237,6 @@ COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo
 	{
 		SElementInfo element(24, 4, GL_UNSIGNED_BYTE, GL_TRUE);
 		element.location = (int32_t)Driver->GLExtension.extGlGetAttribLocationARB(program->handle, NAME_COLOR0);
-		vertexInfo.elementInfos.emplace_back(element);
-	}
-
-	return vertexInfo;
-}
-
-COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PNT(const CGLProgram * program)
-{
-	SVertexInfo vertexInfo;
-	vertexInfo.vertexSize = sizeof(SVertex_PNT);
-
-	//position
-	{
-		SElementInfo element(0, 3, GL_FLOAT, GL_FALSE);
-		element.location = (int32_t)Driver->GLExtension.extGlGetAttribLocationARB(program->handle, NAME_POS);
-		vertexInfo.elementInfos.emplace_back(element);
-	}
-
-	//normal
-	{
-		SElementInfo element(12, 3, GL_FLOAT, GL_FALSE);
-		element.location = (int32_t)Driver->GLExtension.extGlGetAttribLocationARB(program->handle, NAME_NORMAL);
-		vertexInfo.elementInfos.emplace_back(element);
-	}
-
-	//tex0
-	{
-		SElementInfo element(24, 2, GL_FLOAT, GL_FALSE);
-		element.location = (int32_t)Driver->GLExtension.extGlGetAttribLocationARB(program->handle, NAME_TEX0);
-		vertexInfo.elementInfos.emplace_back(element);
-	}
-
-	return vertexInfo;
-}
-
-COpenGLVertexDeclaration::SVertexInfo COpenGLVertexDeclaration::createVertexInfo_PT(const CGLProgram * program)
-{
-	SVertexInfo vertexInfo;
-	vertexInfo.vertexSize = sizeof(SVertex_PT);
-
-	//position
-	{
-		SElementInfo element(0, 3, GL_FLOAT, GL_FALSE);
-		element.location = (int32_t)Driver->GLExtension.extGlGetAttribLocationARB(program->handle, NAME_POS);
-		vertexInfo.elementInfos.emplace_back(element);
-	}
-
-	//tex0
-	{
-		SElementInfo element(12, 2, GL_FLOAT, GL_FALSE);
-		element.location = (int32_t)Driver->GLExtension.extGlGetAttribLocationARB(program->handle, NAME_TEX0);
 		vertexInfo.elementInfos.emplace_back(element);
 	}
 

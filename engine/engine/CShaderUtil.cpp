@@ -318,44 +318,19 @@ int CShaderUtil::getShaderProgramSortId(const char* vsFile, const char* psFile, 
 	return itr->second;
 }
 
-std::string CShaderUtil::getUIMacroString(bool alpha, bool alphaChannel)
-{
-	if (alphaChannel)
-	{
-		if (alpha)
-			return std::string("_USE_ALPHA_") + "#" + std::string("_USE_ALPHA_CHANNEL_");
-		else
-			return std::string("_USE_ALPHA_CHANNEL_");
-	}
-	else
-	{
-		if (alpha)
-			return std::string("_USE_ALPHA_");
-		else
-			return "";
-	}
-}
-
 const char* CShaderUtil::getDefaultVSFileName(E_VERTEX_TYPE vType)
 {
 	switch (vType)
 	{
-	case EVT_P:
-		return "Default_P";
 	case EVT_PC:
 		return "Default_PC";
 	case EVT_PCT:
 		return "Default_PCT";
-	case EVT_PN:
-		return "Default_PN";
 	case EVT_PNC:
 		return "Default_PNC";
 	case EVT_PNCT:
 	case EVT_PNCT2:
 		return "Default_PNCT";
-	case EVT_PT:
-		return "Default_PT";
-	case EVT_PNT:
 	case EVT_PNT2WA:
 		return "Default_PNT";
 	default:
@@ -368,22 +343,15 @@ const char* CShaderUtil::getDefaultPSFileName(E_VERTEX_TYPE vType)
 {
 	switch (vType)
 	{
-	case EVT_P:
-		return "Default_P";
 	case EVT_PC:
 		return "Default_PC";
 	case EVT_PCT:
 		return "Default_PCT";
-	case EVT_PN:
-		return "Default_PN";
 	case EVT_PNC:
 		return "Default_PNC";
 	case EVT_PNCT:
 	case EVT_PNCT2:
 		return "Default_PNCT";
-	case EVT_PT:
-		return "Default_PT";
-	case EVT_PNT:
 	case EVT_PNT2WA:
 		return "Default_PNT";
 	default:

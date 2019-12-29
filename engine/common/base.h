@@ -119,13 +119,9 @@ enum E_LIGHT_TYPE : int32_t
 enum E_VERTEX_TYPE : int32_t
 {
 	EVT_INVALID = -1,
-	EVT_P = 0,
 	EVT_PC,			//for bounding box
 	EVT_PCT,
-	EVT_PN,
 	EVT_PNC,
-	EVT_PNT,
-	EVT_PT,
 	EVT_PNCT,
 	EVT_PNCT2,
 	EVT_PNT2WA,						//fvf

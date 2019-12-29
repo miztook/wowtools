@@ -6,15 +6,6 @@
 #include "vector3d.h"
 #include "vector2d.h"
 
-struct SVertex_P
-{
-	vector3df Pos;
-
-	void set(const vector3df& p) { Pos = p; }
-	
-	static E_VERTEX_TYPE TYPE() { return EVT_P; }
-};
-
 struct SVertex_PC
 {
 	vector3df	Pos;
@@ -36,16 +27,6 @@ struct SVertex_PCT
 	static E_VERTEX_TYPE TYPE() { return EVT_PCT; }
 };
 
-struct SVertex_PN
-{
-	vector3df	Pos;
-	vector3df	Normal;
-
-	void set(const vector3df& p, const vector3df& n) { Pos = p; Normal = n; }
-
-	static E_VERTEX_TYPE TYPE() { return EVT_PN; }
-};
-
 struct SVertex_PNC
 {
 	vector3df	Pos;
@@ -55,27 +36,6 @@ struct SVertex_PNC
 	void set(const vector3df& p, const vector3df& n, SColor c) { Pos = p; Normal = n; Color = c; }
 
 	static E_VERTEX_TYPE TYPE() { return EVT_PNC; }
-};
-
-struct SVertex_PNT
-{
-	vector3df Pos;
-	vector3df Normal;
-	vector2df TCoords;
-
-	void set(const vector3df& p, const vector3df& n, const vector2df& t) { Pos = p; Normal = n; TCoords = t; }
-
-	static E_VERTEX_TYPE TYPE() { return EVT_PNT; }
-};
-
-struct SVertex_PT
-{
-	vector3df Pos;
-	vector2df TCoords;
-
-	void set(const vector3df& p, const vector2df& t) { Pos = p; TCoords = t; }
-
-	static E_VERTEX_TYPE TYPE() { return EVT_PT; }
 };
 
 struct SVertex_PNCT
@@ -124,20 +84,12 @@ inline uint32_t getVertexPitchFromType(E_VERTEX_TYPE type)
 {
 	switch (type)
 	{
-	case EVT_P:
-		return sizeof(SVertex_P);
 	case EVT_PC:
 		return sizeof(SVertex_PC);
 	case EVT_PCT:
 		return sizeof(SVertex_PCT);
-	case EVT_PN:
-		return sizeof(SVertex_PN);
 	case EVT_PNC:
 		return sizeof(SVertex_PNC);
-	case EVT_PNT:
-		return sizeof(SVertex_PNT);
-	case EVT_PT:
-		return sizeof(SVertex_PT);
 	case EVT_PNCT:
 		return sizeof(SVertex_PNCT);
 	case EVT_PNCT2:
@@ -160,26 +112,14 @@ inline void deleteVerticesFromType(E_VERTEX_TYPE type, void* vertices)
 {
 	switch (type)
 	{
-	case EVT_P:
-		DELETE_ARRAY(SVertex_P, vertices);
-		break;
 	case EVT_PC:
 		DELETE_ARRAY(SVertex_PC, vertices);
 		break;
 	case EVT_PCT:
 		DELETE_ARRAY(SVertex_PCT, vertices);
 		break;
-	case EVT_PN:
-		DELETE_ARRAY(SVertex_PN, vertices);
-		break;
 	case EVT_PNC:
 		DELETE_ARRAY(SVertex_PNC, vertices);
-		break;
-	case EVT_PNT:
-		DELETE_ARRAY(SVertex_PNT, vertices);
-		break;
-	case EVT_PT:
-		DELETE_ARRAY(SVertex_PT, vertices);
 		break;
 	case EVT_PNCT:
 		DELETE_ARRAY(SVertex_PNCT, vertices);

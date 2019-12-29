@@ -348,7 +348,7 @@ void COpenGLDriver::createResources(const dimension2d& windowSize)
 	
 	StaticVertexBufferScreenQuad = std::make_unique<COpenGLVertexBuffer>(this, EMM_STATIC);
 	{
-		SVertex_PT* vertices = StaticVertexBufferScreenQuad->alloc<SVertex_PT>(4);
+		SVertex_PCT* vertices = StaticVertexBufferScreenQuad->alloc<SVertex_PCT>(4);
 		vertices[0].Pos.set(-1.f, 1.f, 0.0f);
 		vertices[0].TCoords.set(0, 0);
 		vertices[1].Pos.set(1.f, 1.f, 0.0f);
@@ -362,7 +362,7 @@ void COpenGLDriver::createResources(const dimension2d& windowSize)
 
 	StaticVertexBufferScreenQuadFlip = std::make_unique<COpenGLVertexBuffer>(this, EMM_STATIC);
 	{
-		SVertex_PT* vertices = StaticVertexBufferScreenQuadFlip->alloc<SVertex_PT>(4);
+		SVertex_PCT* vertices = StaticVertexBufferScreenQuadFlip->alloc<SVertex_PCT>(4);
 		vertices[0].Pos.set(-1.f, 1.f, 0.0f);
 		vertices[0].TCoords.set(0, 1);
 		vertices[1].Pos.set(1.f, 1.f, 0.0f);

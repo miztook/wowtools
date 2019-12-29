@@ -48,14 +48,14 @@ void CGame::createScene()
 
 	const auto& dim = g_Engine->getDriver()->getDisplayMode();
 	float aspect = (float)dim.width / dim.height;
-	vector3df camPos(0, 5, 10);
-	vector3df camDir = f3d::normalize(vector3df(0, 2.5f, 0) - camPos);
+	vector3df camPos(0, 5, -10);
+	vector3df camDir = f3d::normalize(vector3df(0, 0, 0) - camPos);
 	m_pScene->init3DCamera(PI / 4, aspect, 1, 2000.0f, camPos, camDir, vector3df::UnitY());
 
 	m_pScene->init2DCamera(dim, 0, 1);
 
 	//add mesh
-	g_Engine->getMeshManager()->addGridLineMesh("$grid20", 20, 1, SColor(128, 128, 128), SColor::Yellow());
+	g_Engine->getMeshManager()->addGridLineMesh("$grid20", 20, 1, SColor(128, 128, 128), SColor::Black());
 	g_Engine->getMeshManager()->addSphere("$sphere", 1, 20, 11, SColor::White());
 
 	{

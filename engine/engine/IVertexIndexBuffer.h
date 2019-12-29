@@ -10,7 +10,7 @@ public:
 	explicit IVertexBuffer(E_MESHBUFFER_MAPPING mapping) : Mapping(mapping)
 	{
 		Vertices = nullptr;
-		Type = EVT_P;
+		Type = EVT_INVALID;
 		Size = 0;
 	}
 	virtual ~IVertexBuffer()

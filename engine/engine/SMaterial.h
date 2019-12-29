@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CMaterial.h"
+#include "stringext.h"
 
 struct SMaterial
 {
@@ -8,7 +9,7 @@ struct SMaterial
 
 	std::string		VSFile;
 	std::string		PSFile;
-	std::string		MacroString;
+	std::set<std::string>		MacroSet;
 	std::map<std::string, std::vector<float>>	ShaderVariableMap;
 	std::map<std::string, STextureUnit> TextureVariableMap;
 
@@ -36,6 +37,29 @@ struct SMaterial
 		AlphaBlendEnabled = false;
 		SrcBlend = EBF_ONE;
 		DestBlend = EBF_ZERO;
+	}
+
+	void clearMacroSet() { MacroSet.clear(); }
+	void addMacro(const char* macro) { MacroSet.insert(macro); }
+	std::string macroToString() const
+	{
+		std::string str;
+		size_t count = 0;
+		for (const auto& macro : MacroSet)
+		{
+			str += macro;
+			if (count + 1 < MacroSet.size())
+			{
+				str += "#";
+			}
+			++count;
+		}
+		return str;
+	}
+
+	void macroFromString(const char* macroString)
+	{
+		std_string_split(macroString, '#', MacroSet);
 	}
 
 	void setVariable(const char* name, const float* src, uint32_t size);

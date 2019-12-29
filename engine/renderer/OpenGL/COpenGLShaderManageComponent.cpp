@@ -49,7 +49,7 @@ bool COpenGLShaderManageComponent::init()
 const CGLProgram* COpenGLShaderManageComponent::applyShaders(const SMaterial* material, E_VERTEX_TYPE vertexType)
 {
 	auto shaderKey = CShaderUtil::getShaderKey(
-		material->VSFile.c_str(), material->PSFile.c_str(), material->MacroString.c_str(), vertexType);
+		material->VSFile.c_str(), material->PSFile.c_str(), material->macroToString().c_str(), vertexType);
 
 	const COpenGLVertexShader* vertexShader = getVertexShader(shaderKey.VSFile.c_str(), shaderKey.MacroString.c_str());
 	const COpenGLPixelShader* pixelShader = getPixelShader(shaderKey.PSFile.c_str(), shaderKey.MacroString.c_str());
@@ -288,12 +288,15 @@ void COpenGLShaderManageComponent::setShaderUniformF(uint32_t location, GLenum t
 		Driver->GLExtension.extGlUniform4fv(location, count / 4, srcData);
 		break;
 	case GL_FLOAT_MAT2_ARB:
+		ASSERT(count >= 4);
 		Driver->GLExtension.extGlUniformMatrix2fv(location, count / 4, GL_TRUE, srcData);
 		break;
 	case GL_FLOAT_MAT3_ARB:
+		ASSERT(count >= 9);
 		Driver->GLExtension.extGlUniformMatrix3fv(location, count / 9, GL_TRUE, srcData);
 		break;
 	case GL_FLOAT_MAT4_ARB:
+		ASSERT(count >= 16);
 		Driver->GLExtension.extGlUniformMatrix4fv(location, count / 16, GL_TRUE, srcData);
 		break;
 	default:

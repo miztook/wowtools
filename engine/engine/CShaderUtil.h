@@ -46,8 +46,6 @@ public:
 	static SShaderKey getShaderKey(const char* vsFile, const char* psFile, const char* macroString, E_VERTEX_TYPE vertexType);
 	static int getShaderProgramSortId(const char* vsFile, const char* psFile, const char* macroString, E_VERTEX_TYPE vertexType);
 
-	static std::string getUIMacroString(bool alpha, bool alphaChannel);
-
 	static const char* getDefaultVSFileName(E_VERTEX_TYPE vType);
 
 	static const char* getDefaultPSFileName(E_VERTEX_TYPE vType);
