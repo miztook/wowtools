@@ -383,7 +383,7 @@ bool COpenGLShader::buildVideoResources(const char* dir, GLenum shaderType)
 	g_FileSystem->writeLog(ELOG_GX, "COpenGLShader buildVideoResources: %s, %s", absFileName.c_str(), MacroString.c_str());
 
 	SShaderFile result;
-	if (!CShaderUtil::loadFile_OpenGL(absFileName.c_str(), CShaderUtil::getShaderMacroSet(MacroString.c_str()), result))
+	if (!CShaderUtil::loadFile_OpenGL(absFileName.c_str(), MacroString.c_str(), result))
 	{
 		g_FileSystem->writeLog(ELOG_GX, "GLSL shader failed to load: %s, %s", absFileName.c_str(), MacroString.c_str());
 		return false;

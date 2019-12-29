@@ -8,7 +8,7 @@
 
 std::map<CShaderUtil::SShaderKey, int> CShaderUtil::ShaderIdMap;
 
-bool CShaderUtil::loadFile_OpenGL(const char* absFileName, const std::set<std::string>& shaderMacro, SShaderFile& result)
+bool CShaderUtil::loadFile_OpenGL(const char* absFileName, const char* shaderMacro, SShaderFile& result)
 {
 	CReadFile* rFile = g_FileSystem->createAndOpenFile(absFileName, false);
 	if (!rFile)
@@ -103,10 +103,13 @@ bool CShaderUtil::loadFile_OpenGL(const char* absFileName, const std::set<std::s
 			}
 		}
 
-		if (bVersion && !bMacroAdd && !shaderMacro.empty())
+		if (bVersion && !bMacroAdd && strlen(shaderMacro) > 0)
 		{
+			std::set<std::string> macroSet;
+			getShaderMacroSet(shaderMacro, macroSet);
+
 			std::string macroString;
-			for (const auto& macro : shaderMacro)
+			for (const auto& macro : macroSet)
 			{
 				macroString.append("#define ");
 				macroString.append(macro);
@@ -287,11 +290,9 @@ std::string CShaderUtil::getShaderMacroString(const std::set<std::string>& shade
 	return str;
 }
 
-std::set<std::string> CShaderUtil::getShaderMacroSet(const char* macroString)
+void CShaderUtil::getShaderMacroSet(const char* macroString, std::set<std::string>& macroSet)
 {
-	std::set<std::string> macroSet;
 	std_string_split(macroString, '#', macroSet);
-	return macroSet;
 }
 
 CShaderUtil::SShaderKey CShaderUtil::getShaderKey(const char* vsFile, const char* psFile, const char* macroString, E_VERTEX_TYPE vertexType)

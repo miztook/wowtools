@@ -1,4 +1,5 @@
 #include "CMaterial.h"
+#include "CShaderUtil.h"
 
 void CMaterial::setVariable(const char* name, const float* src, uint32_t size)
 {
@@ -50,8 +51,18 @@ const CPass* CMaterial::getPass(E_LIGHT_MODE mode) const
 
 CPass& CMaterial::addPass(E_LIGHT_MODE lightMode)
 {
-	CPass pass;
+	CPass pass(lightMode);
 	pass.LightMode = lightMode;
 	PassList.push_back(pass);
 	return PassList.back();
+}
+
+std::string CPass::macroToString() const
+{
+	return CShaderUtil::getShaderMacroString(MacroSet);
+}
+
+void CPass::macroFromString(const char* macroString)
+{
+	CShaderUtil::getShaderMacroSet(macroString, MacroSet);
 }

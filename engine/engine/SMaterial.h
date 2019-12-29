@@ -25,9 +25,7 @@ struct SMaterial
 	bool	AlphaBlendEnabled;
 
 	SMaterial()
-		: 
-		RenderQueue(ERQ_GEOMETRY),
-		ColorWrite(COLORWRITE_ALL)
+		: ColorWrite(COLORWRITE_ALL)
 	{
 		RenderQueue = ERQ_GEOMETRY;
 		Cull = ECM_BACK;

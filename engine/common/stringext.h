@@ -133,69 +133,6 @@ inline bool isEnclosedEnd(const char* p)
 	return false;
 }
 
-//make multiple #define MACRO, split by #
-inline void makeMacroString(std::string& macroString, const char* strMacro)
-{
-	macroString.clear();
-	uint32_t len = (uint32_t)strlen(strMacro);
-	if (len == 0)
-		return;
-
-	uint32_t p = 0;
-	for (uint32_t i = 0; i < len; ++i)
-	{
-		if (strMacro[i] == '#')	//split
-		{
-			if (i - p > 0)
-			{
-				std::string str(&strMacro[p], i - p);
-				macroString.append("#define ");
-				macroString.append(str.c_str());
-				macroString.append("\n");
-			}
-			p = i + 1;
-		}
-	}
-
-	//last
-	if (len - p > 0)
-	{
-		std::string str(&strMacro[p], len - p);
-		macroString.append("#define ");
-		macroString.append(str.c_str());
-		macroString.append("\n");
-	}
-}
-
-inline void makeMacroStringList(std::vector<std::string>& macroStrings, const char* strMacro)
-{
-	macroStrings.clear();
-	uint32_t len = (uint32_t)strlen(strMacro);
-	if (len == 0)
-		return;
-
-	uint32_t p = 0;
-	for (uint32_t i = 0; i < len; ++i)
-	{
-		if (i > 0 && strMacro[i] == '#')	//split
-		{
-			if (i - p > 0)
-			{
-				std::string str(&strMacro[p], i - p);
-				p = i + 1;
-				macroStrings.push_back(str.c_str());
-			}
-		}
-	}
-
-	//last
-	if (len - p > 0)
-	{
-		std::string str(&strMacro[p], len - p);
-		macroStrings.push_back(str.c_str());
-	}
-}
-
 inline bool getToken(const char* pszLine, std::string& strToken)
 {
 	const char* pChar = pszLine;

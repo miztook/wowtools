@@ -70,7 +70,7 @@ struct SGlobalMaterial
 class CPass
 {
 public:
-	CPass() : LightMode(ELM_ALWAYS)
+	explicit CPass(E_LIGHT_MODE mode) : LightMode(mode)
 	{
 		Cull = ECM_BACK;
 		AntiAliasing = EAAM_OFF;
@@ -87,8 +87,8 @@ public:
 
 public:		//file macro
 	std::string		VSFile;
-	std::string		MacroString;
 	std::string		PSFile;
+	std::set<std::string>		MacroSet;
 
 public:		//render state
 	E_CULL_MODE		Cull;
@@ -99,6 +99,12 @@ public:		//render state
 	E_BLEND_FACTOR	SrcBlend;
 	E_BLEND_FACTOR	DestBlend;
 	bool	AlphaBlendEnabled;
+
+public:
+	void clearMacroSet() { MacroSet.clear(); }
+	void addMacro(const char* macro) { MacroSet.insert(macro); }
+	std::string macroToString() const;
+	void macroFromString(const char* macroString);
 };
 
 struct STextureUnit

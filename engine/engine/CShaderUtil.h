@@ -15,12 +15,12 @@ struct SShaderFile
 class CShaderUtil
 {
 public:
-	static bool loadFile_OpenGL(const char* absFileName, const std::set<std::string>& shaderMacro, SShaderFile& result);
+	static bool loadFile_OpenGL(const char* absFileName, const char* shaderMacro, SShaderFile& result);
 
 	static bool writeFile(const char* buffer, const char* absFileName);
 
-	static std::string getShaderMacroString(const std::set<std::string>& shaderMacro);
-	static std::set<std::string> getShaderMacroSet(const char* macroString);
+	static std::string getShaderMacroString(const std::set<std::string>& macroSet);
+	static void getShaderMacroSet(const char* macroString, std::set<std::string>& macroSet);
 
 public:
 	struct SShaderKey
