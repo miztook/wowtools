@@ -296,23 +296,20 @@ std::string CShaderUtil::getShaderMacroString(const char* macro0, const char* ma
 	return str;
 }
 
-std::string CShaderUtil::getShaderMacroString(const std::set<std::string>& shaderMacro)
+std::string CShaderUtil::getShaderMacroString(const std::set<std::string>& macroSet)
 {
 	std::string str;
 
-	size_t count = 0;
-	for (const auto& macro : shaderMacro)
+	for (const auto& macro : macroSet)
 	{
 		if (macro.empty())
 			continue;
 
 		str += macro;
-		if (count + 1 < shaderMacro.size())
-		{
-			str += "#";
-		}
-		++count;
+		str += "#";
 	}
+
+	rtrim(str, "#");
 	return str;
 }
 
