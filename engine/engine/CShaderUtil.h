@@ -19,7 +19,7 @@ public:
 
 	static bool writeFile(const char* buffer, const char* absFileName);
 
-	static std::string getShaderMacroString(const char* macro0, const char* macro1, const char* macro2, const char* macro3);
+	static std::string getShaderMacroString(const char* macro0, const char* macro1 = "", const char* macro2 = "", const char* macro3 = "");
 	static std::string getShaderMacroString(const std::set<std::string>& macroSet);
 	static void getShaderMacroSet(const char* macroString, std::set<std::string>& macroSet);
 

@@ -48,14 +48,10 @@ void compileShaders()
 
 	const char* vsshaders[] =
 	{
- 		"Default_P",
 		"Default_PC",
 		"Default_PCT",
-		"Default_PN",
 		"Default_PNC",
 		"Default_PNCT",
-		"Default_PNT",
-		"Default_PT",
 	};
 
 	for (const char* vsFile : vsshaders)
@@ -65,14 +61,10 @@ void compileShaders()
 	
 	const char* psshaders[] =
 	{
-		"Default_P",
 		"Default_PC",
 		"Default_PCT",
-		"Default_PN",
 		"Default_PNC",
 		"Default_PNCT",
-		"Default_PNT",
-		"Default_PT",
 	};
 	
 	for (const char* psFile : psshaders)
@@ -80,10 +72,10 @@ void compileShaders()
 		shaderManagerComponent->getPixelShader(psFile);
 	}
 
-	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getUIMacroString(false, false).c_str());
-	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getUIMacroString(false, true).c_str());
-	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getUIMacroString(true, false).c_str());
-	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getUIMacroString(true, true).c_str());
+	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getShaderMacroString("").c_str());
+	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getShaderMacroString("_USE_ALPHA_").c_str());
+	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getShaderMacroString("_USE_ALPHA_CHANNEL_").c_str());
+	shaderManagerComponent->getPixelShader("UI", CShaderUtil::getShaderMacroString("_USE_ALPHA_", "_USE_ALPHA_CHANNEL_").c_str());
 
 	//const CGLProgram* program = shaderManagerComponent->getGlProgram(vs, ps);
 }
