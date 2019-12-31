@@ -273,6 +273,32 @@ bool CShaderUtil::processDirectiveInclude(const char* pAfterInclude, const char*
 	return false;
 }
 
+std::string CShaderUtil::getShaderMacroString(const char* macro0, const char* macro1, const char* macro2, const char* macro3)
+{
+	std::string str;
+
+	std::set<std::string> macroSet;
+	macroSet.insert(macro0);
+	macroSet.insert(macro1);
+	macroSet.insert(macro2);
+	macroSet.insert(macro3);
+
+	size_t count = 0;
+	for (const auto& macro : macroSet)
+	{
+		if (macro.empty())
+			continue;
+
+		str += macro;
+		if (count + 1 < macroSet.size())
+		{
+			str += "#";
+		}
+		++count;
+	}
+	return str;
+}
+
 std::string CShaderUtil::getShaderMacroString(const std::set<std::string>& shaderMacro)
 {
 	std::string str;
@@ -280,6 +306,9 @@ std::string CShaderUtil::getShaderMacroString(const std::set<std::string>& shade
 	size_t count = 0;
 	for (const auto& macro : shaderMacro)
 	{
+		if (macro.empty())
+			continue;
+
 		str += macro;
 		if (count + 1 < shaderMacro.size())
 		{
