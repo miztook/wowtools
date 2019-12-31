@@ -256,46 +256,46 @@ inline quaternion& quaternion::fromMatrix( const matrix4& m )
 	float	tr, s;
 
 	// calculating the trace of the matrix, it is equal to 4(1 - x*x - y*y - z*z)=4w*w if it is a unit quaternion
-	tr = m._11 + m._22 + m._33 + 1.0f;
+	tr = m.M[0] + m.M[5]+ m.M[10]+ 1.0f;
 	// check the diagonal
 	if (tr > 0.36f) // we can calculate out w directly
 	{
 		s = (float)sqrt(tr); // s is 2w
 		w = s * 0.5f;
 		s = 0.5f / s;	// now s is 1/4w
-		x = (m._23 - m._32) * s;
-		y = (m._31 - m._13) * s;
-		z = (m._12 - m._21) * s;
+		x = (m.M[6]- m.M[9]) * s;
+		y = (m.M[8]- m.M[2]) * s;
+		z = (m.M[1]- m.M[4]) * s;
 	}
 	else
 	{
 		// we have to calculate x, y or z first
-		if (m._11 >= m._22 && m._11 >= m._33)
+		if (m.M[0] >= m.M[5] && m.M[0] >= m.M[10])
 		{
-			s = (float)sqrt(1.0f + m._11 - m._22 - m._33); // s is 2x
+			s = (float)sqrt(1.0f + m.M[0]- m.M[5]- m.M[10]); // s is 2x
 			x = s *0.5f;
 			s = 0.5f / s;
-			y = (m._12 + m._21) * s;
-			z = (m._13 + m._31) * s;
-			w = (m._23 - m._32) * s;
+			y = (m.M[4] + m.M[1]) * s;
+			z = (m.M[2] + m.M[8]) * s;
+			w = (m.M[6]- m.M[9]) * s;
 		}
-		else if (m._22 >= m._11 && m._22 >= m._33)
+		else if (m.M[5] > m.M[10])
 		{
-			s = (float)sqrt(1.0f + m._22 - m._11 - m._33); // s is 2y
+			s = (float)sqrt(1.0f + m.M[5]- m.M[0]- m.M[10]); // s is 2y
 			y = s *0.5f;
 			s = 0.5f / s;
-			x = (m._12 + m._21) * s;
-			z = (m._23 + m._32) * s;
-			w = (m._31 - m._13) * s;
+			x = (m.M[4] + m.M[1]) * s;
+			z = (m.M[9] + m.M[6]) * s;
+			w = (m.M[8] - m.M[2]) * s;
 		}
 		else // mat._33 is maximum
 		{
-			s = (float)sqrt(1.0f + m._33 - m._11 - m._22); // s is 2z
+			s = (float)sqrt(1.0f + m.M[10] - m.M[0]- m.M[5]); // s is 2z
 			z = s *0.5f;
 			s = 0.5f / s;
-			x = (m._13 + m._31) * s;
-			y = (m._23 + m._32) * s;
-			w = (m._12 - m._21) * s;
+			x = (m.M[8] + m.M[2]) * s;
+			y = (m.M[9] + m.M[6]) * s;
+			w = (m.M[1] - m.M[4]) * s;
 		}
 	}
 }
