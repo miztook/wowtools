@@ -289,15 +289,15 @@ void COpenGLShaderManageComponent::setShaderUniformF(uint32_t location, GLenum t
 		break;
 	case GL_FLOAT_MAT2_ARB:
 		ASSERT(count >= 4);
-		Driver->GLExtension.extGlUniformMatrix2fv(location, count / 4, GL_FALSE, srcData);
+		Driver->GLExtension.extGlUniformMatrix2fv(location, count / 4, GL_TRUE, srcData);
 		break;
 	case GL_FLOAT_MAT3_ARB:
 		ASSERT(count >= 9);
-		Driver->GLExtension.extGlUniformMatrix3fv(location, count / 9, GL_FALSE, srcData);
+		Driver->GLExtension.extGlUniformMatrix3fv(location, count / 9, GL_TRUE, srcData);
 		break;
 	case GL_FLOAT_MAT4_ARB:
 		ASSERT(count >= 16);
-		Driver->GLExtension.extGlUniformMatrix4fv(location, count / 16, GL_FALSE, srcData);
+		Driver->GLExtension.extGlUniformMatrix4fv(location, count / 16, GL_TRUE, srcData);
 		break;
 	default:
 		ASSERT(false);
