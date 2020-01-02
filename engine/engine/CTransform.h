@@ -43,9 +43,21 @@ public:
 	void setRelativeTransformation(const matrix4& mat);
 
 	//
-	vector3df getDir() const { return f3d::normalize(RelativeRotateMatrix.getRow(2)); }
-	vector3df getUp() const { return f3d::normalize(RelativeRotateMatrix.getRow(1)); }
-	vector3df getRight() const { return f3d::normalize(RelativeRotateMatrix.getRow(0)); }
+	vector3df getDir() const 
+	{ 
+		vector4df v = RelativeRotateMatrix.getRow(2);
+		return vector3df(v.x, v.y, v.z);
+	}
+	vector3df getUp() const 
+	{
+		vector4df v = RelativeRotateMatrix.getRow(1);
+		return vector3df(v.x, v.y, v.z);
+	}
+	vector3df getRight() const
+	{
+		vector4df v = RelativeRotateMatrix.getRow(0);
+		return vector3df(v.x, v.y, v.z);
+	}
 	vector3df getPos() const { return RelativeTransformation.getTranslation(); }
 	vector3df getScale() const { return RelativeTransformation.getScale(); }
 

@@ -55,6 +55,9 @@ public:
 	T squareMagnitude() const { return x*x + y*y + z*z + w*w; }
 	T dotProduct(const vector4d<T>& other) const { return x*other.x + y*other.y + z*other.z + w*other.w; }
 
+	static const vector4d<T>& One() { static vector4d<T> m(1); return m; }
+	static const vector4d<T>& Zero() { static vector4d<T> m(0); return m; }
+
 	vector4d<T>& normalize()
 	{
 		float length = (float)(x*x + y*y + z*z + w*w);

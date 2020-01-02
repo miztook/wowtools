@@ -66,14 +66,12 @@ void CCamera::setViewTM(const matrix4& matView)
 	m_matViewTM = matView;
 	m_matVPTM = m_matViewTM * m_matProjectionTM;
 
-	vector3df vecDir, vecUp, vecPos;
-	vecDir = matView.getCol(2);
-	vecUp = matView.getCol(1);
-	vecPos = matView.getRow(3);
-
-	matrix4 matInv = matView;
-	matInv._41 = matInv._42 = matInv._43 = 0.0f;
-	matInv.transpose();
+	vector4df v = matView.getCol(2);
+	vector3df vecDir(v.x, v.y, v.z);
+	v = matView.getCol(1);
+	vector3df vecUp(v.x, v.y, v.z);
+	v = matView.getRow(3);
+	vector3df vecPos(v.x, v.y, v.z);
 
 	setDirAndUp(vecDir, vecUp);
 	setPos(vecPos);

@@ -2,6 +2,7 @@
 
 #include "vector2d.h"
 #include "vector3d.h"
+#include "vector4d.h"
 #include "plane3d.h"
 #include "aabbox3d.h"
 
@@ -59,11 +60,71 @@ public:
 	vector3df rotateVector(const vector3df& vect) const;
 	vector3df inverseRotateVector(const vector3df& vect) const;
 
-	vector3df getRow(int i) const { return vector3df(M[i * 4 + 0], M[i * 4 + 1], M[i * 4 + 2]); }
-	vector3df getCol(int i) const { return vector3df(M[0 * 4 + i], M[1 * 4 + i], M[2 * 4 + i]); }
+	vector4df getRow(int i) const
+	{
+		switch (i)
+		{
+		case 0: return vector4df(_11, _12, _13, _14);
+		case 1: return vector4df(_21, _22, _23, _24);
+		case 2: return vector4df(_31, _32, _33, _34);
+		case 3: return vector4df(_41, _42, _43, _44);
+		default: ASSERT(false); return vector4df::Zero();
+		}
+	}
+	vector4df getCol(int i) const
+	{
+		switch (i)
+		{
+		case 0: return vector4df(_11, _21, _31, _41);
+		case 1: return vector4df(_12, _22, _32, _42);
+		case 2: return vector4df(_13, _23, _33, _43);
+		case 3: return vector4df(_14, _24, _34, _44);
+		default: ASSERT(false); return vector4df::Zero();
+		}
+	}
+
 	//	Set row and column
-	void setRow(int i, const vector3df& v) { M[i * 4 + 0] = v.x; M[i * 4 + 1] = v.y; M[i * 4 + 2] = v.z; }
-	void setCol(int i, const vector3df& v) { M[0 * 4 + i] = v.x; M[1 * 4 + i] = v.y; M[2 * 4 + i] = v.z; }
+	void setRow(int i, const vector4df& v) 
+	{ 
+		switch (i)
+		{
+		case 0:
+			_11 = v.x; _12 = v.y; _13 = v.z; _14 = v.w;
+			break;
+		case 1: 
+			_21 = v.x; _22 = v.y; _23 = v.z; _24 = v.w;
+			break;
+		case 2: 
+			_31 = v.x; _32 = v.y; _33 = v.z; _34 = v.w;
+			break;
+		case 3: 
+			_41 = v.x; _42 = v.y; _43 = v.z; _44 = v.w;
+			break;
+		default: 
+			ASSERT(false);
+		}
+	}
+
+	void setCol(int i, const vector4df& v) 
+	{ 
+		switch (i)
+		{
+		case 0:
+			_11 = v.x; _21 = v.y; _31 = v.z; _41 = v.w;
+			break;
+		case 1:
+			_12 = v.x; _22 = v.y; _32 = v.z; _42 = v.w;
+			break;
+		case 2:
+			_13 = v.x; _23 = v.y; _33 = v.z; _43 = v.w;
+			break;
+		case 3:
+			_14 = v.x; _24 = v.y; _34 = v.z; _44 = v.w;
+			break;
+		default:
+			ASSERT(false);
+		}
+	}
 
 	CMatrix4<T>& setTranslation(const vector3d<T>& translation);
 	vector3d<T> getTranslation() const { return vector3d<T>(M[12], M[13], M[14]); }
@@ -413,31 +474,31 @@ inline CMatrix4<T>& CMatrix4<T>::operator-=(const CMatrix4<T>& other)
 template <class T>
 inline CMatrix4<T> CMatrix4<T>::operator*(const CMatrix4<T>& other) const
 {
-	CMatrix4<T> m3;
-	const T* m1 = M;
-	const T* m2 = other.M;
+	CMatrix4<T> res;
+	const CMatrix4<T>& lhs = *this;
+	const CMatrix4<T>& rhs = other;
 
-	m3.M[0] = m1[0] * m2[0] + m1[1] * m2[4] + m1[2] * m2[8] + m1[3] * m2[12];
-	m3.M[1] = m1[0] * m2[1] + m1[1] * m2[5] + m1[2] * m2[9] + m1[3] * m2[13];
-	m3.M[2] = m1[0] * m2[2] + m1[1] * m2[6] + m1[2] * m2[10] + m1[3] * m2[14];
-	m3.M[3] = m1[0] * m2[3] + m1[1] * m2[7] + m1[2] * m2[11] + m1[3] * m2[15];
+	res._11 = lhs._11 * rhs._11 + lhs._12 * rhs._21 + lhs._13 * rhs._31 + lhs._14 * rhs._41;
+	res._12 = lhs._11 * rhs._12 + lhs._12 * rhs._22 + lhs._13 * rhs._32 + lhs._14 * rhs._42;
+	res._13 = lhs._11 * rhs._13 + lhs._12 * rhs._23 + lhs._13 * rhs._33 + lhs._14 * rhs._43;
+	res._14 = lhs._11 * rhs._14 + lhs._12 * rhs._24 + lhs._13 * rhs._34 + lhs._14 * rhs._44;
 
-	m3.M[4] = m1[4] * m2[0] + m1[5] * m2[4] + m1[6] * m2[8] + m1[7] * m2[12];
-	m3.M[5] = m1[4] * m2[1] + m1[5] * m2[5] + m1[6] * m2[9] + m1[7] * m2[13];
-	m3.M[6] = m1[4] * m2[2] + m1[5] * m2[6] + m1[6] * m2[10] + m1[7] * m2[14];
-	m3.M[7] = m1[4] * m2[3] + m1[5] * m2[7] + m1[6] * m2[11] + m1[7] * m2[15];
+	res._21 = lhs._21 * rhs._11 + lhs._22 * rhs._21 + lhs._23 * rhs._31 + lhs._24 * rhs._41;
+	res._22 = lhs._21 * rhs._12 + lhs._22 * rhs._22 + lhs._23 * rhs._32 + lhs._24 * rhs._42;
+	res._23 = lhs._21 * rhs._13 + lhs._22 * rhs._23 + lhs._23 * rhs._33 + lhs._24 * rhs._43;
+	res._24 = lhs._21 * rhs._14 + lhs._22 * rhs._24 + lhs._23 * rhs._34 + lhs._24 * rhs._44;
 
-	m3.M[8] = m1[8] * m2[0] + m1[9] * m2[4] + m1[10] * m2[8] + m1[11] * m2[12];
-	m3.M[9] = m1[8] * m2[1] + m1[9] * m2[5] + m1[10] * m2[9] + m1[11] * m2[13];
-	m3.M[10] = m1[8] * m2[2] + m1[9] * m2[6] + m1[10] * m2[10] + m1[11] * m2[14];
-	m3.M[11] = m1[8] * m2[3] + m1[9] * m2[7] + m1[10] * m2[11] + m1[11] * m2[15];
+	res._31 = lhs._31 * rhs._11 + lhs._32 * rhs._21 + lhs._33 * rhs._31 + lhs._34 * rhs._41;
+	res._32 = lhs._31 * rhs._12 + lhs._32 * rhs._22 + lhs._33 * rhs._32 + lhs._34 * rhs._42;
+	res._33 = lhs._31 * rhs._13 + lhs._32 * rhs._23 + lhs._33 * rhs._33 + lhs._34 * rhs._43;
+	res._34 = lhs._31 * rhs._14 + lhs._32 * rhs._24 + lhs._33 * rhs._34 + lhs._34 * rhs._44;
 
-	m3.M[12] = m1[12] * m2[0] + m1[13] * m2[4] + m1[14] * m2[8] + m1[15] * m2[12];
-	m3.M[13] = m1[12] * m2[1] + m1[13] * m2[5] + m1[14] * m2[9] + m1[15] * m2[13];
-	m3.M[14] = m1[12] * m2[2] + m1[13] * m2[6] + m1[14] * m2[10] + m1[15] * m2[14];
-	m3.M[15] = m1[12] * m2[3] + m1[13] * m2[7] + m1[14] * m2[11] + m1[15] * m2[15];
+	res._41 = lhs._41 * rhs._11 + lhs._42 * rhs._21 + lhs._43 * rhs._31 + lhs._44 * rhs._41;
+	res._42 = lhs._41 * rhs._12 + lhs._42 * rhs._22 + lhs._43 * rhs._32 + lhs._44 * rhs._42;
+	res._43 = lhs._41 * rhs._13 + lhs._42 * rhs._23 + lhs._43 * rhs._33 + lhs._44 * rhs._43;
+	res._44 = lhs._41 * rhs._14 + lhs._42 * rhs._24 + lhs._43 * rhs._34 + lhs._44 * rhs._44;
 
-	return m3;
+	return res;
 }
 
 template <class T>
@@ -491,32 +552,28 @@ inline CMatrix4<T>& CMatrix4<T>::operator*=(const T& scalar)
 template <class T>
 inline CMatrix4<T>& CMatrix4<T>::setbyproduct(const CMatrix4<T>& other_a, const CMatrix4<T>& other_b)
 {
-	const T *m1 = other_a.M;
-	const T *m2 = other_b.M;
+	const CMatrix4<T>& lhs = other_a;
+	const CMatrix4<T>& rhs = other_b;
 
-	T tmp[16];
+	_11 = lhs._11 * rhs._11 + lhs._12 * rhs._21 + lhs._13 * rhs._31 + lhs._14 * rhs._41;
+	_12 = lhs._11 * rhs._12 + lhs._12 * rhs._22 + lhs._13 * rhs._32 + lhs._14 * rhs._42;
+	_13 = lhs._11 * rhs._13 + lhs._12 * rhs._23 + lhs._13 * rhs._33 + lhs._14 * rhs._43;
+	_14 = lhs._11 * rhs._14 + lhs._12 * rhs._24 + lhs._13 * rhs._34 + lhs._14 * rhs._44;
 
-	tmp[0] = m1[0] * m2[0] + m1[1] * m2[4] + m1[2] * m2[8] + m1[3] * m2[12];
-	tmp[1] = m1[0] * m2[1] + m1[1] * m2[5] + m1[2] * m2[9] + m1[3] * m2[13];
-	tmp[2] = m1[0] * m2[2] + m1[1] * m2[6] + m1[2] * m2[10] + m1[3] * m2[14];
-	tmp[3] = m1[0] * m2[3] + m1[1] * m2[7] + m1[2] * m2[11] + m1[3] * m2[15];
+	_21 = lhs._21 * rhs._11 + lhs._22 * rhs._21 + lhs._23 * rhs._31 + lhs._24 * rhs._41;
+	_22 = lhs._21 * rhs._12 + lhs._22 * rhs._22 + lhs._23 * rhs._32 + lhs._24 * rhs._42;
+	_23 = lhs._21 * rhs._13 + lhs._22 * rhs._23 + lhs._23 * rhs._33 + lhs._24 * rhs._43;
+	_24 = lhs._21 * rhs._14 + lhs._22 * rhs._24 + lhs._23 * rhs._34 + lhs._24 * rhs._44;
 
-	tmp[4] = m1[4] * m2[0] + m1[5] * m2[4] + m1[6] * m2[8] + m1[7] * m2[12];
-	tmp[5] = m1[4] * m2[1] + m1[5] * m2[5] + m1[6] * m2[9] + m1[7] * m2[13];
-	tmp[6] = m1[4] * m2[2] + m1[5] * m2[6] + m1[6] * m2[10] + m1[7] * m2[14];
-	tmp[7] = m1[4] * m2[3] + m1[5] * m2[7] + m1[6] * m2[11] + m1[7] * m2[15];
+	_31 = lhs._31 * rhs._11 + lhs._32 * rhs._21 + lhs._33 * rhs._31 + lhs._34 * rhs._41;
+	_32 = lhs._31 * rhs._12 + lhs._32 * rhs._22 + lhs._33 * rhs._32 + lhs._34 * rhs._42;
+	_33 = lhs._31 * rhs._13 + lhs._32 * rhs._23 + lhs._33 * rhs._33 + lhs._34 * rhs._43;
+	_34 = lhs._31 * rhs._14 + lhs._32 * rhs._24 + lhs._33 * rhs._34 + lhs._34 * rhs._44;
 
-	tmp[8] = m1[8] * m2[0] + m1[9] * m2[4] + m1[10] * m2[8] + m1[11] * m2[12];
-	tmp[9] = m1[8] * m2[1] + m1[9] * m2[5] + m1[10] * m2[9] + m1[11] * m2[13];
-	tmp[10] = m1[8] * m2[2] + m1[9] * m2[6] + m1[10] * m2[10] + m1[11] * m2[14];
-	tmp[11] = m1[8] * m2[3] + m1[9] * m2[7] + m1[10] * m2[11] + m1[11] * m2[15];
-
-	tmp[12] = m1[12] * m2[0] + m1[13] * m2[4] + m1[14] * m2[8] + m1[15] * m2[12];
-	tmp[13] = m1[12] * m2[1] + m1[13] * m2[5] + m1[14] * m2[9] + m1[15] * m2[13];
-	tmp[14] = m1[12] * m2[2] + m1[13] * m2[6] + m1[14] * m2[10] + m1[15] * m2[14];
-	tmp[15] = m1[12] * m2[3] + m1[13] * m2[7] + m1[14] * m2[11] + m1[15] * m2[15];
-
-	memcpy(M, tmp, sizeof(T)* 16);
+	_41 = lhs._41 * rhs._11 + lhs._42 * rhs._21 + lhs._43 * rhs._31 + lhs._44 * rhs._41;
+	_42 = lhs._41 * rhs._12 + lhs._42 * rhs._22 + lhs._43 * rhs._32 + lhs._44 * rhs._42;
+	_43 = lhs._41 * rhs._13 + lhs._42 * rhs._23 + lhs._43 * rhs._33 + lhs._44 * rhs._43;
+	_44 = lhs._41 * rhs._14 + lhs._42 * rhs._24 + lhs._43 * rhs._34 + lhs._44 * rhs._44;
 
 	return *this;
 }
