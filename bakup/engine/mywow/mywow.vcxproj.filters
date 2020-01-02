@@ -1,0 +1,395 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="common">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="engine">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\common\aabbox3d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\base.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CFileSystem.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CMemFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CReadFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CWriteFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\frustum.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\function.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\line3d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\matrix4.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\plane3d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\predefine.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\quaternion.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\S3DVertex.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\SColor.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\stringext.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\varianttype.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\vector2d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\vector3d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowDatabase.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowDbFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowEnvironment.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowTable.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowWDB5File.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowWDC3File.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowWMOFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowWMOStruct.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CInputReader.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CSysUtil.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\Engine.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\mywow.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\COSInfo.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CTimer.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CTransform.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\function3d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\IVideoDriver.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CRenderSetting.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\ITextureWriter.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\IRenderTarget.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\ITexture.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CCamera.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\ISceneNode.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CCImage.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\IImage.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\rect.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\SMaterial.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\IVideoResource.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CBlit.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CBLPImage.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CSysSync.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CSceneRenderer.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CScene.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CSysChrono.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CFPSCounter.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\IVertexIndexBuffer.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CShaderUtil.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\vector4d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\RenderStruct.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\FontDef.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CFTFont.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CFontManager.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CFTGlyphCache.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CSysCodeCvt.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\EngineUtil.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CWinMemDbg.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CWinMiniDump.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CMeshManager.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CMesh.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CMeshSceneNode.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\IRenderer.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CRenderLoop.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\SCullResult.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\SGlobalLayerData.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowHeader.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowGameFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowM2File.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wowM2Struct.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CSysThread.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CMaterial.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CResourceCache.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\ScriptLexer.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\ScriptParser.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CCanvas.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\common\CFileSystem.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CMemFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CReadFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CWriteFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\wowDatabase.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\wowDbFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\wowEnvironment.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\wowTable.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\wowWDB5File.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\wowWDC3File.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\wowWMOFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\Engine.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CSysUtil.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\COSInfo.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CInputReader.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CTimer.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CCImage.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CBlit.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CBLPImage.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\ddslib.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CSceneRenderer.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CScene.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CShaderUtil.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CCamera.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CFTFont.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CFontManager.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CFTGlyphCache.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CSysCodeCvt.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\EngineUtil.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CWinMemDbg.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CWinMiniDump.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CMesh.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CMeshManager.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CMeshSceneNode.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\IRenderer.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CRenderLoop.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\wowGameFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\wowM2File.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CSysThread.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CMaterial.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\ScriptLexer.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\ScriptParser.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CCanvas.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

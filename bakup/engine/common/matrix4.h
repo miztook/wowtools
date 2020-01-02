@@ -32,7 +32,6 @@ public:
 	CMatrix4<T>& operator*=(const CMatrix4<T>& other) { return setbyproduct(*this, other); }
 	CMatrix4<T> operator*(const T& scalar) const;
 	CMatrix4<T>& operator*=(const T& scalar);
-	CMatrix4<T>& setbyproduct(const CMatrix4<T>& other_a, const CMatrix4<T>& other_b);
 
 	//
 	CMatrix4<T>& makeIdentity()
@@ -59,14 +58,31 @@ public:
 	vector3df rotateVector(const vector3df& vect) const;
 	vector3df inverseRotateVector(const vector3df& vect) const;
 
-	vector3df getRow(int i) const { return vector3df(M[i * 4 + 0], M[i * 4 + 1], M[i * 4 + 2]); }
-	vector3df getCol(int i) const { return vector3df(M[0 * 4 + i], M[1 * 4 + i], M[2 * 4 + i]); }
+	vector3df getRow(int i) const
+	{
+		return vector3df(M[i * 4 + 0], M[i * 4 + 1], M[i * 4 + 2]);
+	}
+	vector3df getCol(int i) const 
+	{ 
+		return vector3df(M[0 * 4 + i], M[1 * 4 + i], M[2 * 4 + i]);
+	}
 	//	Set row and column
-	void setRow(int i, const vector3df& v) { M[i * 4 + 0] = v.x; M[i * 4 + 1] = v.y; M[i * 4 + 2] = v.z; }
-	void setCol(int i, const vector3df& v) { M[0 * 4 + i] = v.x; M[1 * 4 + i] = v.y; M[2 * 4 + i] = v.z; }
+	void setRow(int i, const vector3df& v) 
+	{ 
+		M[i * 4 + 0] = v.x; M[i * 4 + 1] = v.y; M[i * 4 + 2] = v.z;
+	}
+	void setCol(int i, const vector3df& v) 
+	{ 
+		M[0 * 4 + i] = v.x; M[1 * 4 + i] = v.y; M[2 * 4 + i] = v.z;
+	}
 
 	CMatrix4<T>& setTranslation(const vector3d<T>& translation);
-	vector3d<T> getTranslation() const { return vector3d<T>(M[12], M[13], M[14]); }
+	vector3d<T> getTranslation() const { return vector3d<T>(_14, _24, _34); }
+
+	CMatrix4<T>& setRotationRadians(const vector3d<T>& rotation);
+	CMatrix4<T>& setRotationDegrees(const vector3d<T>& rotation){ return setRotationRadians(rotation * DEGTORAD); }
+	vector3d<T> getRotationRadians() const;
+	vector3d<T> getRotationDegrees() const { return getRotationRadians() * RADTODEG; }
 
 	CMatrix4<T>& scale(const vector3d<T>& scale);
 	CMatrix4<T>& scale(const T scale) { return scale(vector3d<T>(scale, scale, scale)); }
@@ -137,10 +153,10 @@ public:
 		};
 		struct
 		{
-			T _11, _12, _13, _14;
-			T _21, _22, _23, _24;
-			T _31, _32, _33, _34;
-			T _41, _42, _43, _44;
+			T _11, _21, _31, _41;
+			T _12, _22, _32, _42;
+			T _13, _23, _33, _43;
+			T _14, _24, _34, _44;
 		};
 	};
 
@@ -413,31 +429,31 @@ inline CMatrix4<T>& CMatrix4<T>::operator-=(const CMatrix4<T>& other)
 template <class T>
 inline CMatrix4<T> CMatrix4<T>::operator*(const CMatrix4<T>& other) const
 {
-	CMatrix4<T> m3;
-	const T* m1 = M;
-	const T* m2 = other.M;
+	CMatrix4<T> res;
+	const CMatrix4<T>& lhs = *this;
+	const CMatrix4<T>& rhs = other;
 
-	m3.M[0] = m1[0] * m2[0] + m1[1] * m2[4] + m1[2] * m2[8] + m1[3] * m2[12];
-	m3.M[1] = m1[0] * m2[1] + m1[1] * m2[5] + m1[2] * m2[9] + m1[3] * m2[13];
-	m3.M[2] = m1[0] * m2[2] + m1[1] * m2[6] + m1[2] * m2[10] + m1[3] * m2[14];
-	m3.M[3] = m1[0] * m2[3] + m1[1] * m2[7] + m1[2] * m2[11] + m1[3] * m2[15];
+	res._11 = lhs._11 * rhs._11 + lhs._12 * rhs._21 + lhs._13 * rhs._31 + lhs._14 * rhs._41;
+	res._12 = lhs._11 * rhs._12 + lhs._12 * rhs._22 + lhs._13 * rhs._32 + lhs._14 * rhs._42;
+	res._13 = lhs._11 * rhs._13 + lhs._12 * rhs._23 + lhs._13 * rhs._33 + lhs._14 * rhs._43;
+	res._14 = lhs._11 * rhs._14 + lhs._12 * rhs._24 + lhs._13 * rhs._34 + lhs._14 * rhs._44;
 
-	m3.M[4] = m1[4] * m2[0] + m1[5] * m2[4] + m1[6] * m2[8] + m1[7] * m2[12];
-	m3.M[5] = m1[4] * m2[1] + m1[5] * m2[5] + m1[6] * m2[9] + m1[7] * m2[13];
-	m3.M[6] = m1[4] * m2[2] + m1[5] * m2[6] + m1[6] * m2[10] + m1[7] * m2[14];
-	m3.M[7] = m1[4] * m2[3] + m1[5] * m2[7] + m1[6] * m2[11] + m1[7] * m2[15];
+	res._21 = lhs._21 * rhs._11 + lhs._22 * rhs._21 + lhs._23 * rhs._31 + lhs._24 * rhs._41;
+	res._22 = lhs._21 * rhs._12 + lhs._22 * rhs._22 + lhs._23 * rhs._32 + lhs._24 * rhs._42;
+	res._23 = lhs._21 * rhs._13 + lhs._22 * rhs._23 + lhs._23 * rhs._33 + lhs._24 * rhs._43;
+	res._24 = lhs._21 * rhs._14 + lhs._22 * rhs._24 + lhs._23 * rhs._34 + lhs._24 * rhs._44;
 
-	m3.M[8] = m1[8] * m2[0] + m1[9] * m2[4] + m1[10] * m2[8] + m1[11] * m2[12];
-	m3.M[9] = m1[8] * m2[1] + m1[9] * m2[5] + m1[10] * m2[9] + m1[11] * m2[13];
-	m3.M[10] = m1[8] * m2[2] + m1[9] * m2[6] + m1[10] * m2[10] + m1[11] * m2[14];
-	m3.M[11] = m1[8] * m2[3] + m1[9] * m2[7] + m1[10] * m2[11] + m1[11] * m2[15];
+	res._31 = lhs._31 * rhs._11 + lhs._32 * rhs._21 + lhs._33 * rhs._31 + lhs._34 * rhs._41;
+	res._32 = lhs._31 * rhs._12 + lhs._32 * rhs._22 + lhs._33 * rhs._32 + lhs._34 * rhs._42;
+	res._33 = lhs._31 * rhs._13 + lhs._32 * rhs._23 + lhs._33 * rhs._33 + lhs._34 * rhs._43;
+	res._34 = lhs._31 * rhs._14 + lhs._32 * rhs._24 + lhs._33 * rhs._34 + lhs._34 * rhs._44;
 
-	m3.M[12] = m1[12] * m2[0] + m1[13] * m2[4] + m1[14] * m2[8] + m1[15] * m2[12];
-	m3.M[13] = m1[12] * m2[1] + m1[13] * m2[5] + m1[14] * m2[9] + m1[15] * m2[13];
-	m3.M[14] = m1[12] * m2[2] + m1[13] * m2[6] + m1[14] * m2[10] + m1[15] * m2[14];
-	m3.M[15] = m1[12] * m2[3] + m1[13] * m2[7] + m1[14] * m2[11] + m1[15] * m2[15];
+	res._41 = lhs._41 * rhs._11 + lhs._42 * rhs._21 + lhs._43 * rhs._31 + lhs._44 * rhs._41;
+	res._42 = lhs._41 * rhs._12 + lhs._42 * rhs._22 + lhs._43 * rhs._32 + lhs._44 * rhs._42;
+	res._43 = lhs._41 * rhs._13 + lhs._42 * rhs._23 + lhs._43 * rhs._33 + lhs._44 * rhs._43;
+	res._44 = lhs._41 * rhs._14 + lhs._42 * rhs._24 + lhs._43 * rhs._34 + lhs._44 * rhs._44;
 
-	return m3;
+	return res;
 }
 
 template <class T>
@@ -484,39 +500,6 @@ inline CMatrix4<T>& CMatrix4<T>::operator*=(const T& scalar)
 	M[13] *= scalar;
 	M[14] *= scalar;
 	M[15] *= scalar;
-
-	return *this;
-}
-
-template <class T>
-inline CMatrix4<T>& CMatrix4<T>::setbyproduct(const CMatrix4<T>& other_a, const CMatrix4<T>& other_b)
-{
-	const T *m1 = other_a.M;
-	const T *m2 = other_b.M;
-
-	T tmp[16];
-
-	tmp[0] = m1[0] * m2[0] + m1[1] * m2[4] + m1[2] * m2[8] + m1[3] * m2[12];
-	tmp[1] = m1[0] * m2[1] + m1[1] * m2[5] + m1[2] * m2[9] + m1[3] * m2[13];
-	tmp[2] = m1[0] * m2[2] + m1[1] * m2[6] + m1[2] * m2[10] + m1[3] * m2[14];
-	tmp[3] = m1[0] * m2[3] + m1[1] * m2[7] + m1[2] * m2[11] + m1[3] * m2[15];
-
-	tmp[4] = m1[4] * m2[0] + m1[5] * m2[4] + m1[6] * m2[8] + m1[7] * m2[12];
-	tmp[5] = m1[4] * m2[1] + m1[5] * m2[5] + m1[6] * m2[9] + m1[7] * m2[13];
-	tmp[6] = m1[4] * m2[2] + m1[5] * m2[6] + m1[6] * m2[10] + m1[7] * m2[14];
-	tmp[7] = m1[4] * m2[3] + m1[5] * m2[7] + m1[6] * m2[11] + m1[7] * m2[15];
-
-	tmp[8] = m1[8] * m2[0] + m1[9] * m2[4] + m1[10] * m2[8] + m1[11] * m2[12];
-	tmp[9] = m1[8] * m2[1] + m1[9] * m2[5] + m1[10] * m2[9] + m1[11] * m2[13];
-	tmp[10] = m1[8] * m2[2] + m1[9] * m2[6] + m1[10] * m2[10] + m1[11] * m2[14];
-	tmp[11] = m1[8] * m2[3] + m1[9] * m2[7] + m1[10] * m2[11] + m1[11] * m2[15];
-
-	tmp[12] = m1[12] * m2[0] + m1[13] * m2[4] + m1[14] * m2[8] + m1[15] * m2[12];
-	tmp[13] = m1[12] * m2[1] + m1[13] * m2[5] + m1[14] * m2[9] + m1[15] * m2[13];
-	tmp[14] = m1[12] * m2[2] + m1[13] * m2[6] + m1[14] * m2[10] + m1[15] * m2[14];
-	tmp[15] = m1[12] * m2[3] + m1[13] * m2[7] + m1[14] * m2[11] + m1[15] * m2[15];
-
-	memcpy(M, tmp, sizeof(T)* 16);
 
 	return *this;
 }
@@ -671,10 +654,78 @@ inline  vector3df CMatrix4<T>::inverseRotateVector(const vector3df& vect) const
 template <class T>
 inline CMatrix4<T>& CMatrix4<T>::setTranslation(const vector3d<T>& translation)
 {
-	M[12] = translation.x;
-	M[13] = translation.y;
-	M[14] = translation.z;
+	_14 = translation.x;
+	_24 = translation.y;
+	_34 = translation.z;
 	return *this;
+}
+
+template <class T>
+inline CMatrix4<T>& CMatrix4<T>::setRotationRadians(const vector3d<T>& rotation)
+{
+	const float cr = cos(rotation.x);
+	const float sr = sin(rotation.x);
+	const float cp = cos(rotation.y);
+	const float sp = sin(rotation.y);
+	const float cy = cos(rotation.z);
+	const float sy = sin(rotation.z);
+
+	M[0] = (T)(cp*cy);
+	M[1] = (T)(cp*sy);
+	M[2] = (T)(-sp);
+
+	const float srsp = sr*sp;
+	const float crsp = cr*sp;
+
+	M[4] = (T)(srsp*cy - cr*sy);
+	M[5] = (T)(srsp*sy + cr*cy);
+	M[6] = (T)(sr*cp);
+
+	M[8] = (T)(crsp*cy + sr*sy);
+	M[9] = (T)(crsp*sy - sr*cy);
+	M[10] = (T)(cr*cp);
+
+	return *this;
+}
+
+template <class T>
+inline vector3d<T> CMatrix4<T>::getRotationRadians() const
+{
+	const CMatrix4<T> &mat = *this;
+	const vector3d<T> scale = getScale();
+	const vector3d<float> invScale(reciprocal_(scale.x), reciprocal_(scale.y), reciprocal_(scale.z));
+
+	float Y = -asin(mat[2] * invScale.x);
+	const float C = cos(Y);
+
+	float rotx, roty, X, Z;
+
+	if (!iszero_(C))
+	{
+		const float invC = reciprocal_(C);
+		rotx = mat[10] * invC * invScale.z;
+		roty = mat[6] * invC * invScale.y;
+		X = atan2(roty, rotx);
+		rotx = mat[0] * invC * invScale.x;
+		roty = mat[1] * invC * invScale.x;
+		Z = atan2(roty, rotx);
+	}
+	else
+	{
+		X = 0.0;
+		rotx = mat[5] * invScale.y;
+		roty = -mat[4] * invScale.y;
+		Z = atan2(roty, rotx);
+	}
+
+	// fix values that get below zero
+	// before it would set (!) values to 360
+	// that were above 360:
+	if (X < 0.0) X += 2 * PI;
+	if (Y < 0.0) Y += 2 * PI;
+	if (Z < 0.0) Z += 2 * PI;
+
+	return vector3d<T>((T)X, (T)Y, (T)Z);
 }
 
 template <class T>

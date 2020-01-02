@@ -1,0 +1,281 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\common\aabbox3d.h" />
+    <ClInclude Include="..\common\base.h" />
+    <ClInclude Include="..\common\CFileSystem.h" />
+    <ClInclude Include="..\common\CMemFile.h" />
+    <ClInclude Include="..\common\CReadFile.h" />
+    <ClInclude Include="..\common\CResourceCache.h" />
+    <ClInclude Include="..\common\CSysChrono.h" />
+    <ClInclude Include="..\common\CSysCodeCvt.h" />
+    <ClInclude Include="..\common\CSysSync.h" />
+    <ClInclude Include="..\common\CSysThread.h" />
+    <ClInclude Include="..\common\CWriteFile.h" />
+    <ClInclude Include="..\common\frustum.h" />
+    <ClInclude Include="..\common\function.h" />
+    <ClInclude Include="..\common\function3d.h" />
+    <ClInclude Include="..\common\line3d.h" />
+    <ClInclude Include="..\common\matrix4.h" />
+    <ClInclude Include="..\common\plane3d.h" />
+    <ClInclude Include="..\common\predefine.h" />
+    <ClInclude Include="..\common\quaternion.h" />
+    <ClInclude Include="..\common\rect.h" />
+    <ClInclude Include="..\common\S3DVertex.h" />
+    <ClInclude Include="..\common\SColor.h" />
+    <ClInclude Include="..\common\ScriptLexer.h" />
+    <ClInclude Include="..\common\ScriptParser.h" />
+    <ClInclude Include="..\common\stringext.h" />
+    <ClInclude Include="..\common\varianttype.h" />
+    <ClInclude Include="..\common\vector2d.h" />
+    <ClInclude Include="..\common\vector3d.h" />
+    <ClInclude Include="..\common\vector4d.h" />
+    <ClInclude Include="..\common\wowDatabase.h" />
+    <ClInclude Include="..\common\wowDbFile.h" />
+    <ClInclude Include="..\common\wowGameFile.h" />
+    <ClInclude Include="..\common\wowHeader.h" />
+    <ClInclude Include="..\common\wowEnvironment.h" />
+    <ClInclude Include="..\common\wowM2File.h" />
+    <ClInclude Include="..\common\wowM2Struct.h" />
+    <ClInclude Include="..\common\wowTable.h" />
+    <ClInclude Include="..\common\wowWDB5File.h" />
+    <ClInclude Include="..\common\wowWDC3File.h" />
+    <ClInclude Include="..\common\wowWMOFile.h" />
+    <ClInclude Include="..\common\wowWMOStruct.h" />
+    <ClInclude Include="..\engine\CBLPImage.h" />
+    <ClInclude Include="..\engine\CCamera.h" />
+    <ClInclude Include="..\engine\CCanvas.h" />
+    <ClInclude Include="..\engine\CFontManager.h" />
+    <ClInclude Include="..\engine\CFPSCounter.h" />
+    <ClInclude Include="..\engine\CFTFont.h" />
+    <ClInclude Include="..\engine\CFTGlyphCache.h" />
+    <ClInclude Include="..\engine\CCImage.h" />
+    <ClInclude Include="..\engine\CInputReader.h" />
+    <ClInclude Include="..\engine\CMaterial.h" />
+    <ClInclude Include="..\engine\CMesh.h" />
+    <ClInclude Include="..\engine\CMeshManager.h" />
+    <ClInclude Include="..\engine\CMeshSceneNode.h" />
+    <ClInclude Include="..\engine\COSInfo.h" />
+    <ClInclude Include="..\engine\CRenderLoop.h" />
+    <ClInclude Include="..\engine\CScene.h" />
+    <ClInclude Include="..\engine\CSceneRenderer.h" />
+    <ClInclude Include="..\engine\CWinMemDbg.h" />
+    <ClInclude Include="..\engine\CWinMiniDump.h" />
+    <ClInclude Include="..\engine\EngineUtil.h" />
+    <ClInclude Include="..\engine\FontDef.h" />
+    <ClInclude Include="..\engine\IImage.h" />
+    <ClInclude Include="..\engine\IRenderer.h" />
+    <ClInclude Include="..\engine\ISceneNode.h" />
+    <ClInclude Include="..\engine\CSysUtil.h" />
+    <ClInclude Include="..\engine\CTimer.h" />
+    <ClInclude Include="..\engine\CTransform.h" />
+    <ClInclude Include="..\engine\Engine.h" />
+    <ClInclude Include="..\engine\CBlit.h" />
+    <ClInclude Include="..\engine\IRenderTarget.h" />
+    <ClInclude Include="..\engine\CShaderUtil.h" />
+    <ClInclude Include="..\engine\ITexture.h" />
+    <ClInclude Include="..\engine\ITextureWriter.h" />
+    <ClInclude Include="..\engine\IVertexIndexBuffer.h" />
+    <ClInclude Include="..\engine\IVideoDriver.h" />
+    <ClInclude Include="..\engine\IVideoResource.h" />
+    <ClInclude Include="..\engine\mywow.h" />
+    <ClInclude Include="..\engine\CRenderSetting.h" />
+    <ClInclude Include="..\engine\RenderStruct.h" />
+    <ClInclude Include="..\engine\SCullResult.h" />
+    <ClInclude Include="..\engine\SGlobalLayerData.h" />
+    <ClInclude Include="..\engine\SMaterial.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\common\CFileSystem.cpp" />
+    <ClCompile Include="..\common\CMemFile.cpp" />
+    <ClCompile Include="..\common\CReadFile.cpp" />
+    <ClCompile Include="..\common\CSysCodeCvt.cpp" />
+    <ClCompile Include="..\common\CSysThread.cpp" />
+    <ClCompile Include="..\common\CWriteFile.cpp" />
+    <ClCompile Include="..\common\ScriptLexer.cpp" />
+    <ClCompile Include="..\common\ScriptParser.cpp" />
+    <ClCompile Include="..\common\wowDatabase.cpp" />
+    <ClCompile Include="..\common\wowDbFile.cpp" />
+    <ClCompile Include="..\common\wowEnvironment.cpp" />
+    <ClCompile Include="..\common\wowGameFile.cpp" />
+    <ClCompile Include="..\common\wowM2File.cpp" />
+    <ClCompile Include="..\common\wowTable.cpp" />
+    <ClCompile Include="..\common\wowWDB5File.cpp" />
+    <ClCompile Include="..\common\wowWDC3File.cpp" />
+    <ClCompile Include="..\common\wowWMOFile.cpp" />
+    <ClCompile Include="..\engine\CBlit.cpp" />
+    <ClCompile Include="..\engine\CBLPImage.cpp" />
+    <ClCompile Include="..\engine\CCamera.cpp" />
+    <ClCompile Include="..\engine\CCanvas.cpp" />
+    <ClCompile Include="..\engine\CCImage.cpp" />
+    <ClCompile Include="..\engine\CFontManager.cpp" />
+    <ClCompile Include="..\engine\CFTFont.cpp" />
+    <ClCompile Include="..\engine\CFTGlyphCache.cpp" />
+    <ClCompile Include="..\engine\CInputReader.cpp" />
+    <ClCompile Include="..\engine\CMaterial.cpp" />
+    <ClCompile Include="..\engine\CMesh.cpp" />
+    <ClCompile Include="..\engine\CMeshManager.cpp" />
+    <ClCompile Include="..\engine\CMeshSceneNode.cpp" />
+    <ClCompile Include="..\engine\COSInfo.cpp" />
+    <ClCompile Include="..\engine\CRenderLoop.cpp" />
+    <ClCompile Include="..\engine\CScene.cpp" />
+    <ClCompile Include="..\engine\CSceneRenderer.cpp" />
+    <ClCompile Include="..\engine\CShaderUtil.cpp" />
+    <ClCompile Include="..\engine\CSysUtil.cpp" />
+    <ClCompile Include="..\engine\CTimer.cpp" />
+    <ClCompile Include="..\engine\CWinMemDbg.cpp" />
+    <ClCompile Include="..\engine\CWinMiniDump.cpp" />
+    <ClCompile Include="..\engine\ddslib.cpp" />
+    <ClCompile Include="..\engine\Engine.cpp" />
+    <ClCompile Include="..\engine\EngineUtil.cpp" />
+    <ClCompile Include="..\engine\IRenderer.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5FC4A776-9356-4FE9-93BA-F610DEE4E660}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>mywow</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)\engine_$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\..\.build\$(ProjectName)_$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)\engine_$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\..\.build\$(ProjectName)_$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)\engine_$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\..\.build\$(ProjectName)_$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>..\..\.build\$(ProjectName)_$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)\engine_$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\3rdparty\freetype-2.5.5\include;..\common;..\engine</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\3rdparty\freetype-2.5.5\include;..\common;..\engine</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\3rdparty\freetype-2.5.5\include;..\common;..\engine</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\3rdparty\freetype-2.5.5\include;..\common;..\engine</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
