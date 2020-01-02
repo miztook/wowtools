@@ -36,7 +36,6 @@ public:
 	 quaternion operator*(float s) const { return quaternion(s*x, s*y, s*z, s*w); }
 	 quaternion& operator*=(float s) { x*=s; y*=s; z*=s; w*=s; return *this; }
 	 vector3df operator*(const vector3df& v) const;
-	 matrix4 operator*(const matrix4& v) const;
 	 quaternion& operator*=(const quaternion& other) { return (*this = other * (*this)); }
 
 	//
@@ -50,10 +49,10 @@ public:
 	 quaternion& makeIdentity()	{ w = 1.f; x = 0.f; y = 0.f; z = 0.f; return *this; }
 	quaternion& normalize();
 	quaternion& fromMatrix(const matrix4& m);
-	void getMatrix( matrix4& dest ) const;				//
+	matrix4 toMatrix() const;				//
 	static quaternion slerp( quaternion q1, quaternion q2, float interpolate );
 	quaternion& rotationFromTo(const vector3df& from, const vector3df& to, const vector3df& axisOpposite);
-	void transformVect( vector3df& vect) const;
+	vector3df transformVect( const vector3df& vect) const;
 
 public:
 	float x;		//imaginary
@@ -84,13 +83,6 @@ inline vector3df quaternion::operator*(const vector3df& v) const
 	uuv *= 2.0f;
 
 	return v + uv + uuv;
-}
-
-inline matrix4 quaternion::operator*( const matrix4& v ) const
-{
-	matrix4 m;
-	getMatrix(m);
-	return m * v;
 }
 
 inline quaternion& quaternion::fromAngleAxis (float angle, const vector3df& axis)
@@ -188,29 +180,31 @@ inline quaternion& quaternion::normalize()
 	return *this;
 }
 
-inline void quaternion::getMatrix( matrix4& dest ) const
+inline matrix4 quaternion::toMatrix() const
 {
-	float * m = dest.pointer();
+	matrix4 ret;
 
-	m[0] = 1.0f - 2.0f*y*y - 2.0f*z*z;
-	m[1] = 2.0f*x*y + 2.0f*z*w;
-	m[2] = 2.0f*x*z - 2.0f*y*w;
-	m[3] = 0.0f;
+	ret._11 = 1.0f - 2.0f*y*y - 2.0f*z*z;
+	ret._12 = 2.0f*x*y + 2.0f*z*w;
+	ret._13 = 2.0f*x*z - 2.0f*y*w;
+	ret._14 = 0.0f;
 
-	m[4] = 2.0f*x*y - 2.0f*z*w;
-	m[5] = 1.0f - 2.0f*x*x - 2.0f*z*z;
-	m[6] = 2.0f*z*y + 2.0f*x*w;
-	m[7] = 0.0f;
+	ret._21 = 2.0f*x*y - 2.0f*z*w;
+	ret._22 = 1.0f - 2.0f*x*x - 2.0f*z*z;
+	ret._23 = 2.0f*z*y + 2.0f*x*w;
+	ret._24 = 0.0f;
 
-	m[8] = 2.0f*x*z + 2.0f*y*w;
-	m[9] = 2.0f*z*y - 2.0f*x*w;
-	m[10] = 1.0f - 2.0f*x*x - 2.0f*y*y;
-	m[11] = 0.0f;
+	ret._31 = 2.0f*x*z + 2.0f*y*w;
+	ret._32 = 2.0f*z*y - 2.0f*x*w;
+	ret._33 = 1.0f - 2.0f*x*x - 2.0f*y*y;
+	ret._34 = 0.0f;
 
-	m[12] = 0;
-	m[13] = 0;
-	m[14] = 0;
-	m[15] = 1.f;
+	ret._41 = 0;
+	ret._42 = 0;
+	ret._43 = 0;
+	ret._44 = 1.f;
+
+	return ret;
 }
 
 inline quaternion quaternion::slerp(quaternion q1, quaternion q2, float time)
@@ -331,36 +325,9 @@ inline quaternion& quaternion::rotationFromTo( const vector3df& from, const vect
 	return *this;
 }
 
-inline void quaternion::transformVect( vector3df& vect ) const
+inline vector3df quaternion::transformVect( const vector3df& vect ) const
 {
-	float m[16];
-	m[0] = 1.0f - 2.0f*y*y - 2.0f*z*z;
-	m[1] = 2.0f*x*y + 2.0f*z*w;
-	m[2] = 2.0f*x*z - 2.0f*y*w;
-	m[3] = 0.0f;
+	matrix4 m = toMatrix();
 
-	m[4] = 2.0f*x*y - 2.0f*z*w;
-	m[5] = 1.0f - 2.0f*x*x - 2.0f*z*z;
-	m[6] = 2.0f*z*y + 2.0f*x*w;
-	m[7] = 0.0f;
-
-	m[8] = 2.0f*x*z + 2.0f*y*w;
-	m[9] = 2.0f*z*y - 2.0f*x*w;
-	m[10] = 1.0f - 2.0f*x*x - 2.0f*y*y;
-	m[11] = 0.0f;
-
-	m[12] = 0;
-	m[13] = 0;
-	m[14] = 0;
-	m[15] = 1.f;
-
-	float vector[3];
-
-	vector[0] = vect.x*m[0] + vect.y*m[4] + vect.z*m[8] + m[12];
-	vector[1] = vect.x*m[1] + vect.y*m[5] + vect.z*m[9] + m[13];
-	vector[2] = vect.x*m[2] + vect.y*m[6] + vect.z*m[10] + m[14];
-
-	vect.x = vector[0];
-	vect.y = vector[1];
-	vect.z = vector[2];
+	return m.transformVector(vect);
 }

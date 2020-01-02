@@ -99,55 +99,12 @@ inline matrix4 translate(float x, float y, float z)
 	return ret;
 }
 
-inline matrix4 rotateAxis(const vector3df& vRotAxis, float vRad)
-{
-	vector3df vecAxis = normalize(vRotAxis);
-
-	matrix4 ret;
-	float xx, xy, xz, yy, yz, zz, cosine, sine, one_cs, xsine, ysine, zsine;
-
-	xx = vecAxis.x * vecAxis.x;
-	xy = vecAxis.x * vecAxis.y;
-	xz = vecAxis.x * vecAxis.z;
-	yy = vecAxis.y * vecAxis.y;
-	yz = vecAxis.y * vecAxis.z;
-	zz = vecAxis.z * vecAxis.z;
-
-	cosine = (float)cos(vRad);
-	sine = (float)sin(vRad);
-	one_cs = 1.0f - cosine;
-
-	xsine = vecAxis.x * sine;
-	ysine = vecAxis.y * sine;
-	zsine = vecAxis.z * sine;
-
-	ret._11 = xx + cosine * (1.0f - xx);
-	ret._12 = xy * one_cs + zsine;
-	ret._13 = xz * one_cs - ysine;
-	ret._14 = 0.0f;
-
-	ret._21 = xy * one_cs - zsine;
-	ret._22 = yy + cosine * (1.0f - yy);
-	ret._23 = yz * one_cs + xsine;
-	ret._24 = 0.0f;
-
-	ret._31 = xz * one_cs + ysine;
-	ret._32 = yz * one_cs - xsine;
-	ret._33 = zz + cosine * (1.0f - zz);
-	ret._34 = 0.0f;
-
-	ret._41 = 0.0f;
-	ret._42 = 0.0f;
-	ret._43 = 0.0f;
-	ret._44 = 1.0f;
-
-	return ret;
-}
 
 inline matrix4 rotateAxis(const vector3df& vecPos, const vector3df& vecAxis, float vRad)
 {
+	quaternion rotate(vecAxis, vRad);
 	matrix4 ret = translate(-vecPos.x, -vecPos.y, -vecPos.z);
-	ret = ret * rotateAxis(vecAxis, vRad);
+	ret = ret * rotate.toMatrix();
 	ret = ret * translate(vecPos.x, vecPos.y, vecPos.z);
 	return ret;
 }

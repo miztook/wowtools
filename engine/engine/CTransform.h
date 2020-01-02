@@ -231,7 +231,7 @@ inline void CTransform::setScale(const vector3df& scale)
 
 inline void CTransform::rotate(const quaternion& q)
 {
-	RelativeRotateMatrix = q * RelativeRotateMatrix;
+	RelativeRotateMatrix = RelativeRotateMatrix * q.toMatrix();
 	matrix4 mat = RelativeRotateMatrix;
 	mat.setScale(getScale());
 	mat.setTranslation(getPos());

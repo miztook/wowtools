@@ -595,10 +595,10 @@ inline vector3df CMatrix4<T>::transformVector(const vector3df& vect, float& z) c
 {
 	vector3df vector;
 
-	vector.x = vect.x*M[0] + vect.y*M[4] + vect.z*M[8] + M[12];
-	vector.y = vect.x*M[1] + vect.y*M[5] + vect.z*M[9] + M[13];
-	vector.z = vect.x*M[2] + vect.y*M[6] + vect.z*M[10] + M[14];
-	z = vect.x*M[3] + vect.y*M[7] + vect.z*M[11] + M[15];
+	vector.x = vect.x * _11 + vect.y * _21 + vect.z * _31 + _41;
+	vector.y = vect.x * _12 + vect.y * _22 + vect.z * _32 + _42;
+	vector.z = vect.x * _13 + vect.y * _23 + vect.z * _33 + _43;
+	z = vect.x * _14 + vect.y * _24 + vect.z * _34 + _44;
 
 	return vector;
 }
@@ -608,9 +608,9 @@ inline vector3df CMatrix4<T>::transformVector(const vector3df& vect) const
 {
 	vector3df vector;
 
-	vector.x = vect.x*M[0] + vect.y*M[4] + vect.z*M[8] + M[12];
-	vector.y = vect.x*M[1] + vect.y*M[5] + vect.z*M[9] + M[13];
-	vector.z = vect.x*M[2] + vect.y*M[6] + vect.z*M[10] + M[14];
+	vector.x = vect.x * _11 + vect.y * _21 + vect.z * _31 + _41;
+	vector.y = vect.x * _12 + vect.y * _22 + vect.z * _32 + _42;
+	vector.z = vect.x * _13 + vect.y * _23 + vect.z * _33 + _43;
 
 	return vector;
 }
