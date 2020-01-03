@@ -42,22 +42,22 @@ inline matrix4 transformMatrix(const vector3df& vecDir, const vector3df& vecUp, 
 
 	ASSERT(vecXAxis.magnitude() > 1e-3);
 
-	mat._11 = vecXAxis.x;
-	mat._12 = vecXAxis.y;
-	mat._13 = vecXAxis.z;
+	mat._00 = vecXAxis.x;
+	mat._01 = vecXAxis.y;
+	mat._02 = vecXAxis.z;
 
-	mat._21 = vecYAxis.x;
-	mat._22 = vecYAxis.y;
-	mat._23 = vecYAxis.z;
+	mat._10 = vecYAxis.x;
+	mat._11 = vecYAxis.y;
+	mat._12 = vecYAxis.z;
 
-	mat._31 = vecZAxis.x;
-	mat._32 = vecZAxis.y;
-	mat._33 = vecZAxis.z;
+	mat._20 = vecZAxis.x;
+	mat._21 = vecZAxis.y;
+	mat._22 = vecZAxis.z;
 
-	mat._41 = vecPos.x;
-	mat._42 = vecPos.y;
-	mat._43 = vecPos.z;
-	mat._44 = 1.0f;
+	mat._30 = vecPos.x;
+	mat._31 = vecPos.y;
+	mat._32 = vecPos.z;
+	mat._33 = 1.0f;
 
 	return mat;
 }
@@ -65,9 +65,9 @@ inline matrix4 transformMatrix(const vector3df& vecDir, const vector3df& vecUp, 
 inline matrix4 rotateX(float vRad)
 {
 	matrix4 ret;
-	ret._33 = ret._22 = (float)cos(vRad);
-	ret._23 = (float)sin(vRad);
-	ret._32 = (float)-ret._23;
+	ret._22 = ret._11 = (float)cos(vRad);
+	ret._12 = (float)sin(vRad);
+	ret._21 = (float)-ret._12;
 
 	return ret;
 }
@@ -75,9 +75,9 @@ inline matrix4 rotateX(float vRad)
 inline matrix4 rotateY(float vRad)
 {
 	matrix4 ret;
-	ret._33 = ret._11 = (float)cos(vRad);
-	ret._31 = (float)sin(vRad);
-	ret._13 = -ret._31;
+	ret._22 = ret._00 = (float)cos(vRad);
+	ret._20 = (float)sin(vRad);
+	ret._02 = -ret._20;
 
 	return ret;
 }
@@ -85,9 +85,9 @@ inline matrix4 rotateY(float vRad)
 inline matrix4 rotateZ(float vRad)
 {
 	matrix4 ret;
-	ret._22 = ret._11 = (float)cos(vRad);
-	ret._12 = (float)sin(vRad);
-	ret._21 = -ret._12;
+	ret._11 = ret._00 = (float)cos(vRad);
+	ret._01 = (float)sin(vRad);
+	ret._10 = -ret._01;
 
 	return ret;
 }
@@ -102,9 +102,9 @@ inline matrix4 translate(float x, float y, float z)
 inline vector3df viewToWorld(const vector3df& vIn, const matrix4& matView)
 {
 	vector3df vOut;
-	vOut.x = vIn.x * matView._11 + vIn.y * matView._12 + vIn.z * matView._13;
-	vOut.y = vIn.x * matView._21 + vIn.y * matView._22 + vIn.z * matView._23;
-	vOut.z = vIn.x * matView._31 + vIn.y * matView._32 + vIn.z * matView._33;
+	vOut.x = vIn.x * matView._00 + vIn.y * matView._01 + vIn.z * matView._02;
+	vOut.y = vIn.x * matView._10 + vIn.y * matView._11 + vIn.z * matView._12;
+	vOut.z = vIn.x * matView._20 + vIn.y * matView._21 + vIn.z * matView._22;
 	return vOut;
 }
 
@@ -119,19 +119,19 @@ inline matrix4 makeViewMatrix(const vector3df& from, const vector3df& dir, const
 	up = crossProduct(dir, right);
 	up = normalize(up);
 
-	view._11 = right.x;
-	view._21 = right.y;
-	view._31 = right.z;
-	view._12 = up.x;
-	view._22 = up.y;
-	view._32 = up.z;
-	view._13 = view_dir.x;
-	view._23 = view_dir.y;
-	view._33 = view_dir.z;
+	view._00 = right.x;
+	view._10 = right.y;
+	view._20 = right.z;
+	view._01 = up.x;
+	view._11 = up.y;
+	view._21 = up.z;
+	view._02 = view_dir.x;
+	view._12 = view_dir.y;
+	view._22 = view_dir.z;
 
-	view._41 = -dotProduct(right, from);
-	view._42 = -dotProduct(up, from);
-	view._43 = -dotProduct(view_dir, from);
+	view._30 = -dotProduct(right, from);
+	view._31 = -dotProduct(up, from);
+	view._32 = -dotProduct(view_dir, from);
 
 	// Set roll
 	if (roll != 0.0f)
@@ -145,16 +145,16 @@ inline matrix4 makeOrthoOffCenterMatrixLH(float fLeft, float fRight, float fTop,
 	matrix4 m(false);
 	float fWidth = fRight - fLeft;
 	float fHeight = fTop - fBottom;
-	m._11 = 2.0f / fWidth;
-	m._22 = 2.0f / fHeight;
-	m._33 = 1.0f / (fZFar - fZNear);
-	m._43 = -fZNear * m._33;
-	m._44 = 1.0f;
-	m._12 = m._13 = m._14 = 0.0f;
-	m._21 = m._23 = m._24 = 0.0f;
-	m._31 = m._32 = m._34 = 0.0f;
-	m._41 = -(fRight + fLeft) / fWidth;
-	m._42 = -(fTop + fBottom) / fHeight;
+	m._00 = 2.0f / fWidth;
+	m._11 = 2.0f / fHeight;
+	m._22 = 1.0f / (fZFar - fZNear);
+	m._32 = -fZNear * m._22;
+	m._33 = 1.0f;
+	m._01 = m._02 = m._03 = 0.0f;
+	m._10 = m._12 = m._13 = 0.0f;
+	m._20 = m._21 = m._23 = 0.0f;
+	m._30 = -(fRight + fLeft) / fWidth;
+	m._31 = -(fTop + fBottom) / fHeight;
 	return m;
 }
 
@@ -164,16 +164,16 @@ inline matrix4 makePerspectiveOffCenterMatrixLH(float fLeft, float fRight, float
 	float fWidth = fRight - fLeft;
 	float fHeight = fTop - fBottom;
 	float f2ZN = 2.0f * fZNear;
-	m._11 = f2ZN / fWidth;
-	m._22 = f2ZN / fHeight;
-	m._33 = fZFar / (fZFar - fZNear);
-	m._43 = -fZNear * m._33;
-	m._34 = 1.0f;
-	m._12 = m._13 = m._14 = 0.0f;
-	m._21 = m._23 = m._24 = 0.0f;
-	m._31 = -(fRight + fLeft) / fWidth;
-	m._32 = -(fTop + fBottom) / fHeight;
-	m._41 = m._42 = m._44 = 0.0f;
+	m._00 = f2ZN / fWidth;
+	m._11 = f2ZN / fHeight;
+	m._22 = fZFar / (fZFar - fZNear);
+	m._32 = -fZNear * m._22;
+	m._23 = 1.0f;
+	m._01 = m._02 = m._03 = 0.0f;
+	m._10 = m._12 = m._13 = 0.0f;
+	m._20 = -(fRight + fLeft) / fWidth;
+	m._21 = -(fTop + fBottom) / fHeight;
+	m._30 = m._31 = m._33 = 0.0f;
 	return m;
 }
 
@@ -181,11 +181,11 @@ inline matrix4 makePerspectiveMatrixLH(float fWidth, float fHeight, float fZNear
 {
 	matrix4 m(false);
 	float f2ZN = 2.0f * fZNear;
-	m._11 = f2ZN / fWidth;
-	m._22 = f2ZN / fHeight;
-	m._33 = fZFar / (fZFar - fZNear);
-	m._43 = -fZNear * m._33;
-	m._34 = 1.0f;
+	m._00 = f2ZN / fWidth;
+	m._11 = f2ZN / fHeight;
+	m._22 = fZFar / (fZFar - fZNear);
+	m._32 = -fZNear * m._22;
+	m._23 = 1.0f;
 	return m;
 }
 
@@ -194,11 +194,11 @@ inline matrix4 makePerspectiveFovMatrixLH(float fFovY, float fAspect, float fZNe
 	matrix4 m(false);
 	float fYScale = 1.0f / tanf(fFovY / 2.0f);
 	float fXScale = fYScale / fAspect;
-	m._11 = fXScale;
-	m._22 = fYScale;
-	m._33 = fZFar / (fZFar - fZNear);
-	m._43 = -fZNear * m._33;
-	m._34 = 1.0f;
+	m._00 = fXScale;
+	m._11 = fYScale;
+	m._22 = fZFar / (fZFar - fZNear);
+	m._32 = -fZNear * m._22;
+	m._23 = 1.0f;
 	return m;
 }
 

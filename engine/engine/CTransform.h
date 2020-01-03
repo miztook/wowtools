@@ -40,8 +40,6 @@ public:
 	const matrix4& getAbsoluteRotateMatrix() const;
 	const matrix4& getAbsoluteTransformation() const;
 	
-	void setRelativeTransformation(const matrix4& mat);
-
 	//
 	vector3df getDir() const 
 	{ 
@@ -212,15 +210,6 @@ inline const matrix4& CTransform::getAbsoluteTransformation() const
 	return AbsoluteTransformation;
 }
 
-inline void CTransform::setRelativeTransformation(const matrix4& mat)
-{
-	RelativeRotateMatrix = mat;
-	RelativeRotateMatrix.scale(vector3df::One());
-	RelativeRotateMatrix.setTranslation(vector3df::Zero());
-
-	RelativeTransformation = mat;
-}
-
 inline void CTransform::setDirAndUp(const vector3df& dir, const vector3df& up)
 {
 	RelativeRotateMatrix = f3d::transformMatrix(dir, up, vector3df::Zero());
@@ -253,8 +242,9 @@ inline void CTransform::rotate(const quaternion& q)
 inline void CTransform::setPosDirUp(const vector3df& pos, const vector3df& dir, const vector3df& up)
 {
 	RelativeRotateMatrix = f3d::transformMatrix(dir, up, vector3df::Zero());
-	matrix4 mat = RelativeRotateMatrix;
-	mat.scale(getScale());
+	matrix4 mat;
+	mat.setScale(getScale());
+	mat *= RelativeRotateMatrix;
 	mat.setTranslation(pos);
 
 	RelativeTransformation = mat;

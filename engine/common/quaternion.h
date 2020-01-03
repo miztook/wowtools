@@ -184,25 +184,25 @@ inline matrix4 quaternion::toMatrix() const
 {
 	matrix4 ret;
 
-	ret._11 = 1.0f - 2.0f*y*y - 2.0f*z*z;
-	ret._12 = 2.0f*x*y + 2.0f*z*w;
-	ret._13 = 2.0f*x*z - 2.0f*y*w;
-	ret._14 = 0.0f;
+	ret._00 = 1.0f - 2.0f*y*y - 2.0f*z*z;
+	ret._01 = 2.0f*x*y + 2.0f*z*w;
+	ret._02 = 2.0f*x*z - 2.0f*y*w;
+	ret._03 = 0.0f;
 
-	ret._21 = 2.0f*x*y - 2.0f*z*w;
-	ret._22 = 1.0f - 2.0f*x*x - 2.0f*z*z;
-	ret._23 = 2.0f*z*y + 2.0f*x*w;
-	ret._24 = 0.0f;
+	ret._10 = 2.0f*x*y - 2.0f*z*w;
+	ret._11 = 1.0f - 2.0f*x*x - 2.0f*z*z;
+	ret._12 = 2.0f*z*y + 2.0f*x*w;
+	ret._13 = 0.0f;
 
-	ret._31 = 2.0f*x*z + 2.0f*y*w;
-	ret._32 = 2.0f*z*y - 2.0f*x*w;
-	ret._33 = 1.0f - 2.0f*x*x - 2.0f*y*y;
-	ret._34 = 0.0f;
+	ret._20 = 2.0f*x*z + 2.0f*y*w;
+	ret._21 = 2.0f*z*y - 2.0f*x*w;
+	ret._22 = 1.0f - 2.0f*x*x - 2.0f*y*y;
+	ret._23 = 0.0f;
 
-	ret._41 = 0;
-	ret._42 = 0;
-	ret._43 = 0;
-	ret._44 = 1.f;
+	ret._30 = 0;
+	ret._31 = 0;
+	ret._32 = 0;
+	ret._33 = 1.f;
 
 	return ret;
 }
@@ -250,46 +250,46 @@ inline quaternion& quaternion::fromMatrix( const matrix4& m )
 	float	tr, s;
 
 	// calculating the trace of the matrix, it is equal to 4(1 - x*x - y*y - z*z)=4w*w if it is a unit quaternion
-	tr = m._11 + m._22 + m._33 + 1.0f;
+	tr = m._00 + m._11 + m._22 + 1.0f;
 	// check the diagonal
 	if (tr > 0.36f) // we can calculate out w directly
 	{
 		s = (float)sqrt(tr); // s is 2w
 		w = s * 0.5f;
 		s = 0.5f / s;	// now s is 1/4w
-		x = (m._23 - m._32) * s;
-		y = (m._31 - m._13) * s;
-		z = (m._12 - m._21) * s;
+		x = (m._12 - m._21) * s;
+		y = (m._20 - m._02) * s;
+		z = (m._01 - m._10) * s;
 	}
 	else
 	{
 		// we have to calculate x, y or z first
-		if (m._11 >= m._22 && m._11 >= m._33)
+		if (m._00 >= m._11 && m._00 >= m._22)
 		{
-			s = (float)sqrt(1.0f + m._11 - m._22 - m._33); // s is 2x
+			s = (float)sqrt(1.0f + m._00 - m._11 - m._22); // s is 2x
 			x = s *0.5f;
 			s = 0.5f / s;
-			y = (m._12 + m._21) * s;
-			z = (m._13 + m._31) * s;
-			w = (m._23 - m._32) * s;
+			y = (m._01 + m._10) * s;
+			z = (m._02 + m._20) * s;
+			w = (m._12 - m._21) * s;
 		}
-		else if (m._22 >= m._11 && m._22 >= m._33)
+		else if (m._11 >= m._00 && m._11 >= m._22)
 		{
-			s = (float)sqrt(1.0f + m._22 - m._11 - m._33); // s is 2y
+			s = (float)sqrt(1.0f + m._11 - m._00 - m._22); // s is 2y
 			y = s *0.5f;
 			s = 0.5f / s;
-			x = (m._12 + m._21) * s;
-			z = (m._23 + m._32) * s;
-			w = (m._31 - m._13) * s;
+			x = (m._01 + m._10) * s;
+			z = (m._12 + m._21) * s;
+			w = (m._20 - m._02) * s;
 		}
 		else // mat._33 is maximum
 		{
-			s = (float)sqrt(1.0f + m._33 - m._11 - m._22); // s is 2z
+			s = (float)sqrt(1.0f + m._22 - m._00 - m._11); // s is 2z
 			z = s *0.5f;
 			s = 0.5f / s;
-			x = (m._13 + m._31) * s;
-			y = (m._23 + m._32) * s;
-			w = (m._12 - m._21) * s;
+			x = (m._02 + m._20) * s;
+			y = (m._12 + m._21) * s;
+			w = (m._01 - m._10) * s;
 		}
 	}
 }

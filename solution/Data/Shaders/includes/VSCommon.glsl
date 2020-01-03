@@ -6,13 +6,13 @@
 
 vec3 Mul( mat3 matrix, vec3 pos )
 {
-	vec3 vResult = matrix * pos;
+	vec3 vResult = pos * matrix;
 	return vResult;
 }
 
 vec4 Mul( mat4 matrix, vec4 pos )
 {
-	vec4 vResult = matrix * pos;
+	vec4 vResult = pos * matrix;
 	return vResult;
 }
 
