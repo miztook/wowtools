@@ -129,7 +129,7 @@ public:
 	}
 
 	CMatrix4<T>& setTranslation(const vector3d<T>& translation);
-	vector3d<T> getTranslation() const { return vector3d<T>(M[12], M[13], M[14]); }
+	vector3d<T> getTranslation() const { return vector3d<T>(_41, _42, _43); }
 
 	CMatrix4<T>& scale(const vector3d<T>& scale);
 	CMatrix4<T>& scale(const T scale) { return scale(vector3d<T>(scale, scale, scale)); }
@@ -156,10 +156,10 @@ public:
 		};
 		struct
 		{
-			T _11, _12, _13, _14;
-			T _21, _22, _23, _24;
-			T _31, _32, _33, _34;
-			T _41, _42, _43, _44;
+			T _11, _21, _31, _41;
+			T _12, _22, _32, _42;
+			T _13, _23, _33, _43;
+			T _14, _24, _34, _44;
 		};
 	};
 
