@@ -52,7 +52,7 @@ public:
 	matrix4 toMatrix() const;				//
 	static quaternion slerp( quaternion q1, quaternion q2, float interpolate );
 	quaternion& rotationFromTo(const vector3df& from, const vector3df& to, const vector3df& axisOpposite);
-	vector3df transformVect( const vector3df& vect) const;
+	vector3df multiplyPoint( const vector3df& vect) const;
 
 public:
 	float x;		//imaginary
@@ -325,9 +325,9 @@ inline quaternion& quaternion::rotationFromTo( const vector3df& from, const vect
 	return *this;
 }
 
-inline vector3df quaternion::transformVect( const vector3df& vect ) const
+inline vector3df quaternion::multiplyPoint( const vector3df& vect ) const
 {
 	matrix4 m = toMatrix();
 
-	return m.transformVector(vect);
+	return m.multiplyVector(vect);
 }

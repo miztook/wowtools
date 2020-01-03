@@ -99,16 +99,6 @@ inline matrix4 translate(float x, float y, float z)
 	return ret;
 }
 
-
-inline matrix4 rotateAxis(const vector3df& vecPos, const vector3df& vecAxis, float vRad)
-{
-	quaternion rotate(vecAxis, vRad);
-	matrix4 ret = translate(-vecPos.x, -vecPos.y, -vecPos.z);
-	ret = ret * rotate.toMatrix();
-	ret = ret * translate(vecPos.x, vecPos.y, vecPos.z);
-	return ret;
-}
-
 inline vector3df viewToWorld(const vector3df& vIn, const matrix4& matView)
 {
 	vector3df vOut;

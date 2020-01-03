@@ -53,8 +53,10 @@ public:
 	bool isIdentity() const;
 	bool isZero() const;
 	//
-	vector3df transformVector(const vector3df& vect, float& z) const;
-	vector3df transformVector(const vector3df& vect) const;
+	vector3df multiplyPoint(const vector3df& vect, float& z) const;
+	vector3df multiplyPoint(const vector3df& vect) const;
+	vector3df multiplyVector(const vector3df& vect) const;
+
 	plane3df transformPlane(const plane3df& plane) const;
 	aabbox3df transformBox(const aabbox3df& box) const;
 	vector3df rotateVector(const vector3df& vect) const;
@@ -137,36 +139,6 @@ public:
 	vector3d<T> getDir() const { return f3d::normalize(getRow(2)); }
 	vector3d<T> getUp() const { return f3d::normalize(getRow(1)); }
 	vector3d<T> getRight() const { return f3d::normalize(getRow(0)); }
-
-
-	// camera view, perspective
-	//camera
-	CMatrix4<T>& buildCameraLookAtMatrixLH(
-		const vector3df& position,
-		const vector3df& target,
-		const vector3df& upVector);
-
-	CMatrix4<T>& buildCameraLookAtMatrixRH(
-		const vector3df& position,
-		const vector3df& target,
-		const vector3df& upVector);
-
-	//projection
-	CMatrix4<T>& buildProjectionMatrixPerspectiveFovRH(float fieldOfViewRadians, float aspectRatio, float zNear, float zFar);
-
-	CMatrix4<T>& buildProjectionMatrixPerspectiveFovLH(float fieldOfViewRadians, float aspectRatio, float zNear, float zFar);
-
-	CMatrix4<T>& buildProjectionMatrixPerspectiveRH(float widthOfViewVolume, float heightOfViewVolume, float zNear, float zFar);
-
-	CMatrix4<T>& buildProjectionMatrixPerspectiveLH(float widthOfViewVolume, float heightOfViewVolume, float zNear, float zFar);
-
-	CMatrix4<T>& buildProjectionMatrixOrthoFovLH(float fieldOfViewRadians, float aspectRatio, float zNear, float zFar);
-
-	CMatrix4<T>& buildProjectionMatrixOrthoFovRH(float fieldOfViewRadians, float aspectRatio, float zNear, float zFar);
-
-	CMatrix4<T>& buildProjectionMatrixOrthoLH(float widthOfViewVolume, float heightOfViewVolume, float zNear, float zFar);
-
-	CMatrix4<T>& buildProjectionMatrixOrthoRH(float widthOfViewVolume, float heightOfViewVolume, float zNear, float zFar);
 
 	CMatrix4<T>& setM(const T* data);
 
@@ -559,7 +531,7 @@ bool CMatrix4<T>::isZero() const
 }
 
 template <class T>
-inline vector3df CMatrix4<T>::transformVector(const vector3df& vect, float& z) const
+inline vector3df CMatrix4<T>::multiplyPoint(const vector3df& vect, float& z) const
 {
 	vector3df vector;
 
@@ -572,7 +544,7 @@ inline vector3df CMatrix4<T>::transformVector(const vector3df& vect, float& z) c
 }
 
 template <class T>
-inline vector3df CMatrix4<T>::transformVector(const vector3df& vect) const
+inline vector3df CMatrix4<T>::multiplyPoint(const vector3df& vect) const
 {
 	vector3df vector;
 
@@ -584,14 +556,26 @@ inline vector3df CMatrix4<T>::transformVector(const vector3df& vect) const
 }
 
 template <class T>
+inline vector3df CMatrix4<T>::multiplyVector(const vector3df& vect) const
+{
+	vector3df vector;
+
+	vector.x = vect.x * _11 + vect.y * _21 + vect.z * _31;
+	vector.y = vect.x * _12 + vect.y * _22 + vect.z * _32;
+	vector.z = vect.x * _13 + vect.y * _23 + vect.z * _33;
+
+	return vector;
+}
+
+template <class T>
 inline plane3df CMatrix4<T>::transformPlane(const plane3df& plane) const
 {
-	vector3df point = transformVector(plane.getMemberPoint());
+	vector3df point = multiplyPoint(plane.getMemberPoint());
 
 	CMatrix4<T> m = getInverse();
 	m.transpose();
 
-	vector3df normal = m.transformVector(plane.Normal);
+	vector3df normal = m.multiplyPoint(plane.Normal);
 
 	return plane3df(point, normal);
 }
@@ -599,7 +583,7 @@ inline plane3df CMatrix4<T>::transformPlane(const plane3df& plane) const
 template <class T>
 inline aabbox3df CMatrix4<T>::transformBox(const aabbox3df& box) const
 {
-	vector3df vCenter = transformVector(box.getCenter());
+	vector3df vCenter = multiplyPoint(box.getCenter());
 
 	const vector3df& ext = box.getExtent();
 	vector3df vAxisX = rotateVector(vector3df(ext.x, 0, 0));
@@ -688,332 +672,6 @@ inline vector3d<T> CMatrix4<T>::getScale() const
 	return vector3d<T>(squareroot_(M[0] * M[0] + M[1] * M[1] + M[2] * M[2]),
 		squareroot_(M[4] * M[4] + M[5] * M[5] + M[6] * M[6]),
 		squareroot_(M[8] * M[8] + M[9] * M[9] + M[10] * M[10]));
-}
-
-template <class T>
-inline  CMatrix4<T>& CMatrix4<T>::buildCameraLookAtMatrixLH(
-	const vector3df& position,
-	const vector3df& target,
-	const vector3df& upVector)
-{
-	vector3df zaxis = target - position;
-	zaxis.normalize();
-
-	vector3df xaxis = upVector.crossProduct(zaxis);
-	xaxis.normalize();
-
-	vector3df yaxis = zaxis.crossProduct(xaxis);
-
-	_11 = (T)xaxis.x;
-	_12 = (T)yaxis.x;
-	_13 = (T)zaxis.x;
-	_14 = 0;
-
-	_21 = (T)xaxis.y;
-	_22 = (T)yaxis.y;
-	_23 = (T)zaxis.y;
-	_24 = 0;
-
-	_31 = (T)xaxis.z;
-	_32 = (T)yaxis.z;
-	_33 = (T)zaxis.z;
-	_34 = 0;
-
-	_41 = (T)-xaxis.dotProduct(position);
-	_42 = (T)-yaxis.dotProduct(position);
-	_43 = (T)-zaxis.dotProduct(position);
-	_44 = 1;
-
-	return *this;
-}
-
-template <class T>
-inline CMatrix4<T>& CMatrix4<T>::buildCameraLookAtMatrixRH(
-	const vector3df& position,
-	const vector3df& target,
-	const vector3df& upVector)
-{
-	vector3df zaxis = position - target;
-	zaxis.normalize();
-
-	vector3df xaxis = upVector.crossProduct(zaxis);
-	xaxis.normalize();
-
-	vector3df yaxis = zaxis.crossProduct(xaxis);
-
-	_11 = (T)xaxis.x;
-	_12 = (T)yaxis.x;
-	_13 = (T)zaxis.x;
-	_14 = 0;
-
-	_21 = (T)xaxis.y;
-	_22 = (T)yaxis.y;
-	_23 = (T)zaxis.y;
-	_24 = 0;
-
-	_31 = (T)xaxis.z;
-	_32 = (T)yaxis.z;
-	_33 = (T)zaxis.z;
-	_34 = 0;
-
-	_41 = (T)-xaxis.dotProduct(position);
-	_42 = (T)-yaxis.dotProduct(position);
-	_43 = (T)-zaxis.dotProduct(position);
-	_44 = 1;
-
-	return *this;
-}
-
-template <class T>
-inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixPerspectiveFovLH(
-	float fieldOfViewRadians, float aspectRatio, float zNear, float zFar)
-{
-	const float h = reciprocal_((float)tan(fieldOfViewRadians*0.5f));
-	ASSERT(aspectRatio != 0.f); //divide by zero
-	const float w = (h / aspectRatio);
-
-	ASSERT(zNear != zFar); //divide by zero
-	_11 = w;
-	_12 = 0;
-	_13 = 0;
-	_14 = 0;
-
-	_21 = 0;
-	_22 = (T)h;
-	_23 = 0;
-	_24 = 0;
-
-	_31 = 0;
-	_32 = 0;
-	_33 = (T)(zFar / (zFar - zNear));
-	_34 = 1;
-
-	_41 = 0;
-	_42 = 0;
-	_43 = (T)(-zNear*zFar / (zFar - zNear));
-	_44 = 0;
-
-	return *this;
-}
-
-template <class T>
-inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixPerspectiveFovRH(
-	float fieldOfViewRadians, float aspectRatio, float zNear, float zFar)
-{
-	const float h = reciprocal_(tan(fieldOfViewRadians*0.5f));
-	ASSERT(aspectRatio != 0.f); //divide by zero
-	const T w = h / aspectRatio;
-
-	ASSERT(zNear != zFar); //divide by zero
-	_11 = w;
-	_12 = 0;
-	_13 = 0;
-	_14 = 0;
-
-	_21 = 0;
-	_22 = (T)h;
-	_23 = 0;
-	_24 = 0;
-
-	_31 = 0;
-	_32 = 0;
-	_33 = (T)(zFar / (zNear - zFar)); // DirectX version
-	//		M[10] = (T)(zFar+zNear/(zNear-zFar)); // OpenGL version
-	_34 = -1;
-
-	_41 = 0;
-	_42 = 0;
-	_43 = (T)(zNear*zFar / (zNear - zFar)); // DirectX version
-	//		M[14] = (T)(2.0f*zNear*zFar/(zNear-zFar)); // OpenGL version
-	_44 = 0;
-
-	return *this;
-}
-
-template <class T>
-inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixPerspectiveLH(
-	float widthOfViewVolume, float heightOfViewVolume, float zNear, float zFar)
-{
-	ASSERT(widthOfViewVolume != 0.f); //divide by zero
-	ASSERT(heightOfViewVolume != 0.f); //divide by zero
-	ASSERT(zNear != zFar); //divide by zero
-	_11 = (T)(2 * zNear / widthOfViewVolume);
-	_12 = 0;
-	_13 = 0;
-	_14 = 0;
-
-	_21 = 0;
-	_22 = (T)(2 * zNear / heightOfViewVolume);
-	_23 = 0;
-	_24 = 0;
-
-	_31 = 0;
-	_32 = 0;
-	_33 = (T)(zFar / (zFar - zNear));
-	_34 = 1;
-
-	_41 = 0;
-	_42 = 0;
-	_43 = (T)(zNear*zFar / (zNear - zFar));
-	_44 = 0;
-
-	return *this;
-}
-
-template <class T>
-inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixPerspectiveRH(
-	float widthOfViewVolume, float heightOfViewVolume, float zNear, float zFar)
-{
-	ASSERT(widthOfViewVolume != 0.f); //divide by zero
-	ASSERT(heightOfViewVolume != 0.f); //divide by zero
-	ASSERT(zNear != zFar); //divide by zero
-	_11 = (T)(2 * zNear / widthOfViewVolume);
-	_12 = 0;
-	_13 = 0;
-	_14 = 0;
-
-	_21 = 0;
-	_22 = (T)(2 * zNear / heightOfViewVolume);
-	_23 = 0;
-	_24 = 0;
-
-	_31 = 0;
-	_32 = 0;
-	_33 = (T)(zFar / (zNear - zFar));
-	_34 = -1;
-
-	_41 = 0;
-	_42 = 0;
-	_43 = (T)(zNear*zFar / (zNear - zFar));
-	_44 = 0;
-
-	return *this;
-}
-
-template <class T>
-inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixOrthoFovLH(float fieldOfViewRadians, float aspectRatio, float zNear, float zFar)
-{
-	const float h = reciprocal_((float)tan(fieldOfViewRadians*0.5));
-	ASSERT(aspectRatio != 0.f); //divide by zero
-	const T w = (T)(h / aspectRatio);
-
-	ASSERT(zNear != zFar); //divide by zero
-	ASSERT(zNear != 0.0f);  //divide by zero
-
-	_11 = w / zNear;
-	_12 = 0;
-	_13 = 0;
-	_14 = 0;
-
-	_21 = 0;
-	_22 = (T)h / zNear;
-	_23 = 0;
-	_24 = 0;
-
-	_31 = 0;
-	_32 = 0;
-	_33 = (T)(zFar / (zFar - zNear));
-	_34 = 1;
-
-	_41 = 0;
-	_42 = 0;
-	_43 = (T)(-zNear*zFar / (zFar - zNear));
-	_44 = 0;
-
-	return *this;
-}
-
-template <class T>
-inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixOrthoFovRH(float fieldOfViewRadians, float aspectRatio, float zNear, float zFar)
-{
-	const float h = reciprocal_((float)tan(fieldOfViewRadians*0.5));
-	ASSERT(aspectRatio != 0.f); //divide by zero
-	const T w = (T)(h / aspectRatio);
-
-	ASSERT(zNear != zFar); //divide by zero
-	ASSERT(zNear != 0.0f);  //divide by zero
-
-	_11 = w / zNear;
-	_12 = 0;
-	_13 = 0;
-	_14 = 0;
-
-	_21 = 0;
-	_22 = (T)h / zNear;
-	_23 = 0;
-	_24 = 0;
-
-	_31 = 0;
-	_32 = 0;
-	_33 = (T)(1 / (zNear - zFar));
-	_34 = 0;
-
-	_41 = 0;
-	_42 = 0;
-	_43 = (T)(zNear / (zNear - zFar));
-	_44 = -1;
-
-	return *this;
-}
-
-template <class T>
-inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixOrthoLH(
-	float widthOfViewVolume, float heightOfViewVolume, float zNear, float zFar)
-{
-	ASSERT(widthOfViewVolume != 0.f); //divide by zero
-	ASSERT(heightOfViewVolume != 0.f); //divide by zero
-	ASSERT(zNear != zFar); //divide by zero
-	_11 = (T)(2 / widthOfViewVolume);
-	_12 = 0;
-	_13 = 0;
-	_14 = 0;
-
-	_21 = 0;
-	_22 = (T)(2 / heightOfViewVolume);
-	_23 = 0;
-	_24 = 0;
-
-	_31 = 0;
-	_32 = 0;
-	_33 = (T)(1 / (zFar - zNear));
-	_34 = 0;
-
-	_41 = 0;
-	_42 = 0;
-	_43 = (T)(zNear / (zNear - zFar));
-	_44 = 1;
-
-	return *this;
-}
-
-template <class T>
-inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixOrthoRH(
-	float widthOfViewVolume, float heightOfViewVolume, float zNear, float zFar)
-{
-	ASSERT(widthOfViewVolume != 0.f); //divide by zero
-	ASSERT(heightOfViewVolume != 0.f); //divide by zero
-	ASSERT(zNear != zFar); //divide by zero
-	_11 = (T)(2 / widthOfViewVolume);
-	_12 = 0;
-	_13 = 0;
-	_14 = 0;
-
-	_21 = 0;
-	_22 = (T)(2 / heightOfViewVolume);
-	_23 = 0;
-	_24 = 0;
-
-	_31 = 0;
-	_32 = 0;
-	_33 = (T)(1 / (zNear - zFar));
-	_34 = 0;
-
-	_41 = 0;
-	_42 = 0;
-	_43 = (T)(zNear / (zNear - zFar));
-	_44 = -1;
-
-	return *this;
 }
 
 typedef CMatrix4<float> matrix4;

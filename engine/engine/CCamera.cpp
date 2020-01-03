@@ -52,11 +52,14 @@ void CCamera::move(const vector3df& vecDelta)
 
 void CCamera::turnAroundAxis(const vector3df& vecPos, const vector3df& vecAxis, float vDeltaRad)
 {
-	matrix4 matRotate = f3d::rotateAxis(vecPos, vecAxis, vDeltaRad);
-	vector3df vecOrigin = matRotate.transformVector(vector3df::Zero());
-	m_vecPos = matRotate.transformVector(m_vecPos);
-	m_vecDir = matRotate.transformVector(m_vecDir) - vecOrigin;
-	m_vecUp = matRotate.transformVector(m_vecUp) - vecOrigin;
+	quaternion rotate(vecAxis, vDeltaRad);
+
+	m_vecPos = f3d::translate(-vecPos.x, -vecPos.y, -vecPos.z).multiplyPoint(m_vecPos);
+	m_vecPos = rotate.multiplyPoint(m_vecPos);
+	m_vecPos = f3d::translate(vecPos.x, vecPos.y, vecPos.z).multiplyPoint(m_vecPos);
+
+	m_vecDir = rotate.multiplyPoint(m_vecDir);
+	m_vecUp = rotate.multiplyPoint(m_vecUp);
 
 	setDirAndUp(m_vecDir, m_vecUp);
 }
