@@ -3,8 +3,9 @@
 #include "CTimer.h"
 #include "CInputReader.h"
 #include "IVideoDriver.h"
-#include "CRenderSetting.h"
 
+class CRenderSetting;
+class CLightSetting;
 class CFontManager;
 class CMeshManager;
 
@@ -35,7 +36,8 @@ public:
 	CInputReader* getInputReader() { return &InputReader; }
 	CFontManager* getFontManager() const { return FontManager; }
 	CMeshManager* getMeshManager() const { return MeshManager; }
-	const CRenderSetting& getRenderSetting() const { return RenderSetting; }
+	CRenderSetting* getRenderSetting() const { return RenderSetting; }
+	CLightSetting* getLightSetting() const { return LightSetting; }
 
 private:
 	IVideoDriver*	Driver;
@@ -45,7 +47,8 @@ private:
 	IMessageHandler*		MessageHandler;
 
 	//
-	CRenderSetting		RenderSetting;
+	CRenderSetting*		RenderSetting;
+	CLightSetting*		LightSetting;
 	CFontManager*		FontManager;
 	CMeshManager*		MeshManager;
 };

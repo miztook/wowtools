@@ -17,7 +17,7 @@ class ISceneNode
 {
 public:
 	ISceneNode()
-		: m_Transform(this), m_Active(true), m_ToDelete(false)
+		: m_Transform(this), m_Active(true), m_ToDelete(false), m_layer(0)
 	{
 	}
 
@@ -46,9 +46,13 @@ public:
 	void setActive(bool active) { m_Active = active; }
 	bool activeSelf() const { return m_Active; }
 
+	void setLayer(int layer) { m_layer = layer; }
+	int getLayer() const { return m_layer; }
+
 protected:
 	CTransform		m_Transform;
 	std::list<IRenderer*>	m_RendererList;
+	int m_layer;
 	bool m_ToDelete;
 	bool m_Active;
 };

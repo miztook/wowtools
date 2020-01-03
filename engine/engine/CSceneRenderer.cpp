@@ -6,6 +6,7 @@
 #include "ISceneNode.h"
 #include "IRenderer.h"
 #include "CRenderLoop.h"
+#include "CRenderSetting.h"
 #include <algorithm>
 
 bool SceneNodeCompare(const ISceneNode* a, const ISceneNode* b)
@@ -51,7 +52,7 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 			const CCamera* cam = scene->get3DCamera();
 			if (cam->IsInited())
 			{
-				driver->setGlobalMaterial(g_Engine->getRenderSetting().getGlobalMaterial3D());
+				driver->setGlobalMaterial(g_Engine->getRenderSetting()->getGlobalMaterial3D());
 
 				SCameraRender* camRender = getCameraRender(cam);
 				camRender->BackgroundColor = SColor(64, 64, 64);
@@ -117,7 +118,7 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 			const CCamera* cam = scene->get2DCamera();
 			if (cam->IsInited())
 			{
-				driver->setGlobalMaterial(g_Engine->getRenderSetting().getGlobalMaterial2D());
+				driver->setGlobalMaterial(g_Engine->getRenderSetting()->getGlobalMaterial2D());
 
 				SCameraRender* camRender = getCameraRender(cam);
 				camRender->BackgroundColor = SColor(64, 64, 64);

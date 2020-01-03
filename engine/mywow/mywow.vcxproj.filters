@@ -260,6 +260,12 @@
     <ClInclude Include="..\engine\CCanvas.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\engine\CLightSetting.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\CLight.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">
@@ -389,6 +395,12 @@
       <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\CCanvas.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CLightSetting.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CLight.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

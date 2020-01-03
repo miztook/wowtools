@@ -1,5 +1,7 @@
 #include "Engine.h"
 #include "mywow.h"
+#include "CRenderSetting.h"
+#include "CLightSetting.h"
 #include "CFontManager.h"
 #include "CMeshManager.h"
 
@@ -33,6 +35,9 @@ Engine::Engine(const SWindowInfo& wndInfo)
 	WindowInfo = wndInfo;
 
 	Driver = nullptr;
+	MessageHandler = nullptr;
+	RenderSetting = nullptr;
+	LightSetting = nullptr;
 	FontManager = nullptr;
 	MeshManager = nullptr;
 }
@@ -41,6 +46,8 @@ Engine::~Engine()
 {
 	delete MeshManager;
 	delete FontManager;
+	delete LightSetting;
+	delete RenderSetting;
 	delete Driver;
 }
 
@@ -58,6 +65,9 @@ bool Engine::init(E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode, driver
 	{
 		goto fail;
 	}
+
+	RenderSetting = new CRenderSetting;
+	LightSetting = new CLightSetting;
 
 	g_FileSystem->writeLog(ELOG_GX, "Create FontManager...");
 	FontManager = new CFontManager(0, 0, 0, 12);
