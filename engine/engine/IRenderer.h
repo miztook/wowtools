@@ -17,6 +17,7 @@ public:
 	virtual aabbox3df getBoundingBox() const = 0;
 
 public:
+	const SMaterial* getMaterialPtr() const { return &Material; }
 	const SMaterial& getMaterial() const { return Material; }
 	SMaterial& getMaterial() { return Material; }
 	matrix4 getLocalToWorldMatrix() const;

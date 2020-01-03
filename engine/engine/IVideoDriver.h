@@ -108,8 +108,6 @@ public:
 	const dimension2d& getDisplayMode() const { return ScreenSize; }
 	const SDriverSetting& getDriverSetting() const { return DriverSetting; }
 
-	void setMaterial(const SMaterial& material) { Material = &material; }
-	const SMaterial* getMaterial() const { return Material; }
 	void setGlobalMaterial(const SGlobalMaterial& globalMaterial) { GlobalMaterial = &globalMaterial; }
 	const SGlobalMaterial* getGlobalMaterial() const { return GlobalMaterial; }
 
@@ -139,7 +137,7 @@ public:
 	virtual void setDisplayMode(const dimension2d& size) = 0;
 	virtual bool setDriverSetting(const SDriverSetting& setting) = 0;
 
-	virtual void draw(const IVertexBuffer* vbuffer, const IIndexBuffer* ibuffer,
+	virtual void draw(const SMaterial* material, const IVertexBuffer* vbuffer, const IIndexBuffer* ibuffer,
 		E_PRIMITIVE_TYPE primType,
 		uint32_t primCount,
 		const SDrawParam& drawParam) = 0;
@@ -167,7 +165,6 @@ public:
 protected:
 	const E_DRIVER_TYPE	DriverType;
 
-	const SMaterial*	Material;
 	const SGlobalMaterial*	GlobalMaterial;
 
 	const IRenderTarget*		CurrentRenderTarget;		//当前render target, 若为nullptr则表示frame buffer

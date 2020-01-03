@@ -143,6 +143,7 @@ public:
 		}
 	}
 
+	CMatrix4<T>& translate(const vector3d<T>& scale);
 	CMatrix4<T>& setTranslation(const vector3d<T>& translation);
 	vector3d<T> getTranslation() const { return vector3d<T>(_30, _31, _32); }
 
@@ -636,6 +637,16 @@ inline  vector3df CMatrix4<T>::inverseRotateVector(const vector3df& vect) const
 }
 
 template <class T>
+inline CMatrix4<T>& CMatrix4<T>::translate(const vector3d<T>& translation)
+{
+	_30 += translation.x;
+	_31 += translation.y;
+	_32 += translation.z;
+
+	return *this;
+}
+
+template <class T>
 inline CMatrix4<T>& CMatrix4<T>::setTranslation(const vector3d<T>& translation)
 {
 	_30 = translation.x;
@@ -673,8 +684,8 @@ template <class T>
 inline CMatrix4<T>& CMatrix4<T>::setScale(const vector3d<T>& scale)
 {
 	_00 = scale.x;	_01 = 0; _02 = 0; _03 = 0;
-	_00 = 0;	_01 = scale.y; _02 = 0; _03 = 0;
-	_00 = 0;	_01 = 0; _02 = scale.z; _03 = 0;
+	_10 = 0;	_11 = scale.y; _12 = 0; _13 = 0;
+	_20 = 0;	_21 = 0; _22 = scale.z; _23 = 0;
 	_30 = 0;	_31 = 0; _32 = 0; _33 = 1;
 
 	return (*this);

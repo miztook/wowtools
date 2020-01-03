@@ -155,8 +155,6 @@ void CCanvas::draw2DSquad(const CCamera* cam, uint32_t batchCount, ITexture* tex
 	applyBlendParam(blendParam, Material);
 	Material.setMainTexture(texture);
 
-	driver->setMaterial(Material);
-	
 	SDrawParam drawParam;
 	drawParam.numVertices = batchCount * 4;
 	drawParam.baseVertIndex = 0;
@@ -164,8 +162,8 @@ void CCanvas::draw2DSquad(const CCamera* cam, uint32_t batchCount, ITexture* tex
 	driver->setShaderVariable("g_ObjectToWorld", matrix4::Identity());
 	driver->setShaderVariable("g_MatrixVP", cam->getVPTM());
 
-	driver->draw(vbuffer, ibuffer, EPT_TRIANGLES,
-		batchCount * 2, drawParam);
+	driver->draw(&Material, vbuffer, ibuffer,
+		EPT_TRIANGLES, batchCount * 2, drawParam);
 }
 
 void CCanvas::applyBlendParam(const S2DBlendParam& blendParam, SMaterial& material)

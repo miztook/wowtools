@@ -141,14 +141,12 @@ void CRenderLoop::renderOpaques(const CCamera* cam)
 
 		const IRenderer* renderer = unit->renderer;
 
-		driver->setMaterial(renderer->getMaterial());
-
 		driver->setShaderVariable("g_ObjectToWorld", renderer->getLocalToWorldMatrix());
 		driver->setShaderVariable("g_MatrixVP", matVP);
 		driver->setShaderVariable("g_MatrixV", matView);
 		driver->setShaderVariable("g_MatrixP", matProjection);
 
-		driver->draw(unit->vbuffer, unit->ibuffer, unit->primType, unit->primCount, unit->drawParam);
+		driver->draw(renderer->getMaterialPtr(), unit->vbuffer, unit->ibuffer, unit->primType, unit->primCount, unit->drawParam);
 	}
 }
 

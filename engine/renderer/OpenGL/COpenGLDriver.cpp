@@ -739,15 +739,15 @@ IIndexBuffer* COpenGLDriver::createIndexBuffer(E_MESHBUFFER_MAPPING mapping)
 	return new COpenGLIndexBuffer(this, mapping);
 }
 
-void COpenGLDriver::draw(const IVertexBuffer* vbuffer, const IIndexBuffer* ibuffer, E_PRIMITIVE_TYPE primType, uint32_t primCount, const SDrawParam& drawParam)
+void COpenGLDriver::draw(const SMaterial* material, const IVertexBuffer* vbuffer, const IIndexBuffer* ibuffer, E_PRIMITIVE_TYPE primType, uint32_t primCount, const SDrawParam& drawParam)
 {
 	ASSERT(IVideoResource::hasVideoBuilt(vbuffer));
 	ASSERT(!ibuffer || IVideoResource::hasVideoBuilt(ibuffer));
 
-	const CGLProgram* program = ShaderManageComponent->applyShaders(Material, vbuffer->getVertexType());
-	MaterialRenderComponent->setRenderStates(Material, GlobalMaterial, program);
+	const CGLProgram* program = ShaderManageComponent->applyShaders(material, vbuffer->getVertexType());
+	MaterialRenderComponent->setRenderStates(material, GlobalMaterial, program);
 
-	ShaderManageComponent->setShaderVariables(program, Material);
+	ShaderManageComponent->setShaderVariables(program, material);
 
 	MaterialRenderComponent->applyRenderStates();
 

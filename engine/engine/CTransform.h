@@ -182,8 +182,8 @@ inline void CTransform::CheckTransformChange() const
 	{
 		if (Parent)
 		{
-			AbsoluteRotateMatrix = getRelativeRotateMatrix() * Parent->getAbsoluteRotateMatrix();
-			AbsoluteTransformation = getRelativeTransformation() * Parent->getAbsoluteTransformation();
+			AbsoluteRotateMatrix = Parent->getAbsoluteRotateMatrix() * getRelativeRotateMatrix();
+			AbsoluteTransformation = Parent->getAbsoluteTransformation() * getRelativeTransformation();
 		}
 		else
 		{
@@ -213,18 +213,20 @@ inline const matrix4& CTransform::getAbsoluteTransformation() const
 inline void CTransform::setDirAndUp(const vector3df& dir, const vector3df& up)
 {
 	RelativeRotateMatrix = f3d::transformMatrix(dir, up, vector3df::Zero());
-	matrix4 mat = RelativeRotateMatrix;
-	mat.scale(getScale());
-	mat.setTranslation(getPos());
+	matrix4 mat;
+	mat.setScale(getScale());
+	mat *= RelativeRotateMatrix;
+	mat.translate(getPos());
 
 	RelativeTransformation = mat;
 }
 
 inline void CTransform::setScale(const vector3df& scale)
 {
-	matrix4 mat = RelativeRotateMatrix;
-	mat.scale(scale);
-	mat.setTranslation(getPos());
+	matrix4 mat;
+	mat.setScale(scale);
+	mat *= RelativeRotateMatrix;
+	mat.translate(getPos());
 
 	RelativeTransformation = mat;
 }
@@ -232,9 +234,10 @@ inline void CTransform::setScale(const vector3df& scale)
 inline void CTransform::rotate(const quaternion& q)
 {
 	RelativeRotateMatrix = RelativeRotateMatrix * q.toMatrix();
-	matrix4 mat = RelativeRotateMatrix;
-	mat.scale(getScale());
-	mat.setTranslation(getPos());
+	matrix4 mat;
+	mat.setScale(getScale());
+	mat *= RelativeRotateMatrix;
+	mat.translate(getPos());
 
 	RelativeTransformation = mat;
 }
@@ -245,7 +248,7 @@ inline void CTransform::setPosDirUp(const vector3df& pos, const vector3df& dir, 
 	matrix4 mat;
 	mat.setScale(getScale());
 	mat *= RelativeRotateMatrix;
-	mat.setTranslation(pos);
+	mat.translate(pos);
 
 	RelativeTransformation = mat;
 }
@@ -253,9 +256,10 @@ inline void CTransform::setPosDirUp(const vector3df& pos, const vector3df& dir, 
 inline void CTransform::setPosDirUpScale(const vector3df& pos, const vector3df& dir, const vector3df& up, const vector3df& scale)
 {
 	RelativeRotateMatrix = f3d::transformMatrix(dir, up, vector3df::Zero());
-	matrix4 mat = RelativeRotateMatrix;
-	mat.scale(scale);
-	mat.setTranslation(pos);
+	matrix4 mat;
+	mat.setScale(scale);
+	mat *= RelativeRotateMatrix;
+	mat.translate(pos);
 
 	RelativeTransformation = mat;
 }
