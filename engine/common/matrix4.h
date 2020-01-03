@@ -168,20 +168,6 @@ public:
 
 	CMatrix4<T>& buildProjectionMatrixOrthoRH(float widthOfViewVolume, float heightOfViewVolume, float zNear, float zFar);
 
-	//
-	CMatrix4<T>& buildTextureTransform(float rotateRad,
-		const vector2df &rotatecenter,
-		const vector2df &translate,
-		const vector2df &scale);
-
-	CMatrix4<T>& setTextureRotationCenter(float rotateRad);
-
-	CMatrix4<T>& setTextureTranslate(float x, float y);
-
-	CMatrix4<T>& setTextureScale(float sx, float sy);
-
-	CMatrix4<T>& setTextureScaleCenter(float sx, float sy);
-
 	CMatrix4<T>& setM(const T* data);
 
 	static const CMatrix4<T>& Identity() { static CMatrix4<T> m(true); return m; }
@@ -282,81 +268,6 @@ template <class T>
 inline CMatrix4<T>& CMatrix4<T>::setM(const T* data)
 {
 	memcpy(M, data, 16 * sizeof(T));
-	return *this;
-}
-
-template <class T>
-inline CMatrix4<T>& CMatrix4<T>::setTextureScaleCenter(float sx, float sy)
-{
-	M[0] = (T)sx;
-	M[5] = (T)sy;
-	M[8] = (T)(0.5f - 0.5f * sx);
-	M[9] = (T)(0.5f - 0.5f * sy);
-
-	return *this;
-}
-
-template <class T>
-inline CMatrix4<T>& CMatrix4<T>::setTextureScale(float sx, float sy)
-{
-	M[0] = (T)sx;
-	M[5] = (T)sy;
-
-	return *this;
-}
-
-template <class T>
-inline CMatrix4<T>& CMatrix4<T>::setTextureTranslate(float x, float y)
-{
-	M[8] = (T)x;
-	M[9] = (T)y;
-
-	return *this;
-}
-
-template <class T>
-inline CMatrix4<T>& CMatrix4<T>::setTextureRotationCenter(float rotateRad)
-{
-	const float c = cosf(rotateRad);
-	const float s = sinf(rotateRad);
-	M[0] = (T)c;
-	M[1] = (T)s;
-
-	M[4] = (T)-s;
-	M[5] = (T)c;
-
-	M[8] = (T)(0.5f * (s - c) + 0.5f);
-	M[9] = (T)(-0.5f * (s + c) + 0.5f);
-
-	return *this;
-}
-
-template <class T>
-inline CMatrix4<T>& CMatrix4<T>::buildTextureTransform(float rotateRad, const vector2df &rotatecenter, const vector2df &translate, const vector2df &scale)
-{
-	const float c = cosf(rotateRad);
-	const float s = sinf(rotateRad);
-
-	M[0] = (T)(c * scale.x);
-	M[1] = (T)(s * scale.y);
-	M[2] = 0;
-	M[3] = 0;
-
-	M[4] = (T)(-s * scale.x);
-	M[5] = (T)(c * scale.y);
-	M[6] = 0;
-	M[7] = 0;
-
-	M[8] = (T)(c * scale.x * rotatecenter.x + -s * rotatecenter.y + translate.x);
-	M[9] = (T)(s * scale.y * rotatecenter.x + c * rotatecenter.y + translate.y);
-	M[10] = 1;
-	M[11] = 0;
-
-	M[12] = 0;
-	M[13] = 0;
-	M[14] = 0;
-	M[15] = 1;
-
 	return *this;
 }
 
@@ -710,9 +621,9 @@ template <class T>
 inline vector3df CMatrix4<T>::rotateVector(const vector3df& vect) const
 {
 	vector3df tmp;
-	tmp.x = vect.x*M[0] + vect.y*M[4] + vect.z*M[8];
-	tmp.y = vect.x*M[1] + vect.y*M[5] + vect.z*M[9];
-	tmp.z = vect.x*M[2] + vect.y*M[6] + vect.z*M[10];
+	tmp.x = vect.x * _11 + vect.y * _21 + vect.z * _31;
+	tmp.y = vect.x * _12 + vect.y * _22 + vect.z * _32;
+	tmp.z = vect.x * _13 + vect.y * _23 + vect.z * _33;
 	return tmp;
 }
 
@@ -720,42 +631,41 @@ template <class T>
 inline  vector3df CMatrix4<T>::inverseRotateVector(const vector3df& vect) const
 {
 	vector3df tmp;
-	tmp.x = vect.x*M[0] + vect.y*M[1] + vect.z*M[2];
-	tmp.y = vect.x*M[4] + vect.y*M[5] + vect.z*M[6];
-	tmp.z = vect.x*M[8] + vect.y*M[9] + vect.z*M[10];
+	tmp.x = vect.x * _11 + vect.y * _12 + vect.z * _13;
+	tmp.y = vect.x * _21 + vect.y * _22 + vect.z * _23;
+	tmp.z = vect.x * _31 + vect.y * _32 + vect.z * _33;
 }
 
 template <class T>
 inline CMatrix4<T>& CMatrix4<T>::setTranslation(const vector3d<T>& translation)
 {
-	M[12] = translation.x;
-	M[13] = translation.y;
-	M[14] = translation.z;
+	_41 = translation.x;
+	_42 = translation.y;
+	_43 = translation.z;
 	return *this;
 }
 
 template <class T>
 inline CMatrix4<T>& CMatrix4<T>::scale(const vector3d<T>& scale)
 {
-	T x = abs_(scale.x);			// 0
-	T y = abs_(scale.y);			// 5
-	T z = abs_(scale.z);			// 10
+	ASSERT(scale.x > 0);			// 0
+	ASSERT(scale.y > 0);			// 5
+	ASSERT(scale.z > 0);			// 10
 
-	M[0] *= x;
-	M[1] *= y;
-	M[2] *= z;
+	_11 *= scale.x;
+	_21 *= scale.x;
+	_31 *= scale.x;
+	_41 *= scale.x;
 
-	M[4] *= x;
-	M[5] *= y;
-	M[6] *= z;
+	_12 *= scale.y;
+	_22 *= scale.y;
+	_32 *= scale.y;
+	_42 *= scale.y;
 
-	M[8] *= x;
-	M[9] *= y;
-	M[10] *= z;
-
-	M[12] *= x;
-	M[13] *= y;
-	M[14] *= z;
+	_13 *= scale.z;
+	_23 *= scale.z;
+	_33 *= scale.z;
+	_43 *= scale.z;
 
 	return (*this);
 }
@@ -763,25 +673,10 @@ inline CMatrix4<T>& CMatrix4<T>::scale(const vector3d<T>& scale)
 template <class T>
 inline CMatrix4<T>& CMatrix4<T>::setScale(const vector3d<T>& scale)
 {
-	T x = abs_(scale.x);			// 0
-	T y = abs_(scale.y);			// 5
-	T z = abs_(scale.z);			// 10
-
-	M[0] = x;
-	M[1] = y;
-	M[2] = z;
-
-	M[4] = x;
-	M[5] = y;
-	M[6] = z;
-
-	M[8] = x;
-	M[9] = y;
-	M[10] = z;
-
-	M[12] = x;
-	M[13] = y;
-	M[14] = z;
+	_11 = scale.x;	_12 = 0; _13 = 0; _14 = 0;
+	_11 = 0;	_12 = scale.y; _13 = 0; _14 = 0;
+	_11 = 0;	_12 = 0; _13 = scale.z; _14 = 0;
+	_41 = 0;	_42 = 0; _43 = 0; _44 = 1;
 
 	return (*this);
 }
@@ -809,25 +704,25 @@ inline  CMatrix4<T>& CMatrix4<T>::buildCameraLookAtMatrixLH(
 
 	vector3df yaxis = zaxis.crossProduct(xaxis);
 
-	M[0] = (T)xaxis.x;
-	M[1] = (T)yaxis.x;
-	M[2] = (T)zaxis.x;
-	M[3] = 0;
+	_11 = (T)xaxis.x;
+	_12 = (T)yaxis.x;
+	_13 = (T)zaxis.x;
+	_14 = 0;
 
-	M[4] = (T)xaxis.y;
-	M[5] = (T)yaxis.y;
-	M[6] = (T)zaxis.y;
-	M[7] = 0;
+	_21 = (T)xaxis.y;
+	_22 = (T)yaxis.y;
+	_23 = (T)zaxis.y;
+	_24 = 0;
 
-	M[8] = (T)xaxis.z;
-	M[9] = (T)yaxis.z;
-	M[10] = (T)zaxis.z;
-	M[11] = 0;
+	_31 = (T)xaxis.z;
+	_32 = (T)yaxis.z;
+	_33 = (T)zaxis.z;
+	_34 = 0;
 
-	M[12] = (T)-xaxis.dotProduct(position);
-	M[13] = (T)-yaxis.dotProduct(position);
-	M[14] = (T)-zaxis.dotProduct(position);
-	M[15] = 1;
+	_41 = (T)-xaxis.dotProduct(position);
+	_42 = (T)-yaxis.dotProduct(position);
+	_43 = (T)-zaxis.dotProduct(position);
+	_44 = 1;
 
 	return *this;
 }
@@ -846,25 +741,25 @@ inline CMatrix4<T>& CMatrix4<T>::buildCameraLookAtMatrixRH(
 
 	vector3df yaxis = zaxis.crossProduct(xaxis);
 
-	M[0] = (T)xaxis.x;
-	M[1] = (T)yaxis.x;
-	M[2] = (T)zaxis.x;
-	M[3] = 0;
+	_11 = (T)xaxis.x;
+	_12 = (T)yaxis.x;
+	_13 = (T)zaxis.x;
+	_14 = 0;
 
-	M[4] = (T)xaxis.y;
-	M[5] = (T)yaxis.y;
-	M[6] = (T)zaxis.y;
-	M[7] = 0;
+	_21 = (T)xaxis.y;
+	_22 = (T)yaxis.y;
+	_23 = (T)zaxis.y;
+	_24 = 0;
 
-	M[8] = (T)xaxis.z;
-	M[9] = (T)yaxis.z;
-	M[10] = (T)zaxis.z;
-	M[11] = 0;
+	_31 = (T)xaxis.z;
+	_32 = (T)yaxis.z;
+	_33 = (T)zaxis.z;
+	_34 = 0;
 
-	M[12] = (T)-xaxis.dotProduct(position);
-	M[13] = (T)-yaxis.dotProduct(position);
-	M[14] = (T)-zaxis.dotProduct(position);
-	M[15] = 1;
+	_41 = (T)-xaxis.dotProduct(position);
+	_42 = (T)-yaxis.dotProduct(position);
+	_43 = (T)-zaxis.dotProduct(position);
+	_44 = 1;
 
 	return *this;
 }
@@ -878,25 +773,25 @@ inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixPerspectiveFovLH(
 	const float w = (h / aspectRatio);
 
 	ASSERT(zNear != zFar); //divide by zero
-	M[0] = w;
-	M[1] = 0;
-	M[2] = 0;
-	M[3] = 0;
+	_11 = w;
+	_12 = 0;
+	_13 = 0;
+	_14 = 0;
 
-	M[4] = 0;
-	M[5] = (T)h;
-	M[6] = 0;
-	M[7] = 0;
+	_21 = 0;
+	_22 = (T)h;
+	_23 = 0;
+	_24 = 0;
 
-	M[8] = 0;
-	M[9] = 0;
-	M[10] = (T)(zFar / (zFar - zNear));
-	M[11] = 1;
+	_31 = 0;
+	_32 = 0;
+	_33 = (T)(zFar / (zFar - zNear));
+	_34 = 1;
 
-	M[12] = 0;
-	M[13] = 0;
-	M[14] = (T)(-zNear*zFar / (zFar - zNear));
-	M[15] = 0;
+	_41 = 0;
+	_42 = 0;
+	_43 = (T)(-zNear*zFar / (zFar - zNear));
+	_44 = 0;
 
 	return *this;
 }
@@ -910,27 +805,27 @@ inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixPerspectiveFovRH(
 	const T w = h / aspectRatio;
 
 	ASSERT(zNear != zFar); //divide by zero
-	M[0] = w;
-	M[1] = 0;
-	M[2] = 0;
-	M[3] = 0;
+	_11 = w;
+	_12 = 0;
+	_13 = 0;
+	_14 = 0;
 
-	M[4] = 0;
-	M[5] = (T)h;
-	M[6] = 0;
-	M[7] = 0;
+	_21 = 0;
+	_22 = (T)h;
+	_23 = 0;
+	_24 = 0;
 
-	M[8] = 0;
-	M[9] = 0;
-	M[10] = (T)(zFar / (zNear - zFar)); // DirectX version
+	_31 = 0;
+	_32 = 0;
+	_33 = (T)(zFar / (zNear - zFar)); // DirectX version
 	//		M[10] = (T)(zFar+zNear/(zNear-zFar)); // OpenGL version
-	M[11] = -1;
+	_34 = -1;
 
-	M[12] = 0;
-	M[13] = 0;
-	M[14] = (T)(zNear*zFar / (zNear - zFar)); // DirectX version
+	_41 = 0;
+	_42 = 0;
+	_43 = (T)(zNear*zFar / (zNear - zFar)); // DirectX version
 	//		M[14] = (T)(2.0f*zNear*zFar/(zNear-zFar)); // OpenGL version
-	M[15] = 0;
+	_44 = 0;
 
 	return *this;
 }
@@ -942,25 +837,25 @@ inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixPerspectiveLH(
 	ASSERT(widthOfViewVolume != 0.f); //divide by zero
 	ASSERT(heightOfViewVolume != 0.f); //divide by zero
 	ASSERT(zNear != zFar); //divide by zero
-	M[0] = (T)(2 * zNear / widthOfViewVolume);
-	M[1] = 0;
-	M[2] = 0;
-	M[3] = 0;
+	_11 = (T)(2 * zNear / widthOfViewVolume);
+	_12 = 0;
+	_13 = 0;
+	_14 = 0;
 
-	M[4] = 0;
-	M[5] = (T)(2 * zNear / heightOfViewVolume);
-	M[6] = 0;
-	M[7] = 0;
+	_21 = 0;
+	_22 = (T)(2 * zNear / heightOfViewVolume);
+	_23 = 0;
+	_24 = 0;
 
-	M[8] = 0;
-	M[9] = 0;
-	M[10] = (T)(zFar / (zFar - zNear));
-	M[11] = 1;
+	_31 = 0;
+	_32 = 0;
+	_33 = (T)(zFar / (zFar - zNear));
+	_34 = 1;
 
-	M[12] = 0;
-	M[13] = 0;
-	M[14] = (T)(zNear*zFar / (zNear - zFar));
-	M[15] = 0;
+	_41 = 0;
+	_42 = 0;
+	_43 = (T)(zNear*zFar / (zNear - zFar));
+	_44 = 0;
 
 	return *this;
 }
@@ -972,25 +867,25 @@ inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixPerspectiveRH(
 	ASSERT(widthOfViewVolume != 0.f); //divide by zero
 	ASSERT(heightOfViewVolume != 0.f); //divide by zero
 	ASSERT(zNear != zFar); //divide by zero
-	M[0] = (T)(2 * zNear / widthOfViewVolume);
-	M[1] = 0;
-	M[2] = 0;
-	M[3] = 0;
+	_11 = (T)(2 * zNear / widthOfViewVolume);
+	_12 = 0;
+	_13 = 0;
+	_14 = 0;
 
-	M[4] = 0;
-	M[5] = (T)(2 * zNear / heightOfViewVolume);
-	M[6] = 0;
-	M[7] = 0;
+	_21 = 0;
+	_22 = (T)(2 * zNear / heightOfViewVolume);
+	_23 = 0;
+	_24 = 0;
 
-	M[8] = 0;
-	M[9] = 0;
-	M[10] = (T)(zFar / (zNear - zFar));
-	M[11] = -1;
+	_31 = 0;
+	_32 = 0;
+	_33 = (T)(zFar / (zNear - zFar));
+	_34 = -1;
 
-	M[12] = 0;
-	M[13] = 0;
-	M[14] = (T)(zNear*zFar / (zNear - zFar));
-	M[15] = 0;
+	_41 = 0;
+	_42 = 0;
+	_43 = (T)(zNear*zFar / (zNear - zFar));
+	_44 = 0;
 
 	return *this;
 }
@@ -1005,25 +900,25 @@ inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixOrthoFovLH(float fieldOfVi
 	ASSERT(zNear != zFar); //divide by zero
 	ASSERT(zNear != 0.0f);  //divide by zero
 
-	M[0] = w / zNear;
-	M[1] = 0;
-	M[2] = 0;
-	M[3] = 0;
+	_11 = w / zNear;
+	_12 = 0;
+	_13 = 0;
+	_14 = 0;
 
-	M[4] = 0;
-	M[5] = (T)h / zNear;
-	M[6] = 0;
-	M[7] = 0;
+	_21 = 0;
+	_22 = (T)h / zNear;
+	_23 = 0;
+	_24 = 0;
 
-	M[8] = 0;
-	M[9] = 0;
-	M[10] = (T)(zFar / (zFar - zNear));
-	M[11] = 1;
+	_31 = 0;
+	_32 = 0;
+	_33 = (T)(zFar / (zFar - zNear));
+	_34 = 1;
 
-	M[12] = 0;
-	M[13] = 0;
-	M[14] = (T)(-zNear*zFar / (zFar - zNear));
-	M[15] = 0;
+	_41 = 0;
+	_42 = 0;
+	_43 = (T)(-zNear*zFar / (zFar - zNear));
+	_44 = 0;
 
 	return *this;
 }
@@ -1038,25 +933,25 @@ inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixOrthoFovRH(float fieldOfVi
 	ASSERT(zNear != zFar); //divide by zero
 	ASSERT(zNear != 0.0f);  //divide by zero
 
-	M[0] = w / zNear;
-	M[1] = 0;
-	M[2] = 0;
-	M[3] = 0;
+	_11 = w / zNear;
+	_12 = 0;
+	_13 = 0;
+	_14 = 0;
 
-	M[4] = 0;
-	M[5] = (T)h / zNear;
-	M[6] = 0;
-	M[7] = 0;
+	_21 = 0;
+	_22 = (T)h / zNear;
+	_23 = 0;
+	_24 = 0;
 
-	M[8] = 0;
-	M[9] = 0;
-	M[10] = (T)(1 / (zNear - zFar));
-	M[11] = 0;
+	_31 = 0;
+	_32 = 0;
+	_33 = (T)(1 / (zNear - zFar));
+	_34 = 0;
 
-	M[12] = 0;
-	M[13] = 0;
-	M[14] = (T)(zNear / (zNear - zFar));
-	M[15] = -1;
+	_41 = 0;
+	_42 = 0;
+	_43 = (T)(zNear / (zNear - zFar));
+	_44 = -1;
 
 	return *this;
 }
@@ -1068,25 +963,25 @@ inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixOrthoLH(
 	ASSERT(widthOfViewVolume != 0.f); //divide by zero
 	ASSERT(heightOfViewVolume != 0.f); //divide by zero
 	ASSERT(zNear != zFar); //divide by zero
-	M[0] = (T)(2 / widthOfViewVolume);
-	M[1] = 0;
-	M[2] = 0;
-	M[3] = 0;
+	_11 = (T)(2 / widthOfViewVolume);
+	_12 = 0;
+	_13 = 0;
+	_14 = 0;
 
-	M[4] = 0;
-	M[5] = (T)(2 / heightOfViewVolume);
-	M[6] = 0;
-	M[7] = 0;
+	_21 = 0;
+	_22 = (T)(2 / heightOfViewVolume);
+	_23 = 0;
+	_24 = 0;
 
-	M[8] = 0;
-	M[9] = 0;
-	M[10] = (T)(1 / (zFar - zNear));
-	M[11] = 0;
+	_31 = 0;
+	_32 = 0;
+	_33 = (T)(1 / (zFar - zNear));
+	_34 = 0;
 
-	M[12] = 0;
-	M[13] = 0;
-	M[14] = (T)(zNear / (zNear - zFar));
-	M[15] = 1;
+	_41 = 0;
+	_42 = 0;
+	_43 = (T)(zNear / (zNear - zFar));
+	_44 = 1;
 
 	return *this;
 }
@@ -1098,25 +993,25 @@ inline CMatrix4<T>& CMatrix4<T>::buildProjectionMatrixOrthoRH(
 	ASSERT(widthOfViewVolume != 0.f); //divide by zero
 	ASSERT(heightOfViewVolume != 0.f); //divide by zero
 	ASSERT(zNear != zFar); //divide by zero
-	M[0] = (T)(2 / widthOfViewVolume);
-	M[1] = 0;
-	M[2] = 0;
-	M[3] = 0;
+	_11 = (T)(2 / widthOfViewVolume);
+	_12 = 0;
+	_13 = 0;
+	_14 = 0;
 
-	M[4] = 0;
-	M[5] = (T)(2 / heightOfViewVolume);
-	M[6] = 0;
-	M[7] = 0;
+	_21 = 0;
+	_22 = (T)(2 / heightOfViewVolume);
+	_23 = 0;
+	_24 = 0;
 
-	M[8] = 0;
-	M[9] = 0;
-	M[10] = (T)(1 / (zNear - zFar));
-	M[11] = 0;
+	_31 = 0;
+	_32 = 0;
+	_33 = (T)(1 / (zNear - zFar));
+	_34 = 0;
 
-	M[12] = 0;
-	M[13] = 0;
-	M[14] = (T)(zNear / (zNear - zFar));
-	M[15] = -1;
+	_41 = 0;
+	_42 = 0;
+	_43 = (T)(zNear / (zNear - zFar));
+	_44 = -1;
 
 	return *this;
 }
