@@ -6,20 +6,13 @@
 
 vec3 Mul( mat3 matrix, vec3 pos )
 {
-	vec3 vResult;
-    vResult.x = dot( pos, matrix[0].xyz );
-    vResult.y = dot( pos, matrix[1].xyz );
-    vResult.z = dot( pos, matrix[2].xyz );
+	vec3 vResult = matrix * pos;
 	return vResult;
 }
 
 vec4 Mul( mat4 matrix, vec4 pos )
 {
-	vec4 vResult;
-    vResult.x = dot( pos, matrix[0].xyzw );
-    vResult.y = dot( pos, matrix[1].xyzw );
-    vResult.z = dot( pos, matrix[2].xyzw );
-	vResult.w = dot( pos, matrix[3].xyzw );
+	vec4 vResult = matrix * pos;
 	return vResult;
 }
 
