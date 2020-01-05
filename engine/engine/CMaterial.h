@@ -67,10 +67,12 @@ struct SGlobalMaterial
 	int MipMapLodBias;
 };
 
+class CMaterial;
+
 class CPass
 {
 public:
-	explicit CPass(E_LIGHT_MODE mode) : LightMode(mode)
+	CPass(CMaterial* material, E_LIGHT_MODE mode) : Material(material), LightMode(mode)
 	{
 		Cull = ECM_BACK;
 		AntiAliasing = EAAM_OFF;
@@ -105,6 +107,11 @@ public:
 	void addMacro(const char* macro) { MacroSet.insert(macro); }
 	std::string macroToString() const;
 	void macroFromString(const char* macroString);
+
+	const CMaterial* getMaterial() const { return Material; }
+
+private:
+	const CMaterial* Material;
 };
 
 struct STextureUnit
@@ -138,6 +145,7 @@ public:
 	}
 
 	const CPass* getPass(E_LIGHT_MODE mode) const;
+	CPass* getPass(E_LIGHT_MODE mode);
 	CPass& addPass(E_LIGHT_MODE lightMode);
 
 public:

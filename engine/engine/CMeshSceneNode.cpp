@@ -5,6 +5,9 @@ CMeshRenderer::CMeshRenderer(const CMesh * mesh, ISceneNode* node)
 	: IRenderer(node), Mesh(mesh)
 {
 	Box = Mesh->getBoundingBox();
+
+	CPass& pass = Material.addPass(ELM_ALWAYS);
+	pass.Cull = ECM_BACK;
 }
 
 aabbox3df CMeshRenderer::getBoundingBox() const

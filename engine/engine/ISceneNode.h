@@ -5,7 +5,6 @@
 #include "quaternion.h"
 #include "aabbox3d.h"
 #include <list>
-#include <algorithm>
 #include <functional>
 
 class IRenderer;
@@ -17,7 +16,7 @@ class ISceneNode
 {
 public:
 	ISceneNode()
-		: m_Transform(this), m_Active(true), m_ToDelete(false), m_layer(0)
+		: m_Transform(this), m_Active(true), m_ToDelete(false), m_layer(LAYER_DEFAULT)
 	{
 	}
 

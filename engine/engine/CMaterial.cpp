@@ -49,9 +49,19 @@ const CPass* CMaterial::getPass(E_LIGHT_MODE mode) const
 	return nullptr;
 }
 
+CPass* CMaterial::getPass(E_LIGHT_MODE mode)
+{
+	for (auto& pass : PassList)
+	{
+		if (pass.LightMode == mode)
+			return &pass;
+	}
+	return nullptr;
+}
+
 CPass& CMaterial::addPass(E_LIGHT_MODE lightMode)
 {
-	CPass pass(lightMode);
+	CPass pass(this, lightMode);
 	pass.LightMode = lightMode;
 	PassList.push_back(pass);
 	return PassList.back();

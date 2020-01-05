@@ -5,7 +5,7 @@
 #include "base.h"
 #include "SColor.h"
 #include "rect.h"
-#include "SMaterial.h"
+#include "CMaterial.h"
 
 class COpenGLDriver;
 class ITexture;
@@ -19,7 +19,7 @@ public:
 public:
 	bool init();
 
-	void setRenderStates(const SMaterial* material, const SGlobalMaterial* globalMaterial, const CGLProgram* program);
+	void setRenderStates(const CPass* pass, const SGlobalMaterial* globalMaterial, const CGLProgram* program);
 	void applyRenderStates();
 
 	void setClearColor(SColor clearColor);

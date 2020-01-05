@@ -46,10 +46,10 @@ bool COpenGLShaderManageComponent::init()
 	return true;
 }
 
-const CGLProgram* COpenGLShaderManageComponent::applyShaders(const SMaterial* material, E_VERTEX_TYPE vertexType)
+const CGLProgram* COpenGLShaderManageComponent::applyShaders(const CPass* pass, E_VERTEX_TYPE vertexType)
 {
 	auto shaderKey = CShaderUtil::getShaderKey(
-		material->VSFile.c_str(), material->PSFile.c_str(), material->macroToString().c_str(), vertexType);
+		pass->VSFile.c_str(), pass->PSFile.c_str(), pass->macroToString().c_str(), vertexType);
 
 	const COpenGLVertexShader* vertexShader = getVertexShader(shaderKey.VSFile.c_str(), shaderKey.MacroString.c_str());
 	const COpenGLPixelShader* pixelShader = getPixelShader(shaderKey.PSFile.c_str(), shaderKey.MacroString.c_str());
@@ -125,7 +125,7 @@ const COpenGLPixelShader* COpenGLShaderManageComponent::getPixelShader(const cha
 	return pshader;
 }
 
-void COpenGLShaderManageComponent::addMacroByMaterial(const SMaterial& material, std::set<std::string>& shaderMacro) const
+void COpenGLShaderManageComponent::addMacroByMaterial(const CMaterial& material, std::set<std::string>& shaderMacro) const
 {
 	if (IsRenderQueueAlphaTest(material.RenderQueue))
 	{
@@ -306,7 +306,7 @@ void COpenGLShaderManageComponent::setShaderUniformF(uint32_t location, GLenum t
 	}
 }
 
-void COpenGLShaderManageComponent::setShaderVariables(const CGLProgram* program, const SMaterial* material)
+void COpenGLShaderManageComponent::setShaderVariables(const CGLProgram* program, const CMaterial* material)
 {
 	//set program shader variable
 	for (const auto& pair : program->uniformNameIndexMap)

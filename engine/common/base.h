@@ -491,6 +491,13 @@ enum E_UNIFORM_TYPE : int
 	EUT_COUNT,
 };
 
+enum E_LAYER : int
+{
+	LAYER_DEFAULT = 0,
+
+
+};
+
 enum E_VIDEO_DRIVER_FEATURE : int
 {
 	EVDF_RENDER_TO_TARGET = 0,

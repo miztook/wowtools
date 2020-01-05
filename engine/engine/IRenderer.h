@@ -1,7 +1,7 @@
 #pragma once
 
 #include "aabbox3d.h"
-#include "SMaterial.h"
+#include "CMaterial.h"
 #include "RenderStruct.h"
 #include "SGlobalLayerData.h"
 
@@ -17,9 +17,8 @@ public:
 	virtual aabbox3df getBoundingBox() const = 0;
 
 public:
-	const SMaterial* getMaterialPtr() const { return &Material; }
-	const SMaterial& getMaterial() const { return Material; }
-	SMaterial& getMaterial() { return Material; }
+	const CMaterial& getMaterial() const { return Material; }
+	CMaterial& getMaterial() { return Material; }
 	matrix4 getLocalToWorldMatrix() const;
 	ISceneNode* getSceneNode() const { return SceneNode; }
 
@@ -32,6 +31,6 @@ public:
 
 protected:
 	ISceneNode*		SceneNode;
-	SMaterial	Material;
+	CMaterial	Material;
 	SGlobalLayerData	GlobalLayerData;
 };

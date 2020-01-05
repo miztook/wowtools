@@ -8,12 +8,14 @@
 
 CCanvas::CCanvas()
 {
-	Material.Cull = ECM_BACK;
-	Material.ZWriteEnable = false;
-	Material.ZBuffer = ECFN_NEVER;
-	Material.AntiAliasing = EAAM_LINE_SMOOTH;
-	Material.VSFile = "";
-	Material.PSFile = "UI";
+	CPass& pass = Material.addPass(ELM_ALWAYS);
+
+	pass.Cull = ECM_BACK;
+	pass.ZWriteEnable = false;
+	pass.ZBuffer = ECFN_NEVER;
+	pass.AntiAliasing = EAAM_LINE_SMOOTH;
+	pass.VSFile = "";
+	pass.PSFile = "UI";
 }
 
 CCanvas::~CCanvas()
@@ -146,13 +148,16 @@ rectf CCanvas::setUVCoords(E_RECT_UVCOORDS uvcoords, float x0, float y0, float x
 
 void CCanvas::draw2DSquad(const CCamera* cam, uint32_t batchCount, ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam)
 {
+	CPass* pass = Material.getPass(ELM_ALWAYS);
+	ASSERT(pass);
+
 	IVideoDriver* driver = g_Engine->getDriver();
 	IVertexBuffer* vbuffer = driver->getDynamicVertexBuffer();
 	IIndexBuffer* ibuffer = driver->getStaticIndexBufferQuadList();
 
 	vbuffer->updateBuffer<SVertex_PCT>(vertices, batchCount * 4);
 
-	applyBlendParam(blendParam, Material);
+	applyBlendParam(blendParam, pass);
 	Material.setMainTexture(texture);
 
 	SDrawParam drawParam;
@@ -162,40 +167,40 @@ void CCanvas::draw2DSquad(const CCamera* cam, uint32_t batchCount, ITexture* tex
 	driver->setShaderVariable("g_ObjectToWorld", matrix4::Identity());
 	driver->setShaderVariable("g_MatrixVP", cam->getVPTM());
 
-	driver->draw(&Material, vbuffer, ibuffer,
+	driver->draw(pass, vbuffer, ibuffer,
 		EPT_TRIANGLES, batchCount * 2, drawParam);
 }
 
-void CCanvas::applyBlendParam(const S2DBlendParam& blendParam, SMaterial& material)
+void CCanvas::applyBlendParam(const S2DBlendParam& blendParam, CPass* pass)
 {
-	material.clearMacroSet();
+	pass->clearMacroSet();
 	if (blendParam.alpha)
-		material.addMacro("_USE_ALPHA_");
+		pass->addMacro("_USE_ALPHA_");
 	if (blendParam.alphaChannel)
-		material.addMacro("_USE_ALPHA_CHANNEL_");
+		pass->addMacro("_USE_ALPHA_CHANNEL_");
 
 	if (!blendParam.alpha && !blendParam.alphaChannel)
 	{
-		material.AlphaBlendEnabled = false;
-		material.SrcBlend = EBF_ONE;
-		material.DestBlend = EBF_ZERO;
+		pass->AlphaBlendEnabled = false;
+		pass->SrcBlend = EBF_ONE;
+		pass->DestBlend = EBF_ZERO;
 	}
 	else if (blendParam.blendMode == E_AlphaBlend)
 	{
-		material.AlphaBlendEnabled = true;
-		material.SrcBlend = EBF_SRC_ALPHA;
-		material.DestBlend = EBF_ONE_MINUS_SRC_ALPHA;
+		pass->AlphaBlendEnabled = true;
+		pass->SrcBlend = EBF_SRC_ALPHA;
+		pass->DestBlend = EBF_ONE_MINUS_SRC_ALPHA;
 	}
 	else if (blendParam.blendMode == E_OneAlpha)
 	{
-		material.AlphaBlendEnabled = true;
-		material.SrcBlend = EBF_ONE;
-		material.DestBlend = EBF_ONE_MINUS_SRC_ALPHA;
+		pass->AlphaBlendEnabled = true;
+		pass->SrcBlend = EBF_ONE;
+		pass->DestBlend = EBF_ONE_MINUS_SRC_ALPHA;
 	}
 	else
 	{
-		material.AlphaBlendEnabled = false;
-		material.SrcBlend = EBF_ONE;
-		material.DestBlend = EBF_ZERO;
+		pass->AlphaBlendEnabled = false;
+		pass->SrcBlend = EBF_ONE;
+		pass->DestBlend = EBF_ZERO;
 	}
 }

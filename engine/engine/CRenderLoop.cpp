@@ -1,5 +1,5 @@
 #include "CRenderLoop.h"
-#include "SMaterial.h"
+#include "CMaterial.h"
 #include "IRenderer.h"
 #include "Engine.h"
 #include "IVideoDriver.h"
@@ -140,13 +140,18 @@ void CRenderLoop::renderOpaques(const CCamera* cam)
 			continue;
 
 		const IRenderer* renderer = unit->renderer;
+		const CPass* pass;
+		if (EngineUtil::hasLight(renderer))				//暂时只支持无光照
+			pass = nullptr;
+		else
+			pass = renderer->getMaterial().getPass(ELM_ALWAYS);
 
 		driver->setShaderVariable("g_ObjectToWorld", renderer->getLocalToWorldMatrix());
 		driver->setShaderVariable("g_MatrixVP", matVP);
 		driver->setShaderVariable("g_MatrixV", matView);
 		driver->setShaderVariable("g_MatrixP", matProjection);
 
-		driver->draw(renderer->getMaterialPtr(), unit->vbuffer, unit->ibuffer, unit->primType, unit->primCount, unit->drawParam);
+		driver->draw(pass, unit->vbuffer, unit->ibuffer, unit->primType, unit->primCount, unit->drawParam);
 	}
 }
 

@@ -3,7 +3,7 @@
 #include "COpenGLPCH.h"
 #include "base.h"
 #include "IVideoResource.h"
-#include "SMaterial.h"
+#include "CMaterial.h"
 #include <vector>
 #include <map>
 #include <set>
@@ -112,11 +112,11 @@ public:
 public:
 	bool init();
 
-	const CGLProgram* applyShaders(const SMaterial* material, E_VERTEX_TYPE vertexType);
+	const CGLProgram* applyShaders(const CPass* pass, E_VERTEX_TYPE vertexType);
 	const COpenGLVertexShader* getVertexShader(const char* fileName, const char* macroString = "");
 	const COpenGLPixelShader* getPixelShader(const char* fileName, const char* macroString = "");
 
-	void addMacroByMaterial(const SMaterial& material, std::set<std::string>& shaderMacro) const;
+	void addMacroByMaterial(const CMaterial& material, std::set<std::string>& shaderMacro) const;
 
 	const CGLProgram* findGLProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader) const;
 	const CGLProgram* getGlProgram(const COpenGLVertexShader* vshader, const COpenGLPixelShader* pshader);
@@ -135,7 +135,7 @@ public:
 	const char* getPSDir() const { return PixelShaderDir.c_str(); }
 	
 public:
-	void setShaderVariables(const CGLProgram* program, const SMaterial* material);
+	void setShaderVariables(const CGLProgram* program, const CMaterial* material);
 
 private:
 	struct SShaderState

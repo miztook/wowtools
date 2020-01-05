@@ -91,24 +91,24 @@ bool COpenGLMaterialRenderComponent::init()
 	return true;
 }
 
-void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial* material, const SGlobalMaterial* globalMaterial, const CGLProgram* program)
+void COpenGLMaterialRenderComponent::setRenderStates(const CPass* pass, const SGlobalMaterial* globalMaterial, const CGLProgram* program)
 {
 	// zbuffer
 	{
-		CurrentRenderState.ZEnable = material->ZBuffer == ECFN_NEVER ? GL_FALSE : GL_TRUE;
-		CurrentRenderState.ZFunc = COpenGLHelper::getGLCompare((E_COMPARISON_FUNC)material->ZBuffer);
+		CurrentRenderState.ZEnable = pass->ZBuffer == ECFN_NEVER ? GL_FALSE : GL_TRUE;
+		CurrentRenderState.ZFunc = COpenGLHelper::getGLCompare(pass->ZBuffer);
 	}
 
 	// zwrite
 	{
-		CurrentRenderState.ZWriteEnable = material->ZWriteEnable ? GL_TRUE : GL_FALSE;
+		CurrentRenderState.ZWriteEnable = pass->ZWriteEnable ? GL_TRUE : GL_FALSE;
 	}
 
 	// backface culling
 	{
 		GLenum cullmode;
 		GLenum frontface = GL_CW;
-		switch (material->Cull)
+		switch (pass->Cull)
 		{
 		case ECM_FRONT:
 			cullmode = GL_FRONT;
@@ -124,7 +124,7 @@ void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial* material, 
 
 		CurrentRenderState.FrontFace = frontface;
 		CurrentRenderState.CullMode = cullmode;
-		CurrentRenderState.CullEnable = material->Cull != ECM_NONE ? GL_TRUE : GL_FALSE;
+		CurrentRenderState.CullEnable = pass->Cull != ECM_NONE ? GL_TRUE : GL_FALSE;
 	}
 
 	// anti aliasing
@@ -132,7 +132,7 @@ void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial* material, 
 	{
 		bool multisample = false;
 		bool antialiasline = false;
-		switch (material->AntiAliasing)
+		switch (pass->AntiAliasing)
 		{
 		case EAAM_SIMPLE:
 			multisample = true;
@@ -151,7 +151,7 @@ void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial* material, 
 	}
 	
 	//texture unit
-	for (const auto& itr : material->TextureVariableMap)
+	for (const auto& itr : pass->getMaterial()->TextureVariableMap)
 	{
 		int idx = program->getTextureIndex(itr.first.c_str());
 		if (idx == -1)			//material中的texture变量未使用
@@ -198,9 +198,9 @@ void COpenGLMaterialRenderComponent::setRenderStates(const SMaterial* material, 
 	}
 
 	//blend state
-	CurrentRenderState.AlphaBlendEnable = material->AlphaBlendEnabled ? GL_TRUE : GL_FALSE;
-	CurrentRenderState.SrcBlend = COpenGLHelper::getGLBlend(material->SrcBlend);
-	CurrentRenderState.DestBlend = COpenGLHelper::getGLBlend(material->DestBlend);
+	CurrentRenderState.AlphaBlendEnable = pass->AlphaBlendEnabled ? GL_TRUE : GL_FALSE;
+	CurrentRenderState.SrcBlend = COpenGLHelper::getGLBlend(pass->SrcBlend);
+	CurrentRenderState.DestBlend = COpenGLHelper::getGLBlend(pass->DestBlend);
 }
 
 void COpenGLMaterialRenderComponent::applyRenderStates()

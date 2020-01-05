@@ -146,9 +146,6 @@
     <ClInclude Include="..\common\rect.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\SMaterial.h">
-      <Filter>engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\engine\IVideoResource.h">
       <Filter>engine</Filter>
     </ClInclude>

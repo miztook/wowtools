@@ -61,14 +61,14 @@ void CGame::createScene()
 	{
 		CMeshSceneNode* gridSceneNode = m_pScene->addMeshSceneNode("$grid20");
 		gridSceneNode->setMesh(g_Engine->getMeshManager()->getMesh("$grid20"));
-		SMaterial& mat = gridSceneNode->getMeshRenderer()->getMaterial();
+		CMaterial& mat = gridSceneNode->getMeshRenderer()->getMaterial();
 		mat.RenderQueue = (ERQ_GEOMETRY - 50);
 	}
 
 	{
 		CMeshSceneNode* sphereSceneNode = m_pScene->addMeshSceneNode("$sphere");
 		sphereSceneNode->setMesh(g_Engine->getMeshManager()->getMesh("$sphere"));
-		SMaterial& mat = sphereSceneNode->getMeshRenderer()->getMaterial();
+		CMaterial& mat = sphereSceneNode->getMeshRenderer()->getMaterial();
 		mat.setMainTexture(g_Engine->getDriver()->getTextureWhite());
 		sphereSceneNode->getTransform()->setPos(vector3df(1, 1, 0));
 		sphereSceneNode->getTransform()->setScale(vector3df(1.5));

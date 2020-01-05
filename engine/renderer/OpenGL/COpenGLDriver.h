@@ -38,7 +38,7 @@ public:
 	void setDisplayMode(const dimension2d& size) override;
 	bool setDriverSetting(const SDriverSetting& setting) override;
 
-	void draw(const SMaterial* material, const IVertexBuffer* vbuffer, const IIndexBuffer* ibuffer,
+	void draw(const CPass* pass, const IVertexBuffer* vbuffer, const IIndexBuffer* ibuffer,
 		E_PRIMITIVE_TYPE primType,
 		uint32_t primCount,
 		const SDrawParam& drawParam) override;

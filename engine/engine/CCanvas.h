@@ -6,7 +6,7 @@
 #include "rect.h"
 #include "SColor.h"
 #include "S3DVertex.h"
-#include "SMaterial.h"
+#include "CMaterial.h"
 #include <map>
 
 class CCamera;
@@ -33,7 +33,7 @@ private:
 
 	void draw2DSquad(const CCamera* cam, uint32_t batchCount, ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam);
 
-	void applyBlendParam(const S2DBlendParam& blendParam, SMaterial& material);
+	void applyBlendParam(const S2DBlendParam& blendParam, CPass* pass);
 
 private:
 	struct SQuadDrawBatchKey
@@ -64,7 +64,7 @@ private:
 	};
 
 private:
-	SMaterial	Material;
+	CMaterial	Material;
 
 	std::map<SQuadDrawBatchKey, SQuadBatchDraw>		m_2DQuadDrawMap;
 };

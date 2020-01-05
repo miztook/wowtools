@@ -4,7 +4,7 @@
 #include "rect.h"
 #include "vector2d.h"
 #include "matrix4.h"
-#include "SMaterial.h"
+#include "CMaterial.h"
 #include "IRenderTarget.h"
 #include "SColor.h"
 #include "RenderStruct.h"
@@ -137,7 +137,7 @@ public:
 	virtual void setDisplayMode(const dimension2d& size) = 0;
 	virtual bool setDriverSetting(const SDriverSetting& setting) = 0;
 
-	virtual void draw(const SMaterial* material, const IVertexBuffer* vbuffer, const IIndexBuffer* ibuffer,
+	virtual void draw(const CPass* pass, const IVertexBuffer* vbuffer, const IIndexBuffer* ibuffer,
 		E_PRIMITIVE_TYPE primType,
 		uint32_t primCount,
 		const SDrawParam& drawParam) = 0;
