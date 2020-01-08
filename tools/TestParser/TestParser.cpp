@@ -16,6 +16,7 @@
 #pragma comment(lib, "CascLib.lib")
 #pragma comment(lib, "pugixml.lib")
 
+void testLexer();
 void testParser();
 void printNode(const ConcreteNode* node);
 
@@ -25,10 +26,57 @@ int main(int argc, char* argv[])
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-	testParser();
+	testLexer();
+	//testParser();
 
 	getchar();
 	return 0;
+}
+
+void testLexer()
+{
+
+	CFileSystem* fs = new CFileSystem(R"(D:\World Of Warcraft 81)");
+
+	//
+	std::string dir = fs->getWorkingDirectory();
+	normalizeDirName(dir);
+
+	dir += "Shaders/";
+	Q_MakeDirForFileName(dir.c_str());
+
+	const char* files[] =
+	{
+		"test.shader",
+		"Examples.material",
+	};
+
+	for (int i = 0; i < ARRAY_COUNT(files); ++i)
+	{
+		std::string filename = dir + files[i];
+		CReadFile* rf = fs->createAndOpenFile(filename.c_str(), false);
+		uint32_t len = rf->getSize();
+		char* content = new char[len];
+		memset(content, 0, len);
+		rf->read(content, len);
+
+		//read lexer
+		std::string error;
+		std::vector<ScriptToken> tokenList = ScriptLexer::tokenize(content, filename.c_str(), error);
+		if (error.empty())
+		{
+			for (const auto& token : tokenList)
+			{
+				printf("token type: %d, %s, %s, %d\n", token.type, token.lexeme.c_str(), token.file.c_str(), token.line);
+			}
+		}
+
+		delete[] content;
+		delete rf;
+	}
+
+
+	delete fs;
 }
 
 void testParser()
@@ -42,9 +90,16 @@ void testParser()
 	dir += "Shaders/";
 	Q_MakeDirForFileName(dir.c_str());
 
+	const char* files[] = 
 	{
-		const char* filename = "test.shader";
-		CReadFile* rf = fs->createAndOpenFile((dir + filename).c_str(), false);
+		"test.shader",
+		"Examples.material",
+	};
+
+	for (int i = 0; i < ARRAY_COUNT(files); ++i)
+	{
+		std::string filename = dir + files[i];
+		CReadFile* rf = fs->createAndOpenFile(filename.c_str(), false);
 		uint32_t len = rf->getSize();
 		char* content = new char[len];
 		memset(content, 0, len);
@@ -52,7 +107,7 @@ void testParser()
 
 		//read lexer
 		std::string error;
-		std::vector<ScriptToken> tokenList = ScriptLexer::tokenize(content, filename, error);
+		std::vector<ScriptToken> tokenList = ScriptLexer::tokenize(content, filename.c_str(), error);
 		std::list<ConcreteNode*> nodes = ScriptParser::parse(tokenList);
 
 		for (const ConcreteNode* node : nodes)
