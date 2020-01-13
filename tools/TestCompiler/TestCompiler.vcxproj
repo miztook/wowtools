@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{D3D8FBC0-3AB4-4FF6-8B67-FEEF949818EA}</ProjectGuid>
+    <ProjectGuid>{D3904BC8-3700-4856-86B6-77E8A4DF1CE1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>TestLexer</RootNamespace>
+    <RootNamespace>TestCompiler</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -102,7 +102,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\3rdparty_$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\3rdparty_$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -118,7 +118,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\3rdparty_$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\3rdparty_$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -138,7 +138,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\3rdparty_$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\3rdparty_$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -158,7 +158,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\3rdparty_$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\3rdparty_$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -169,6 +169,7 @@
     <ClCompile Include="..\..\engine\common\CSysThread.cpp" />
     <ClCompile Include="..\..\engine\common\CWriteFile.cpp" />
     <ClCompile Include="..\..\engine\common\ScriptLexer.cpp" />
+    <ClCompile Include="..\..\engine\common\ScriptParser.cpp" />
     <ClCompile Include="..\..\engine\common\wowDatabase.cpp" />
     <ClCompile Include="..\..\engine\common\wowDbFile.cpp" />
     <ClCompile Include="..\..\engine\common\wowEnvironment.cpp" />
@@ -178,7 +179,8 @@
     <ClCompile Include="..\..\engine\common\wowWDB5File.cpp" />
     <ClCompile Include="..\..\engine\common\wowWDC3File.cpp" />
     <ClCompile Include="..\..\engine\common\wowWMOFile.cpp" />
-    <ClCompile Include="TestLexer.cpp" />
+    <ClCompile Include="ScriptCompiler.cpp" />
+    <ClCompile Include="TestCompiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\engine\common\aabbox3d.h" />
@@ -204,6 +206,7 @@
     <ClInclude Include="..\..\engine\common\S3DVertex.h" />
     <ClInclude Include="..\..\engine\common\SColor.h" />
     <ClInclude Include="..\..\engine\common\ScriptLexer.h" />
+    <ClInclude Include="..\..\engine\common\ScriptParser.h" />
     <ClInclude Include="..\..\engine\common\stringext.h" />
     <ClInclude Include="..\..\engine\common\varianttype.h" />
     <ClInclude Include="..\..\engine\common\vector2d.h" />
@@ -221,6 +224,7 @@
     <ClInclude Include="..\..\engine\common\wowWDC3File.h" />
     <ClInclude Include="..\..\engine\common\wowWMOFile.h" />
     <ClInclude Include="..\..\engine\common\wowWMOStruct.h" />
+    <ClInclude Include="ScriptCompiler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
