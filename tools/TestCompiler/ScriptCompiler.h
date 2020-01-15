@@ -141,4 +141,79 @@ private:
 	std::list<AbstractNode*>* loadImportPath(const char* name);
 
 	std::list<AbstractNode*> locateTarget(const std::list<AbstractNode*>& nodes, const char* target);
+
+	void processObjects(std::list<AbstractNode*>& nodes, const std::list<AbstractNode*>& top);
+
+	void processVariables(std::list<AbstractNode*>& nodes);
+
+	void overlayObjects(const ObjectAbstractNode& source, ObjectAbstractNode& dest);
+
+	bool isNameExcluded(const ObjectAbstractNode& node, AbstractNode* parent);
+
+private:
+	friend std::string getPropertyName(const ScriptCompiler* compiler, uint32_t id);
+
+	struct Error
+	{
+		std::string file;
+		std::string message;
+		int line;
+		uint32_t code;
+	};
+
+	std::list<Error> ErrorList;
+
+	ScriptCompilerListener* m_Listener;
+
+private:
+	class AbstractTreeBuilder
+	{
+	private:
+		std::list<AbstractNode*>* mNodes;
+		AbstractNode* mCurrent;
+		ScriptCompiler* mCompiler;
+	public:
+		explicit AbstractTreeBuilder(ScriptCompiler* compiler);
+		std::list<AbstractNode*>* getResult() const;
+		void visit(ConcreteNode* node);
+		static void visit(AbstractTreeBuilder* visitor, const std::list<ConcreteNode>& nodes);
+	};
+
+	friend class AbstractTreeBuilder;
+public:
+	enum 
+	{
+		ID_ON = 1,
+		ID_OFF,
+		ID_TRUE,
+		ID_FALSE,
+		ID_YES,
+		ID_NO,
+	};
 };
+
+class ScriptCompilerEvent
+{
+public:
+	std::string mType;
+
+	ScriptCompilerEvent(const char* type) :mType(type) {}
+	virtual ~ScriptCompilerEvent() {}
+};
+
+class ScriptCompilerListener
+{
+public:
+	ScriptCompilerListener();
+	virtual ~ScriptCompilerListener() {}
+
+public:
+	virtual std::list<ConcreteNode*>* importFile(ScriptCompiler* compiler, const char* name) = 0;
+	virtual void preConversion(ScriptCompiler* compiler, std::list<ConcreteNode*>* nodes);
+	virtual bool postConversion(ScriptCompiler* compiler, std::list<AbstractNode*>* nodes);
+	virtual void handleError(ScriptCompiler* compiler, uint32_t code, const char* file, int line, const char* msg);
+	virtual bool handleEvent(ScriptCompiler* compiler, ScriptCompilerEvent* evt, void* retval);
+};
+
+class ScriptTranslator;
+class ScriptTranslatorManager;

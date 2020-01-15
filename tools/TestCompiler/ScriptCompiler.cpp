@@ -1,4 +1,6 @@
 #include "ScriptCompiler.h"
+#include "base.h"
+#include "ScriptParser.h"
 
 AbstractNode::AbstractNode(AbstractNode* _parent)
 	: line(0), type(ANT_UNKNOWN), parent(_parent) 
@@ -44,4 +46,30 @@ const char* ScriptCompiler::formatErrorCode(uint32_t code)
 	default:
 		return "unknown error";
 	}
+}
+
+ScriptCompiler::ScriptCompiler()
+	: m_Listener(nullptr)
+{
+
+}
+
+bool ScriptCompiler::compile(const char* str, const char* source)
+{
+	std::string error;
+	std::vector<ScriptToken> tokens = ScriptLexer::tokenize(str, source, error);
+
+	if (!error.empty())
+	{
+		ASSERT(false);
+		return false;
+	}
+
+	std::list<ConcreteNode*> nodes = ScriptParser::parse(tokens);
+	return compile(nodes);
+}
+
+bool ScriptCompiler::compile(const std::list<ConcreteNode*>& nodes)
+{
+	m_Error.clear();
 }
