@@ -78,18 +78,15 @@ bool ScriptCompiler::compile(const std::list<ConcreteNode*>& nodes)
 	if (m_Listener)
 		m_Listener->preConversion(this, nodes);
 
-	std::list<AbstractNode*> astList = convertToAST(nodes);
+	std::list<AbstractNode*>* astList = convertToAST(nodes);
+	ASSERT(astList);
 
-	processImports(astList);
+	processVariables(*astList);
 
-	processObjects(astList, astList);
-
-	processVariables(astList);
-
-	if (m_Listener && !m_Listener->postConversion(this, astList))
+	if (m_Listener && !m_Listener->postConversion(this, *astList))
 		return m_Errors.empty();
 
-	for (auto itr = astList.begin(); itr != astList.end(); ++itr)
+	for (auto itr = astList->begin(); itr != astList->end(); ++itr)
 	{
 		ScriptTranslator* translator = m_scriptCompilerManager->getTranslator(*itr);
 		if (translator)
@@ -97,6 +94,30 @@ bool ScriptCompiler::compile(const std::list<ConcreteNode*>& nodes)
 	}
 
 	return m_Errors.empty();
+}
+
+std::list<AbstractNode*>* ScriptCompiler::_generateAST(const char* str, const char* source, bool doVariables /*= false*/)
+{
+	std::string error;
+	std::vector<ScriptToken> tokens = ScriptLexer::tokenize(str, source, error);
+
+	if (!error.empty())
+	{
+		ASSERT(false);
+		return nullptr;
+	}
+
+	std::list<ConcreteNode*> nodes = ScriptParser::parse(tokens);
+
+	if (m_Listener)
+		m_Listener->preConversion(this, nodes);
+
+	std::list<AbstractNode*>* astNodes = convertToAST(nodes);
+
+	if (astNodes && doVariables)
+		processVariables(*astNodes);
+
+	return astNodes;
 }
 
 void ScriptCompiler::processImports(const std::list<AbstractNode*>& nodes)

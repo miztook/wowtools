@@ -126,7 +126,7 @@ public:
 
 	bool compile(const char* str, const char* source);
 	bool compile(const std::list<ConcreteNode*>& nodes);
-	std::list<AbstractNode*>* _generateAST(const char* str, const char* source, bool doObjects = false, bool doVariables = false);
+	std::list<AbstractNode*>* _generateAST(const char* str, const char* source, bool doVariables = false);
 
 	bool _compile(const std::list<ConcreteNode*>& nodes, bool doObjects = false, bool doVariables = false);
 	void addError(uint32_t code, const char* file, int line, const char* msg = "");
@@ -137,7 +137,7 @@ public:
 	ScriptCompilerManager* getScriptCompilerManager() const { return m_scriptCompilerManager; }
 
 private:
-	std::list<AbstractNode*> convertToAST(const std::list<ConcreteNode*>& nodes);
+	std::list<AbstractNode*>* convertToAST(const std::list<ConcreteNode*>& nodes);
 
 	void processImports(const std::list<AbstractNode*>& nodes);
 
