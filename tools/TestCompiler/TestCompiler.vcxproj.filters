@@ -54,6 +54,7 @@
       <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="ScriptCompiler.cpp" />
+    <ClCompile Include="ScriptTranslator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="common">
@@ -185,5 +186,6 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="ScriptCompiler.h" />
+    <ClInclude Include="ScriptTranslator.h" />
   </ItemGroup>
 </Project>

@@ -96,6 +96,7 @@ public:
 
 class ScriptCompilerListener;
 class ScriptCompilerEvent;
+class ScriptCompilerManager;
 
 class ScriptCompiler
 {
@@ -120,7 +121,7 @@ public:
 	static const char* formatErrorCode(uint32_t code);
 
 public:
-	ScriptCompiler();
+	explicit ScriptCompiler(ScriptCompilerManager* scriptCompilerManager);
 	virtual ~ScriptCompiler() {}
 
 	bool compile(const char* str, const char* source);
@@ -133,8 +134,10 @@ public:
 	ScriptCompilerListener* getListener() const;
 	bool _fireEvent(ScriptCompilerEvent* evt, void* retVal);
 
+	ScriptCompilerManager* getScriptCompilerManager() const { return m_scriptCompilerManager; }
+
 private:
-	std::list<AbstractNode*>* convertToAST(const std::list<ConcreteNode*>& nodes);
+	std::list<AbstractNode*> convertToAST(const std::list<ConcreteNode*>& nodes);
 
 	void processImports(const std::list<AbstractNode*>& nodes);
 
@@ -153,6 +156,9 @@ private:
 private:
 	friend std::string getPropertyName(const ScriptCompiler* compiler, uint32_t id);
 
+
+	std::map<std::string, std::string> m_Env;
+
 	struct Error
 	{
 		std::string file;
@@ -161,10 +167,10 @@ private:
 		uint32_t code;
 	};
 
-	std::list<Error> ErrorList;
+	std::list<Error> m_Errors;
 
 	ScriptCompilerListener* m_Listener;
-
+	ScriptCompilerManager* m_scriptCompilerManager;
 private:
 	class AbstractTreeBuilder
 	{
@@ -209,11 +215,30 @@ public:
 
 public:
 	virtual std::list<ConcreteNode*>* importFile(ScriptCompiler* compiler, const char* name) = 0;
-	virtual void preConversion(ScriptCompiler* compiler, std::list<ConcreteNode*>* nodes);
-	virtual bool postConversion(ScriptCompiler* compiler, std::list<AbstractNode*>* nodes);
+	virtual void preConversion(ScriptCompiler* compiler, const std::list<ConcreteNode*>& nodes);
+	virtual bool postConversion(ScriptCompiler* compiler, const std::list<AbstractNode*>& nodes);
 	virtual void handleError(ScriptCompiler* compiler, uint32_t code, const char* file, int line, const char* msg);
 	virtual bool handleEvent(ScriptCompiler* compiler, ScriptCompilerEvent* evt, void* retval);
 };
 
 class ScriptTranslator;
-class ScriptTranslatorManager;
+
+class ScriptCompilerManager
+{
+private:
+	std::vector<std::string>	m_ScriptPatterns;
+
+	ScriptCompiler	m_ScriptCompiler;
+
+public:
+	ScriptCompilerManager();
+	virtual ~ScriptCompilerManager();
+
+	void setListener(ScriptCompilerManager* listener);
+	ScriptCompilerManager* getListener();
+
+	ScriptTranslator* getTranslator(const AbstractNode* node);
+
+	void addScriptPattern(const char* pattern);
+	const std::vector<std::string>& getScriptPatterns() const;
+};

@@ -1,6 +1,7 @@
 #include "ScriptCompiler.h"
 #include "base.h"
 #include "ScriptParser.h"
+#include "ScriptTranslator.h"
 
 AbstractNode::AbstractNode(AbstractNode* _parent)
 	: line(0), type(ANT_UNKNOWN), parent(_parent) 
@@ -48,8 +49,8 @@ const char* ScriptCompiler::formatErrorCode(uint32_t code)
 	}
 }
 
-ScriptCompiler::ScriptCompiler()
-	: m_Listener(nullptr)
+ScriptCompiler::ScriptCompiler(ScriptCompilerManager* scriptCompilerManager)
+	: m_Listener(nullptr), m_scriptCompilerManager(scriptCompilerManager)
 {
 
 }
@@ -71,5 +72,39 @@ bool ScriptCompiler::compile(const char* str, const char* source)
 
 bool ScriptCompiler::compile(const std::list<ConcreteNode*>& nodes)
 {
-	m_Error.clear();
+	m_Errors.clear();
+	m_Env.clear();
+
+	if (m_Listener)
+		m_Listener->preConversion(this, nodes);
+
+	std::list<AbstractNode*> astList = convertToAST(nodes);
+
+	processImports(astList);
+
+	processObjects(astList, astList);
+
+	processVariables(astList);
+
+	if (m_Listener && !m_Listener->postConversion(this, astList))
+		return m_Errors.empty();
+
+	for (auto itr = astList.begin(); itr != astList.end(); ++itr)
+	{
+		ScriptTranslator* translator = m_scriptCompilerManager->getTranslator(*itr);
+		if (translator)
+			translator->translate(this, *itr);
+	}
+
+	return m_Errors.empty();
+}
+
+void ScriptCompiler::processImports(const std::list<AbstractNode*>& nodes)
+{
+
+}
+
+void ScriptCompiler::processObjects(std::list<AbstractNode*>& nodes, const std::list<AbstractNode*>& top)
+{
+
 }
