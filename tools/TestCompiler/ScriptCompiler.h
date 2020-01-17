@@ -7,7 +7,7 @@
 
 #include "varianttype.h"
 
-class ConcreteNode;
+struct ConcreteNode;
 
 using VAR_T = Variant<uint32_t, uint64_t, uint16_t, int, float, std::string>;
 
@@ -69,7 +69,7 @@ public:
 	void addVariable(const char* name);
 	void setVariable(const char* name, const char* value);
 	std::pair<bool, std::string> getVariable(const char* name) const;
-	const std::map<std::string, std::string>& getVariables() const;
+	const std::map<std::string, std::string>& getVariables() const { return mEnv; }
 
 };
 
@@ -92,6 +92,15 @@ public:
 public:
 	ImportAbstractNode();
 	const char* getValue() const override { return target.c_str(); }
+};
+
+class VariableAccessAbstractNode : public AbstractNode
+{
+public:
+	std::string name;
+public:
+	VariableAccessAbstractNode(AbstractNode* _parent);
+	const char* getValue() const override { return name.c_str(); }
 };
 
 class ScriptCompilerListener;
@@ -126,12 +135,12 @@ public:
 
 	bool compile(const char* str, const char* source);
 	bool compile(const std::list<ConcreteNode*>& nodes);
-	std::list<AbstractNode*>* _generateAST(const char* str, const char* source, bool doVariables = false);
+	std::list<AbstractNode*>* _generateAST(const char* str, const char* source, bool doObjects = false, bool doVariables = false);
 
-	bool _compile(const std::list<ConcreteNode*>& nodes, bool doObjects = false, bool doVariables = false);
+	bool _compile(std::list<AbstractNode*>& nodes, bool doObjects = false, bool doVariables = false);
 	void addError(uint32_t code, const char* file, int line, const char* msg = "");
-	void setListener(ScriptCompilerListener* listener);
-	ScriptCompilerListener* getListener() const;
+	void setListener(ScriptCompilerListener* listener) { m_Listener = listener; }
+	ScriptCompilerListener* getListener() const { return m_Listener; }
 	bool _fireEvent(ScriptCompilerEvent* evt, void* retVal);
 
 	ScriptCompilerManager* getScriptCompilerManager() const { return m_scriptCompilerManager; }
@@ -139,7 +148,7 @@ public:
 private:
 	std::list<AbstractNode*>* convertToAST(const std::list<ConcreteNode*>& nodes);
 
-	void processImports(const std::list<AbstractNode*>& nodes);
+	void processImports(std::list<AbstractNode*>& nodes);
 
 	std::list<AbstractNode*>* loadImportPath(const char* name);
 
@@ -180,9 +189,9 @@ private:
 		ScriptCompiler* mCompiler;
 	public:
 		explicit AbstractTreeBuilder(ScriptCompiler* compiler);
-		std::list<AbstractNode*>* getResult() const;
+		std::list<AbstractNode*>* getResult() const { return mNodes; }
 		void visit(ConcreteNode* node);
-		static void visit(AbstractTreeBuilder* visitor, const std::list<ConcreteNode>& nodes);
+		static void visit(AbstractTreeBuilder* visitor, const std::list<ConcreteNode*>& nodes);
 	};
 
 	friend class AbstractTreeBuilder;
