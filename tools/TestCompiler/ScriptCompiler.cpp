@@ -2,6 +2,7 @@
 #include "base.h"
 #include "ScriptParser.h"
 #include "ScriptTranslator.h"
+#include "stringext.h"
 
 AbstractNode::AbstractNode(AbstractNode* _parent)
 	: line(0), type(ANT_UNKNOWN), parent(_parent) 
@@ -299,6 +300,23 @@ void ScriptCompiler::processVariables(std::list<AbstractNode*>& nodes)
 	}
 }
 
+bool ScriptCompiler::isNameExcluded(const ObjectAbstractNode& node, AbstractNode* parent)
+{
+	ASSERT_TODO
+	return false;
+}
+
+std::string getPropertyName(const ScriptCompiler* compiler, uint32_t id)
+{
+	for (const auto& kv : compiler->m_Ids)
+	{
+		if (kv.second == id)
+			return kv.first;
+	}
+	ASSERT(false);
+	return "unknown";
+}
+
 ScriptCompiler::AbstractTreeBuilder::AbstractTreeBuilder(ScriptCompiler* compiler)
 	: mCompiler(compiler)
 {
@@ -312,6 +330,255 @@ void ScriptCompiler::AbstractTreeBuilder::visit(AbstractTreeBuilder* visitor, co
 		visitor->visit(node);
 }
 
+void ScriptCompiler::AbstractTreeBuilder::visit(ConcreteNode* node)
+{
+	AbstractNode* asn = nullptr;
+
+	if (node->type == CNT_IMPORT && !mCurrent)
+	{
+		ASSERT_TODO
+	}  
+	else if (node->type == CNT_VARIABLE_ASSIGN)	  // variable set = "set" >> 2 children, children[0] == variable
+	{
+		if (node->children.size() > 2)
+		{
+			mCompiler->addError(CE_FEWERPARAMETERSEXPECTED, node->file.c_str(), node->line);
+			return;
+		}
+		if (node->children.size() < 2)
+		{
+			mCompiler->addError(CE_STRINGEXPECTED, node->file.c_str(), node->line);
+			return;
+		}
+		if (node->children.front()->type != CNT_VARIABLE)
+		{
+			mCompiler->addError(CE_VARIABLEEXPECTED, node->children.front()->file.c_str(), node->children.front()->line);
+			return;
+		}
+
+		auto i = node->children.begin();
+		std::string name = (*i)->token;
+		++i;
+		std::string value = (*i)->token;
+
+		if (mCurrent && mCurrent->type == ANT_OBJECT)
+		{
+			ObjectAbstractNode* ptr = static_cast<ObjectAbstractNode*>(mCurrent);
+			ptr->setVariable(name.c_str(), value.c_str());
+		}
+		else
+		{
+			mCompiler->m_Env[name] = value;
+		}
+	}
+	else if (node->type == CNT_VARIABLE)
+	{
+		if (!node->children.empty())
+		{
+			mCompiler->addError(CE_FEWERPARAMETERSEXPECTED, node->file.c_str(), node->line);
+			return;
+		}
+
+		VariableAccessAbstractNode* impl = new VariableAccessAbstractNode(mCurrent);
+		impl->line = node->line;
+		impl->file = node->file;
+		impl->name = node->token;
+
+		asn = impl;
+	}
+	else if (!node->children.empty())			//properties and objects
+	{
+		ConcreteNode* temp1;
+		ConcreteNode* temp2;
+		auto riter = node->children.rbegin();
+
+		if (riter != node->children.rend())
+		{
+			temp1 = *riter;
+			++riter;
+		}
+		if (riter != node->children.rend())
+		{
+			temp2 = *riter;
+		}
+
+		// object = last 2 children == { and }
+		if (temp1 && temp2 && temp1->type == CNT_RBRACE && temp2->type == CNT_LBRACE)
+		{
+			if (node->children.size() < 2)
+			{
+				mCompiler->addError(CE_STRINGEXPECTED, node->file.c_str(), node->line);
+				return;
+			}
+
+			ObjectAbstractNode* impl = new ObjectAbstractNode(mCurrent);
+			impl->line = node->line;
+			impl->file = node->file;
+			impl->abstract = false;
+
+			std::list<ConcreteNode*> temp;
+			if (node->token == "abstract")
+			{
+				impl->abstract = true;
+				for (ConcreteNode* n : node->children)
+				{
+					temp.push_back(n);
+				}
+			}
+			else
+			{
+				temp.push_back(node);
+				for (ConcreteNode* n : node->children)
+				{
+					temp.push_back(n);
+				}
+			}
+
+			//Get the type of object
+			auto iter = temp.begin();
+			impl->cls = (*iter)->token;
+			++iter;
+
+			//try to map the cls to an id
+			auto iter2 = mCompiler->m_Ids.find(impl->cls);
+			if (iter2 != mCompiler->m_Ids.end())
+				impl->id = iter2->second;
+			else
+				mCompiler->addError(CE_UNEXPECTEDTOKEN, impl->file.c_str(), impl->line,
+					std_string_format("'%s'. If this is a legacy script you must prepend the type (e.g. font, overlay).", impl->cls.c_str()).c_str());
+
+			// Get the name
+			// Unless the type is in the exclusion list
+			if (iter != temp.end() && ((*iter)->type == CNT_WORD || (*iter)->type == CNT_QUOTE &&
+				!mCompiler->isNameExcluded(*impl, mCurrent)))
+			{
+				impl->name = (*iter)->token;
+			}
+
+			// 
+			while (iter != temp.end() && (*iter)->type != CNT_COLON && (*iter)->type != CNT_LBRACE)
+			{
+				if ((*iter)->type == CNT_VARIABLE)
+				{
+					VariableAccessAbstractNode* var = new VariableAccessAbstractNode(impl);
+					var->file = (*iter)->file;
+					var->line = (*iter)->line;
+					var->type = ANT_VARIABLE_ACCESS;
+					var->name = (*iter)->token;
+					impl->values.push_back(var);
+				}
+				else
+				{
+					AtomAbstractNode* atom = new AtomAbstractNode(impl);
+					atom->file = (*iter)->file;
+					atom->line = (*iter)->line;
+					atom->type = ANT_ATOM;
+					atom->value = (*iter)->token;
+
+					auto idpos = mCompiler->m_Ids.find(atom->value);
+					if (idpos != mCompiler->m_Ids.end())
+						atom->id = idpos->second;
+
+					impl->values.push_back(atom);
+				}
+				++iter;
+			}
+
+			//Find the bases
+			if (iter != temp.end() && (*iter)->type == CNT_COLON)
+			{
+				for (ConcreteNode* n : (*iter)->children)
+				{
+					impl->bases.push_back(n->token);
+				}
+				++iter;
+			}
+
+			asn = impl;
+			mCurrent = impl;
+
+			// Visit the children of the {
+			AbstractTreeBuilder::visit(this, temp2->children);
+
+			mCurrent = impl->parent;
+		}
+		else  //it's a property
+		{
+			PropertyAbstractNode* impl = new PropertyAbstractNode(mCurrent);
+			impl->line = node->line;
+			impl->file = node->file;
+			impl->name = node->token;
+
+			auto iter2 = mCompiler->m_Ids.find(impl->name);
+			if (iter2 != mCompiler->m_Ids.end())
+				impl->id = iter2->second;
+
+			asn = impl;
+			mCurrent = impl;
+
+			// Visit the children of the {
+			AbstractTreeBuilder::visit(this, node->children);
+
+			mCurrent = impl->parent;
+		}
+	}
+	else            // standard atom
+	{
+		AtomAbstractNode* impl = new AtomAbstractNode(mCurrent);
+		impl->line = node->line;
+		impl->file = node->file;
+		impl->value = node->token;
+
+		auto iter2 = mCompiler->m_Ids.find(impl->value);
+		if (iter2 != mCompiler->m_Ids.end())
+			impl->id = iter2->second;
+
+		asn = impl;
+	}
+
+	if (asn)
+	{
+		if (mCurrent)
+		{
+			if (mCurrent->type == ANT_PROPERTY)
+			{
+				PropertyAbstractNode* impl = static_cast<PropertyAbstractNode*>(mCurrent);
+				impl->values.push_back(asn);
+			}
+			else
+			{
+				ObjectAbstractNode* impl = static_cast<ObjectAbstractNode*>(mCurrent);
+				impl->children.push_back(asn);
+			}
+		}
+		else
+		{
+			mNodes->push_back(asn);
+		}
+	}
+}
+
+ScriptCompilerManager::ScriptCompilerManager()
+	: m_ScriptCompiler(this)
+{
+	addScriptPattern("*.material");
+}
+
+ScriptCompilerManager::~ScriptCompilerManager()
+{
+
+}
+
+void ScriptCompilerManager::setListener(ScriptCompilerListener* listener)
+{
+	m_ScriptCompiler.setListener(listener);
+}
+
+ScriptCompilerListener* ScriptCompilerManager::getListener() const
+{
+	return m_ScriptCompiler.getListener();
+}
+
 ScriptTranslator* ScriptCompilerManager::getTranslator(const AbstractNode* node)
 {
 	ScriptTranslator* translator = nullptr;
@@ -320,9 +587,41 @@ ScriptTranslator* ScriptCompilerManager::getTranslator(const AbstractNode* node)
 		const ObjectAbstractNode* obj = static_cast<const ObjectAbstractNode*>(node);
 		const ObjectAbstractNode* parent = obj->parent ? static_cast<const ObjectAbstractNode*>(obj->parent) : nullptr;
 
-		ASSERT_TODO
+		if (obj->id == ID_MATERIAL)
+			translator = &m_MaterialTranslator;
+		else if (obj->id == ID_TECHNIQUE && parent && parent->id == ID_MATERIAL)
+			translator = &m_TechniqueTranslator;
+		else if (obj->id == ID_PASS && parent && parent->id == ID_TECHNIQUE)
+			translator = &m_PassTranslator;
+		else if (obj->id == ID_TEXTURE_UNIT && parent && parent->id == ID_PASS)
+			translator = &m_TextureUnitTranslator;
+		else if (obj->id == ID_TEXTURE_SOURCE && parent && parent->id == ID_TEXTURE_UNIT)
+			translator = &m_TextureSourceTranslator;
+		else if (obj->id == ID_FRAGMENT_PROGRAM ||
+			obj->id == ID_VERTEX_PROGRAM ||
+			obj->id == ID_GEOMETRY_PROGRAM ||
+			obj->id == ID_TESSELLATION_HULL_PROGRAM ||
+			obj->id == ID_TESSELLATION_DOMAIN_PROGRAM ||
+			obj->id == ID_COMPUTE_PROGRAM)
+			translator = &m_GpuProgramTranslator;
 	}
 	return translator;
+}
+
+void ScriptCompilerManager::addScriptPattern(const char* pattern)
+{
+	m_ScriptPatterns.push_back(pattern);
+}
+
+bool ScriptCompilerManager::parseScript(const char* str, const char* source)
+{
+	std::string error;
+	std::vector<ScriptToken> tokenList = ScriptLexer::tokenize(str, source, error);
+	if (!error.empty())
+		return false;
+
+	std::list<ConcreteNode*> nodes = ScriptParser::parse(tokenList);
+	return m_ScriptCompiler.compile(nodes);
 }
 
 ObjectAbstractNode::ObjectAbstractNode(AbstractNode* _parent)

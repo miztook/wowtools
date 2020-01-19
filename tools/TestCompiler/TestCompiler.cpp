@@ -10,8 +10,12 @@
 #include "function.h"
 #include "stringext.h"
 
+#include "ScriptCompiler.h"
+
 #pragma comment(lib, "CascLib.lib")
 #pragma comment(lib, "pugixml.lib")
+
+void testCompiler();
 
 int main(int argc, char* argv[])
 {
@@ -19,7 +23,44 @@ int main(int argc, char* argv[])
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
+	testCompiler();
 	
 	getchar();
 	return 0;
+}
+
+void testCompiler()
+{
+	CFileSystem* fs = new CFileSystem(R"(D:\World Of Warcraft 81)");
+
+	//
+	std::string dir = fs->getWorkingDirectory();
+	normalizeDirName(dir);
+
+	dir += "Shaders/";
+	Q_MakeDirForFileName(dir.c_str());
+
+	const char* files[] =
+	{
+		"test.shader",
+		"Examples.material",
+	};
+
+	ScriptCompilerManager mgr;
+
+	for (int i = 0; i < ARRAY_COUNT(files); ++i)
+	{
+		std::string filename = dir + files[i];
+		CReadFile* rf = fs->createAndOpenFile(filename.c_str(), false);
+		uint32_t len = rf->getSize();
+		char* content = new char[len];
+		memset(content, 0, len);
+		rf->read(content, len);
+
+		delete[] content;
+		delete rf;
+	}
+
+
+	delete fs;
 }
