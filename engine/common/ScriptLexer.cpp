@@ -94,6 +94,7 @@ std::vector<ScriptToken> ScriptLexer::tokenize(const char* str, const char* sour
 			{
 				lexeme = c;
 				setToken(lexeme, line, source, tokens);
+				state = READY;
 			}
 			break;
 		case MULTICOMMENT:
@@ -208,6 +209,7 @@ std::vector<ScriptToken> ScriptLexer::tokenize(const char* str, const char* sour
 		if (state == QUOTE)
 		{
 			error = std_string_format("no matching \" found for \" at %s:%d", source, lastQuote);
+			return tokens;
 		}
 	}
 
@@ -257,7 +259,7 @@ void ScriptLexer::setToken(const std::string& lexeme, uint32_t line, const char*
 		token.type = TID_RBRACKET;
 	else if (len == 1 && lexeme[0] == colon)
 		token.type = TID_COLON;
-	else if (lexeme[0] == var)
+	else if (len > 1 && lexeme[0] == var)
 		token.type = TID_VARIABLE;
 	else
 	{
