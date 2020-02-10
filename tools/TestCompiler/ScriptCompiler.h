@@ -130,6 +130,14 @@ public:
 
 	static const char* formatErrorCode(uint32_t code);
 
+	struct Error
+	{
+		std::string file;
+		std::string message;
+		int line;
+		uint32_t code;
+	};
+
 public:
 	explicit ScriptCompiler(ScriptCompilerManager* scriptCompilerManager);
 	virtual ~ScriptCompiler() {}
@@ -145,6 +153,8 @@ public:
 	bool _fireEvent(ScriptCompilerEvent* evt, void* retVal);
 
 	ScriptCompilerManager* getScriptCompilerManager() const { return m_scriptCompilerManager; }
+
+	const std::list<Error>& getErrorList() const { return m_Errors; }
 
 private:
 	std::list<AbstractNode*>* convertToAST(const std::list<ConcreteNode*>& nodes);
@@ -168,14 +178,6 @@ private:
 
 	std::map<std::string, uint32_t> m_Ids;
 	std::map<std::string, std::string> m_Env;
-
-	struct Error
-	{
-		std::string file;
-		std::string message;
-		int line;
-		uint32_t code;
-	};
 
 	std::list<Error> m_Errors;
 

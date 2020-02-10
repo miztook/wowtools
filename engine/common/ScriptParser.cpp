@@ -57,7 +57,7 @@ std::list<ConcreteNode*> ScriptParser::parse(const std::vector<ScriptToken>& tok
 					state = OBJECT;
 				}
 			}
-			else if (token.type == TID_LBRACKET)
+/*			else if (token.type == TID_LBRACKET)
 			{
 				node = new ConcreteNode;
 				node->token = token.lexeme;
@@ -80,7 +80,7 @@ std::list<ConcreteNode*> ScriptParser::parse(const std::vector<ScriptToken>& tok
 
 				parent = node;
 				node = nullptr;
-			}
+			}	*/
 			else if (token.type == TID_RBRACKET)
 			{
 				if (parent)
@@ -235,7 +235,7 @@ std::list<ConcreteNode*> ScriptParser::parse(const std::vector<ScriptToken>& tok
 				node->token = token.lexeme;
 				node->file = token.file;
 				node->line = token.line;
-				node->type = CNT_COLON;
+				node->type = CNT_VARIABLE;
 
 				if (parent)
 				{
@@ -345,6 +345,7 @@ std::list<ConcreteNode*> ScriptParser::parseChunk(const std::vector<ScriptToken>
 
 	return nodes;
 }
+
 
 std::vector<ScriptToken>::const_iterator ScriptParser::skipNewLines(std::vector<ScriptToken>::const_iterator itr, std::vector<ScriptToken>::const_iterator end)
 {

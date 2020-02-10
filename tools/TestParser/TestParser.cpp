@@ -26,8 +26,8 @@ int main(int argc, char* argv[])
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-	testLexer();
-	//testParser();
+	//testLexer();
+	testParser();
 
 	getchar();
 	return 0;
@@ -48,7 +48,7 @@ void testLexer()
 	const char* files[] =
 	{
 		"test.shader",
-		"Examples.material",
+		"Redify.shader",
 	};
 
 	for (int i = 0; i < ARRAY_COUNT(files); ++i)
@@ -67,7 +67,8 @@ void testLexer()
 		{
 			for (const auto& token : tokenList)
 			{
-				printf("token type: %d, %s, %s, %d\n", token.type, token.lexeme.c_str(), token.file.c_str(), token.line);
+				printf("token type: %s, %s, %s, %d\n", 
+					ScriptLexer::getTokenType(token.type), token.lexeme.c_str(), getFileNameA(token.file.c_str()).c_str(), token.line);
 			}
 		}
 
@@ -93,7 +94,7 @@ void testParser()
 	const char* files[] = 
 	{
 		"test.shader",
-		"Examples.material",
+		"Redify.shader",
 	};
 
 	for (int i = 0; i < ARRAY_COUNT(files); ++i)
@@ -131,7 +132,7 @@ void printNode(const ConcreteNode* node)
 		str += "\t";
 		p = p->parent;
 	}
-	printf("%s token: %s, type: %d, line: %d\n", str.c_str(), node->token.c_str(), node->type, node->line);
+	printf("%s token: %s, type: %s, line: %d\n", str.c_str(), node->token.c_str(), ScriptParser::getTokenType(node->type), node->line);
 
 	for (const ConcreteNode* child : node->children)
 	{

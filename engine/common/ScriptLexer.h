@@ -21,7 +21,7 @@ struct ScriptToken
 {
 	std::string lexeme;
 	std::string file;
-	uint32_t type;
+	int type;
 	uint32_t line;
 };
 
@@ -30,8 +30,34 @@ class ScriptLexer
 public:
 	static std::vector<ScriptToken> tokenize(const char* str, const char* source, std::string& error);
 
+	static const char* getTokenType(int type);
+
 private:
 	static void setToken(const std::string& lexeme, uint32_t line, const char* source, std::vector<ScriptToken>& tokens);
 	static bool isWhitespace(char c) { return c == ' ' || c == '\r' || c == '\t'; }
 	static bool isNewline(char c) { return c == '\n' || c == '\r'; }
 };
+
+inline const char* ScriptLexer::getTokenType(int type)
+{
+	switch (type)
+	{
+	case TID_LBRACKET:
+		return "LeftBracket";
+	case TID_RBRACKET:
+		return "RightBracket";
+	case TID_COLON:
+		return "Colon";
+	case TID_VARIABLE:
+		return "Variable";
+	case TID_WORD:
+		return "Word";
+	case TID_QUOTE:
+		return "Quote";
+	case TID_NEWLINE:
+		return "NewLine";
+	case TID_UNKNOWN:
+	default:
+		return "unknown";
+	}
+}

@@ -42,8 +42,7 @@ void testCompiler()
 
 	const char* files[] =
 	{
-		"test.shader",
-		"Examples.material",
+		"Redify.shader",
 	};
 
 	ScriptCompilerManager mgr;
@@ -56,6 +55,11 @@ void testCompiler()
 		char* content = new char[len];
 		memset(content, 0, len);
 		rf->read(content, len);
+
+		if (!mgr.parseScript(content, files[i]))
+		{
+			int x = 0;
+		}
 
 		delete[] content;
 		delete rf;
