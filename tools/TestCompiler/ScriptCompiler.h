@@ -32,6 +32,22 @@ public:
 	AbstractNode* parent;
 	VAR_T	context;
 
+	std::list<AbstractNode*>	children;
+	std::list<AbstractNode*>	values;
+
+	static void deleteNode(const AbstractNode* node)
+	{
+		for (const AbstractNode* child : node->children)
+		{
+			deleteNode(child);
+		}
+		for (const AbstractNode* v : node->values)
+		{
+			deleteNode(v);
+		}
+		delete node;
+	}
+
 public:
 	explicit AbstractNode(AbstractNode* _parent);
 	virtual ~AbstractNode() {}
@@ -59,8 +75,6 @@ public:
 	std::vector<string> bases;
 	uint32_t id;
 	bool abstract;
-	std::list<AbstractNode*>	children;
-	std::list<AbstractNode*>	values;
 	std::list<AbstractNode*>	overrides;
 
 public:
@@ -79,28 +93,8 @@ class PropertyAbstractNode : public AbstractNode
 public: 
 	std::string name;
 	uint32_t id;
-	std::list<AbstractNode*>	values;
 public:
 	PropertyAbstractNode(AbstractNode* _parent);
-	const char* getValue() const override { return name.c_str(); }
-};
-
-class ImportAbstractNode : public AbstractNode
-{
-public:
-	std::string target;
-	std::string source;
-public:
-	ImportAbstractNode();
-	const char* getValue() const override { return target.c_str(); }
-};
-
-class VariableAccessAbstractNode : public AbstractNode
-{
-public:
-	std::string name;
-public:
-	VariableAccessAbstractNode(AbstractNode* _parent);
 	const char* getValue() const override { return name.c_str(); }
 };
 
@@ -177,8 +171,6 @@ private:
 	std::list<AbstractNode*> convertToAST(const std::list<ConcreteNode*>& nodes);
 
 	void processImports(std::list<AbstractNode*>& nodes);
-
-	std::list<AbstractNode*>* loadImportPath(const char* name);
 
 	std::list<AbstractNode*> locateTarget(const std::list<AbstractNode*>& nodes, const char* target);
 

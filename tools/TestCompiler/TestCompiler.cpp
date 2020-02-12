@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-	_CrtSetBreakAlloc(1525);
+	//_CrtSetBreakAlloc(1725);
 
 	testCompiler();
 	

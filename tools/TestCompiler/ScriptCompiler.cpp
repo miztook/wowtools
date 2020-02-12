@@ -100,7 +100,7 @@ bool ScriptCompiler::compile(const std::list<ConcreteNode*>& nodes)
 
 	for (AbstractNode* node : astList)
 	{
-		delete node;
+		AbstractNode::deleteNode(node);
 	}
 	astList.clear();
 
@@ -143,12 +143,6 @@ std::list<AbstractNode*> ScriptCompiler::convertToAST(const std::list<ConcreteNo
 void ScriptCompiler::processImports(std::list<AbstractNode*>& nodes)
 {
 	ASSERT_TODO
-}
-
-std::list<AbstractNode*>* ScriptCompiler::loadImportPath(const char* name)
-{
-	ASSERT_TODO
-	return nullptr;
 }
 
 std::list<AbstractNode*> ScriptCompiler::locateTarget(const std::list<AbstractNode*>& nodes, const char* target)
@@ -587,18 +581,7 @@ void ScriptCompiler::AbstractTreeBuilder::visit(ConcreteNode* node)
 	}
 	else if (node->type == CNT_VARIABLE)
 	{
-		if (!node->children.empty())
-		{
-			mCompiler->addError(CE_FEWERPARAMETERSEXPECTED, node->file.c_str(), node->line);
-			return;
-		}
-
-		VariableAccessAbstractNode* impl = new VariableAccessAbstractNode(mCurrent);
-		impl->line = node->line;
-		impl->file = node->file;
-		impl->name = node->token;
-
-		asn = impl;
+		ASSERT(false);
 	}
 	else if (!node->children.empty())			//properties and objects
 	{
@@ -675,12 +658,7 @@ void ScriptCompiler::AbstractTreeBuilder::visit(ConcreteNode* node)
 			{
 				if ((*iter)->type == CNT_VARIABLE)
 				{
-					VariableAccessAbstractNode* var = new VariableAccessAbstractNode(impl);
-					var->file = (*iter)->file;
-					var->line = (*iter)->line;
-					var->type = ANT_VARIABLE_ACCESS;
-					var->name = (*iter)->token;
-					impl->values.push_back(var);
+					ASSERT(false);
 				}
 				else
 				{
@@ -836,7 +814,10 @@ bool ScriptCompilerManager::parseScript(const char* str, const char* source)
 		return false;
 
 	std::list<ConcreteNode*> nodes = ScriptParser::parse(tokenList);
-	return m_ScriptCompiler.compile(nodes);
+	bool ret = m_ScriptCompiler.compile(nodes);
+	for (ConcreteNode* n : nodes)
+		ConcreteNode::deleteNode(n);
+	return ret;
 }
 
 ObjectAbstractNode::ObjectAbstractNode(AbstractNode* _parent)
@@ -876,18 +857,6 @@ PropertyAbstractNode::PropertyAbstractNode(AbstractNode* _parent)
 	: AbstractNode(_parent), id (0)
 {
 	type = ANT_PROPERTY;
-}
-
-ImportAbstractNode::ImportAbstractNode()
-	: AbstractNode(nullptr)
-{
-	type = ANT_IMPORT;
-}
-
-VariableAccessAbstractNode::VariableAccessAbstractNode(AbstractNode* _parent)
-	: AbstractNode(_parent)
-{
-	type = ANT_VARIABLE_ACCESS;
 }
 
 void ScriptCompilerListener::preConversion(ScriptCompiler* compiler, const std::list<ConcreteNode*>& nodes)
