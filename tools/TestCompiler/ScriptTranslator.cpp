@@ -16,8 +16,6 @@ void ScriptTranslator::processNode(ScriptCompiler* compiler, const AbstractNode*
 		return;
 
 	const ObjectAbstractNode* objNode = static_cast<const ObjectAbstractNode*>(node);
-	if (objNode->abstract)
-		return;
 
 	ScriptTranslator* translator = compiler->getScriptCompilerManager()->getTranslator(node);
 	if (translator)

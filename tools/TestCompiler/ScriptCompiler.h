@@ -72,10 +72,7 @@ private:
 public:
 	std::string name;
 	std::string cls;
-	std::vector<string> bases;
 	uint32_t id;
-	bool abstract;
-	std::list<AbstractNode*>	overrides;
 
 public:
 	ObjectAbstractNode(AbstractNode* _parent);
@@ -159,23 +156,12 @@ public:
 	bool compile(const std::list<ConcreteNode*>& nodes);
 
 	void addError(uint32_t code, const char* file, int line, const char* msg = "");
-	void setListener(ScriptCompilerListener* listener) { m_Listener = listener; }
-	ScriptCompilerListener* getListener() const { return m_Listener; }
-
 	ScriptCompilerManager* getScriptCompilerManager() const { return m_scriptCompilerManager; }
 
 	const std::list<Error>& getErrorList() const { return m_Errors; }
 
 private:
 	std::list<AbstractNode*> convertToAST(const std::list<ConcreteNode*>& nodes);
-
-	void processImports(std::list<AbstractNode*>& nodes);
-
-	std::list<AbstractNode*> locateTarget(const std::list<AbstractNode*>& nodes, const char* target);
-
-	void processObjects(std::list<AbstractNode*>& nodes, const std::list<AbstractNode*>& top);
-
-	void processVariables(std::list<AbstractNode*>& nodes);
 
 	bool isNameExcluded(const ObjectAbstractNode& node, const AbstractNode* parent);
 
@@ -185,11 +171,9 @@ private:
 	friend std::string getPropertyName(const ScriptCompiler* compiler, uint32_t id);
 
 	std::map<std::string, uint32_t> m_Ids;
-	std::map<std::string, std::string> m_Env;
 
 	std::list<Error> m_Errors;
 
-	ScriptCompilerListener* m_Listener;
 	ScriptCompilerManager* m_scriptCompilerManager;
 	ScriptCompilerListener m_defaultListener;
 private:
@@ -224,21 +208,13 @@ class ScriptTranslator;
 class ScriptCompilerManager
 {
 private:
-	std::vector<std::string>	m_ScriptPatterns;
-
 	ScriptCompiler	m_ScriptCompiler;
 
 public:
 	ScriptCompilerManager();
 	virtual ~ScriptCompilerManager();
 
-	void setListener(ScriptCompilerListener* listener);
-	ScriptCompilerListener* getListener() const;
-
 	ScriptTranslator* getTranslator(const AbstractNode* node);
-
-	void addScriptPattern(const char* pattern);
-	const std::vector<std::string>& getScriptPatterns() const { return m_ScriptPatterns; }
 
 	bool parseScript(const char* str, const char* source);
 

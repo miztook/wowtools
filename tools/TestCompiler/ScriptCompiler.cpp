@@ -51,7 +51,7 @@ const char* ScriptCompiler::formatErrorCode(uint32_t code)
 }
 
 ScriptCompiler::ScriptCompiler(ScriptCompilerManager* scriptCompilerManager)
-	: m_Listener(nullptr), m_scriptCompilerManager(scriptCompilerManager)
+	: m_scriptCompilerManager(scriptCompilerManager)
 {
 	initWordMap();
 }
@@ -74,25 +74,11 @@ bool ScriptCompiler::compile(const char* str, const char* source)
 bool ScriptCompiler::compile(const std::list<ConcreteNode*>& nodes)
 {
 	m_Errors.clear();
-	m_Env.clear();
-
-	if (m_Listener)
-		m_Listener->preConversion(this, nodes);
 
 	std::list<AbstractNode*> astList = convertToAST(nodes);
 
-	processObjects(astList, astList);
-
-	processVariables(astList);
-
-	if (m_Listener && !m_Listener->postConversion(this, astList))
-		return m_Errors.empty();
-
 	for (const AbstractNode* node : astList)
 	{
-		if (node->type == ANT_OBJECT && static_cast<const ObjectAbstractNode*>(node)->abstract)
-			continue;
-
 		ScriptTranslator* translator = m_scriptCompilerManager->getTranslator(node);
 		if (translator)
 			translator->translate(this, node);
@@ -109,14 +95,9 @@ bool ScriptCompiler::compile(const std::list<ConcreteNode*>& nodes)
 
 void ScriptCompiler::addError(uint32_t code, const char* file, int line, const char* msg /*= ""*/)
 {
-	if (m_Listener)
-	{
-		m_Listener->handleError(this, code, file, line, msg);
-	}
-	else
-	{
-		m_defaultListener.handleError(this, code, file, line, msg);
-	}
+	ASSERT(false);
+
+	m_defaultListener.handleError(this, code, file, line, msg);
 
 	ScriptCompiler::Error err;
 	err.file = file;
@@ -131,76 +112,6 @@ std::list<AbstractNode*> ScriptCompiler::convertToAST(const std::list<ConcreteNo
 	AbstractTreeBuilder builder(this);
 	AbstractTreeBuilder::visit(&builder, nodes);
 	return builder.getResult();
-}
-
-void ScriptCompiler::processImports(std::list<AbstractNode*>& nodes)
-{
-	ASSERT_TODO
-}
-
-std::list<AbstractNode*> ScriptCompiler::locateTarget(const std::list<AbstractNode*>& nodes, const char* target)
-{
-	ASSERT_TODO
-	return std::list<AbstractNode*>();
-}
-
-void ScriptCompiler::processObjects(std::list<AbstractNode*>& nodes, const std::list<AbstractNode*>& top)
-{
-	for (auto itr = nodes.begin(); itr != nodes.end(); ++itr)
-	{
-		if ((*itr)->type != ANT_OBJECT)
-			continue;
-
-		ObjectAbstractNode* obj = static_cast<ObjectAbstractNode*>(*itr);
-
-		for (const auto& base : obj->bases)
-		{
-			std::list<AbstractNode*> newNodes = locateTarget(top, base.c_str());
-			if (newNodes.empty())
-				addError(CE_OBJECTBASENOTFOUND, obj->file.c_str(), obj->line, base.c_str());
-
-			for (const auto& n : newNodes)
-			{
-				if (n->type != ANT_OBJECT)
-					continue;
-				ASSERT_TODO
-			}
-		}
-
-		processObjects(obj->children, top);
-
-		obj->children.insert(obj->children.begin(), obj->overrides.begin(), obj->overrides.end());
-	}
-}
-
-void ScriptCompiler::processVariables(std::list<AbstractNode*>& nodes)
-{
-	auto i = nodes.begin();
-	while (i != nodes.end())
-	{
-		auto cur = i;
-		AbstractNode* node = *cur;
-		++i;
-
-		if (node->type == ANT_OBJECT)
-		{
-			ObjectAbstractNode* obj = static_cast<ObjectAbstractNode*>(node);
-			if (!obj->abstract)
-			{
-				processVariables(obj->children);
-				processVariables(obj->values);
-			}
-		}
-		else if (node->type == ANT_PROPERTY)
-		{
-			PropertyAbstractNode* prop = static_cast<PropertyAbstractNode*>(node);
-			processVariables(prop->values);
-		}
-		else if (node->type == ANT_VARIABLE_ACCESS)
-		{
-			ASSERT_TODO
-		}
-	}
 }
 
 bool ScriptCompiler::isNameExcluded(const ObjectAbstractNode& node, const AbstractNode* parent)
@@ -604,12 +515,12 @@ void ScriptCompiler::AbstractTreeBuilder::visit(ConcreteNode* node)
 			ObjectAbstractNode* impl = new ObjectAbstractNode(mCurrent);
 			impl->line = node->line;
 			impl->file = node->file;
-			impl->abstract = false;
 
 			std::list<ConcreteNode*> temp;
 			if (node->token == "abstract")
 			{
-				impl->abstract = true;
+				ASSERT(false);
+				//impl->abstract = true;
 				for (ConcreteNode* n : node->children)
 				{
 					temp.push_back(n);
@@ -673,11 +584,13 @@ void ScriptCompiler::AbstractTreeBuilder::visit(ConcreteNode* node)
 			//Find the bases
 			if (iter != temp.end() && (*iter)->type == CNT_COLON)
 			{
-				for (ConcreteNode* n : (*iter)->children)
-				{
-					impl->bases.push_back(n->token);
-				}
-				++iter;
+
+				ASSERT(false);
+// 				for (ConcreteNode* n : (*iter)->children)
+// 				{
+// 					impl->bases.push_back(n->token);
+// 				}
+// 				++iter;
 			}
 
 			asn = impl;
@@ -747,22 +660,12 @@ void ScriptCompiler::AbstractTreeBuilder::visit(ConcreteNode* node)
 ScriptCompilerManager::ScriptCompilerManager()
 	: m_ScriptCompiler(this)
 {
-	addScriptPattern("*.material");
+	
 }
 
 ScriptCompilerManager::~ScriptCompilerManager()
 {
 
-}
-
-void ScriptCompilerManager::setListener(ScriptCompilerListener* listener)
-{
-	m_ScriptCompiler.setListener(listener);
-}
-
-ScriptCompilerListener* ScriptCompilerManager::getListener() const
-{
-	return m_ScriptCompiler.getListener();
 }
 
 ScriptTranslator* ScriptCompilerManager::getTranslator(const AbstractNode* node)
@@ -794,11 +697,6 @@ ScriptTranslator* ScriptCompilerManager::getTranslator(const AbstractNode* node)
 	return translator;
 }
 
-void ScriptCompilerManager::addScriptPattern(const char* pattern)
-{
-	m_ScriptPatterns.push_back(pattern);
-}
-
 bool ScriptCompilerManager::parseScript(const char* str, const char* source)
 {
 	std::string error;
@@ -814,7 +712,7 @@ bool ScriptCompilerManager::parseScript(const char* str, const char* source)
 }
 
 ObjectAbstractNode::ObjectAbstractNode(AbstractNode* _parent)
-	: AbstractNode(_parent), id (0), abstract(false)
+	: AbstractNode(_parent), id (0)
 {
 	type = ANT_OBJECT;
 }
