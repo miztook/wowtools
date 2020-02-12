@@ -14,6 +14,7 @@ public:
 protected:
 	virtual ~ScriptTranslator() {}
 
+public:
 	static const AbstractNode* getNodeAt(const std::list<AbstractNode*>& nodes, int index);
 
 	static void processNode(ScriptCompiler* compiler, const AbstractNode* node);
@@ -29,9 +30,6 @@ protected:
 	static bool getInt(const AbstractNode* node, int& result);
 
 	static bool getUInt(const AbstractNode* node, uint32_t& result);
-
-	template<typename T>
-	friend bool getValue(const AbstractNode* node, T& result);
 };
 
 class MaterialTranslator : public ScriptTranslator

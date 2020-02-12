@@ -126,13 +126,6 @@ void ScriptCompiler::addError(uint32_t code, const char* file, int line, const c
 	m_Errors.push_back(err);
 }
 
-bool ScriptCompiler::_fireEvent(ScriptCompilerEvent* evt, void* retVal)
-{
-	if (m_Listener)
-		return m_Listener->handleEvent(this, evt, retVal);
-	return false;
-}
-
 std::list<AbstractNode*> ScriptCompiler::convertToAST(const std::list<ConcreteNode*>& nodes)
 {
 	AbstractTreeBuilder builder(this);

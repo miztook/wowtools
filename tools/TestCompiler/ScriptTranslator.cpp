@@ -142,9 +142,6 @@ void MaterialTranslator::translate(ScriptCompiler* compiler, const AbstractNode*
 	if (obj->name.empty())
 		compiler->addError(ScriptCompiler::CE_OBJECTNAMEEXPECTED, obj->file.c_str(), obj->line);
 
-	CreateMaterialScriptCompilerEvent evt(node->file.c_str(), obj->name.c_str());
-	bool processed = compiler->_fireEvent(&evt, nullptr);
-
 	bool bval;
 	for (auto itr = obj->children.begin(); itr != obj->children.end(); ++itr)
 	{

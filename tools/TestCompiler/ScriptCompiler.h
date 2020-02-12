@@ -161,7 +161,6 @@ public:
 	void addError(uint32_t code, const char* file, int line, const char* msg = "");
 	void setListener(ScriptCompilerListener* listener) { m_Listener = listener; }
 	ScriptCompilerListener* getListener() const { return m_Listener; }
-	bool _fireEvent(ScriptCompilerEvent* evt, void* retVal);
 
 	ScriptCompilerManager* getScriptCompilerManager() const { return m_scriptCompilerManager; }
 
