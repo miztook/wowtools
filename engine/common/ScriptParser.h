@@ -27,6 +27,15 @@ struct ConcreteNode
 	ConcreteNodeType type;
 	std::list<ConcreteNode*> children;
 	ConcreteNode* parent;
+
+	static void deleteNode(const ConcreteNode* node)
+	{
+		for (const ConcreteNode* n : node->children)
+		{
+			deleteNode(n);
+		}
+		delete node;
+	}
 };
 
 class ScriptParser

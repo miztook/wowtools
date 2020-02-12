@@ -459,7 +459,6 @@ void TextureUnitTranslator::translate(ScriptCompiler* compiler, const AbstractNo
 			case ID_COMP_FUNC:
 			case ID_MAX_ANISOTROPY:
 			case ID_MIPMAP_BIAS:
-				ASSERT(false);
 				break;
 			case ID_SAMPLER_REF:
 				if (getValue(prop, compiler, sval))
@@ -472,21 +471,24 @@ void TextureUnitTranslator::translate(ScriptCompiler* compiler, const AbstractNo
 				}
 				break;
 			case ID_TEXTURE:
-				ASSERT(prop->values.size() == 5);
+				ASSERT(!prop->values.empty() && prop->values.size() <= 5);
 				break;
 			case ID_ANIM_TEXTURE:
-				ASSERT(false);
+				ASSERT(prop->values.size() >= 3);
 				break;
 			case ID_CUBIC_TEXTURE:
-				ASSERT(false);
+				ASSERT(prop->values.size() == 2 || prop->values.size() == 7);
 				break;
 			case ID_TEX_COORD_SET:
-				ASSERT(false);
+				if (getValue(prop, compiler, uival))
+				{
+				}
 				break;
 			case ID_COLOUR_OP:
-				ASSERT(false);
 				break;
 			case ID_COLOUR_OP_EX:
+				ASSERT(prop->values.size() >= 3 && prop->values.size() <- 10);
+				break;
 			case ID_COLOUR_OP_MULTIPASS_FALLBACK:
 			case ID_ALPHA_OP_EX:
 			case ID_ENV_MAP:
@@ -499,7 +501,6 @@ void TextureUnitTranslator::translate(ScriptCompiler* compiler, const AbstractNo
 			case ID_TRANSFORM:
 			case ID_BINDING_TYPE:
 			case ID_CONTENT_TYPE:
-				ASSERT(false);
 				break;
 			default:
 				compiler->addError(ScriptCompiler::CE_UNEXPECTEDTOKEN, prop->file.c_str(), prop->line,

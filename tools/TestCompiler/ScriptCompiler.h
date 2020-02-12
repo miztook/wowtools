@@ -104,8 +104,27 @@ public:
 	const char* getValue() const override { return name.c_str(); }
 };
 
-class ScriptCompilerListener;
-class ScriptCompilerEvent;
+class ScriptCompilerEvent
+{
+public:
+	std::string mType;
+
+	ScriptCompilerEvent(const char* type) :mType(type) {}
+	virtual ~ScriptCompilerEvent() {}
+};
+
+class ScriptCompilerListener
+{
+public:
+	virtual ~ScriptCompilerListener() {}
+
+public:
+	virtual void preConversion(ScriptCompiler* compiler, const std::list<ConcreteNode*>& nodes);
+	virtual bool postConversion(ScriptCompiler* compiler, const std::list<AbstractNode*>& nodes);
+	virtual void handleError(ScriptCompiler* compiler, uint32_t code, const char* file, int line, const char* msg);
+	virtual bool handleEvent(ScriptCompiler* compiler, ScriptCompilerEvent* evt, void* retval);
+};
+
 class ScriptCompilerManager;
 
 class ScriptCompiler
@@ -144,9 +163,7 @@ public:
 
 	bool compile(const char* str, const char* source);
 	bool compile(const std::list<ConcreteNode*>& nodes);
-	std::list<AbstractNode*>* _generateAST(const char* str, const char* source, bool doObjects = false, bool doVariables = false);
 
-	bool _compile(std::list<AbstractNode*>& nodes, bool doObjects = false, bool doVariables = false);
 	void addError(uint32_t code, const char* file, int line, const char* msg = "");
 	void setListener(ScriptCompilerListener* listener) { m_Listener = listener; }
 	ScriptCompilerListener* getListener() const { return m_Listener; }
@@ -157,7 +174,7 @@ public:
 	const std::list<Error>& getErrorList() const { return m_Errors; }
 
 private:
-	std::list<AbstractNode*>* convertToAST(const std::list<ConcreteNode*>& nodes);
+	std::list<AbstractNode*> convertToAST(const std::list<ConcreteNode*>& nodes);
 
 	void processImports(std::list<AbstractNode*>& nodes);
 
@@ -169,9 +186,9 @@ private:
 
 	void processVariables(std::list<AbstractNode*>& nodes);
 
-	void overlayObjects(const ObjectAbstractNode& source, ObjectAbstractNode& dest);
+	bool isNameExcluded(const ObjectAbstractNode& node, const AbstractNode* parent);
 
-	bool isNameExcluded(const ObjectAbstractNode& node, AbstractNode* parent);
+	void initWordMap();
 
 private:
 	friend std::string getPropertyName(const ScriptCompiler* compiler, uint32_t id);
@@ -183,16 +200,17 @@ private:
 
 	ScriptCompilerListener* m_Listener;
 	ScriptCompilerManager* m_scriptCompilerManager;
+	ScriptCompilerListener m_defaultListener;
 private:
 	class AbstractTreeBuilder
 	{
 	private:
-		std::list<AbstractNode*>* mNodes;
+		std::list<AbstractNode*> mNodes;
 		AbstractNode* mCurrent;
 		ScriptCompiler* mCompiler;
 	public:
 		explicit AbstractTreeBuilder(ScriptCompiler* compiler);
-		std::list<AbstractNode*>* getResult() const { return mNodes; }
+		std::list<AbstractNode*> getResult() { return mNodes; }
 		void visit(ConcreteNode* node);
 		static void visit(AbstractTreeBuilder* visitor, const std::list<ConcreteNode*>& nodes);
 	};
@@ -208,29 +226,6 @@ public:
 		ID_YES,
 		ID_NO,
 	};
-};
-
-class ScriptCompilerEvent
-{
-public:
-	std::string mType;
-
-	ScriptCompilerEvent(const char* type) :mType(type) {}
-	virtual ~ScriptCompilerEvent() {}
-};
-
-class ScriptCompilerListener
-{
-public:
-	ScriptCompilerListener();
-	virtual ~ScriptCompilerListener() {}
-
-public:
-	virtual std::list<ConcreteNode*>* importFile(ScriptCompiler* compiler, const char* name) = 0;
-	virtual void preConversion(ScriptCompiler* compiler, const std::list<ConcreteNode*>& nodes);
-	virtual bool postConversion(ScriptCompiler* compiler, const std::list<AbstractNode*>& nodes);
-	virtual void handleError(ScriptCompiler* compiler, uint32_t code, const char* file, int line, const char* msg);
-	virtual bool handleEvent(ScriptCompiler* compiler, ScriptCompilerEvent* evt, void* retval);
 };
 
 class ScriptTranslator;
