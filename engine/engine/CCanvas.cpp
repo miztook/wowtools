@@ -12,7 +12,7 @@ CCanvas::CCanvas()
 
 	pass.Cull = ECM_BACK;
 	pass.ZWriteEnable = false;
-	pass.ZBuffer = ECFN_NEVER;
+	pass.ZTest = ECFN_NEVER;
 	pass.AntiAliasing = EAAM_LINE_SMOOTH;
 	pass.VSFile = "";
 	pass.PSFile = "UI";

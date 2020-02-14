@@ -263,6 +263,9 @@
     <ClInclude Include="..\engine\CLight.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\engine\CMaterialManager.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">
@@ -398,6 +401,9 @@
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\CLight.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CMaterialManager.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

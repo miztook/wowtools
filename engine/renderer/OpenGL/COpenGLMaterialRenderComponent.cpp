@@ -95,8 +95,8 @@ void COpenGLMaterialRenderComponent::setRenderStates(const CPass* pass, const SG
 {
 	// zbuffer
 	{
-		CurrentRenderState.ZEnable = pass->ZBuffer == ECFN_NEVER ? GL_FALSE : GL_TRUE;
-		CurrentRenderState.ZFunc = COpenGLHelper::getGLCompare(pass->ZBuffer);
+		CurrentRenderState.ZEnable = pass->ZTest == ECFN_NEVER ? GL_FALSE : GL_TRUE;
+		CurrentRenderState.ZFunc = COpenGLHelper::getGLCompare(pass->ZTest);
 	}
 
 	// zwrite

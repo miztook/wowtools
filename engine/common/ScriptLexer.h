@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <vector>
 
-enum : int 
+enum LexerTokenType : int
 {
 	TID_LBRACKET = 0, // {
 	TID_RBRACKET, // }
@@ -17,28 +17,7 @@ enum : int
 	TID_END
 };
 
-struct ScriptToken
-{
-	std::string lexeme;
-	std::string file;
-	int type;
-	uint32_t line;
-};
-
-class ScriptLexer
-{
-public:
-	static std::vector<ScriptToken> tokenize(const char* str, const char* source, std::string& error);
-
-	static const char* getTokenType(int type);
-
-private:
-	static void setToken(const std::string& lexeme, uint32_t line, const char* source, std::vector<ScriptToken>& tokens);
-	static bool isWhitespace(char c) { return c == ' ' || c == '\r' || c == '\t'; }
-	static bool isNewline(char c) { return c == '\n' || c == '\r'; }
-};
-
-inline const char* ScriptLexer::getTokenType(int type)
+inline const char* getLexerTokenType(int type)
 {
 	switch (type)
 	{
@@ -61,3 +40,24 @@ inline const char* ScriptLexer::getTokenType(int type)
 		return "unknown";
 	}
 }
+
+
+struct ScriptToken
+{
+	std::string lexeme;
+	std::string file;
+	int type;
+	uint32_t line;
+};
+
+class ScriptLexer
+{
+public:
+	static std::vector<ScriptToken> tokenize(const char* str, const char* source, std::string& error);
+
+private:
+	static void setToken(const std::string& lexeme, uint32_t line, const char* source, std::vector<ScriptToken>& tokens);
+	static bool isWhitespace(char c) { return c == ' ' || c == '\r' || c == '\t'; }
+	static bool isNewline(char c) { return c == '\n' || c == '\r'; }
+};
+

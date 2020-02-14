@@ -1,0 +1,19 @@
+Material "UI"
+{
+	Queue	Geometry
+	Pass
+	{
+		LightMode	Always
+		
+		Cull	Back
+		AntiAliasing	Off
+		ZTest		LessEqual
+		ZWrite			On
+		ColorMask		RGBA
+		AlphaBlend		Off
+		
+		Define	
+		VSFile	
+		PSFile	"UI"
+	}
+}

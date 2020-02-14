@@ -76,9 +76,9 @@ public:
 	{
 		Cull = ECM_BACK;
 		AntiAliasing = EAAM_OFF;
-		ZBuffer = ECFN_LESSEQUAL;
+		ZTest = ECFN_LESSEQUAL;
 		ZWriteEnable = true;
-		ColorWrite = COLORWRITE_ALL;
+		ColorMask = COLORWRITE_ALL;
 		AlphaBlendEnabled = false;
 		SrcBlend = EBF_ONE;
 		DestBlend = EBF_ZERO;
@@ -95,9 +95,9 @@ public:		//file macro
 public:		//render state
 	E_CULL_MODE		Cull;
 	E_ANTI_ALIASING_MODE		AntiAliasing;
-	E_COMPARISON_FUNC		ZBuffer;
+	E_COMPARISON_FUNC		ZTest;
 	bool		ZWriteEnable;
-	E_COLOR_WRITE	ColorWrite;
+	E_COLOR_WRITE	ColorMask;
 	E_BLEND_FACTOR	SrcBlend;
 	E_BLEND_FACTOR	DestBlend;
 	bool	AlphaBlendEnabled;
