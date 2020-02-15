@@ -168,10 +168,8 @@
     <ClCompile Include="..\..\engine\common\CSysCodeCvt.cpp" />
     <ClCompile Include="..\..\engine\common\CSysThread.cpp" />
     <ClCompile Include="..\..\engine\common\CWriteFile.cpp" />
-    <ClCompile Include="..\..\engine\common\ScriptCompiler.cpp" />
     <ClCompile Include="..\..\engine\common\ScriptLexer.cpp" />
     <ClCompile Include="..\..\engine\common\ScriptParser.cpp" />
-    <ClCompile Include="..\..\engine\common\ScriptTranslator.cpp" />
     <ClCompile Include="..\..\engine\common\wowDatabase.cpp" />
     <ClCompile Include="..\..\engine\common\wowDbFile.cpp" />
     <ClCompile Include="..\..\engine\common\wowEnvironment.cpp" />
@@ -181,6 +179,8 @@
     <ClCompile Include="..\..\engine\common\wowWDB5File.cpp" />
     <ClCompile Include="..\..\engine\common\wowWDC3File.cpp" />
     <ClCompile Include="..\..\engine\common\wowWMOFile.cpp" />
+    <ClCompile Include="Ogre\ScriptCompiler.cpp" />
+    <ClCompile Include="Ogre\ScriptTranslator.cpp" />
     <ClCompile Include="TestParser.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -206,10 +206,8 @@
     <ClInclude Include="..\..\engine\common\rect.h" />
     <ClInclude Include="..\..\engine\common\S3DVertex.h" />
     <ClInclude Include="..\..\engine\common\SColor.h" />
-    <ClInclude Include="..\..\engine\common\ScriptCompiler.h" />
     <ClInclude Include="..\..\engine\common\ScriptLexer.h" />
     <ClInclude Include="..\..\engine\common\ScriptParser.h" />
-    <ClInclude Include="..\..\engine\common\ScriptTranslator.h" />
     <ClInclude Include="..\..\engine\common\stringext.h" />
     <ClInclude Include="..\..\engine\common\varianttype.h" />
     <ClInclude Include="..\..\engine\common\vector2d.h" />
@@ -227,6 +225,8 @@
     <ClInclude Include="..\..\engine\common\wowWDC3File.h" />
     <ClInclude Include="..\..\engine\common\wowWMOFile.h" />
     <ClInclude Include="..\..\engine\common\wowWMOStruct.h" />
+    <ClInclude Include="Ogre\ScriptCompiler.h" />
+    <ClInclude Include="Ogre\ScriptTranslator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

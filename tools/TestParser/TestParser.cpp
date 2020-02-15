@@ -12,13 +12,14 @@
 
 #include "ScriptLexer.h"
 #include "ScriptParser.h"
-#include "ScriptCompiler.h"
+#include "Ogre/ScriptCompiler.h"
 
 #pragma comment(lib, "CascLib.lib")
 #pragma comment(lib, "pugixml.lib")
 
 void testLexer();
 void testParser();
+void testCompiler();
 void printNode(const ConcreteNode* node);
 void printNode(const AbstractNode* node);
 
@@ -31,7 +32,8 @@ int main(int argc, char* argv[])
 	//_CrtSetBreakAlloc(715);
 
 	//testLexer();
-	testParser();
+	//testParser();
+	testCompiler();
 
 	getchar();
 	return 0;
@@ -129,6 +131,57 @@ void testParser()
 		}
 		nodes.clear();
 
+		delete[] content;
+		delete rf;
+	}
+
+	delete fs;
+}
+
+void testCompiler()
+{
+	CFileSystem* fs = new CFileSystem(R"(D:\World Of Warcraft 81)");
+
+	//
+	std::string dir = fs->getWorkingDirectory();
+	normalizeDirName(dir);
+
+	dir += "Shaders/";
+	Q_MakeDirForFileName(dir.c_str());
+
+	const char* files[] =
+	{
+		"Redify.shader",
+	};
+
+	ScriptCompilerManager mgr;
+
+	for (int i = 0; i < ARRAY_COUNT(files); ++i)
+	{
+		std::string filename = dir + files[i];
+		CReadFile* rf = fs->createAndOpenFile(filename.c_str(), false);
+		uint32_t len = rf->getSize();
+		char* content = new char[len];
+		memset(content, 0, len);
+		rf->read(content, len);
+
+		std::string error;
+		std::vector<ScriptToken> tokenList = ScriptLexer::tokenize(content, files[i], error);
+		ASSERT(error.empty());
+		std::list<ConcreteNode*> nodes = ScriptParser::parse(tokenList);
+
+		//to ast
+		std::list<AbstractNode*> astNodes = mgr.convertToAST(nodes);
+		for (const AbstractNode* n : astNodes)
+		{
+			printNode(n);
+		}
+
+		for (AbstractNode* n : astNodes)
+			AbstractNode::deleteNode(n);
+
+		for (ConcreteNode* n : nodes)
+			ConcreteNode::deleteNode(n);
 		delete[] content;
 		delete rf;
 	}

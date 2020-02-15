@@ -97,7 +97,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\engine\Common;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\engine\common;..\..\engine\engine</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,7 +113,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\engine\Common;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\engine\common;..\..\engine\engine</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,7 +131,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\engine\Common;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\engine\common;..\..\engine\engine</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,7 +151,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\engine\Common;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\3rdparty\CascLib;..\..\3rdparty\pugixml\src;..\..\engine\common;..\..\engine\engine</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -179,8 +179,9 @@
     <ClCompile Include="..\..\engine\common\wowWDB5File.cpp" />
     <ClCompile Include="..\..\engine\common\wowWDC3File.cpp" />
     <ClCompile Include="..\..\engine\common\wowWMOFile.cpp" />
-    <ClCompile Include="Ogre\ScriptCompiler.cpp" />
-    <ClCompile Include="Ogre\ScriptTranslator.cpp" />
+    <ClCompile Include="..\..\engine\engine\CMaterial.cpp" />
+    <ClCompile Include="..\..\engine\engine\ScriptCompiler.cpp" />
+    <ClCompile Include="..\..\engine\engine\ScriptTranslator.cpp" />
     <ClCompile Include="TestCompiler.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -225,8 +226,9 @@
     <ClInclude Include="..\..\engine\common\wowWDC3File.h" />
     <ClInclude Include="..\..\engine\common\wowWMOFile.h" />
     <ClInclude Include="..\..\engine\common\wowWMOStruct.h" />
-    <ClInclude Include="Ogre\ScriptCompiler.h" />
-    <ClInclude Include="Ogre\ScriptTranslator.h" />
+    <ClInclude Include="..\..\engine\engine\CMaterial.h" />
+    <ClInclude Include="..\..\engine\engine\ScriptCompiler.h" />
+    <ClInclude Include="..\..\engine\engine\ScriptTranslator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -237,12 +237,7 @@ public:
 
 private:
 	MaterialTranslator	m_MaterialTranslator;
-	TechniqueTranslator		m_TechniqueTranslator;
 	PassTranslator	m_PassTranslator;
-	TextureUnitTranslator	m_TextureUnitTranslator;
-	SamplerTranslator	m_SamplerTranslator;
-	TextureSourceTranslator		m_TextureSourceTranslator;
-	GpuProgramTranslator	m_GpuProgramTranslator;
 };
 
 enum
@@ -250,5 +245,60 @@ enum
 	ID_MATERIAL = 3,
 	ID_PASS,
 
+	ID_QUEUE,
+	ID_BACKGROUND,
+	ID_GEOMETRY,
+	ID_ALPHATEST,
+	ID_GEOMETRYLAST,
+	ID_TRANSPARENT,
+	ID_OVERLAY,
 
+	ID_LIGHT_MODE,
+	ID_ALWAYS,
+	ID_FORWARD_BASE,
+	ID_FORWARD_ADD,
+
+	ID_CULL,
+	ID_BACK,
+	ID_FRONT,
+	ID_NONE,
+
+	ID_ANTIALIASING,
+	ID_SIMPLE,
+	ID_LINE_SMOOTH,
+
+	ID_ZTEST,
+	ID_NEVER = 0,
+	ID_LESSEQUAL,
+	ID_EQUAL,
+	ID_LESS,
+	ID_NOTEQUAL,
+	ID_GREATEREQUAL,
+	ID_GREATER,
+
+	ID_ZWRITE_ENABLE,
+
+	ID_COLOR_MASK,
+	ID_R,
+	ID_RG,
+	ID_RGB,
+	ID_G,
+	ID_GB,
+	ID_B,
+
+	ID_ALPHABLEND,
+	ID_ZERO,
+	ID_ONE,
+	ID_DST_COLOR,
+	ID_ONE_MINUS_DST_COLOR,
+	ID_SRC_COLOR,
+	ID_ONE_MINUS_SRC_COLOR,
+	ID_SRC_ALPHA,
+	ID_ONE_MINUS_SRC_ALPHA,
+	ID_DST_ALPHA,
+	ID_ONE_MINUS_DST_ALPHA,
+
+	ID_DEFINE,
+	ID_VSFILE,
+	ID_PSFILE,
 };

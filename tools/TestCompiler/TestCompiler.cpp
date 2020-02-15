@@ -12,7 +12,7 @@
 
 #include "ScriptLexer.h"
 #include "ScriptParser.h"
-#include "Ogre/ScriptCompiler.h"
+#include "ScriptCompiler.h"
 
 #pragma comment(lib, "CascLib.lib")
 #pragma comment(lib, "pugixml.lib")

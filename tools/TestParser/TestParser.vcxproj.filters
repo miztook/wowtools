@@ -53,16 +53,19 @@
     <ClCompile Include="..\..\engine\common\ScriptParser.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\engine\common\ScriptCompiler.cpp">
-      <Filter>common</Filter>
+    <ClCompile Include="Ogre\ScriptCompiler.cpp">
+      <Filter>Ogre</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\engine\common\ScriptTranslator.cpp">
-      <Filter>common</Filter>
+    <ClCompile Include="Ogre\ScriptTranslator.cpp">
+      <Filter>Ogre</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="common">
       <UniqueIdentifier>{353e5395-721c-42d8-9de5-c40e69e5e947}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ogre">
+      <UniqueIdentifier>{385775ec-a16b-4651-90a2-c946dcfa48cd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -189,11 +192,11 @@
     <ClInclude Include="..\..\engine\common\ScriptParser.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\engine\common\ScriptCompiler.h">
-      <Filter>common</Filter>
+    <ClInclude Include="Ogre\ScriptCompiler.h">
+      <Filter>Ogre</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\engine\common\ScriptTranslator.h">
-      <Filter>common</Filter>
+    <ClInclude Include="Ogre\ScriptTranslator.h">
+      <Filter>Ogre</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
