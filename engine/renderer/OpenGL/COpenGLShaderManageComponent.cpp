@@ -49,7 +49,7 @@ bool COpenGLShaderManageComponent::init()
 const CGLProgram* COpenGLShaderManageComponent::applyShaders(const CPass* pass, E_VERTEX_TYPE vertexType)
 {
 	auto shaderKey = CShaderUtil::getShaderKey(
-		pass->VSFile.c_str(), pass->PSFile.c_str(), pass->macroToString().c_str(), vertexType);
+		pass->VSFile.c_str(), pass->PSFile.c_str(), CShaderUtil::getShaderMacroString(pass->MacroSet).c_str(), vertexType);
 
 	const COpenGLVertexShader* vertexShader = getVertexShader(shaderKey.VSFile.c_str(), shaderKey.MacroString.c_str());
 	const COpenGLPixelShader* pixelShader = getPixelShader(shaderKey.PSFile.c_str(), shaderKey.MacroString.c_str());

@@ -4,6 +4,7 @@
 #include "base.h"
 #include "IVideoResource.h"
 #include "CMaterial.h"
+#include "SColor.h"
 #include <vector>
 #include <map>
 #include <set>

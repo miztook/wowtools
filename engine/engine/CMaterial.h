@@ -1,6 +1,5 @@
 #pragma once
 
-#include "SColor.h"
 #include "base.h"
 #include "vector4d.h"
 #include "matrix4.h"
@@ -105,8 +104,6 @@ public:		//render state
 public:
 	void clearMacroSet() { MacroSet.clear(); }
 	void addMacro(const char* macro) { MacroSet.insert(macro); }
-	std::string macroToString() const;
-	void macroFromString(const char* macroString);
 
 	const CMaterial* getMaterial() const { return Material; }
 

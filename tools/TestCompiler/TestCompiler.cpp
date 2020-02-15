@@ -10,12 +10,15 @@
 #include "function.h"
 #include "stringext.h"
 
-#include "ScriptCompiler.h"
+#include "ScriptLexer.h"
+#include "ScriptParser.h"
+#include "Ogre/ScriptCompiler.h"
 
 #pragma comment(lib, "CascLib.lib")
 #pragma comment(lib, "pugixml.lib")
 
 void testCompiler();
+void printNode(const AbstractNode* node);
 
 int main(int argc, char* argv[])
 {
@@ -58,15 +61,47 @@ void testCompiler()
 		memset(content, 0, len);
 		rf->read(content, len);
 
-		if (!mgr.parseScript(content, files[i]))
+		std::string error;
+		std::vector<ScriptToken> tokenList = ScriptLexer::tokenize(content, files[i], error);
+		ASSERT(error.empty());
+		std::list<ConcreteNode*> nodes = ScriptParser::parse(tokenList);
+		
+		//to ast
+		std::list<AbstractNode*> astNodes = mgr.convertToAST(nodes);
+		for (const AbstractNode* n : astNodes)
 		{
-			int x = 0;
+			printNode(n);
 		}
 
+		for (AbstractNode* n : astNodes)
+			AbstractNode::deleteNode(n);
+
+		for (ConcreteNode* n : nodes)
+			ConcreteNode::deleteNode(n);
 		delete[] content;
 		delete rf;
 	}
 
 
 	delete fs;
+}
+
+void printNode(const AbstractNode* node)
+{
+	int n = 0;
+	const AbstractNode* p = node->parent;
+	std::string str;
+	while (p)
+	{
+		++n;
+		str += "\t";
+		p = p->parent;
+	}
+
+	printf("%s type: %s, name: %s, line: %d\n", str.c_str(), getAstNodeType(node->type), node->getValue(), node->line);
+
+	for (const AbstractNode* child : node->children)
+	{
+		printNode(child);
+	}
 }

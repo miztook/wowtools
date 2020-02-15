@@ -53,12 +53,19 @@
     <ClCompile Include="..\..\engine\common\wowWMOFile.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="ScriptCompiler.cpp" />
-    <ClCompile Include="ScriptTranslator.cpp" />
+    <ClCompile Include="Ogre\ScriptCompiler.cpp">
+      <Filter>Ogre</Filter>
+    </ClCompile>
+    <ClCompile Include="Ogre\ScriptTranslator.cpp">
+      <Filter>Ogre</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="common">
       <UniqueIdentifier>{0e277312-a7ec-42dc-8cf5-238b374c9be1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ogre">
+      <UniqueIdentifier>{ef1567d7-ea5b-4a74-9465-af1cb74d7650}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -185,7 +192,11 @@
     <ClInclude Include="..\..\engine\common\wowWMOStruct.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="ScriptCompiler.h" />
-    <ClInclude Include="ScriptTranslator.h" />
+    <ClInclude Include="Ogre\ScriptCompiler.h">
+      <Filter>Ogre</Filter>
+    </ClInclude>
+    <ClInclude Include="Ogre\ScriptTranslator.h">
+      <Filter>Ogre</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

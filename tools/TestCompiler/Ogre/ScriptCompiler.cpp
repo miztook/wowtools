@@ -4,17 +4,6 @@
 #include "ScriptTranslator.h"
 #include "stringext.h"
 
-AbstractNode::AbstractNode(AbstractNode* _parent)
-	: line(0), type(ANT_UNKNOWN), parent(_parent) 
-{
-}
-
-AtomAbstractNode::AtomAbstractNode(AbstractNode* _parent)
-	: AbstractNode(_parent), id (0)
-{
-	type = ANT_ATOM;
-}
-
 const char* ScriptCompiler::formatErrorCode(uint32_t code)
 {
 	switch (code)
@@ -97,7 +86,15 @@ void ScriptCompiler::addError(uint32_t code, const char* file, int line, const c
 {
 	ASSERT(false);
 
-	m_defaultListener.handleError(this, code, file, line, msg);
+	//Êä³ö´íÎó
+	std::string errMsg = std_string_format("ScriptCompiler - %s in %s (%d)",
+		ScriptCompiler::formatErrorCode(code), file, line);
+	if (strlen(msg) > 0)
+	{
+		errMsg += ": ";
+		errMsg += msg;
+	}
+	printf("%s\n", errMsg.c_str());
 
 	ScriptCompiler::Error err;
 	err.file = file;
@@ -716,22 +713,6 @@ std::list<AbstractNode*> ScriptCompilerManager::convertToAST(const std::list<Con
 	return m_ScriptCompiler.convertToAST(nodes);
 }
 
-ObjectAbstractNode::ObjectAbstractNode(AbstractNode* _parent)
-	: AbstractNode(_parent), id (0)
-{
-	type = ANT_OBJECT;
-}
-
-void ObjectAbstractNode::addVariable(const char* name)
-{
-	mEnv[name] = "";
-}
-
-void ObjectAbstractNode::setVariable(const char* name, const char* value)
-{
-	mEnv[name] = value;
-}
-
 std::pair<bool, std::string> ObjectAbstractNode::getVariable(const char* name) const
 {
 	auto itr = mEnv.find(name);
@@ -747,38 +728,4 @@ std::pair<bool, std::string> ObjectAbstractNode::getVariable(const char* name) c
 		parentNode = static_cast<ObjectAbstractNode*>(parentNode->parent);
 	}
 	return std::make_pair(false, "");
-}
-
-PropertyAbstractNode::PropertyAbstractNode(AbstractNode* _parent)
-	: AbstractNode(_parent), id (0)
-{
-	type = ANT_PROPERTY;
-}
-
-void ScriptCompilerListener::preConversion(ScriptCompiler* compiler, const std::list<ConcreteNode*>& nodes)
-{
-
-}
-
-bool ScriptCompilerListener::postConversion(ScriptCompiler* compiler, const std::list<AbstractNode*>& nodes)
-{
-	return true;
-}
-
-void ScriptCompilerListener::handleError(ScriptCompiler* compiler, uint32_t code, const char* file, int line, const char* msg)
-{
-	std::string errMsg = std_string_format("ScriptCompiler - %s in %s (%d)",
-		ScriptCompiler::formatErrorCode(code), file, line);
-	if (strlen(msg) > 0)
-	{
-		errMsg += ": ";
-		errMsg += msg;
-	}
-
-	printf("%s\n", errMsg.c_str());
-}
-
-bool ScriptCompilerListener::handleEvent(ScriptCompiler* compiler, ScriptCompilerEvent* evt, void* retval)
-{
-	return false;
 }

@@ -53,6 +53,12 @@
     <ClCompile Include="..\..\engine\common\ScriptParser.cpp">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\common\ScriptCompiler.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\ScriptTranslator.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="common">
@@ -181,6 +187,12 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\engine\common\ScriptParser.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\ScriptCompiler.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\ScriptTranslator.h">
       <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>

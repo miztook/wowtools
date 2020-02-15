@@ -23,6 +23,28 @@ enum AbstractNodeType : int
 	ANT_VARIABLE_ACCESS,
 };
 
+inline const char* getAstNodeType(AbstractNodeType type)
+{
+	switch (type)
+	{
+	case ANT_ATOM:
+		return "Atom";
+	case ANT_OBJECT:
+		return "Object";
+	case ANT_PROPERTY:
+		return "Property";
+	case ANT_IMPORT:
+		return "Import";
+	case ANT_VARIABLE_SET:
+		return "VariableSet";
+	case ANT_VARIABLE_ACCESS:
+		return "VariableAccess";
+	case ANT_UNKNOWN:
+	default:
+		return "Unknown";
+	}
+}
+
 class AbstractNode 
 {
 public:
@@ -49,7 +71,10 @@ public:
 	}
 
 public:
-	explicit AbstractNode(AbstractNode* _parent);
+	explicit AbstractNode(AbstractNode* _parent)
+		: line(0), type(ANT_UNKNOWN), parent(_parent)
+	{
+	}
 	virtual ~AbstractNode() {}
 
 	virtual const char* getValue() const = 0;
@@ -61,7 +86,11 @@ public:
 	std::string value;
 	uint32_t id;
 public:
-	explicit AtomAbstractNode(AbstractNode* _parent);
+	explicit AtomAbstractNode(AbstractNode* _parent)
+		: AbstractNode(_parent), id(0)
+	{
+		type = ANT_ATOM;
+	}
 	const char* getValue() const override { return value.c_str(); }
 };
 
@@ -75,14 +104,24 @@ public:
 	uint32_t id;
 
 public:
-	ObjectAbstractNode(AbstractNode* _parent);
+	explicit ObjectAbstractNode(AbstractNode* _parent)
+		: AbstractNode(_parent), id(0)
+	{
+		type = ANT_OBJECT;
+	}
 	const char* getValue() const override { return cls.c_str(); }
 
-	void addVariable(const char* name);
-	void setVariable(const char* name, const char* value);
+	void addVariable(const char* name)
+	{
+		mEnv[name] = "";
+	}
+	void setVariable(const char* name, const char* value)
+	{
+		mEnv[name] = value;
+	}
+
 	std::pair<bool, std::string> getVariable(const char* name) const;
 	const std::map<std::string, std::string>& getVariables() const { return mEnv; }
-
 };
 
 class PropertyAbstractNode : public AbstractNode
@@ -91,29 +130,12 @@ public:
 	std::string name;
 	uint32_t id;
 public:
-	PropertyAbstractNode(AbstractNode* _parent);
+	explicit PropertyAbstractNode(AbstractNode* _parent)
+		: AbstractNode(_parent), id(0)
+	{
+		type = ANT_PROPERTY;
+	}
 	const char* getValue() const override { return name.c_str(); }
-};
-
-class ScriptCompilerEvent
-{
-public:
-	std::string mType;
-
-	ScriptCompilerEvent(const char* type) :mType(type) {}
-	virtual ~ScriptCompilerEvent() {}
-};
-
-class ScriptCompilerListener
-{
-public:
-	virtual ~ScriptCompilerListener() {}
-
-public:
-	virtual void preConversion(ScriptCompiler* compiler, const std::list<ConcreteNode*>& nodes);
-	virtual bool postConversion(ScriptCompiler* compiler, const std::list<AbstractNode*>& nodes);
-	virtual void handleError(ScriptCompiler* compiler, uint32_t code, const char* file, int line, const char* msg);
-	virtual bool handleEvent(ScriptCompiler* compiler, ScriptCompilerEvent* evt, void* retval);
 };
 
 class ScriptCompilerManager;
@@ -175,7 +197,6 @@ private:
 	std::list<Error> m_Errors;
 
 	ScriptCompilerManager* m_scriptCompilerManager;
-	ScriptCompilerListener m_defaultListener;
 private:
 	class AbstractTreeBuilder
 	{
@@ -202,8 +223,6 @@ public:
 		ID_NO,
 	};
 };
-
-class ScriptTranslator;
 
 class ScriptCompilerManager
 {

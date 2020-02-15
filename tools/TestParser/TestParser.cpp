@@ -12,6 +12,7 @@
 
 #include "ScriptLexer.h"
 #include "ScriptParser.h"
+#include "ScriptCompiler.h"
 
 #pragma comment(lib, "CascLib.lib")
 #pragma comment(lib, "pugixml.lib")
@@ -19,6 +20,7 @@
 void testLexer();
 void testParser();
 void printNode(const ConcreteNode* node);
+void printNode(const AbstractNode* node);
 
 int main(int argc, char* argv[])
 {
@@ -49,8 +51,9 @@ void testLexer()
 
 	const char* files[] =
 	{
-		"test.shader",
-		"Redify.shader",
+		//"test.shader",
+		//"Redify.shader",
+		"UI.material",
 	};
 
 	for (int i = 0; i < ARRAY_COUNT(files); ++i)
@@ -70,7 +73,7 @@ void testLexer()
 			for (const auto& token : tokenList)
 			{
 				printf("token type: %s, %s, %s, %d\n", 
-					ScriptLexer::getTokenType(token.type), token.lexeme.c_str(), getFileNameA(token.file.c_str()).c_str(), token.line);
+					getLexerTokenType(token.type), token.lexeme.c_str(), getFileNameA(token.file.c_str()).c_str(), token.line);
 			}
 		}
 
@@ -96,7 +99,8 @@ void testParser()
 	const char* files[] = 
 	{
 		//"test.shader",
-		"Redify.shader",
+		//"Redify.shader",
+		"UI.material",
 	};
 
 	for (int i = 0; i < ARRAY_COUNT(files); ++i)
@@ -111,6 +115,7 @@ void testParser()
 		//read lexer
 		std::string error;
 		std::vector<ScriptToken> tokenList = ScriptLexer::tokenize(content, filename.c_str(), error);
+		ASSERT(error.empty());
 		std::list<ConcreteNode*> nodes = ScriptParser::parse(tokenList);
 
 		for (const ConcreteNode* node : nodes)
@@ -142,7 +147,7 @@ void printNode(const ConcreteNode* node)
 		str += "\t";
 		p = p->parent;
 	}
-	printf("%s token: %s, type: %s, line: %d\n", str.c_str(), node->token.c_str(), ScriptParser::getTokenType(node->type), node->line);
+	printf("%s token: %s, type: %s, line: %d\n", str.c_str(), node->token.c_str(), getConcreateNodeType(node->type), node->line);
 
 	for (const ConcreteNode* child : node->children)
 	{
@@ -150,3 +155,22 @@ void printNode(const ConcreteNode* node)
 	}
 }
 
+void printNode(const AbstractNode* node)
+{
+	int n = 0;
+	const AbstractNode* p = node->parent;
+	std::string str;
+	while (p)
+	{
+		++n;
+		str += "\t";
+		p = p->parent;
+	}
+
+	printf("%s type: %s, name: %s, line: %d\n", str.c_str(), getAstNodeType(node->type), node->getValue(), node->line);
+
+	for (const AbstractNode* child : node->children)
+	{
+		printNode(child);
+	}
+}

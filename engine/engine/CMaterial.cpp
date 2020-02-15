@@ -67,12 +67,3 @@ CPass& CMaterial::addPass(E_LIGHT_MODE lightMode)
 	return PassList.back();
 }
 
-std::string CPass::macroToString() const
-{
-	return CShaderUtil::getShaderMacroString(MacroSet);
-}
-
-void CPass::macroFromString(const char* macroString)
-{
-	CShaderUtil::getShaderMacroSet(macroString, MacroSet);
-}
