@@ -10,8 +10,6 @@
 
 struct ConcreteNode;
 
-using VAR_T = Variant<uint32_t, uint64_t, uint16_t, int, float, std::string>;
-
 enum AbstractNodeType : int
 {
 	ANT_UNKNOWN,
@@ -52,7 +50,7 @@ public:
 	uint32_t line;
 	AbstractNodeType type;
 	AbstractNode* parent;
-	VAR_T	context;
+	void*	context;
 
 	std::list<AbstractNode*>	children;
 	std::list<AbstractNode*>	values;
@@ -74,6 +72,7 @@ public:
 	explicit AbstractNode(AbstractNode* _parent)
 		: line(0), type(ANT_UNKNOWN), parent(_parent)
 	{
+		context = nullptr;
 	}
 	virtual ~AbstractNode() {}
 
@@ -138,7 +137,7 @@ public:
 	const char* getValue() const override { return name.c_str(); }
 };
 
-class ScriptCompilerManager;
+class MaterialCompiler;
 
 class ScriptCompiler
 {
@@ -171,14 +170,14 @@ public:
 	};
 
 public:
-	explicit ScriptCompiler(ScriptCompilerManager* scriptCompilerManager);
+	explicit ScriptCompiler(MaterialCompiler* scriptCompilerManager);
 	virtual ~ScriptCompiler() {}
 
 	bool compile(const char* str, const char* source);
 	bool compile(const std::list<ConcreteNode*>& nodes);
 
 	void addError(uint32_t code, const char* file, int line, const char* msg = "");
-	ScriptCompilerManager* getScriptCompilerManager() const { return m_scriptCompilerManager; }
+	MaterialCompiler* getScriptCompilerManager() const { return m_scriptCompilerManager; }
 
 	const std::list<Error>& getErrorList() const { return m_Errors; }
 
@@ -192,7 +191,7 @@ private:
 
 	std::map<std::string, uint32_t> m_Ids;
 	std::list<Error> m_Errors;
-	ScriptCompilerManager* m_scriptCompilerManager;
+	MaterialCompiler* m_scriptCompilerManager;
 
 private:
 	class AbstractTreeBuilder
@@ -209,40 +208,39 @@ private:
 	};
 
 	friend class AbstractTreeBuilder;
-public:
-	enum
-	{
-		ID_ON = 1,
-		ID_OFF,
-		ID_TRUE,
-		ID_FALSE,
-		ID_YES,
-		ID_NO,
-	};
 };
 
-class ScriptCompilerManager
+class MaterialCompiler
 {
 private:
 	ScriptCompiler	m_ScriptCompiler;
 
 public:
-	ScriptCompilerManager();
-	virtual ~ScriptCompilerManager();
+	MaterialCompiler();
+	virtual ~MaterialCompiler();
 
 	ScriptTranslator* getTranslator(const AbstractNode* node);
 
 	bool parseScript(const char* str, const char* source);
 	std::list<AbstractNode*> convertToAST(const std::list<ConcreteNode*>& nodes);
 
+	const std::map<std::string, CMaterial*>& getMaterialMap() const;
+
 private:
 	MaterialTranslator	m_MaterialTranslator;
 	PassTranslator	m_PassTranslator;
 };
 
-enum
+enum : int
 {	
-	ID_MATERIAL = 3,
+	ID_ON = 1,
+	ID_OFF,
+	ID_TRUE,
+	ID_FALSE,
+	ID_YES,
+	ID_NO,
+
+	ID_MATERIAL,
 	ID_PASS,
 
 	ID_QUEUE,
@@ -276,7 +274,7 @@ enum
 	ID_GREATEREQUAL,
 	ID_GREATER,
 
-	ID_ZWRITE_ENABLE,
+	ID_ZWRITE,
 
 	ID_COLOR_MASK,
 	ID_R,

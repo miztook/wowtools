@@ -62,11 +62,11 @@ private:
 
 		GLint		ActiveTextureIndex;
 
-		GLint	 ZEnable;
+		GLint	 ZTest;
 		GLint	 ZFunc;
 		GLint	 FillMode;
 		GLboolean	 ColorMask[4];		//RGBA
-		GLboolean	 ZWriteEnable;
+		GLboolean	 ZWrite;
 		//GLint	 StencilEnable;
 		//GLint	 ScissorEnable;
 		GLint	 CullEnable;

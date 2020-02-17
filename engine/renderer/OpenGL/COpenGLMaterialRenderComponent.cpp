@@ -95,13 +95,13 @@ void COpenGLMaterialRenderComponent::setRenderStates(const CPass* pass, const SG
 {
 	// zbuffer
 	{
-		CurrentRenderState.ZEnable = pass->ZTest == ECFN_NEVER ? GL_FALSE : GL_TRUE;
+		CurrentRenderState.ZTest = pass->ZTest == ECFN_NEVER ? GL_FALSE : GL_TRUE;
 		CurrentRenderState.ZFunc = COpenGLHelper::getGLCompare(pass->ZTest);
 	}
 
 	// zwrite
 	{
-		CurrentRenderState.ZWriteEnable = pass->ZWriteEnable ? GL_TRUE : GL_FALSE;
+		CurrentRenderState.ZWrite = pass->ZWrite ? GL_TRUE : GL_FALSE;
 	}
 
 	// backface culling
@@ -205,13 +205,13 @@ void COpenGLMaterialRenderComponent::setRenderStates(const CPass* pass, const SG
 
 void COpenGLMaterialRenderComponent::applyRenderStates()
 {
-	DEVICE_SET_BOOL_STATE(ZEnable, GL_DEPTH_TEST, CurrentRenderState.ZEnable);
-	if (CurrentRenderState.ZEnable)
+	DEVICE_SET_BOOL_STATE(ZTest, GL_DEPTH_TEST, CurrentRenderState.ZTest);
+	if (CurrentRenderState.ZTest)
 	{
 		DEVICE_SET_DEPTHFUNC_STATE(ZFunc, CurrentRenderState.ZFunc);
 	}
 
-	DEVICE_SET_DEPTHMASK_STATE(ZWriteEnable, CurrentRenderState.ZWriteEnable);
+	DEVICE_SET_DEPTHMASK_STATE(ZWrite, CurrentRenderState.ZWrite);
 	//DEVICE_SET_BOOL_STATE(StencilEnable, GL_STENCIL_TEST, CurrentRenderState.StencilEnable);
 	//DEVICE_SET_BOOL_STATE(ScissorEnable, GL_SCISSOR_TEST, CurrentRenderState.ScissorEnable);
 	DEVICE_SET_BOOL_STATE(CullEnable, GL_CULL_FACE, CurrentRenderState.CullEnable);
@@ -329,13 +329,13 @@ void COpenGLMaterialRenderComponent::setActiveTexture(uint32_t st)
 
 void COpenGLMaterialRenderComponent::setZWriteEnable(bool enable)
 {
-	CurrentRenderState.ZWriteEnable = enable ? GL_TRUE : GL_FALSE;
-	DEVICE_SET_DEPTHMASK_STATE(ZWriteEnable, CurrentRenderState.ZWriteEnable);
+	CurrentRenderState.ZWrite = enable ? GL_TRUE : GL_FALSE;
+	DEVICE_SET_DEPTHMASK_STATE(ZWrite, CurrentRenderState.ZWrite);
 }
 
 bool COpenGLMaterialRenderComponent::getZWriteEnable() const
 {
-	return CurrentRenderState.ZWriteEnable != GL_FALSE;
+	return CurrentRenderState.ZWrite != GL_FALSE;
 }
 
 void COpenGLMaterialRenderComponent::setTextureFilter(uint32_t st, E_TEXTURE_FILTER filter, bool mipmap, bool isCube)
@@ -479,10 +479,10 @@ void COpenGLMaterialRenderComponent::resetRSCache()
 	glGetIntegerv(GL_VIEWPORT, v);
 	RsCache.Viewport.set(v[0], v[1], v[0] + v[2], v[1] + v[3]);
 
-	RsCache.ZEnable = glIsEnabled(GL_DEPTH_TEST);
+	RsCache.ZTest = glIsEnabled(GL_DEPTH_TEST);
 	glGetIntegerv(GL_DEPTH_FUNC, &RsCache.ZFunc);
 	glGetBooleanv(GL_COLOR_WRITEMASK, RsCache.ColorMask);
-	glGetBooleanv(GL_DEPTH_WRITEMASK, &RsCache.ZWriteEnable);
+	glGetBooleanv(GL_DEPTH_WRITEMASK, &RsCache.ZWrite);
 	//RsCache.StencilEnable = glIsEnabled(GL_STENCIL_TEST);
 	//RsCache.ScissorEnable = glIsEnabled(GL_SCISSOR_TEST);
 	RsCache.CullEnable = glIsEnabled(GL_CULL_FACE);

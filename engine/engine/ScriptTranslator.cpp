@@ -10,12 +10,12 @@ const AbstractNode* ScriptTranslator::getNodeAt(const std::list<AbstractNode*>& 
 	return *itr;
 }
 
-void ScriptTranslator::processNode(ScriptCompiler* compiler, const AbstractNode* node)
+void ScriptTranslator::processNode(ScriptCompiler* compiler, AbstractNode* node)
 {
 	if (node->type != ANT_OBJECT)
 		return;
 
-	const ObjectAbstractNode* objNode = static_cast<const ObjectAbstractNode*>(node);
+	ObjectAbstractNode* objNode = static_cast<ObjectAbstractNode*>(node);
 
 	ScriptTranslator* translator = compiler->getScriptCompilerManager()->getTranslator(node);
 	if (translator)
@@ -83,6 +83,61 @@ bool ScriptTranslator::getUInt(const AbstractNode* node, uint32_t& result)
 	return true;
 }
 
+bool ScriptTranslator::getRenderQueue(const AbstractNode* node, int& queue)
+{
+	if (node->type != ANT_ATOM)
+		return false;
+	const AtomAbstractNode* atom = static_cast<const AtomAbstractNode*>(node);
+	switch (atom->id)
+	{
+	case ID_BACKGROUND:
+		queue = ERQ_BACKGROUND;
+		break;
+	case ID_GEOMETRY:
+		queue = ERQ_GEOMETRY;
+		break;
+	case ID_ALPHATEST:
+		queue = ERQ_ALPHATEST;
+		break;
+	case ID_GEOMETRYLAST:
+		queue = ERQ_GEOMETRYLAST;
+		break;
+	case ID_TRANSPARENT:
+		queue = ERQ_TRANSPARENT;
+		break;
+	case ID_OVERLAY:
+		queue = ERQ_OVERLAY;
+		break;
+	default:
+		ASSERT(false);
+		break;
+	}
+	return true;
+}
+
+bool ScriptTranslator::getLightMode(const AbstractNode* node, E_LIGHT_MODE& lightmode)
+{
+	if (node->type != ANT_ATOM)
+		return false;
+	const AtomAbstractNode* atom = static_cast<const AtomAbstractNode*>(node);
+	switch (atom->id)
+	{
+	case ID_ALWAYS:
+		lightmode = ELM_ALWAYS;
+		break;
+	case ID_FORWARD_BASE:
+		lightmode = ELM_FORWARD_BASE;
+		break;
+	case ID_FORWARD_ADD:
+		lightmode = ELM_FORWARD_ADD;
+		break;
+	default:
+		ASSERT(false);
+		break;
+	}
+	return true;
+}
+
 template <typename T>
 bool getValue(const AbstractNode* node, T& result);
 template<> bool getValue(const AbstractNode* node, float& result)
@@ -134,25 +189,84 @@ static bool getValue(const PropertyAbstractNode* prop, ScriptCompiler *compiler,
 	return false;
 }
 
-void MaterialTranslator::translate(ScriptCompiler* compiler, const AbstractNode* node)
+void MaterialTranslator::translate(ScriptCompiler* compiler, AbstractNode* node)
 {
-	const ObjectAbstractNode* obj = static_cast<const ObjectAbstractNode*>(node);
+	ObjectAbstractNode* obj = static_cast<ObjectAbstractNode*>(node);
 	if (obj->name.empty())
 		compiler->addError(ScriptCompiler::CE_OBJECTNAMEEXPECTED, obj->file.c_str(), obj->line);
 
+	ASSERT(!obj->context && obj->cls == "Material");
+
+	CMaterial* material = nullptr;
+	auto itr = m_MaterialMap.find(obj->name);
+	if (itr != m_MaterialMap.end())
+	{
+		material = itr->second;
+	}
+	else
+	{
+		material = new CMaterial(obj->name.c_str());
+		m_MaterialMap[obj->name] = material;
+	}
+	obj->context = material;
+
 	bool bval;
+	int ival;
 	for (auto itr = obj->children.begin(); itr != obj->children.end(); ++itr)
 	{
+		AbstractNode* child = *itr;
 
+		if (child->type == ANT_PROPERTY)			//解析属性
+		{
+			const PropertyAbstractNode* prop = static_cast<const PropertyAbstractNode*>(child);
+			switch (prop->id)
+			{
+			case ID_QUEUE:
+				if (!getRenderQueue(child->values.front(), material->RenderQueue))
+					ASSERT(false);
+				break;
+			default:
+				compiler->addError(ScriptCompiler::CE_UNEXPECTEDTOKEN, prop->file.c_str(), prop->line,
+					std_string_format("token \"%s\" is not recognized", prop->name.c_str()).c_str());
+				break;
+			}
+		}
+		else if (child->type == ANT_OBJECT)
+		{
+			processNode(compiler, child);			//继续子node
+		}
 	}
 }
 
-void PassTranslator::translate(ScriptCompiler* compiler, const AbstractNode* node)
+void PassTranslator::translate(ScriptCompiler* compiler, AbstractNode* node)
 {
 	const ObjectAbstractNode* obj = static_cast<const ObjectAbstractNode*>(node);
 
+	CMaterial* material = static_cast<CMaterial*>(obj->parent->context);
+	CPass* m_Pass = material->addPass(ELM_ALWAYS);
+
 	for (auto itr = obj->children.begin(); itr != obj->children.end(); ++itr)
 	{
+		AbstractNode* child = *itr;
 
+		if (child->type == ANT_PROPERTY)			//解析属性
+		{
+			const PropertyAbstractNode* prop = static_cast<const PropertyAbstractNode*>(child);
+			switch (prop->id)
+			{
+			case ID_LIGHT_MODE:
+				if (!getLightMode(child->values.front(), m_Pass->LightMode))
+					ASSERT(false);
+				break;
+			default:
+				compiler->addError(ScriptCompiler::CE_UNEXPECTEDTOKEN, prop->file.c_str(), prop->line,
+					std_string_format("token \"%s\" is not recognized", prop->name.c_str()).c_str());
+				break;
+			}
+		}
+		else
+		{
+			ASSERT(false);
+		}
 	}
 }

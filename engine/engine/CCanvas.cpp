@@ -8,14 +8,14 @@
 
 CCanvas::CCanvas()
 {
-	CPass& pass = Material.addPass(ELM_ALWAYS);
+	CPass* pass = Material.addPass(ELM_ALWAYS);
 
-	pass.Cull = ECM_BACK;
-	pass.ZWriteEnable = false;
-	pass.ZTest = ECFN_NEVER;
-	pass.AntiAliasing = EAAM_LINE_SMOOTH;
-	pass.VSFile = "";
-	pass.PSFile = "UI";
+	pass->Cull = ECM_BACK;
+	pass->ZWrite = false;
+	pass->ZTest = ECFN_NEVER;
+	pass->AntiAliasing = EAAM_LINE_SMOOTH;
+	pass->VSFile = "";
+	pass->PSFile = "UI";
 }
 
 CCanvas::~CCanvas()

@@ -47,10 +47,11 @@ void testCompiler()
 
 	const char* files[] =
 	{
-		"Redify.shader",
+		//"Redify.shader",
+		"UI.material",
 	};
 
-	ScriptCompilerManager mgr;
+	MaterialCompiler mgr;
 
 	for (int i = 0; i < ARRAY_COUNT(files); ++i)
 	{
@@ -61,6 +62,9 @@ void testCompiler()
 		memset(content, 0, len);
 		rf->read(content, len);
 
+		mgr.parseScript(content, filename.c_str());
+
+		/*
 		std::string error;
 		std::vector<ScriptToken> tokenList = ScriptLexer::tokenize(content, files[i], error);
 		ASSERT(error.empty());
@@ -78,6 +82,8 @@ void testCompiler()
 
 		for (ConcreteNode* n : nodes)
 			ConcreteNode::deleteNode(n);
+			*/
+
 		delete[] content;
 		delete rf;
 	}

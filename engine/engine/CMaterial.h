@@ -76,7 +76,7 @@ public:
 		Cull = ECM_BACK;
 		AntiAliasing = EAAM_OFF;
 		ZTest = ECFN_LESSEQUAL;
-		ZWriteEnable = true;
+		ZWrite = true;
 		ColorMask = COLORWRITE_ALL;
 		AlphaBlendEnabled = false;
 		SrcBlend = EBF_ONE;
@@ -95,7 +95,7 @@ public:		//render state
 	E_CULL_MODE		Cull;
 	E_ANTI_ALIASING_MODE		AntiAliasing;
 	E_COMPARISON_FUNC		ZTest;
-	bool		ZWriteEnable;
+	bool		ZWrite;
 	E_COLOR_WRITE	ColorMask;
 	E_BLEND_FACTOR	SrcBlend;
 	E_BLEND_FACTOR	DestBlend;
@@ -129,6 +129,10 @@ class CMaterial
 {
 public:
 	CMaterial() : RenderQueue(ERQ_GEOMETRY) {}
+	CMaterial(const char* name) : Name(name), RenderQueue(ERQ_GEOMETRY) {}
+
+private:
+	DISALLOW_COPY_AND_ASSIGN(CMaterial);
 
 public:
 	void setVariable(const char* name, const float* src, uint32_t size);
@@ -143,9 +147,11 @@ public:
 
 	const CPass* getPass(E_LIGHT_MODE mode) const;
 	CPass* getPass(E_LIGHT_MODE mode);
-	CPass& addPass(E_LIGHT_MODE lightMode);
+	CPass* addPass(E_LIGHT_MODE lightMode);
 
 public:
+	std::string		Name;
+
 	int		RenderQueue;
 	std::vector<CPass>	PassList;
 
