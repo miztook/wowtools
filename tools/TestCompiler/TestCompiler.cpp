@@ -51,7 +51,7 @@ void testCompiler()
 		"UI.material",
 	};
 
-	MaterialCompiler mgr;
+	
 
 	for (int i = 0; i < ARRAY_COUNT(files); ++i)
 	{
@@ -62,7 +62,15 @@ void testCompiler()
 		memset(content, 0, len);
 		rf->read(content, len);
 
-		//mgr.parseScript(content, filename.c_str());
+		CMaterial* mat = nullptr;
+		MaterialCompiler compiler;
+		if (compiler.parseScript(content, filename.c_str()))
+		{
+			const std::map<std::string, CMaterial*>& matMap = compiler.getMaterialMap();
+			if (!matMap.empty())
+				mat = matMap.begin()->second;
+		}
+		delete mat;
 
 		/*
 		std::string error;

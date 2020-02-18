@@ -57,13 +57,15 @@ public:
 		delete node;
 	}
 
+protected:
+	virtual ~AbstractNode() {}
+
 public:
 	explicit AbstractNode(AbstractNode* _parent)
 		: line(0), type(ANT_UNKNOWN), parent(_parent)
 	{
 		context = nullptr;
 	}
-	virtual ~AbstractNode() {}
 
 	virtual const char* getValue() const = 0;
 };
@@ -93,15 +95,9 @@ public:
 	std::string name;
 	std::string cls;
 	uint32_t id;
-
-public:
-	explicit ObjectAbstractNode(AbstractNode* _parent)
-		: AbstractNode(_parent), id(0)
-	{
-		type = ANT_OBJECT;
-	}
-
-	~ObjectAbstractNode()
+	 
+protected:
+	~ObjectAbstractNode() override
 	{
 		for (const AbstractNode* child : children)
 		{
@@ -111,6 +107,13 @@ public:
 		{
 			deleteNode(v);
 		}
+	}
+
+public:
+	explicit ObjectAbstractNode(AbstractNode* _parent)
+		: AbstractNode(_parent), id(0)
+	{
+		type = ANT_OBJECT;
 	}
 
 	const char* getValue() const override { return cls.c_str(); }
@@ -135,14 +138,8 @@ public:
 	uint32_t id;
 	std::list<AbstractNode*>	values;
 
-public:
-	explicit PropertyAbstractNode(AbstractNode* _parent)
-		: AbstractNode(_parent), id(0)
-	{
-		type = ANT_PROPERTY;
-	}
-	
-	~PropertyAbstractNode()
+protected:
+	~PropertyAbstractNode() override
 	{
 		for (const AbstractNode* v : values)
 		{
@@ -150,6 +147,13 @@ public:
 		}
 	}
 
+public:
+	explicit PropertyAbstractNode(AbstractNode* _parent)
+		: AbstractNode(_parent), id(0)
+	{
+		type = ANT_PROPERTY;
+	}
+	
 	const char* getValue() const override { return name.c_str(); }
 };
 
