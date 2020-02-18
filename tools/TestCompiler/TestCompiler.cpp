@@ -62,7 +62,7 @@ void testCompiler()
 		memset(content, 0, len);
 		rf->read(content, len);
 
-		mgr.parseScript(content, filename.c_str());
+		//mgr.parseScript(content, filename.c_str());
 
 		/*
 		std::string error;
@@ -82,7 +82,7 @@ void testCompiler()
 
 		for (ConcreteNode* n : nodes)
 			ConcreteNode::deleteNode(n);
-			*/
+		*/
 
 		delete[] content;
 		delete rf;
@@ -106,8 +106,12 @@ void printNode(const AbstractNode* node)
 
 	printf("%s type: %s, name: %s, line: %d\n", str.c_str(), getAstNodeType(node->type), node->getValue(), node->line);
 
-	for (const AbstractNode* child : node->children)
+	if (node->type == ANT_OBJECT)
 	{
-		printNode(child);
+		const ObjectAbstractNode* obj = static_cast<const ObjectAbstractNode*>(node);
+		for (const AbstractNode* child : obj->children)
+		{
+			printNode(child);
+		}
 	}
 }

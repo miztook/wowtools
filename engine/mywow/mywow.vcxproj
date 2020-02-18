@@ -102,6 +102,8 @@
     <ClInclude Include="..\engine\mywow.h" />
     <ClInclude Include="..\engine\CRenderSetting.h" />
     <ClInclude Include="..\engine\RenderStruct.h" />
+    <ClInclude Include="..\engine\ScriptCompiler.h" />
+    <ClInclude Include="..\engine\ScriptTranslator.h" />
     <ClInclude Include="..\engine\SCullResult.h" />
     <ClInclude Include="..\engine\SGlobalLayerData.h" />
   </ItemGroup>
@@ -152,6 +154,8 @@
     <ClCompile Include="..\engine\Engine.cpp" />
     <ClCompile Include="..\engine\EngineUtil.cpp" />
     <ClCompile Include="..\engine\IRenderer.cpp" />
+    <ClCompile Include="..\engine\ScriptCompiler.cpp" />
+    <ClCompile Include="..\engine\ScriptTranslator.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5FC4A776-9356-4FE9-93BA-F610DEE4E660}</ProjectGuid>

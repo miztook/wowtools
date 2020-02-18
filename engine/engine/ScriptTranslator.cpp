@@ -138,6 +138,163 @@ bool ScriptTranslator::getLightMode(const AbstractNode* node, E_LIGHT_MODE& ligh
 	return true;
 }
 
+bool ScriptTranslator::getCull(const AbstractNode* node, E_CULL_MODE& mode)
+{
+	if (node->type != ANT_ATOM)
+		return false;
+	const AtomAbstractNode* atom = static_cast<const AtomAbstractNode*>(node);
+	switch (atom->id)
+	{
+	case ID_BACK:
+		mode = ECM_BACK;
+		break;
+	case ID_FRONT:
+		mode = ECM_FRONT;
+		break;
+	case ID_NONE:
+		mode = ECM_NONE;
+		break;
+	default:
+		ASSERT(false);
+		break;
+	}
+	return true;
+}
+
+bool ScriptTranslator::getAntiAliasing(const AbstractNode* node, E_ANTI_ALIASING_MODE& mode)
+{
+	if (node->type != ANT_ATOM)
+		return false;
+	const AtomAbstractNode* atom = static_cast<const AtomAbstractNode*>(node);
+	switch (atom->id)
+	{
+	case ID_OFF:
+		mode = EAAM_OFF;
+		break;
+	case ID_SIMPLE:
+		mode = EAAM_SIMPLE;
+		break;
+	case ID_LINE_SMOOTH:
+		mode = EAAM_LINE_SMOOTH;
+		break;
+	default:
+		ASSERT(false);
+		break;
+	}
+	return true;
+}
+
+bool ScriptTranslator::getComparisonFunc(const AbstractNode* node, E_COMPARISON_FUNC& func)
+{
+	if (node->type != ANT_ATOM)
+		return false;
+	const AtomAbstractNode* atom = static_cast<const AtomAbstractNode*>(node);
+	switch (atom->id)
+	{
+	case ID_NEVER:
+		func = ECFN_NEVER;
+		break;
+	case ID_LESSEQUAL:
+		func = ECFN_LESSEQUAL;
+		break;
+	case ID_EQUAL:
+		func = ECFN_EQUAL;
+		break;
+	case ID_LESS:
+		func = ECFN_LESS;
+		break;
+	case ID_NOTEQUAL:
+		func = ECFN_NOTEQUAL;
+		break;
+	case ID_GREATEREQUAL:
+		func = ECFN_GREATEREQUAL;
+		break;
+	case ID_GREATER:
+		func = ECFN_GREATER;
+		break;
+	case ID_ALWAYS:
+		func = ECFN_ALWAYS;
+		break;
+	default:
+		ASSERT(false);
+		break;
+	}
+	return true;
+}
+
+bool ScriptTranslator::getColorMask(const AbstractNode* node, E_COLOR_MASK& colormask)
+{
+	if (node->type != ANT_ATOM)
+		return false;
+	const AtomAbstractNode* atom = static_cast<const AtomAbstractNode*>(node);
+	switch (atom->id)
+	{
+	case ID_A:
+		colormask = COLORWRITE_ALPHA;
+		break;
+	case ID_R:
+		colormask = COLORWRITE_RED;
+		break;
+	case ID_G:
+		colormask = COLORWRITE_GREEN;
+		break;
+	case ID_B:
+		colormask = COLORWRITE_BLUE;
+		break;
+	case ID_RGBA:
+		colormask = COLORWRITE_ALL;
+		break;
+	default:
+		ASSERT(false);
+		break;
+	}
+	return true;
+}
+
+bool ScriptTranslator::getBlendFactor(const AbstractNode* node, E_BLEND_FACTOR& blend)
+{
+	if (node->type != ANT_ATOM)
+		return false;
+	const AtomAbstractNode* atom = static_cast<const AtomAbstractNode*>(node);
+	switch (atom->id)
+	{
+	case ID_ZERO:
+		blend = EBF_ZERO;
+		break;
+	case ID_ONE:
+		blend = EBF_ONE;
+		break;
+	case ID_DST_COLOR:
+		blend = EBF_DST_COLOR;
+		break;
+	case ID_ONE_MINUS_DST_COLOR:
+		blend = EBF_ONE_MINUS_DST_COLOR;
+		break;
+	case ID_SRC_COLOR:
+		blend = EBF_SRC_COLOR;
+		break;
+	case ID_ONE_MINUS_SRC_COLOR:
+		blend = EBF_ONE_MINUS_SRC_COLOR;
+		break;
+	case ID_DST_ALPHA:
+		blend = EBF_DST_ALPHA;
+		break;
+	case ID_ONE_MINUS_DST_ALPHA:
+		blend = EBF_ONE_MINUS_DST_ALPHA;
+		break;
+	case ID_SRC_ALPHA:
+		blend = EBF_SRC_ALPHA;
+		break;
+	case ID_ONE_MINUS_SRC_ALPHA:
+		blend = EBF_ONE_MINUS_SRC_ALPHA;
+		break;
+	default:
+		ASSERT(false);
+		break;
+	}
+	return true;
+}
+
 template <typename T>
 bool getValue(const AbstractNode* node, T& result);
 template<> bool getValue(const AbstractNode* node, float& result)
@@ -222,7 +379,7 @@ void MaterialTranslator::translate(ScriptCompiler* compiler, AbstractNode* node)
 			switch (prop->id)
 			{
 			case ID_QUEUE:
-				if (!getRenderQueue(child->values.front(), material->RenderQueue))
+				if (!getRenderQueue(prop->values.front(), material->RenderQueue))
 					ASSERT(false);
 				break;
 			default:
@@ -255,12 +412,89 @@ void PassTranslator::translate(ScriptCompiler* compiler, AbstractNode* node)
 			switch (prop->id)
 			{
 			case ID_LIGHT_MODE:
-				if (!getLightMode(child->values.front(), m_Pass->LightMode))
+				if (!getLightMode(prop->values.front(), m_Pass->LightMode))
+					ASSERT(false);
+				break;
+			case ID_CULL:
+				if (!getCull(prop->values.front(), m_Pass->Cull))
+					ASSERT(false);
+				break;
+			case ID_ANTIALIASING:
+				if (!getAntiAliasing(prop->values.front(), m_Pass->AntiAliasing))
+					ASSERT(false);
+				break;
+			case ID_ZTEST:
+				if (!getComparisonFunc(prop->values.front(), m_Pass->ZTest))
+					ASSERT(false);
+				break;
+			case ID_ZWRITE:
+				if (!getBoolean(prop->values.front(), m_Pass->ZWrite))
+					ASSERT(false);
+				break;
+			case ID_COLOR_MASK:
+				if (!getColorMask(prop->values.front(), m_Pass->ColorMask))
+					ASSERT(false);
+				break;
+			case ID_ALPHABLEND:
+				if (prop->values.size() == 1)
+				{
+					if (!getBoolean(prop->values.front(), m_Pass->AlphaBlendEnabled))
+						ASSERT(false);
+					ASSERT(m_Pass->AlphaBlendEnabled == false);
+				}
+				else if (prop->values.size() == 2)
+				{
+					if (!getBlendFactor(prop->values.front(), m_Pass->SrcBlend) ||
+						!getBlendFactor(prop->values.back(), m_Pass->DestBlend))
+						ASSERT(false);
+					m_Pass->AlphaBlendEnabled = true;
+				}
+				else
+				{
+					ASSERT(false);
+				}
+				break;
+			case ID_DEFINE:
+				for (const AbstractNode* node : prop->values)
+				{
+					if (node->type == ANT_ATOM)
+					{
+						std::string macro;
+						if (getString(node, macro))
+							m_Pass->addMacro(macro.c_str());
+					}
+				}
+				break;
+			case ID_VSFILE:
+				if (!getString(prop->values.front(), m_Pass->VSFile))
+					ASSERT(false);
+				break;
+			case ID_PSFILE:
+				if (!getString(prop->values.front(), m_Pass->PSFile))
 					ASSERT(false);
 				break;
 			default:
 				compiler->addError(ScriptCompiler::CE_UNEXPECTEDTOKEN, prop->file.c_str(), prop->line,
 					std_string_format("token \"%s\" is not recognized", prop->name.c_str()).c_str());
+				break;
+			}
+		}
+		else if (child->type == ANT_ATOM)
+		{
+			const AtomAbstractNode* atom = static_cast<const AtomAbstractNode*>(child);
+			switch (atom->id)
+			{
+			case ID_DEFINE:
+				break;
+			case ID_VSFILE:
+				m_Pass->VSFile = "";
+				break;
+			case ID_PSFILE:
+				m_Pass->PSFile = "";
+				break;
+			default:
+				compiler->addError(ScriptCompiler::CE_UNEXPECTEDTOKEN, atom->file.c_str(), atom->line,
+					std_string_format("token \"%s\" is not recognized", atom->getValue()).c_str());
 				break;
 			}
 		}

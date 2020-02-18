@@ -96,7 +96,7 @@ public:		//render state
 	E_ANTI_ALIASING_MODE		AntiAliasing;
 	E_COMPARISON_FUNC		ZTest;
 	bool		ZWrite;
-	E_COLOR_WRITE	ColorMask;
+	E_COLOR_MASK	ColorMask;
 	E_BLEND_FACTOR	SrcBlend;
 	E_BLEND_FACTOR	DestBlend;
 	bool	AlphaBlendEnabled;

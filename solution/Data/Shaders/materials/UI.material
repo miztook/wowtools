@@ -6,9 +6,9 @@ Material "UI"
 		LightMode	Always
 		
 		Cull	Back
-		AntiAliasing	Off
+		AntiAliasing	LineSmooth
 		ZTest		LessEqual
-		ZWrite			On
+		ZWrite			Off
 		ColorMask		RGBA
 		AlphaBlend		Off
 		

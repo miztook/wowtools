@@ -5,22 +5,17 @@
 #include "CCamera.h"
 #include "IVertexIndexBuffer.h"
 #include "CShaderUtil.h"
+#include "CMaterialManager.h"
 
 CCanvas::CCanvas()
 {
-	CPass* pass = Material.addPass(ELM_ALWAYS);
-
-	pass->Cull = ECM_BACK;
-	pass->ZWrite = false;
-	pass->ZTest = ECFN_NEVER;
-	pass->AntiAliasing = EAAM_LINE_SMOOTH;
-	pass->VSFile = "";
-	pass->PSFile = "UI";
+	Material = g_Engine->getMaterialManager()->loadFromFile("UI.material");
+	ASSERT(Material);
 }
 
 CCanvas::~CCanvas()
 {
-
+	delete Material;
 }
 
 void CCanvas::add2DColor(const recti&rect, SColor color, E_2DBlendMode mode /*= E_Solid*/)
@@ -148,7 +143,7 @@ rectf CCanvas::setUVCoords(E_RECT_UVCOORDS uvcoords, float x0, float y0, float x
 
 void CCanvas::draw2DSquad(const CCamera* cam, uint32_t batchCount, ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam)
 {
-	CPass* pass = Material.getPass(ELM_ALWAYS);
+	CPass* pass = Material->getPass(ELM_ALWAYS);
 	ASSERT(pass);
 
 	IVideoDriver* driver = g_Engine->getDriver();
@@ -158,7 +153,7 @@ void CCanvas::draw2DSquad(const CCamera* cam, uint32_t batchCount, ITexture* tex
 	vbuffer->updateBuffer<SVertex_PCT>(vertices, batchCount * 4);
 
 	applyBlendParam(blendParam, pass);
-	Material.setMainTexture(texture);
+	Material->setMainTexture(texture);
 
 	SDrawParam drawParam;
 	drawParam.numVertices = batchCount * 4;

@@ -52,19 +52,8 @@ public:
 	AbstractNode* parent;
 	void*	context;
 
-	std::list<AbstractNode*>	children;
-	std::list<AbstractNode*>	values;
-
 	static void deleteNode(const AbstractNode* node)
 	{
-		for (const AbstractNode* child : node->children)
-		{
-			deleteNode(child);
-		}
-		for (const AbstractNode* v : node->values)
-		{
-			deleteNode(v);
-		}
 		delete node;
 	}
 
@@ -98,6 +87,9 @@ class ObjectAbstractNode : public AbstractNode
 private:
 	std::map<std::string, std::string> mEnv;
 public:
+	std::list<AbstractNode*>	children;
+	std::list<AbstractNode*>	values;
+
 	std::string name;
 	std::string cls;
 	uint32_t id;
@@ -108,6 +100,19 @@ public:
 	{
 		type = ANT_OBJECT;
 	}
+
+	~ObjectAbstractNode()
+	{
+		for (const AbstractNode* child : children)
+		{
+			deleteNode(child);
+		}
+		for (const AbstractNode* v : values)
+		{
+			deleteNode(v);
+		}
+	}
+
 	const char* getValue() const override { return cls.c_str(); }
 
 	void addVariable(const char* name)
@@ -128,12 +133,23 @@ class PropertyAbstractNode : public AbstractNode
 public:
 	std::string name;
 	uint32_t id;
+	std::list<AbstractNode*>	values;
+
 public:
 	explicit PropertyAbstractNode(AbstractNode* _parent)
 		: AbstractNode(_parent), id(0)
 	{
 		type = ANT_PROPERTY;
 	}
+	
+	~PropertyAbstractNode()
+	{
+		for (const AbstractNode* v : values)
+		{
+			deleteNode(v);
+		}
+	}
+
 	const char* getValue() const override { return name.c_str(); }
 };
 
@@ -266,7 +282,7 @@ enum : int
 	ID_LINE_SMOOTH,
 
 	ID_ZTEST,
-	ID_NEVER = 0,
+	ID_NEVER,
 	ID_LESSEQUAL,
 	ID_EQUAL,
 	ID_LESS,
@@ -278,11 +294,10 @@ enum : int
 
 	ID_COLOR_MASK,
 	ID_R,
-	ID_RG,
-	ID_RGB,
 	ID_G,
-	ID_GB,
 	ID_B,
+	ID_A,
+	ID_RGBA,
 
 	ID_ALPHABLEND,
 	ID_ZERO,

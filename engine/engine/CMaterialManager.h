@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CMaterial.h"
+#include <string>
 
 class CMaterialManager
 {
@@ -12,8 +13,8 @@ public:
 	~CMaterialManager();
 
 public:
-	bool loadFromFile(CMaterial& material, const char* filename);
+	CMaterial* loadFromFile(const char* filename);
 
 private:
-	std::map<std::string, CMaterial> MaterialMap;
+	std::string MaterialDir;
 };

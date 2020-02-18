@@ -55,11 +55,10 @@ IDEntry g_IdEntries[] =
 	
 	{ "ColorMask", ID_COLOR_MASK },
 	{ "R", ID_R },
-	{ "RG", ID_RG },
-	{ "RGB", ID_RGB },
 	{ "G", ID_G },
-	{ "GB", ID_GB },
 	{ "B", ID_B },
+	{ "A", ID_A },
+	{ "RGBA", ID_RGBA },
 
 	{ "AlphaBlend", ID_ALPHABLEND },
 	{ "Zero", ID_ZERO },

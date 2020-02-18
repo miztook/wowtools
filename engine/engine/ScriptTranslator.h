@@ -35,6 +35,16 @@ public:
 	static bool getRenderQueue(const AbstractNode* node, int& queue);
 
 	static bool getLightMode(const AbstractNode* node, E_LIGHT_MODE& lightmode);
+
+	static bool getCull(const AbstractNode* node, E_CULL_MODE& mode);
+
+	static bool getAntiAliasing(const AbstractNode* node, E_ANTI_ALIASING_MODE& mode);
+
+	static bool getComparisonFunc(const AbstractNode* node, E_COMPARISON_FUNC& func);
+
+	static bool getColorMask(const AbstractNode* node, E_COLOR_MASK& colormask);
+
+	static bool getBlendFactor(const AbstractNode* node, E_BLEND_FACTOR& blend);
 };
 
 class MaterialTranslator : public ScriptTranslator

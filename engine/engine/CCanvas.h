@@ -64,7 +64,7 @@ private:
 	};
 
 private:
-	CMaterial	Material;
+	CMaterial*	Material;
 
 	std::map<SQuadDrawBatchKey, SQuadBatchDraw>		m_2DQuadDrawMap;
 };

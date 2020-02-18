@@ -323,7 +323,7 @@ enum E_COMPARISON_FUNC : int
 	ECFN_ALWAYS,
 };
 
-enum E_COLOR_WRITE : uint8_t
+enum E_COLOR_MASK : uint8_t
 {
 	COLORWRITE_RED = 1,
 	COLORWRITE_GREEN = 2,

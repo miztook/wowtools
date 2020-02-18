@@ -266,6 +266,12 @@
     <ClInclude Include="..\engine\CMaterialManager.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\engine\ScriptCompiler.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\ScriptTranslator.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">
@@ -404,6 +410,12 @@
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\CMaterialManager.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\ScriptCompiler.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\ScriptTranslator.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

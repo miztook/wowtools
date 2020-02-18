@@ -8,6 +8,7 @@ class CRenderSetting;
 class CLightSetting;
 class CFontManager;
 class CMeshManager;
+class CMaterialManager;
 
 using driverInitFunc = std::function<IVideoDriver*(const SWindowInfo& wndInfo,
 	E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode)>;
@@ -36,6 +37,7 @@ public:
 	CInputReader* getInputReader() { return &InputReader; }
 	CFontManager* getFontManager() const { return FontManager; }
 	CMeshManager* getMeshManager() const { return MeshManager; }
+	CMaterialManager* getMaterialManager() const { return MaterialManager; }
 	CRenderSetting* getRenderSetting() const { return RenderSetting; }
 	CLightSetting* getLightSetting() const { return LightSetting; }
 
@@ -51,6 +53,7 @@ private:
 	CLightSetting*		LightSetting;
 	CFontManager*		FontManager;
 	CMeshManager*		MeshManager;
+	CMaterialManager*	MaterialManager;
 };
 
 extern Engine* g_Engine;
