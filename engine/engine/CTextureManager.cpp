@@ -3,8 +3,12 @@
 #include "IVideoDriver.h"
 #include "ITexture.h"
 #include "CCImage.h"
+#include "wowEnvironment.h"
+#include "CBLPImage.h"
+#include "CMemFile.h"
 
-CTextureManager::CTextureManager()
+CTextureManager::CTextureManager(wowEnvironment* wowEnv)
+	: WowEnv(wowEnv)
 {
 	DefaultWhite = nullptr;
 
@@ -20,6 +24,48 @@ CTextureManager::~CTextureManager()
 			delete tex;
 	}
 	TextureMap.clear();
+
+	m_BlpImageCache.flushCache();
+}
+
+std::shared_ptr<IImage> CTextureManager::loadImage(const char* filename)
+{
+	if (hasFileExtensionA(filename, "blp"))
+		return loadBLP(filename);
+	else
+		return nullptr;
+}
+
+std::shared_ptr<IImage> CTextureManager::loadBLP(const char* filename)
+{
+	if (strlen(filename) == 0)
+		return nullptr;
+
+	char realfilename[QMAX_PATH];
+	normalizeFileName(filename, realfilename, QMAX_PATH);
+	Q_strlwr(realfilename);
+
+	std::shared_ptr<IImage> image = m_BlpImageCache.tryLoadFromCache(realfilename);
+	if (image)
+		return image;
+	
+	CMemFile* file = WowEnv->openFile(realfilename);
+	if (!file)
+		return nullptr;
+
+	std::shared_ptr<CBLPImage> blpImage(new CBLPImage);
+	if (!blpImage->loadFile(file))
+	{
+		blpImage.reset();
+		return nullptr;
+	}
+
+	delete file;
+
+	if (blpImage)
+		m_BlpImageCache.addToCache(realfilename, blpImage);
+
+	return blpImage;
 }
 
 ITexture* CTextureManager::getManualTexture(const char* name) const
@@ -31,7 +77,7 @@ ITexture* CTextureManager::getManualTexture(const char* name) const
 	return itr->second;
 }
 
-ITexture* CTextureManager::addTexture(const char* name, std::shared_ptr<CCImage> image, bool mipmap)
+ITexture* CTextureManager::addTexture(const char* name, std::shared_ptr<IImage> image, bool mipmap)
 {
 	if (TextureMap.find(name) != TextureMap.end())
 		return nullptr;

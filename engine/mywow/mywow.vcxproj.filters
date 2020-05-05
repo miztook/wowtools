@@ -275,6 +275,9 @@
     <ClInclude Include="..\engine\CTextureManager.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\wowAnimation.h">
+      <Filter>common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">

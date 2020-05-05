@@ -36,7 +36,7 @@ public:
 	bool loadCascListFiles();
 
 	CMemFile* openFile(const char* filename) const;
-	CMemFile* openFile(int fileid) const;
+	CMemFile* openFileById(uint32_t fileid) const;
 	bool exists(const char* filename) const;
 
 	const CFileSystem* getFileSystem() const { return FileSystem; }

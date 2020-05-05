@@ -3,16 +3,14 @@
 #include <list>
 #include <map>
 #include <memory>
-#include "ASysSync.h"
-#include "ATypes.h"
-#include "ASys.h"
+#include "CSysSync.h"
 
 //T是缓存的类型
 template <class T>
 class CResourceCache
 {
 private:
-	DISABLE_COPY_AND_ASSIGNMENT(CResourceCache);
+	DISALLOW_COPY_AND_ASSIGN(CResourceCache);
 
 public:
 	CResourceCache() { INIT_LOCK(&cs); }

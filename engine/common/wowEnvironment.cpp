@@ -190,7 +190,7 @@ CMemFile * wowEnvironment::openFile(const char * filename) const
 	return new CMemFile(buffer, size);
 }
 
-CMemFile* wowEnvironment::openFile(int fileid) const
+CMemFile* wowEnvironment::openFileById(uint32_t fileid) const
 {
 	HANDLE hFile;
 

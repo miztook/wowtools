@@ -1,8 +1,11 @@
 #include "CMeshManager.h"
 #include "CMesh.h"
 #include "Engine.h"
+#include "wowEnvironment.h"
+#include "wowM2File.h"
 
-CMeshManager::CMeshManager()
+CMeshManager::CMeshManager(wowEnvironment* wowEnv)
+	: WowEnv(wowEnv)
 {
 }
 
@@ -14,6 +17,32 @@ CMeshManager::~CMeshManager()
 	}
 
 	MeshMap.clear();
+}
+
+std::shared_ptr<wowM2File> CMeshManager::loadM2(const char* filename)
+{
+	if (strlen(filename) == 0)
+		return nullptr;
+
+	char realfilename[QMAX_PATH];
+	normalizeFileName(filename, realfilename, QMAX_PATH);
+	Q_strlwr(realfilename);
+
+	std::shared_ptr<wowM2File> m2file = m_M2FileCache.tryLoadFromCache(realfilename);
+	if (m2file)
+		return m2file;
+
+	std::shared_ptr<wowM2File> file(new wowM2File(WowEnv));
+	if (!file->loadFile(realfilename))
+	{
+		file.reset();
+		return nullptr;
+	}
+
+	if (file)
+		m_M2FileCache.addToCache(realfilename, file);
+
+	return file;
 }
 
 bool CMeshManager::addMesh(const char* name, IVertexBuffer* vbuffer, IIndexBuffer* ibuffer, E_PRIMITIVE_TYPE primType, uint32_t primCount, const aabbox3df& box)

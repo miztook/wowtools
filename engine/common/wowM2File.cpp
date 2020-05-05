@@ -91,8 +91,31 @@ bool wowM2File::loadFile(const char* filename)
 
 	loadTextures(filebuffer);
 
+	loadSequences(filebuffer);
+
+	loadColor(filebuffer);
+
+	loadTransparency(filebuffer);
+
+	loadTextureAnimation(filebuffer);
+
+	loadBones(filebuffer);
+
+	loadRenderFlags(filebuffer);
+
+	loadAttachments(filebuffer);
+
+	loadParticleSystems(filebuffer);
+
+	loadRibbonEmitters(filebuffer);
 
 	delete memFile;
+
+	if (!loadSkin(0))
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -103,7 +126,7 @@ void wowM2File::loadVertices(const uint8_t* fileStart)
 
 	Vertices.resize(Header._nVertices);
 
-	M2::vertex* v = (M2::vertex*)(&fileStart[Header._ofsVertices]);
+	const M2::vertex* v = (M2::vertex*)(&fileStart[Header._ofsVertices]);
 	for (uint32_t i = 0; i < Header._nVertices; ++i)
 	{
 		Vertices[i].Pos = M2::fixCoordinate(v[i]._Position);
@@ -138,6 +161,127 @@ void wowM2File::loadBounds(const uint8_t* fileStart)
 
 void wowM2File::loadTextures(const uint8_t* fileStart)
 {
+	if (Header._nTextures > 0)
+	{
+		const M2::texture* texDef = (M2::texture*)(&fileStart[Header._ofsTextures]);
+		TexDefs.resize(Header._nTextures);
+		for (uint32_t i = 0; i < Header._nTextures; ++i)
+		{
+			TexDefs[i].flags = texDef[i]._flags;
+			TexDefs[i].type = (ETextureTypes)texDef[i]._type;
 
+			if (TexDefs[i].type == 0)
+			{
+				const char* name = (const char*)(&fileStart[texDef[i]._ofsFilename]);
+				uint32_t len = texDef[i]._lenFilename;
+				TexDefs[i].filename = std::string(name, len);
+			}
+		}
+	}
+	
+	if (Header._nTexLookup > 0)
+	{
+		const int16_t* t = (int16_t*)(&fileStart[Header._ofsTexLookup]);
+		TexLookups.resize(Header._nTexLookup);
+		memcpy(TexLookups.data(), t, sizeof(int16_t) * Header._nTexLookup);
+	}
+}
+
+void wowM2File::loadSequences(const uint8_t* fileStart)
+{
+	if (Header._nGlobalSequences > 0)
+	{
+		int32_t* p = (int32_t*)(&fileStart[Header._ofsGlobalSequences]);
+		GlobalSequences.resize(Header._nGlobalSequences);
+		memcpy(GlobalSequences.data(), p, sizeof(int32_t) * Header._nGlobalSequences);
+	}
+}
+
+void wowM2File::loadColor(const uint8_t* fileStart)
+{
+	if (Header._nColors > 0)
+	{
+		const M2::colorDef* c = (M2::colorDef*)(&fileStart[Header._ofsColors]);
+		Colors.resize(Header._nColors);
+		for (uint32_t i = 0; i < Header._nColors; ++i)
+		{
+			Colors[i].init(fileStart, GlobalSequences.data(), (uint32_t)GlobalSequences.size(), c[i]);
+		}
+	}
+}
+
+void wowM2File::loadTransparency(const uint8_t* fileStart)
+{
+	if (Header._nTransparency > 0)
+	{
+		const M2::transDef* t = (M2::transDef*)(&fileStart[Header._ofsTransparency]);
+		Transparencies.resize(Header._nTransparency);
+		for (uint32_t i = 0; i < Header._nTransparency; ++i)
+		{
+			Transparencies[i].init(fileStart, GlobalSequences.data(), (uint32_t)GlobalSequences.size(), t[i]);
+		}
+	}
+
+	if (Header._nTransLookup > 0)
+	{
+		const int16_t* t = (int16_t*)(&fileStart[Header._ofsTransLookup]);
+		TransparencyLookups.resize(Header._nTransLookup);
+		for (uint32_t i = 0; i < Header._nTransLookup; ++i)
+		{
+			memcpy(TransparencyLookups.data(), t, sizeof(int16_t) * Header._nTransLookup);
+		}
+	}
+}
+
+void wowM2File::loadTextureAnimation(const uint8_t* fileStart)
+{
+	if (Header._nTextureanimations > 0)
+	{
+		const M2::texanimDef* t = (M2::texanimDef*)(&fileStart[Header._ofsTextureanimations]);
+		TextureAnimations.resize(Header._nTextureanimations);
+		for (uint32_t i = 0; i < Header._nTextureanimations; ++i)
+		{
+			TextureAnimations[i].init(fileStart, GlobalSequences.data(), (uint32_t)GlobalSequences.size(), t[i]);
+		}
+	}
+}
+
+void wowM2File::loadBones(const uint8_t* fileStart)
+{
+
+}
+
+void wowM2File::loadRenderFlags(const uint8_t* fileStart)
+{
+
+}
+
+void wowM2File::loadAttachments(const uint8_t* fileStart)
+{
+
+}
+
+void wowM2File::loadParticleSystems(const uint8_t* fileStart)
+{
+
+}
+
+void wowM2File::loadRibbonEmitters(const uint8_t* fileStart)
+{
+
+}
+
+bool wowM2File::loadSkin(int index)
+{
+	if (index >= (int)SkinFileIDs.size())
+		return false;
+
+	CMemFile* file = WowEnvironment->openFileById(SkinFileIDs[index]);
+	if (!file)
+		return false;
+
+
+
+	return true;
 }
 

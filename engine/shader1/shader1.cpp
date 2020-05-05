@@ -8,6 +8,7 @@
 
 #pragma comment(lib, "mywow.lib")
 #pragma comment(lib, "mywowdriver.lib")
+#pragma comment(lib, "CascLib.lib")
 #pragma comment(lib, "freetype.lib")
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")

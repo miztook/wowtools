@@ -48,6 +48,7 @@
     <ClInclude Include="..\common\vector2d.h" />
     <ClInclude Include="..\common\vector3d.h" />
     <ClInclude Include="..\common\vector4d.h" />
+    <ClInclude Include="..\common\wowAnimation.h" />
     <ClInclude Include="..\common\wowDatabase.h" />
     <ClInclude Include="..\common\wowDbFile.h" />
     <ClInclude Include="..\common\wowGameFile.h" />

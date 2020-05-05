@@ -5,8 +5,11 @@
 #include "aabbox3d.h"
 #include "S3DVertex.h"
 #include "IVertexIndexBuffer.h"
+#include "CResourceCache.h"
 
 class CMesh;
+class wowEnvironment;
+class wowM2File;
 
 class CMeshManager
 {
@@ -14,8 +17,11 @@ private:
 	DISALLOW_COPY_AND_ASSIGN(CMeshManager);
 
 public:
-	CMeshManager();
+	explicit CMeshManager(wowEnvironment* wowEnv);
 	~CMeshManager();
+
+public:
+	std::shared_ptr<wowM2File>	loadM2(const char* filename);
 
 public:
 	bool addMesh(const char* name, IVertexBuffer* vbuffer, IIndexBuffer* ibuffer, E_PRIMITIVE_TYPE primType, uint32_t primCount, const aabbox3df& box);
@@ -61,4 +67,8 @@ public:
 
 private:
 	std::map<std::string, CMesh*>	MeshMap;
+
+	wowEnvironment*		WowEnv;
+
+	CResourceCache<wowM2File>	m_M2FileCache;
 };
