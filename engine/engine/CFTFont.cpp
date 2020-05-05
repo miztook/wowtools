@@ -700,7 +700,7 @@ bool CFTFont::addFontTexture()
 		format = ECF_A8R8G8B8;
 	}
 
-	ITexture* fontTex = g_Engine->getDriver()->createEmptyTexture(dimension2d(FONT_TEXTURE_SIZE, FONT_TEXTURE_SIZE), format);	   //no mipmap
+	ITexture* fontTex = g_Engine->getDriver()->createTexture(false, dimension2d(FONT_TEXTURE_SIZE, FONT_TEXTURE_SIZE), format);	   //no mipmap
 	FontTextures.push_back(fontTex);
 
 	return true;

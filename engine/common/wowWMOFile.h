@@ -12,7 +12,7 @@
 class CMemFile;
 class wowEnvironment;
 
-enum class E_WMO_SHADER : int32_t
+enum class E_WMO_SHADER : int
 {
 	Diffuse = 0,
 	Specular,

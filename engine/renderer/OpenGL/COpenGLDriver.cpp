@@ -4,7 +4,6 @@
 #include "COpenGLMaterialRenderComponent.h"
 #include "COpenGLTextureWriteComponent.h"
 #include "COpenGLShaderManageComponent.h"
-#include "COpenGLTextureManageComponent.h"
 #include "COpenGLRenderTarget.h"
 #include "COpenGLVertexDeclaration.h"
 #include "COpenGLVertexIndexBuffer.h"
@@ -12,6 +11,7 @@
 #include "CFileSystem.h"
 #include "stringext.h"
 #include "function3d.h"
+#include "COpenGLTexture.h"
 
 COpenGLDriver::COpenGLDriver()
 	: IVideoDriver(EDT_OPENGL)
@@ -29,7 +29,6 @@ COpenGLDriver::COpenGLDriver()
 	MaterialRenderComponent = std::make_unique<COpenGLMaterialRenderComponent>(this);
 	TextureWriteComponent = std::make_unique<COpenGLTextureWriteComponent>(this);
 	ShaderManageComponent = std::make_unique<COpenGLShaderManageComponent>(this);
-	TextureManageComponent = std::make_unique<COpenGLTextureManageComponent>(this);
 }
 
 COpenGLDriver::~COpenGLDriver()
@@ -40,7 +39,6 @@ COpenGLDriver::~COpenGLDriver()
 	ShaderManageComponent.reset();
 	TextureWriteComponent.reset();
 	MaterialRenderComponent.reset();
-	TextureManageComponent.reset();
 
 	for (int i = 0; i < EVT_COUNT; ++i)
 	{
@@ -328,8 +326,7 @@ bool COpenGLDriver::initDriver(const SWindowInfo& wndInfo, bool vsync, E_AA_MODE
 
 	if (!MaterialRenderComponent->init() ||
 		!TextureWriteComponent->init() ||
-		!ShaderManageComponent->init() ||
-		!TextureManageComponent->init())
+		!ShaderManageComponent->init())
 	{
 		ASSERT(false);
 	}
@@ -774,12 +771,24 @@ bool COpenGLDriver::removeTextureWriter(ITexture * texture)
 	return TextureWriteComponent->removeTextureWriter(texture);
 }
 
-ITexture* COpenGLDriver::createEmptyTexture(const dimension2d& size, ECOLOR_FORMAT format)
+ITexture* COpenGLDriver::createTexture(bool mipmap, const dimension2d& size, ECOLOR_FORMAT format)
 {
-	return TextureManageComponent->createEmptyTexture(size, format);
+	COpenGLTexture* tex = new COpenGLTexture(this, mipmap);
+	if (!tex->createEmptyTexture(size, format))
+	{
+		delete tex;
+		return nullptr;
+	}
+	return tex;
 }
 
-ITexture* COpenGLDriver::getTextureWhite() const
+ITexture* COpenGLDriver::createTexture(bool mipmap, std::shared_ptr<IImage> image)
 {
-	return TextureManageComponent->getDefaultWhite();
+	COpenGLTexture* tex = new COpenGLTexture(this, mipmap);
+	if (!tex->createFromImage(image))
+	{
+		delete tex;
+		return nullptr;
+	}
+	return tex;
 }

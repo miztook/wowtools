@@ -7,7 +7,6 @@
 class COpenGLMaterialRenderComponent;
 class COpenGLTextureWriteComponent;
 class COpenGLShaderManageComponent;
-class COpenGLTextureManageComponent;
 class COpenGLVertexDeclaration;
 class IVertexBuffer;
 class IIndexBuffer;
@@ -50,8 +49,8 @@ public:
 	ITextureWriter* createTextureWriter(ITexture* texture) override;
 	bool removeTextureWriter(ITexture* texture) override;
 
-	ITexture* createEmptyTexture(const dimension2d& size, ECOLOR_FORMAT format) override;
-	ITexture* getTextureWhite() const override;
+	ITexture* createTexture(bool mipmap, const dimension2d& size, ECOLOR_FORMAT format) override;
+	ITexture* createTexture(bool mipmap, std::shared_ptr<IImage> image) override;
 	
 public:
 	COpenGLMaterialRenderComponent* getMaterialRenderComponent() const { return MaterialRenderComponent.get();}
@@ -95,7 +94,6 @@ private:
 	std::unique_ptr<COpenGLMaterialRenderComponent>  MaterialRenderComponent;
 	std::unique_ptr<COpenGLTextureWriteComponent> TextureWriteComponent;
 	std::unique_ptr<COpenGLShaderManageComponent> ShaderManageComponent;
-	std::unique_ptr<COpenGLTextureManageComponent>	TextureManageComponent;
 
 	std::array<std::unique_ptr<COpenGLVertexDeclaration>, EVT_COUNT>		VertexDeclarations;
 

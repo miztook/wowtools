@@ -6,6 +6,7 @@
 #include "IVertexIndexBuffer.h"
 #include "CShaderUtil.h"
 #include "CMaterialManager.h"
+#include "CTextureManager.h"
 
 CCanvas::CCanvas()
 {
@@ -20,7 +21,7 @@ CCanvas::~CCanvas()
 
 void CCanvas::add2DColor(const recti&rect, SColor color, E_2DBlendMode mode /*= E_Solid*/)
 {
-	ITexture* texture = g_Engine->getDriver()->getTextureWhite();
+	ITexture* texture = g_Engine->getTextureManager()->getTextureWhite();
 
 	S2DBlendParam blendParam(color.getAlpha() < 255, false, mode);
 	SQuadDrawBatchKey key(texture, blendParam);

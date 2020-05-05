@@ -16,6 +16,7 @@
 class ITexture;
 class ITextureWriter;
 class CCamera;
+class IImage;
 
 struct SDriverSetting
 {
@@ -151,9 +152,9 @@ public:
 	virtual bool removeTextureWriter(ITexture* texture) = 0;
 
 	//
-	virtual ITexture* createEmptyTexture(const dimension2d& size, ECOLOR_FORMAT format) = 0;
-	virtual ITexture* getTextureWhite() const = 0;
-	
+	virtual ITexture* createTexture(bool mipmap, const dimension2d& size, ECOLOR_FORMAT format) = 0;
+	virtual ITexture* createTexture(bool mipmap, std::shared_ptr<IImage> image) = 0;
+
 public:
 	CAdapterInfo	AdapterInfo;
 	uint32_t		PrimitivesDrawn;

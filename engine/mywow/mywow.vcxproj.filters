@@ -272,6 +272,9 @@
     <ClInclude Include="..\engine\ScriptTranslator.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\engine\CTextureManager.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">
@@ -416,6 +419,9 @@
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\ScriptTranslator.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CTextureManager.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

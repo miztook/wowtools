@@ -28,7 +28,6 @@
     <ClInclude Include="OpenGL\COpenGLRenderTarget.h" />
     <ClInclude Include="OpenGL\COpenGLShaderManageComponent.h" />
     <ClInclude Include="OpenGL\COpenGLTexture.h" />
-    <ClInclude Include="OpenGL\COpenGLTextureManageComponent.h" />
     <ClInclude Include="OpenGL\COpenGLTextureWriteComponent.h" />
     <ClInclude Include="OpenGL\COpenGLVertexDeclaration.h" />
     <ClInclude Include="OpenGL\COpenGLVertexIndexBuffer.h" />
@@ -41,7 +40,6 @@
     <ClCompile Include="OpenGL\COpenGLRenderTarget.cpp" />
     <ClCompile Include="OpenGL\COpenGLShaderManageComponent.cpp" />
     <ClCompile Include="OpenGL\COpenGLTexture.cpp" />
-    <ClCompile Include="OpenGL\COpenGLTextureManageComponent.cpp" />
     <ClCompile Include="OpenGL\COpenGLTextureWriteComponent.cpp" />
     <ClCompile Include="OpenGL\COpenGLVertexDeclaration.cpp" />
     <ClCompile Include="OpenGL\COpenGLVertexIndexBuffer.cpp" />

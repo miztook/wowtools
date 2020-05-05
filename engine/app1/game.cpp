@@ -2,6 +2,7 @@
 #include "Engine.h"
 #include "function3d.h"
 #include "CMeshManager.h"
+#include "CTextureManager.h"
 #include "CMeshSceneNode.h"
 
 CGame* g_pGame = nullptr;
@@ -69,7 +70,7 @@ void CGame::createScene()
 		CMeshSceneNode* sphereSceneNode = m_pScene->addMeshSceneNode("$sphere");
 		sphereSceneNode->setMesh(g_Engine->getMeshManager()->getMesh("$sphere"));
 		CMaterial& mat = sphereSceneNode->getMeshRenderer()->getMaterial();
-		mat.setMainTexture(g_Engine->getDriver()->getTextureWhite());
+		mat.setMainTexture(g_Engine->getTextureManager()->getTextureWhite());
 		sphereSceneNode->getTransform()->setPos(vector3df(1, 1, 0));
 		sphereSceneNode->getTransform()->setScale(vector3df(1.5));
 	}

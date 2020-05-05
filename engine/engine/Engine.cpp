@@ -5,6 +5,7 @@
 #include "CFontManager.h"
 #include "CMeshManager.h"
 #include "CMaterialManager.h"
+#include "CTextureManager.h"
 
 Engine* g_Engine = nullptr;
 
@@ -40,6 +41,7 @@ Engine::Engine(const SWindowInfo& wndInfo)
 	RenderSetting = nullptr;
 	LightSetting = nullptr;
 	FontManager = nullptr;
+	TextureManager = nullptr;
 	MeshManager = nullptr;
 	MaterialManager = nullptr;
 }
@@ -48,6 +50,7 @@ Engine::~Engine()
 {
 	delete MaterialManager;
 	delete MeshManager;
+	delete TextureManager;
 	delete FontManager;
 	delete LightSetting;
 	delete RenderSetting;
@@ -75,6 +78,9 @@ bool Engine::init(E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode, driver
 	g_FileSystem->writeLog(ELOG_GX, "Create FontManager...");
 	FontManager = new CFontManager(0, 0, 0, 12);
 	FontManager->createDefaultFonts();
+
+	g_FileSystem->writeLog(ELOG_GX, "Create TextureManager...");
+	TextureManager = new CTextureManager();
 
 	g_FileSystem->writeLog(ELOG_GX, "Create MeshManager...");
 	MeshManager = new CMeshManager();

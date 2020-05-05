@@ -50,38 +50,38 @@ wowEnvironment::~wowEnvironment()
 
 bool wowEnvironment::init()
 {
-	if (!initBuildInfo(Locale))
+	if (!initBuildInfo(Config))
 		return false;
 
-	if (Locale == "enUS")
+	if (Config.locale == "enUS")
 		CascLocale = CASC_LOCALE_ENUS;
-	else if (Locale == "koKR")
+	else if (Config.locale == "koKR")
 		CascLocale = CASC_LOCALE_KOKR;
-	else if (Locale == "frFR")
+	else if (Config.locale == "frFR")
 		CascLocale = CASC_LOCALE_FRFR;
-	else if (Locale == "deDE")
+	else if (Config.locale == "deDE")
 		CascLocale = CASC_LOCALE_DEDE;
-	else if (Locale == "zhCN")
+	else if (Config.locale == "zhCN")
 		CascLocale = CASC_LOCALE_ZHCN;
-	else if (Locale == "esES")
+	else if (Config.locale == "esES")
 		CascLocale = CASC_LOCALE_ESES;
-	else if (Locale == "ZhTW")
+	else if (Config.locale == "ZhTW")
 		CascLocale = CASC_LOCALE_ZHTW;
-	else if (Locale == "enGB")
+	else if (Config.locale == "enGB")
 		CascLocale = CASC_LOCALE_ENGB;
-	else if (Locale == "enCN")
+	else if (Config.locale == "enCN")
 		CascLocale = CASC_LOCALE_ENCN;
-	else if (Locale == "enTW")
+	else if (Config.locale == "enTW")
 		CascLocale = CASC_LOCALE_ENTW;
-	else if (Locale == "esMX")
+	else if (Config.locale == "esMX")
 		CascLocale = CASC_LOCALE_ESMX;
-	else if (Locale == "ruRU")
+	else if (Config.locale == "ruRU")
 		CascLocale = CASC_LOCALE_RURU;
-	else if (Locale == "ptBR")
+	else if (Config.locale == "ptBR")
 		CascLocale = CASC_LOCALE_PTBR;
-	else if (Locale == "itIT")
+	else if (Config.locale == "itIT")
 		CascLocale = CASC_LOCALE_ITIT;
-	else if (Locale == "ptPT")
+	else if (Config.locale == "ptPT")
 		CascLocale = CASC_LOCALE_PTPT;
 	else
 		CascLocale = 0;
@@ -98,7 +98,7 @@ bool wowEnvironment::loadCascListFiles()
 
 	std::string dir = FileSystem->getDataDirectory();
 	normalizeDirName(dir);
-	dir += std_string_format("%d.%d", Version[0], Version[1]);
+	dir += std_string_format("%d.%d", Config.version[0], Config.version[1]);
 	normalizeDirName(dir);
 
 	std::string listFile = dir + LISTFILE;
@@ -306,7 +306,7 @@ void wowEnvironment::buildWmoFileList()
 	});
 }
 
-bool wowEnvironment::initBuildInfo(std::string& activeLocale)
+bool wowEnvironment::initBuildInfo(SConfig& config)
 {
 	std::string buildInfo = FileSystem->getWowBaseDirectory();
 	normalizeDirName(buildInfo);
@@ -316,7 +316,8 @@ bool wowEnvironment::initBuildInfo(std::string& activeLocale)
 	if (!file)
 		return false;
 
-	activeLocale = "";
+	config.locale = "";
+	config.product = "";
 	char buffer[1024] = { 0 };
 
 	//read header
@@ -325,6 +326,7 @@ bool wowEnvironment::initBuildInfo(std::string& activeLocale)
 	int activeIndex = 0;
 	int versionIndex = 0;
 	int tagIndex = 0;
+	int productIndex = 0;
 	std_string_split(std::string(buffer), '|', headers);
 	for (int i = 0; i < (int)headers.size(); ++i)
 	{
@@ -334,13 +336,15 @@ bool wowEnvironment::initBuildInfo(std::string& activeLocale)
 			versionIndex = i;
 		else if (strstr(headers[i].c_str(), "Tags"))
 			tagIndex = i;
+		else if (strstr(headers[i].c_str(), "Product"))
+			productIndex = i;
 	}
 
 	//read values
 	while (file->readLine(buffer, 1024))
 	{
 		std::vector<std::string> values;
-		std_string_split(std::string(buffer), '|', values);
+		std_string_split(std::string(buffer), '|', values, true);
 
 		ASSERT(values.size() == headers.size());
 
@@ -354,11 +358,14 @@ bool wowEnvironment::initBuildInfo(std::string& activeLocale)
 		std::regex_match(values[versionIndex], sm, pattern);
 		if (sm.size() == 5)
 		{
-			Version[0] = atoi(sm[1].str().c_str());
-			Version[1] = atoi(sm[2].str().c_str());
-			Version[2] = atoi(sm[3].str().c_str());
-			Version[3] = atoi(sm[4].str().c_str());
+			config.version[0] = atoi(sm[1].str().c_str());
+			config.version[1] = atoi(sm[2].str().c_str());
+			config.version[2] = atoi(sm[3].str().c_str());
+			config.version[3] = atoi(sm[4].str().c_str());
 		}
+
+		//product
+		config.product = values[productIndex];
 
 		//locale
 		std::string tag = values[tagIndex];
@@ -371,7 +378,7 @@ bool wowEnvironment::initBuildInfo(std::string& activeLocale)
 				std_string_split(str, ' ', taglist);
 
 				if (taglist.size() >= 2)
-					activeLocale = taglist[taglist.size() - 2];
+					config.locale = taglist[taglist.size() - 2];
 			}
 		}
 	}

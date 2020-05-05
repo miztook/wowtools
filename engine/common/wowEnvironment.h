@@ -24,6 +24,14 @@ public:
 	~wowEnvironment();
 
 public:
+	struct SConfig
+	{
+		std::array<int, 4> version;
+		std::string  locale;
+		std::string  product;
+	};
+
+public:
 	bool init();
 	bool loadCascListFiles();
 
@@ -32,8 +40,9 @@ public:
 	bool exists(const char* filename) const;
 
 	const CFileSystem* getFileSystem() const { return FileSystem; }
-	const char* getLocale() const { return Locale.c_str(); }
-	const std::array<int, 4>& getVersion() const { return Version; }
+	const char* getLocale() const { return Config.locale.c_str(); }
+	const std::array<int, 4>& getVersion() const { return Config.version; }
+	const char* getProduct() const { return Config.product.c_str(); }
 
 	//
 	void iterateFiles(const char* ext, WOWFILECALLBACK callback) const;
@@ -49,7 +58,7 @@ public:
 	const char* getWmoFileName(uint32_t index) const { return WmoFileList[index].c_str(); }
 
 private:
-	bool initBuildInfo(std::string& activeLocale);
+	bool initBuildInfo(SConfig& config);
 
 	bool loadRoot();
 	void unloadRoot();
@@ -57,8 +66,7 @@ private:
 private:
 	CFileSystem*		FileSystem;
 	uint32_t		CascLocale;
-	std::string		Locale;
-	std::array<int, 4>			Version;
+	SConfig			Config;
 	HANDLE	hStorage;
 	std::unordered_map<uint32_t, std::string>	FileId2NameMap;
 	std::map<std::string, uint32_t>	FileName2IdMap;
