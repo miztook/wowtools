@@ -29,7 +29,7 @@ void testWowEnvironment()
 	CFileSystem* fs = new CFileSystem(R"(E:\World Of Warcraft)");
 	wowEnvironment* wowEnv = new wowEnvironment(fs);
 
-	if (!wowEnv->init())
+	if (!wowEnv->init("wow_classic"))
 		printf("init fail!\n");
 	else
 		printf("init success!\n");

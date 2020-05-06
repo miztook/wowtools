@@ -26,13 +26,19 @@ public:
 public:
 	struct SConfig
 	{
+		SConfig()
+		{
+			version[0] = version[1] = version[2] = version[3] = 0;
+			casclocale = 0;
+		}
 		std::array<int, 4> version;
 		std::string  locale;
 		std::string  product;
+		uint32_t	casclocale;
 	};
 
 public:
-	bool init();
+	bool init(const char* product);
 	bool loadCascListFiles();
 
 	CMemFile* openFile(const char* filename) const;
@@ -58,14 +64,15 @@ public:
 	const char* getWmoFileName(uint32_t index) const { return WmoFileList[index].c_str(); }
 
 private:
-	bool initBuildInfo(SConfig& config);
+	bool initBuildInfo(std::vector<SConfig>& configList);
 
-	bool loadRoot();
+	bool loadRoot(const char* szRootDir, const SConfig& config);
 	void unloadRoot();
+
+	uint32_t getCascLocale(const std::string& locale) const;
 
 private:
 	CFileSystem*		FileSystem;
-	uint32_t		CascLocale;
 	SConfig			Config;
 	HANDLE	hStorage;
 	std::unordered_map<uint32_t, std::string>	FileId2NameMap;

@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 		printf("%s\n", sm[i].str().c_str());
 		*/
 
-	const char* szStorage = R"(D:\World Of Warcraft 81\Data\)";
+	const char* szStorage = R"(E:\World Of Warcraft\Data:wow_classic)";
 	//const char* filename = "Character\\HUMAN\\Male\\humanmale.m2";
 	const char* filename = "Character\\ORC\\Male\\orcmale_hd.m2";
 	//int err = TestOpenStorage_OpenFile(szStorage, filename);

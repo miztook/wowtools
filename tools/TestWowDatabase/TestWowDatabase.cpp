@@ -37,7 +37,7 @@ void testWowDatabase()
 	wowEnvironment* wowEnv = new wowEnvironment(fs);
 	wowDatabase* wowDB = new wowDatabase(wowEnv);
 
-	if (!wowEnv->init())
+	if (!wowEnv->init("wow_classic"))
 		printf("wowEnv init fail!\n");
 	else
 		printf("wowEnv init success!\n");

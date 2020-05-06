@@ -16,7 +16,7 @@ wowEnvironment* g_WowEnvironment = nullptr;
 bool createWowEnvironment(CFileSystem * fs, bool loadCascFile)
 {
 	g_WowEnvironment = new wowEnvironment(fs);
-	if (!g_WowEnvironment->init())
+	if (!g_WowEnvironment->init("wow_classic"))
 	{
 		delete g_WowEnvironment;
 		g_WowEnvironment = nullptr;
@@ -38,7 +38,7 @@ void destroyWowEnvironment()
 }
 
 wowEnvironment::wowEnvironment(CFileSystem* fs)
-	: FileSystem(fs), hStorage(nullptr), CascLocale(0)
+	: FileSystem(fs), hStorage(nullptr)
 {
 
 }
@@ -48,45 +48,20 @@ wowEnvironment::~wowEnvironment()
 	unloadRoot();
 }
 
-bool wowEnvironment::init()
+bool wowEnvironment::init(const char* product)
 {
-	if (!initBuildInfo(Config))
+	std::vector<SConfig> configList;
+	if (!initBuildInfo(configList))
 		return false;
 
-	if (Config.locale == "enUS")
-		CascLocale = CASC_LOCALE_ENUS;
-	else if (Config.locale == "koKR")
-		CascLocale = CASC_LOCALE_KOKR;
-	else if (Config.locale == "frFR")
-		CascLocale = CASC_LOCALE_FRFR;
-	else if (Config.locale == "deDE")
-		CascLocale = CASC_LOCALE_DEDE;
-	else if (Config.locale == "zhCN")
-		CascLocale = CASC_LOCALE_ZHCN;
-	else if (Config.locale == "esES")
-		CascLocale = CASC_LOCALE_ESES;
-	else if (Config.locale == "ZhTW")
-		CascLocale = CASC_LOCALE_ZHTW;
-	else if (Config.locale == "enGB")
-		CascLocale = CASC_LOCALE_ENGB;
-	else if (Config.locale == "enCN")
-		CascLocale = CASC_LOCALE_ENCN;
-	else if (Config.locale == "enTW")
-		CascLocale = CASC_LOCALE_ENTW;
-	else if (Config.locale == "esMX")
-		CascLocale = CASC_LOCALE_ESMX;
-	else if (Config.locale == "ruRU")
-		CascLocale = CASC_LOCALE_RURU;
-	else if (Config.locale == "ptBR")
-		CascLocale = CASC_LOCALE_PTBR;
-	else if (Config.locale == "itIT")
-		CascLocale = CASC_LOCALE_ITIT;
-	else if (Config.locale == "ptPT")
-		CascLocale = CASC_LOCALE_PTPT;
-	else
-		CascLocale = 0;
+	auto itr = std::find_if(configList.begin(), configList.end(), [product](const SConfig& config) { return config.product == product; });
+	if (itr == configList.end())
+		return false;
 
-	loadRoot();
+	Config = *itr;
+	const char* szRoot = FileSystem->getWowDataDirectory();
+	if (!loadRoot(szRoot, Config))
+		return false;
 
 	return true;
 }
@@ -152,7 +127,7 @@ bool wowEnvironment::loadCascListFiles()
 	return true;
 }
 
-CMemFile * wowEnvironment::openFile(const char * filename) const
+CMemFile * wowEnvironment::openFile(const char* filename) const
 {
 	HANDLE hFile;
 
@@ -160,7 +135,7 @@ CMemFile * wowEnvironment::openFile(const char * filename) const
 	normalizeFileName(filename, realfilename, QMAX_PATH);
 	Q_strlwr(realfilename);
 
-	if (!CascOpenFile(hStorage, realfilename, CascLocale, 0, &hFile))
+	if (!CascOpenFile(hStorage, realfilename, Config.casclocale, 0, &hFile))
 	{
 		return nullptr;
 	}
@@ -194,7 +169,7 @@ CMemFile* wowEnvironment::openFileById(uint32_t fileid) const
 {
 	HANDLE hFile;
 
-	if (!CascOpenFile(hStorage, CASC_FILE_DATA_ID(fileid), CascLocale, CASC_OPEN_BY_FILEID, &hFile))
+	if (!CascOpenFile(hStorage, CASC_FILE_DATA_ID(fileid), Config.casclocale, CASC_OPEN_BY_FILEID, &hFile))
 	{
 		return nullptr;
 	}
@@ -230,7 +205,7 @@ bool wowEnvironment::exists(const char * filename) const
 		return false;
 
 	HANDLE hFile;
-	if (!CascOpenFile(hStorage, filename, CascLocale, 0, &hFile))
+	if (!CascOpenFile(hStorage, filename, Config.casclocale, 0, &hFile))
 		return false;
 
 	CascCloseFile(hFile);
@@ -306,18 +281,18 @@ void wowEnvironment::buildWmoFileList()
 	});
 }
 
-bool wowEnvironment::initBuildInfo(SConfig& config)
+bool wowEnvironment::initBuildInfo(std::vector<SConfig>& configList)
 {
 	std::string buildInfo = FileSystem->getWowBaseDirectory();
 	normalizeDirName(buildInfo);
 	buildInfo += ".build.info";
 
+	configList.clear();
+
 	CReadFile* file = FileSystem->createAndOpenFile(buildInfo.c_str(), false);
 	if (!file)
 		return false;
 
-	config.locale = "";
-	config.product = "";
 	char buffer[1024] = { 0 };
 
 	//read header
@@ -349,11 +324,13 @@ bool wowEnvironment::initBuildInfo(SConfig& config)
 		ASSERT(values.size() == headers.size());
 
 		//skip inactive
-		if (values[activeIndex] == "0")
-			continue;
+		//if (values[activeIndex] == "0")
+		//	continue;
+
+		SConfig config;
 
 		//version
-		const std::regex pattern("^(\\d).(\\d).(\\d).(\\d+)");
+		const std::regex pattern("(\\d+).(\\d+).(\\d+).(\\d+)");
 		std::match_results<std::string::const_iterator> sm;
 		std::regex_match(values[versionIndex], sm, pattern);
 		if (sm.size() == 5)
@@ -378,20 +355,31 @@ bool wowEnvironment::initBuildInfo(SConfig& config)
 				std_string_split(str, ' ', taglist);
 
 				if (taglist.size() >= 2)
+				{
 					config.locale = taglist[taglist.size() - 2];
+					config.casclocale = getCascLocale(config.locale);
+				}
 			}
 		}
+
+		configList.push_back(config);
 	}
 
 	delete file;
 	return true;
 }
 
-bool wowEnvironment::loadRoot()
+bool wowEnvironment::loadRoot(const char* szRootDir, const SConfig& config)
 {
 	unloadRoot();
-	const char* dataDir = FileSystem->getWowDataDirectory();
-	if (!CascOpenStorage(dataDir, CascLocale, &hStorage))
+
+	std::string strStorage = szRootDir;
+	normalizeDirName(strStorage);
+	rtrim(strStorage, "/");
+	strStorage += ":";
+	strStorage += config.product;
+
+	if (!CascOpenStorage(strStorage.c_str(), config.casclocale, &hStorage))
 	{
 		hStorage = nullptr;
 		return false;
@@ -406,4 +394,40 @@ void wowEnvironment::unloadRoot()
 		CascCloseStorage(hStorage);
 		hStorage = nullptr;
 	}
+}
+
+uint32_t wowEnvironment::getCascLocale(const std::string& locale) const
+{
+	if (locale == "enUS")
+		return CASC_LOCALE_ENUS;
+	else if (locale == "koKR")
+		return CASC_LOCALE_KOKR;
+	else if (locale == "frFR")
+		return CASC_LOCALE_FRFR;
+	else if (locale == "deDE")
+		return CASC_LOCALE_DEDE;
+	else if (locale == "zhCN")
+		return CASC_LOCALE_ZHCN;
+	else if (locale == "esES")
+		return CASC_LOCALE_ESES;
+	else if (locale == "ZhTW")
+		return CASC_LOCALE_ZHTW;
+	else if (locale == "enGB")
+		return CASC_LOCALE_ENGB;
+	else if (locale == "enCN")
+		return CASC_LOCALE_ENCN;
+	else if (locale == "enTW")
+		return CASC_LOCALE_ENTW;
+	else if (locale == "esMX")
+		return CASC_LOCALE_ESMX;
+	else if (locale == "ruRU")
+		return CASC_LOCALE_RURU;
+	else if (locale == "ptBR")
+		return CASC_LOCALE_PTBR;
+	else if (locale == "itIT")
+		return CASC_LOCALE_ITIT;
+	else if (locale == "ptPT")
+		return CASC_LOCALE_PTPT;
+	else
+		return 0;
 }
