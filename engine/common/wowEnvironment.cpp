@@ -83,19 +83,19 @@ bool wowEnvironment::loadCascListFiles()
 		return false;
 
 	char buffer[1024] = { 0 };
-	std::vector<std::string> stringList;
 	while (file->readLine(buffer, 1024))
 	{
-		std_string_split(buffer, ';', stringList);
-
-		if (stringList.size() < 2)
+		char* p = strstr(buffer, ";");
+		if (!p)
 			continue;
 
-		std::string filename = stringList[1];
+		std::string filename(p + 1);
 		normalizeFileName(filename);
 		str_tolower(filename);
 
-		int id = atoi(stringList[0].c_str());
+		*p = '\0';
+
+		int id = atoi(buffer);
 		if (id >= 0)
 		{
 			FileName2IdMap[filename] = id;

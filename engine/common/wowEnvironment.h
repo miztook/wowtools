@@ -75,7 +75,7 @@ private:
 	CFileSystem*		FileSystem;
 	SConfig			Config;
 	HANDLE	hStorage;
-	std::unordered_map<uint32_t, std::string>	FileId2NameMap;
+	std::map<uint32_t, std::string>	FileId2NameMap;
 	std::map<std::string, uint32_t>	FileName2IdMap;
 	std::map<std::string, std::string>	DirIndexMap;
 

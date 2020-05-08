@@ -9,9 +9,9 @@
 
 #pragma comment(lib, "CascLib.lib")
 
-static int TestOpenStorage_OpenFile(const TCHAR * szStorage, const char * szFileName);
+static int TestOpenStorage_OpenFile(const TCHAR* szStorage, const char* szFileName);
 static int TestOpenStorage_OpenFileByID(const TCHAR* szStorage, int fileId);
-static int TestOpenStorage_EnumFiles(const TCHAR * szStorage, const TCHAR * szListFile = NULL);
+static int TestOpenStorage_EnumFiles(const TCHAR* szStorage, const TCHAR* szListFile = NULL);
 
 int main(int argc, char* argv[])
 {
@@ -32,7 +32,8 @@ int main(int argc, char* argv[])
 	//const char* filename = "Character\\HUMAN\\Male\\humanmale.m2";
 	const char* filename = "Character\\ORC\\Male\\orcmale_hd.m2";
 	//int err = TestOpenStorage_OpenFile(szStorage, filename);
-	int err = TestOpenStorage_OpenFileByID(szStorage, 121287);
+	//int err = TestOpenStorage_OpenFileByID(szStorage, 121287);
+	int err = TestOpenStorage_EnumFiles(szStorage);
 
 	if (err == ERROR_SUCCESS)
 		printf("test succeed!\n");
@@ -179,7 +180,7 @@ static int TestOpenStorage_OpenFileByID(const TCHAR* szStorage, int fileId)
 	return nError;
 }
 
-static int TestOpenStorage_EnumFiles(const TCHAR * szStorage, const TCHAR* szListFile)
+static int TestOpenStorage_EnumFiles(const TCHAR* szStorage, const TCHAR* szListFile)
 {
 	CASC_FIND_DATA FindData;
 	HANDLE hStorage;
@@ -196,20 +197,23 @@ static int TestOpenStorage_EnumFiles(const TCHAR * szStorage, const TCHAR* szLis
 
 	if (nError == ERROR_SUCCESS)
 	{
+		char szShortName[60];
+
 		hFind = CascFindFirstFile(hStorage, "*", &FindData, szListFile);
 		if (hFind != NULL)
 		{
 			while (bFileFound)
 			{
 				// Extract the file
-				printf("%s\n", FindData.szFileName);
+				if (FindData.bFileAvailable)
+					printf("%s-%s-%d\n", FindData.szFileName, FindData.szPlainName, FindData.NameType);
 
 				// Find the next file in CASC
 				bFileFound = CascFindNextFile(hFind, &FindData);
 			}
 
 			// Just a testing call - must fail
-			CascFindNextFile(hFind, &FindData);
+			//CascFindNextFile(hFind, &FindData);
 
 			// Close the search handle
 			CascFindClose(hFind);
