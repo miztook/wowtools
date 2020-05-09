@@ -195,18 +195,20 @@ static int TestOpenStorage_EnumFiles(const TCHAR* szStorage, const TCHAR* szList
 		nError = GetLastError();
 	}
 
+	int nFileCount = 0;
 	if (nError == ERROR_SUCCESS)
 	{
-		char szShortName[60];
-
 		hFind = CascFindFirstFile(hStorage, "*", &FindData, szListFile);
 		if (hFind != NULL)
 		{
 			while (bFileFound)
 			{
 				// Extract the file
-				if (FindData.bFileAvailable)
-					printf("%s-%s-%d\n", FindData.szFileName, FindData.szPlainName, FindData.NameType);
+				if (FindData.bFileAvailable && FindData.NameType == CascNameDataId)
+				{
+					printf("%s-%d\n", FindData.szFileName, FindData.dwFileDataId);
+					++nFileCount;
+				}
 
 				// Find the next file in CASC
 				bFileFound = CascFindNextFile(hFind, &FindData);
@@ -219,6 +221,7 @@ static int TestOpenStorage_EnumFiles(const TCHAR* szStorage, const TCHAR* szList
 			CascFindClose(hFind);
 		}
 	}
+	printf("Total File Count: %d\n", nFileCount);
 
 	// Close storage and return
 	if (hStorage != NULL)
