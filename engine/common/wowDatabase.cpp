@@ -48,14 +48,11 @@ bool wowDatabase::init()
 	return true;
 }
 
-CMemFile* wowDatabase::loadDBMemFile(const CTableStruct* table) const
+CMemFile* wowDatabase::loadDBMemFile(const char* name) const
 {
-	if (!table)
-		return nullptr;
-
 	std::string baseName = DBFILESDIR;
 	normalizeDirName(baseName);
-	baseName += table->name;
+	baseName += name;
 
 	CMemFile* file = nullptr;
 	for (const auto& ext : g_szDB_Ext)
@@ -274,9 +271,9 @@ const CTableStruct* wowDatabase::getDBStruct(const char* name) const
 	return nullptr;
 }
 
-const DBFile* wowDatabase::loadDBFile(const CTableStruct * table) const
+const DBFile* wowDatabase::loadDBFile(const char* name) const
 {
-	CMemFile* memFile = loadDBMemFile(table);
+	CMemFile* memFile = loadDBMemFile(name);
 	if (!memFile)
 		return nullptr;
 

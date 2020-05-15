@@ -15,8 +15,9 @@
 #pragma comment(lib, "CascLib.lib")
 #pragma comment(lib, "pugixml.lib")
 
-void testWowDatabase();
+void testWowDatabase81();
 void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB);
+void testWowDatabaseClassic();
 
 int main(int argc, char* argv[])
 {
@@ -24,20 +25,21 @@ int main(int argc, char* argv[])
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-	testWowDatabase();
+	//testWowDatabase81();
+	testWowDatabaseClassic();
 
 	getchar();
 	return 0;
 }
 
 
-void testWowDatabase()
+void testWowDatabase81()
 {
 	CFileSystem* fs = new CFileSystem(R"(D:\World Of Warcraft 81)");
 	wowEnvironment* wowEnv = new wowEnvironment(fs);
 	wowDatabase* wowDB = new wowDatabase(wowEnv);
 
-	if (!wowEnv->init("wow_classic"))
+	if (!wowEnv->init("wow"))
 		printf("wowEnv init fail!\n");
 	else
 		printf("wowEnv init success!\n");
@@ -314,4 +316,37 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 		}
 		delete wf;
 	}
+}
+
+void testWowDatabaseClassic()
+{
+	CFileSystem* fs = new CFileSystem(R"(E:\World Of Warcraft)");
+	wowEnvironment* wowEnv = new wowEnvironment(fs);
+	wowDatabase* wowDB = new wowDatabase(wowEnv);
+
+	if (!wowEnv->init("wow_classic"))
+		printf("init fail!\n");
+	else
+		printf("init success!\n");
+
+	if (!wowEnv->loadCascListFiles())
+		printf("listfile fail!\n");
+	else
+		printf("listfile success!\n");
+
+	
+	const DBFile* file = wowDB->loadDBFile("CharSections");
+	if (file)
+	{
+		printf("load dbfile success!\n");
+		delete file;
+	}
+	else
+	{
+		printf("load dbfile fail!\n");
+	}
+
+	delete wowDB;
+	delete wowEnv;
+	delete fs;
 }

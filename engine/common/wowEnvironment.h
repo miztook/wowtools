@@ -16,6 +16,7 @@ class CFileSystem;
 class CMemFile;
 
 using WOWFILECALLBACK = std::function<void(const char* filename)>;
+using WOWFILEIDCALLBACK = std::function<void(uint32_t fileDataId)>;
 
 class wowEnvironment
 {
@@ -53,6 +54,7 @@ public:
 	//
 	void iterateFiles(const char* ext, WOWFILECALLBACK callback) const;
 	void iterateFiles(const char* path, const char* ext, WOWFILECALLBACK callback) const;
+	void iterateAllFileId(WOWFILEIDCALLBACK callback) const;
 
 	const char* getFileNameById(uint32_t id) const;
 

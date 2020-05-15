@@ -52,11 +52,11 @@ public:
 	const std::map<std::string, CTableStruct>& getDBStructMap() const { return DbStructureMap; }
 	const CTableStruct* getDBStruct(const char* name) const;
 
-	const DBFile* loadDBFile(const CTableStruct* table) const;
+	const DBFile* loadDBFile(const char* name) const;
 
 private:
 	bool initFromXml();
-	CMemFile* loadDBMemFile(const CTableStruct* table) const;
+	CMemFile* loadDBMemFile(const char* name) const;
 	bool loadAllTables();
 
 public:		//Êý¾Ý²éÑ¯

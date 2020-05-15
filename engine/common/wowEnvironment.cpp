@@ -251,6 +251,34 @@ void wowEnvironment::iterateFiles(const char* path, const char * ext, WOWFILECAL
 	}
 }
 
+void wowEnvironment::iterateAllFileId(WOWFILEIDCALLBACK callback) const
+{
+	CASC_FIND_DATA FindData;
+	HANDLE hFind;
+	bool bFileFound = true;
+	hFind = CascFindFirstFile(hStorage, "*", &FindData, nullptr);
+	if (hFind != NULL)
+	{
+		while (bFileFound)
+		{
+			// Extract the file
+			if (FindData.bFileAvailable && FindData.NameType == CascNameDataId)
+			{
+				callback(FindData.dwFileDataId);
+			}
+
+			// Find the next file in CASC
+			bFileFound = CascFindNextFile(hFind, &FindData);
+		}
+
+		// Just a testing call - must fail
+		//CascFindNextFile(hFind, &FindData);
+
+		// Close the search handle
+		CascFindClose(hFind);
+	}
+}
+
 const char* wowEnvironment::getFileNameById(uint32_t id) const
 {
 	auto itr = FileId2NameMap.find(id);

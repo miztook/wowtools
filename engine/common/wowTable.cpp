@@ -12,7 +12,7 @@ bool g_IterateTableRecords(const wowDatabase* database, const char* tableName, c
 		return false;
 	}
 
-	const DBFile* file = database->loadDBFile(table);
+	const DBFile* file = database->loadDBFile(table->name.c_str());
 	if (!file)
 	{
 		assert(false);
