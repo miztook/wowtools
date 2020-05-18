@@ -29,7 +29,8 @@ int main(int argc, char* argv[])
 
 void testWowGameFile()
 {
-	CFileSystem* fs = new CFileSystem(R"(D:\World Of Warcraft 81)");
+	//CFileSystem* fs = new CFileSystem(R"(D:\World Of Warcraft 81)");
+	CFileSystem* fs = new CFileSystem(R"(E:\World Of Warcraft)");
 	wowEnvironment* wowEnv = new wowEnvironment(fs);
 
 	if (!wowEnv->init("wow_classic"))
@@ -48,7 +49,7 @@ void testWowGameFile()
 
 	//wmo test
 	{
-		const char* path = "World\\wmo\\Northrend\\Dalaran\\ND_Dalaran.wmo";
+		const char* path = "World\\wmo\\kalimdor\\ogrimmar\\ogrimmar.wmo";
 		wowWMOFile* wmoFile = new wowWMOFile(wowEnv);
 		wmoFile->loadFile(path);
 		delete wmoFile;
@@ -62,6 +63,8 @@ void testWowGameFile()
 		wowM2File* m2File = new wowM2File(wowEnv);
 		m2File->loadFile(path);
 		delete m2File;
+
+		printf("m2 load success! %s\n", path);
 	}
 
 	delete wowEnv;

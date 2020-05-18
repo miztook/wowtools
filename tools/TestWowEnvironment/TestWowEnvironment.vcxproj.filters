@@ -35,6 +35,9 @@
     <ClCompile Include="..\..\engine\common\wowWMOFile.cpp">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\common\wowWDC2File.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="common">
@@ -136,6 +139,9 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\engine\common\wowWMOStruct.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowWDC2File.h">
       <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>

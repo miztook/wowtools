@@ -63,12 +63,13 @@ void testWowEnvironmentClassic()
 	else
 		printf("init success!\n");
 
+	/*
 	std::set<uint32_t> fileDataIdSet;
 	wowEnv->iterateAllFileId([&fileDataIdSet](uint32_t fileDataId) { fileDataIdSet.insert(fileDataId); });
 
 	std::string dir = fs->getDataDirectory();
 	normalizeDirName(dir);
-	dir += "1.3";
+	dir += "1.13";
 	normalizeDirName(dir);
 
 	std::string listFile = dir + "listfile.csv";
@@ -106,7 +107,8 @@ void testWowEnvironmentClassic()
 		}
 		delete wfile;
 	}
-	
+	*/
+
 	delete wowEnv;
 	delete fs;
 }

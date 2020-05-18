@@ -57,6 +57,7 @@ public:
 	void iterateAllFileId(WOWFILEIDCALLBACK callback) const;
 
 	const char* getFileNameById(uint32_t id) const;
+	uint32_t getFileIdByName(const char* filename) const;
 
 public:
 	void buildWmoFileList();
