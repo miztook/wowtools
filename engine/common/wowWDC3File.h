@@ -48,7 +48,7 @@ public:
 
 	bool open();
 
-	virtual std::vector<VAR_T> getRecordValue(uint32_t index, const CTableStruct* table) const override;
+	std::vector<VAR_T> getRecordValue(uint32_t index, const CTableStruct* table) const override;
 
 private:
 	enum class FIELD_COMPRESSION : uint32_t

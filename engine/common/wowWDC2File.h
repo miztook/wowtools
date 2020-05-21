@@ -46,6 +46,10 @@ public:
 	explicit WDC2File(CMemFile* memFile);
 	~WDC2File() = default;
 
+	bool open();
+
+	std::vector<VAR_T> getRecordValue(uint32_t index, const CTableStruct* table) const override;
+
 private:
 	enum class FIELD_COMPRESSION : uint32_t
 	{
@@ -73,6 +77,17 @@ private:
 		uint32_t val3;
 	};
 
+	struct field_structure
+	{
+		int16_t size;
+		uint16_t position;
+	};
+
+	struct copy_table_entry
+	{
+		uint32_t newRowId;
+		uint32_t copiedRowId;
+	};
 
 private:
 	std::vector<uint32_t> m_IDs;
@@ -82,6 +97,7 @@ private:
 	bool m_isSparseTable;
 
 	WDC2File::header m_header;
+	std::vector<section_header> m_sectionHeaders;
 	std::vector<field_storage_info> m_fieldStorageInfo;
 
 	std::map<uint32_t, uint32_t> m_palletBlockOffsets;
