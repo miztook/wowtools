@@ -1,0 +1,2 @@
+https://github.com/erorus/db2		数据读取
+https://wow.tools			数据库说明
