@@ -31,6 +31,8 @@ bool WDC2File::open()
 	m_sectionHeaders.resize(m_header.section_count);
 	m_pMemFile->read(m_sectionHeaders.data(), sizeof(section_header) * m_header.section_count);
 
+	m_isSparseTable = (m_header.flags & 0x01) != 0;
+
 	//field
 	std::vector<WDC2File::field_structure> fields;
 	fields.resize(fieldCount);
@@ -105,11 +107,115 @@ bool WDC2File::open()
 	// a section = 
 	// 1. records
 	// 2. string block
-	// 3. id list
+	// 3. id offset
 	// 4. copy table
 	// 5. relationship map  
 
 	m_pMemFile->seek(m_sectionHeaders[0].file_offset, false);
+	const uint8_t* sectionData = m_pMemFile->getPointer();		//sectionSize
 
+	const uint32_t stringTableOffset = m_pMemFile->getPos() + recordSize * recordCount;
+	const uint32_t idBlockOffset = stringTableOffset + stringSize;
+	const uint32_t copyBlockOffset = idBlockOffset + m_sectionHeaders[0].id_list_size;
+	const uint32_t relationshipDataOffset = copyBlockOffset + m_sectionHeaders[0].copy_table_size;
 
+	// embedded strings in fields instead of stringTable
+	if (m_isSparseTable)
+	{
+		stringSize = 0;
+	}
+
+	//2. string block
+	m_pMemFile->seek(stringTableOffset, false);
+
+	//3. id offset
+	if (m_isSparseTable)
+	{
+		m_pMemFile->seek(m_sectionHeaders[0].file_offset, false);
+
+		recordCount = 0;
+		for (uint32_t i = 0; i < (m_header.max_id - m_header.min_id + 1); ++i)
+		{
+			uint32_t offset;
+			uint16_t length;
+
+			m_pMemFile->read(&offset, sizeof(offset));
+			m_pMemFile->read(&length, sizeof(length));
+
+			if (offset == 0 || length == 0)
+				continue;
+
+			m_IDs.push_back(m_header.min_id + i);
+			m_recordOffsets.push_back(buffer + offset);
+
+			++recordCount;
+		}
+	}
+	else
+	{
+		m_recordOffsets.reserve(recordCount);
+
+		//read IDs
+		if ((m_header.flags & 0x04) != 0)
+		{
+			m_pMemFile->seek(idBlockOffset, false);
+
+			m_IDs.resize(recordCount);
+			m_pMemFile->read(m_IDs.data(), recordCount * sizeof(uint32_t));
+		}
+		else
+		{
+			m_IDs.reserve(recordCount);
+			const auto& info = m_fieldStorageInfo[m_header.id_index];
+
+			//read ids from data
+			for (uint32_t i = 0; i < recordCount; ++i)
+			{
+				const uint8_t* recordOffset = sectionData + i * recordSize;
+				switch (info.storage_type)
+				{
+				case FIELD_COMPRESSION::NONE:
+				{
+					uint8_t* val = new uint8_t[info.field_size_bits / 8];
+					memcpy(val, recordOffset + info.field_offset_bits / 8, info.field_size_bits / 8);
+					m_IDs.push_back((*reinterpret_cast<unsigned int*>(val)));
+					delete[] val;
+				}
+				break;
+				case FIELD_COMPRESSION::BITPACKED:
+				{
+					unsigned int size = (info.field_size_bits + (info.field_offset_bits & 7) + 7) / 8;
+					unsigned int offset = info.field_offset_bits / 8;
+					uint8_t* val = new unsigned char[size];
+					memcpy(val, recordOffset + offset, size);
+					unsigned int id = (*reinterpret_cast<unsigned int*>(val));
+					delete[] val;
+					id = id & ((1ull << info.field_size_bits) - 1);
+					m_IDs.push_back(id);
+				}
+				break;
+				case FIELD_COMPRESSION::COMMON_DATA:
+					ASSERT(false);
+					return false;
+				case FIELD_COMPRESSION::BITPACKED_INDEXED:
+				case FIELD_COMPRESSION::BITPACKED_SIGNED:
+				{
+					uint32_t id = readBitpackedValue(info, recordOffset);
+					m_IDs.push_back(id);
+					break;
+				}
+				case FIELD_COMPRESSION::BITPACKED_INDEXED_ARRAY:
+					ASSERT(false);
+					return false;
+				default:
+					ASSERT(false);
+					return false;
+				}
+			}
+		}
+
+		// store offsets
+		for (uint32_t i = 0; i < recordCount; i++)
+			m_recordOffsets.push_back(sectionData + (i*recordSize));
+	}
 }

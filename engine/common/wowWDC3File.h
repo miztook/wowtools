@@ -104,7 +104,7 @@ private:
 	};
 
 	bool readFieldValue(uint32_t recordIndex, uint32_t fieldIndex, uint32_t arrayIndex, uint32_t arraySize, uint32_t& result) const;
-	uint32_t readBitpackedValue(field_storage_info info, const uint8_t* recordOffset) const;
+	uint32_t readBitpackedValue(const field_storage_info& info, const uint8_t* recordOffset) const;
 
 private:
 	std::vector<uint32_t> m_IDs;
