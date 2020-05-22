@@ -140,6 +140,8 @@ CMemFile * wowEnvironment::openFile(const char* filename) const
 		return nullptr;
 	}
 
+	
+
 	DWORD dwHigh;
 	uint32_t size = CascGetFileSize(hFile, &dwHigh);
 
@@ -287,6 +289,17 @@ const char* wowEnvironment::getFileNameById(uint32_t id) const
 	return nullptr;
 }
 
+uint32_t wowEnvironment::getFileIdByName(const char* filename) const
+{
+	std::string fname(filename);
+	normalizeFileName(fname);
+	str_tolower(fname);
+	auto itr = FileName2IdMap.find(fname);
+	if (itr != FileName2IdMap.end())
+		return itr->second;
+	return 0;
+}
+
 void wowEnvironment::buildWmoFileList()
 {
 	WmoFileList.clear();
@@ -412,7 +425,27 @@ bool wowEnvironment::loadRoot(const char* szRootDir, const SConfig& config)
 		hStorage = nullptr;
 		return false;
 	}
+
+	DWORD dwFileCount = 0;
+	if (CascGetStorageInfo(hStorage, CascStorageTotalFileCount, &dwFileCount, sizeof(DWORD), NULL))
+	{
+		printf("file count: %d\n", dwFileCount);
+	}
+
+	DWORD dwFeatures = 0;
+	if (CascGetStorageInfo(hStorage, CascStorageFeatures, &dwFeatures, sizeof(DWORD), NULL))
+	{
+		printf("has names? %s\n", (dwFeatures & CASC_FEATURE_FILE_NAMES) ? "YES" : "NO");
+	}
+
+	CASC_STORAGE_PRODUCT product;
+	if (CascGetStorageInfo(hStorage, CascStorageProduct, &product, sizeof(CASC_STORAGE_PRODUCT), NULL))
+	{
+		printf("game build: %s, %d\n", product.szCodeName, product.BuildNumber);
+	}
+
 	return true;
+
 }
 
 void wowEnvironment::unloadRoot()

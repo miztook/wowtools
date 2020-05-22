@@ -158,6 +158,7 @@
     <ClCompile Include="..\..\engine\common\wowEnvironment.cpp" />
     <ClCompile Include="..\..\engine\common\wowTable.cpp" />
     <ClCompile Include="..\..\engine\common\wowWDB5File.cpp" />
+    <ClCompile Include="..\..\engine\common\wowWDC2File.cpp" />
     <ClCompile Include="..\..\engine\common\wowWDC3File.cpp" />
     <ClCompile Include="..\..\engine\common\wowWMOFile.cpp" />
     <ClCompile Include="TestWowEnvironment.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="..\..\engine\common\wowEnvironment.h" />
     <ClInclude Include="..\..\engine\common\wowTable.h" />
     <ClInclude Include="..\..\engine\common\wowWDB5File.h" />
+    <ClInclude Include="..\..\engine\common\wowWDC2File.h" />
     <ClInclude Include="..\..\engine\common\wowWDC3File.h" />
     <ClInclude Include="..\..\engine\common\wowWMOFile.h" />
     <ClInclude Include="..\..\engine\common\wowWMOStruct.h" />

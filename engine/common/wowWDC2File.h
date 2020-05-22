@@ -4,12 +4,12 @@
 #include <vector>
 #include <map>
 
-class WDC3File : public DBFile
+class WDC2File : public DBFile
 {
 public:
 	struct header
 	{
-		char   magic[4];               // 'WDC3'
+		char   magic[4];               // 'WDC2'
 		uint32_t record_count;           // this is for all sections combined now
 		uint32_t field_count;
 		uint32_t record_size;
@@ -32,19 +32,19 @@ public:
 
 	struct section_header
 	{
-		uint64_t tact_key_hash;          // TactKeyLookup hash
-		uint32_t file_offset;            // Absolute position to the beginning of the section
+		uint32_t wdc2_unk_header1;       // always 0 in Battle (8.0.1.26231) and unnamed in client binary
+		uint32_t wdc2_unk_header2;       // always 0 in Battle (8.0.1.26231) and unnamed in client binary
+		uint32_t file_offset;            // absolute position to the beginning of the section
 		uint32_t record_count;           // 'record_count' for the section
 		uint32_t string_table_size;      // 'string_table_size' for the section
-		uint32_t offset_records_end;     // Offset to the spot where the records end in a file with an offset map structure;
-		uint32_t id_list_size;           // Size of the list of ids present in the section
-		uint32_t relationship_data_size; // Size of the relationship data in the section
-		uint32_t offset_map_id_count;    // Count of ids present in the offset map in the section
-		uint32_t copy_table_count;       // Count of the number of deduplication entries (you can multiply by 8 to mimic the old 'copy_table_size' field
+		uint32_t copy_table_size;
+		uint32_t offset_map_offset;      // Offset to array of struct {uint32_t offset; uint16_t size;}[max_id - min_id + 1];
+		uint32_t id_list_size;           // List of ids present in the DB file
+		uint32_t relationship_data_size;
 	};
 
-	explicit WDC3File(CMemFile* memFile);
-	~WDC3File() = default;
+	explicit WDC2File(CMemFile* memFile);
+	~WDC2File() = default;
 
 	bool open();
 
@@ -77,20 +77,6 @@ private:
 		uint32_t val3;
 	};
 
-#pragma pack(2)
-	struct offset_map_entry
-	{
-		uint32_t offset;
-		uint16_t size;
-	};
-#pragma pack()
-
-	struct relationship_entry 
-	{
-		uint32_t foreign_id;
-		uint32_t record_index;
-	};
-
 	struct field_structure
 	{
 		int16_t size;
@@ -103,9 +89,6 @@ private:
 		uint32_t copiedRowId;
 	};
 
-	bool readFieldValue(uint32_t recordIndex, uint32_t fieldIndex, uint32_t arrayIndex, uint32_t arraySize, uint32_t& result) const;
-	uint32_t readBitpackedValue(const field_storage_info& info, const uint8_t* recordOffset) const;
-
 private:
 	std::vector<uint32_t> m_IDs;
 	std::map<int, int> m_fieldSizes;
@@ -113,13 +96,11 @@ private:
 
 	bool m_isSparseTable;
 
-	WDC3File::header m_header;
+	WDC2File::header m_header;
 	std::vector<section_header> m_sectionHeaders;
 	std::vector<field_storage_info> m_fieldStorageInfo;
 
 	std::map<uint32_t, uint32_t> m_palletBlockOffsets;
 	std::map<uint32_t, std::map<uint32_t, uint32_t> > m_commonData;
 	std::map<uint32_t, uint32_t> m_relationShipData;
-
-	std::vector<uint8_t> m_palletData;
 };
