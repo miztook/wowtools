@@ -262,6 +262,7 @@ bool WDC3File::open()
 			m_recordOffsets.push_back(sectionData - m_sectionHeaders[0].file_offset + it.offset);
 	}
 
+	//apply copy table
 	recordCount = (uint32_t)m_recordOffsets.size();
 	if (!copyTable.empty())
 	{
