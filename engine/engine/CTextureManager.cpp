@@ -68,6 +68,28 @@ std::shared_ptr<IImage> CTextureManager::loadBLP(const char* filename)
 	return blpImage;
 }
 
+std::shared_ptr<ITexture> CTextureManager::loadTexture(const char* filename, bool mipmap)
+{
+	if (strlen(filename) == 0)
+		return nullptr;
+
+	char realfilename[QMAX_PATH];
+	normalizeFileName(filename, realfilename, QMAX_PATH);
+	Q_strlwr(realfilename);
+
+	std::shared_ptr<ITexture> tex = m_TextureCache.tryLoadFromCache(realfilename);
+	if (tex)
+		return tex;
+
+	std::shared_ptr<IImage> image = loadImage(filename);
+	std::shared_ptr<ITexture> texture(createTexture(mipmap, image));
+
+	if (texture)
+		m_TextureCache.addToCache(realfilename, texture);
+
+	return texture;
+}
+
 ITexture* CTextureManager::getManualTexture(const char* name) const
 {
 	auto itr = TextureMap.find(name);
@@ -107,6 +129,12 @@ void CTextureManager::removeTexture(const char* name)
 ITexture* CTextureManager::createEmptyTexture(const dimension2d& size, ECOLOR_FORMAT format)
 {
 	ITexture* tex = g_Engine->getDriver()->createTexture(false, size, format);
+	return tex;
+}
+
+ITexture* CTextureManager::createTexture(bool mipmap, std::shared_ptr<IImage> image)
+{
+	ITexture* tex = g_Engine->getDriver()->createTexture(mipmap, image);
 	return tex;
 }
 

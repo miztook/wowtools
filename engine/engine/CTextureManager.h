@@ -28,6 +28,8 @@ public:
 
 	std::shared_ptr<IImage> loadBLP(const char* filename);
 
+	std::shared_ptr<ITexture> loadTexture(const char* filename, bool mipmap);
+
 public:
 	ITexture* getTextureWhite() const { return DefaultWhite; }
 
@@ -36,6 +38,7 @@ public:
 	void removeTexture(const char* name);
 
 	ITexture* createEmptyTexture(const dimension2d& size, ECOLOR_FORMAT format);
+	ITexture* createTexture(bool mipmap, std::shared_ptr<IImage> image);
 
 private:
 	void loadDefaultTextures();
@@ -48,4 +51,5 @@ private:
 	std::list<IRenderTarget*>	RenderTargets;
 
 	CResourceCache<IImage>	m_BlpImageCache;
+	CResourceCache<ITexture>	m_TextureCache;
 };
