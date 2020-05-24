@@ -20,18 +20,18 @@ public:
 public:
 	//
 	void add2DColor(const recti&rect, SColor color, E_2DBlendMode mode = E_Solid);
-	void add2DQuads(ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam = S2DBlendParam::OpaqueSource());
+	void add2DQuads(const ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam = S2DBlendParam::OpaqueSource());
 	void renderSubBatch(const CCamera* cam);
 
 private:
-	void draw2DSquadBatch(const CCamera* cam, ITexture* texture,
+	void draw2DSquadBatch(const CCamera* cam, const ITexture* texture,
 		const SVertex_PCT* verts,
 		uint32_t numQuads,
 		const S2DBlendParam& blendParam);
 
 	rectf setUVCoords(E_RECT_UVCOORDS uvcoords, float x0, float y0, float x1, float y1);
 
-	void draw2DSquad(const CCamera* cam, uint32_t batchCount, ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam);
+	void draw2DSquad(const CCamera* cam, uint32_t batchCount, const ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam);
 
 	void applyBlendParam(const S2DBlendParam& blendParam, CPass* pass);
 
@@ -39,9 +39,9 @@ private:
 	struct SQuadDrawBatchKey
 	{
 		S2DBlendParam blendParam;
-		ITexture* texture;
+		const ITexture* texture;
 
-		SQuadDrawBatchKey(ITexture* tex, const S2DBlendParam& param)
+		SQuadDrawBatchKey(const ITexture* tex, const S2DBlendParam& param)
 			: blendParam(param), texture(tex)
 		{
 		}

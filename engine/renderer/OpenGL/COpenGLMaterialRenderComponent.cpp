@@ -251,7 +251,7 @@ void COpenGLMaterialRenderComponent::applyRenderStates()
 			continue;
 		}
 
-		IVideoResource::buildVideoResources(texunit.texture);
+		IVideoResource::buildVideoResources(const_cast<ITexture*>(texunit.texture));
 
 		ASSERT(texunit.texture->getSampleCount() == 0);
 		bool bCube = texunit.texture->isCube();

@@ -19,7 +19,7 @@ void CMaterial::setVariable(const char* name, const float* src, uint32_t size)
 	}
 }
 
-void CMaterial::setTexture(const char* name, ITexture* tex, E_TEXTURE_CLAMP wrapU /*= ETC_CLAMP*/, E_TEXTURE_CLAMP wrapV /*= ETC_CLAMP*/)
+void CMaterial::setTexture(const char* name, const ITexture* tex, E_TEXTURE_CLAMP wrapU /*= ETC_CLAMP*/, E_TEXTURE_CLAMP wrapV /*= ETC_CLAMP*/)
 {
 	auto itr = TextureVariableMap.find(name);
 	if (itr == TextureVariableMap.end())

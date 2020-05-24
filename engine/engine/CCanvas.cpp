@@ -41,7 +41,7 @@ void CCanvas::add2DColor(const recti&rect, SColor color, E_2DBlendMode mode /*= 
 	}
 }
 
-void CCanvas::add2DQuads(ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam /*= S2DBlendParam::OpaqueSource()*/)
+void CCanvas::add2DQuads(const ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam /*= S2DBlendParam::OpaqueSource()*/)
 {
 	ASSERT(texture);
 	if (!texture)
@@ -78,7 +78,7 @@ void CCanvas::renderSubBatch(const CCamera* cam)
 	m_2DQuadDrawMap.clear();
 }
 
-void CCanvas::draw2DSquadBatch(const CCamera* cam, ITexture* texture, const SVertex_PCT* verts, uint32_t numQuads, const S2DBlendParam& blendParam)
+void CCanvas::draw2DSquadBatch(const CCamera* cam, const ITexture* texture, const SVertex_PCT* verts, uint32_t numQuads, const S2DBlendParam& blendParam)
 {
 	uint32_t nMaxBatch = numQuads / MAX_IMAGE_BATCH_COUNT;
 	uint32_t nLeftBatch = numQuads % MAX_IMAGE_BATCH_COUNT;
@@ -142,7 +142,7 @@ rectf CCanvas::setUVCoords(E_RECT_UVCOORDS uvcoords, float x0, float y0, float x
 	return tcoords;
 }
 
-void CCanvas::draw2DSquad(const CCamera* cam, uint32_t batchCount, ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam)
+void CCanvas::draw2DSquad(const CCamera* cam, uint32_t batchCount, const ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam)
 {
 	CPass* pass = Material->getPass(ELM_ALWAYS);
 	ASSERT(pass);

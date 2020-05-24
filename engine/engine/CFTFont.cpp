@@ -102,10 +102,6 @@ void CFTFont::drawA(CCanvas* canvas, const char* utf8text, SColor color, vector2
 		float fTop = posY0;
 		float fRight = posX1;
 		float fBottom = posY1;
-		float tu1 = 0.0f;
-		float tu2 = 0.0f;
-		float tv1 = 0.0f;
-		float tv2 = 0.0f;
 
 		float du = texX1 - texX0;
 		float dv = texY1 - texY0;
@@ -113,26 +109,26 @@ void CFTFont::drawA(CCanvas* canvas, const char* utf8text, SColor color, vector2
 		verts[0].Pos.set(fLeft, fTop, 0);
 		verts[0].Color = color;
 		verts[0].TCoords.set(
-			texX0 + tu1 * du,
-			texY0 + tv1 * dv);
+			texX0,
+			texY0);
 
 		verts[1].Pos.set(fRight, fTop, 0);
 		verts[1].Color = color;
 		verts[1].TCoords.set(
-			texX1 - tu2 * du,
-			texY0 + tv1 * dv);
+			texX1,
+			texY0);
 
 		verts[2].Pos.set(fLeft, fBottom, 0);
 		verts[2].Color = color;
 		verts[2].TCoords.set(
-			texX0 + tu1 * du,
-			texY1 - tv2 * dv);
+			texX0,
+			texY1);
 
 		verts[3].Pos.set(fRight, fBottom, 0);
 		verts[3].Color = color;
 		verts[3].TCoords.set(
-			texX1 - tu2 * du,
-			texY1 - tv2 * dv);
+			texX1,
+			texY1);
 
 		canvas->add2DQuads(texture,
 			&verts[0],
@@ -191,10 +187,6 @@ void CFTFont::drawW(CCanvas* canvas, const char16_t* text, SColor color, vector2
 		float fTop = posY0;
 		float fRight = posX1;
 		float fBottom = posY1;
-		float tu1 = 0.0f;
-		float tu2 = 0.0f;
-		float tv1 = 0.0f;
-		float tv2 = 0.0f;
 
 		float du = texX1 - texX0;
 		float dv = texY1 - texY0;
@@ -202,26 +194,26 @@ void CFTFont::drawW(CCanvas* canvas, const char16_t* text, SColor color, vector2
 		verts[0].Pos.set(fLeft, fTop, 0);
 		verts[0].Color = color;
 		verts[0].TCoords.set(
-			texX0 + tu1 * du,
-			texY0 + tv1 * dv);
+			texX0,
+			texY0);
 
 		verts[1].Pos.set(fRight, fTop, 0);
 		verts[1].Color = color;
 		verts[1].TCoords.set(
-			texX1 - tu2 * du,
-			texY0 + tv1 * dv);
+			texX1,
+			texY0);
 
 		verts[2].Pos.set(fLeft, fBottom, 0);
 		verts[2].Color = color;
 		verts[2].TCoords.set(
-			texX0 + tu1 * du,
-			texY1 - tv2 * dv);
+			texX0,
+			texY1);
 
 		verts[3].Pos.set(fRight, fBottom, 0);
 		verts[3].Color = color;
 		verts[3].TCoords.set(
-			texX1 - tu2 * du,
-			texY1 - tv2 * dv);
+			texX1,
+			texY1);
 
 		canvas->add2DQuads(texture,
 			&verts[0],

@@ -44,7 +44,7 @@ private:
 	{
 		struct STextureUnit
 		{
-			ITexture*	texture;
+			const ITexture*	texture;
 
 			GLint	addressS;
 			GLint	addressT;
