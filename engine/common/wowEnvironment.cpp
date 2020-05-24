@@ -2,7 +2,6 @@
 #include "CFileSystem.h"
 #include "CMemFile.h"
 #include "CReadFile.h"
-#include "stringext.h"
 #include "function.h"
 #include <regex>
 
@@ -137,10 +136,20 @@ CMemFile * wowEnvironment::openFile(const char* filename) const
 
 	if (!CascOpenFile(hStorage, realfilename, Config.casclocale, 0, &hFile))
 	{
-		return nullptr;
+		auto itr = FileName2IdMap.find(realfilename);
+		if (itr != FileName2IdMap.end())
+		{
+			uint32_t fildId = itr->second;
+			if (!CascOpenFile(hStorage, CASC_FILE_DATA_ID(fildId), Config.casclocale, CASC_OPEN_BY_FILEID, &hFile))
+			{
+				return nullptr;
+			}
+		}
+		else
+		{
+			return nullptr;
+		}
 	}
-
-	
 
 	DWORD dwHigh;
 	uint32_t size = CascGetFileSize(hFile, &dwHigh);
@@ -380,6 +389,8 @@ bool wowEnvironment::initBuildInfo(std::vector<SConfig>& configList)
 			config.version[1] = atoi(sm[2].str().c_str());
 			config.version[2] = atoi(sm[3].str().c_str());
 			config.version[3] = atoi(sm[4].str().c_str());
+			config.versionString = std_string_format("%d.%d.%d.%d", 
+				config.version[0], config.version[1], config.version[2], config.version[3]);
 		}
 
 		//product

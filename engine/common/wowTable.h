@@ -40,7 +40,6 @@ bool loadData(const wowDatabase* database)		\
 bool g_IterateTableRecords(const wowDatabase* database, const char* tableName, const std::function<void(const std::vector<VAR_T>& val)>& callback);
 
 /*
-AnimationData
 CharBaseSection
 CharComponentTextureLayouts
 CharComponentTextureSections
@@ -75,32 +74,6 @@ TextureFileData
 
 
 */
-class AnimationDataTable
-{
-public:
-	struct SRecord
-	{
-		uint32_t ID;
-		std::string Name;
-	};
-
-	AnimationDataTable()
-	{
-		OnLoadItem = [this](const std::vector<VAR_T>& val)
-		{
-			assert(val.size() == 2);
-			SRecord r;
-			r.ID = val[0].Get<uint32_t>();
-			r.Name = val[1].Get<std::string>();
-			RecordList.emplace_back(r);
-		};
-	}
-
-public:
-	IMPLEMENT_RECORD_COMMON();
-
-	IMPLEMENT_RECORD_LOAD("AnimationData");
-};
 
 class CharBaseSectionTable
 {
@@ -199,6 +172,43 @@ public:
 	IMPLEMENT_RECORD_LOAD("CharComponentTextureSections");
 };
 
+class CharacterFacialHairStylesTable
+{
+public:
+	struct SRecord
+	{
+		uint32_t ID;
+		uint32_t Geoset[5];
+		uint16_t RaceID;
+		uint16_t SexID;
+		uint16_t VariationID;
+	};
+
+	CharacterFacialHairStylesTable()
+	{
+		OnLoadItem = [this](const std::vector<VAR_T>& val)
+		{
+			assert(val.size() == 9);
+			SRecord r;
+			r.ID = val[0].Get<uint32_t>();
+			for (uint32_t i = 0; i < 5; ++i)
+			{
+				r.Geoset[i] = val[1 + i].Get<uint32_t>();
+			}
+			r.RaceID = val[6].Get<uint16_t>();
+			r.SexID = val[7].Get<uint16_t>();
+			r.VariationID = val[8].Get<uint16_t>();
+			RecordList.emplace_back(r);
+		};
+	}
+
+public:
+	IMPLEMENT_RECORD_COMMON();
+
+	IMPLEMENT_RECORD_LOAD("CharacterFacialHairStyles");
+};
+
+
 class CharHairGeoSetsTable
 {
 public:
@@ -208,28 +218,32 @@ public:
 		uint16_t RaceID;
 		uint16_t SexID;
 		uint16_t VariationID;
-		uint16_t VariationType;
 		uint16_t GeoSetID;
-		uint16_t GeoSetType;
 		uint16_t ShowScalp;
+		uint16_t VariationType;
+		uint16_t GeoSetType;
 		uint32_t ColorIndex;
+		uint32_t CustomGeoFileDataID;
+		uint32_t HdCustomGeoFileDataID;
 	};
 
 	CharHairGeoSetsTable()
 	{
 		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
-			assert(val.size() == 9);
+			assert(val.size() == 11);
 			SRecord r;
 			r.ID = val[0].Get<uint32_t>();
 			r.RaceID = val[1].Get<uint16_t>();
 			r.SexID = val[2].Get<uint16_t>();
 			r.VariationID = val[3].Get<uint16_t>();
-			r.VariationType = val[4].Get<uint16_t>();
-			r.GeoSetID = val[5].Get<uint16_t>();
+			r.GeoSetID = val[4].Get<uint16_t>();
+			r.ShowScalp = val[5].Get<uint16_t>();
 			r.GeoSetType = val[6].Get<uint16_t>();
-			r.ShowScalp = val[7].Get<uint16_t>();
+			r.VariationType = val[7].Get<uint16_t>();
 			r.ColorIndex = val[8].Get<uint32_t>();
+			r.CustomGeoFileDataID = val[9].Get<uint32_t>();
+			r.HdCustomGeoFileDataID = val[10].Get<uint32_t>();
 			RecordList.emplace_back(r);
 		};
 	}
@@ -249,10 +263,10 @@ public:
 		uint16_t RaceID;
 		uint16_t SexID;
 		uint16_t SectionType;
-		uint32_t TextureName[3];
-		uint16_t Flags;
 		uint16_t VariationIndex;
 		uint16_t ColorIndex;
+		uint16_t Flags;
+		uint32_t TextureName[3];
 	};
 
 	CharSectionsTable()
@@ -265,13 +279,14 @@ public:
 			r.RaceID = val[1].Get<uint16_t>();
 			r.SexID = val[2].Get<uint16_t>();
 			r.SectionType = val[3].Get<uint16_t>();
+			r.VariationIndex = val[4].Get<uint16_t>();
+			r.ColorIndex = val[5].Get<uint16_t>();
+			r.Flags = val[6].Get<uint16_t>();
 			for (uint32_t i = 0; i < 3; ++i)
 			{
-				r.TextureName[i] = val[4 + i].Get<uint32_t>();
+				r.TextureName[i] = val[7 + i].Get<uint32_t>();
 			}
-			r.Flags = val[7].Get<uint16_t>();
-			r.VariationIndex = val[8].Get<uint16_t>();
-			r.ColorIndex = val[9].Get<uint16_t>();
+					
 			RecordList.emplace_back(r);
 		};
 	}
@@ -280,42 +295,6 @@ public:
 	IMPLEMENT_RECORD_COMMON();
 
 	IMPLEMENT_RECORD_LOAD("CharSections");
-};
-
-class CharacterFacialHairStylesTable
-{
-public:
-	struct SRecord
-	{
-		uint32_t ID;
-		uint16_t RaceID;
-		uint16_t SexID;
-		uint16_t VariantID;
-		uint32_t Geoset[5];
-	};
-
-	CharacterFacialHairStylesTable()
-	{
-		OnLoadItem = [this](const std::vector<VAR_T>& val)
-		{
-			assert(val.size() == 9);
-			SRecord r;
-			r.ID = val[0].Get<uint32_t>();
-			r.RaceID = val[1].Get<uint16_t>();
-			r.SexID = val[2].Get<uint16_t>();
-			r.VariantID = val[3].Get<uint16_t>();
-			for (uint32_t k = 0; k < 5; ++k)
-			{
-				r.Geoset[k] = val[4 + k].Get<uint32_t>();
-			}
-			RecordList.emplace_back(r);
-		};
-	}
-
-public:
-	IMPLEMENT_RECORD_COMMON();
-
-	IMPLEMENT_RECORD_LOAD("CharacterFacialHairStyles");
 };
 
 class ChrClassesTable
@@ -352,10 +331,11 @@ public:
 	{
 		uint32_t ID;
 		std::string Name;
-		uint32_t Field1;
-		uint16_t Field2;
-		uint16_t Field3;
-		int Field4[3];
+		uint32_t Sex;
+		uint32_t BaseSection;
+		uint32_t UiCustomizationType;
+		uint32_t Flags;
+		int ComponentSection[3];
 		uint32_t RaceId;
 	};
 
@@ -363,18 +343,19 @@ public:
 	{
 		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
-			assert(val.size() == 9);
+			assert(val.size() == 10);
 			SRecord r;
 			r.ID = val[0].Get<uint32_t>();
 			r.Name = val[1].Get<std::string>();
-			r.Field1 = val[2].Get<uint32_t>();
-			r.Field2 = val[3].Get<uint16_t>();
-			r.Field3 = val[4].Get<uint16_t>();
+			r.Sex = val[2].Get<uint32_t>();
+			r.BaseSection = val[3].Get<uint32_t>();
+			r.UiCustomizationType = val[4].Get<uint32_t>();
+			r.Flags = val[5].Get<uint32_t>();
 			for (uint32_t i = 0; i < 3; ++i)
 			{
-				r.Field4[i] = val[5 + i].Get<int>();
+				r.ComponentSection[i] = val[6 + i].Get<int>();
 			}
-			r.RaceId = val[8].Get<uint32_t>();
+			r.RaceId = val[9].Get<uint32_t>();
 			RecordList.emplace_back(r);
 		};
 	}
@@ -391,41 +372,49 @@ public:
 	struct SRecord
 	{
 		uint32_t ID;
+		std::string ClientPrefix;
 		uint32_t Flags;
 		uint32_t MaleDisplayID;
 		uint32_t FemaleDisplayID;
-		uint16_t CharComponentTexLayoutID;
-		std::string ClientPrefix;
-		uint32_t HighResMaleDisplayId;
-		uint32_t HighResFemaleDisplayId;
-		uint16_t CharComponentTexLayoutHiResID;
+		uint32_t HighResMaleDisplayID;
+		uint32_t HighResFemaleDisplayID;
 		int BaseRaceID;
+		uint16_t CharComponentTexLayoutID;
+		uint16_t CharComponentTexLayoutHiResID;	
 		int MaleModelFallbackRaceID;
+		int MaleModelFallbackSex;
 		int FemaleModelFallbackRaceID;
+		int FemaleModelFallbackSex;
 		int MaleTextureFallbackRaceID;
+		int MaleTextureFallbackSex;
 		int FemaleTextureFallbackRaceID;
+		int FemaleTextureFallbackSex;
 	};
 
 	ChrRacesTable()
 	{
 		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
-			assert(val.size() == 14);
+			assert(val.size() == 18);
 			SRecord r;
 			r.ID = val[0].Get<uint32_t>();
-			r.Flags = val[1].Get<uint32_t>();
-			r.MaleDisplayID = val[2].Get<uint32_t>();
-			r.FemaleDisplayID = val[3].Get<uint32_t>();
-			r.CharComponentTexLayoutID = val[4].Get<uint16_t>();
-			r.ClientPrefix = val[5].Get<std::string>();
-			r.HighResMaleDisplayId = val[6].Get<uint32_t>();
-			r.HighResFemaleDisplayId = val[7].Get<uint32_t>();
-			r.CharComponentTexLayoutHiResID = val[8].Get<uint16_t>();
-			r.BaseRaceID = val[9].Get<int>();
+			r.ClientPrefix = val[1].Get<std::string>();
+			r.Flags = val[2].Get<uint32_t>();
+			r.MaleDisplayID = val[3].Get<uint32_t>();
+			r.FemaleDisplayID = val[4].Get<uint32_t>();
+			r.HighResMaleDisplayID = val[5].Get<uint32_t>();
+			r.HighResFemaleDisplayID = val[6].Get<uint32_t>();
+			r.BaseRaceID = val[7].Get<int>();
+			r.CharComponentTexLayoutID = val[8].Get<uint16_t>();
+			r.CharComponentTexLayoutHiResID = val[9].Get<uint16_t>();
 			r.MaleModelFallbackRaceID = val[10].Get<int>();
-			r.FemaleModelFallbackRaceID = val[11].Get<int>();
-			r.MaleTextureFallbackRaceID = val[12].Get<int>();
-			r.FemaleTextureFallbackRaceID = val[13].Get<int>();
+			r.MaleModelFallbackSex = val[11].Get<int>();
+			r.FemaleModelFallbackRaceID = val[12].Get<int>();
+			r.FemaleModelFallbackSex = val[13].Get<int>();
+			r.MaleTextureFallbackRaceID = val[14].Get<int>();
+			r.MaleTextureFallbackSex = val[15].Get<int>();
+			r.FemaleTextureFallbackRaceID = val[16].Get<int>();
+			r.FemaleTextureFallbackSex = val[17].Get<int>();
 
 			RecordList.emplace_back(r);
 		};
@@ -509,8 +498,8 @@ public:
 		uint32_t ID;
 		uint16_t ModelID;
 		uint32_t ExtendedDisplayInfoID;
-		uint32_t Texture[3];
 		uint16_t ParticleColorID;
+		uint32_t Texture[3];
 	};
 
 	CreatureDisplayInfoTable()
@@ -522,11 +511,11 @@ public:
 			r.ID = val[0].Get<uint32_t>();
 			r.ModelID = val[1].Get<uint16_t>();
 			r.ExtendedDisplayInfoID = val[2].Get<uint32_t>();
+			r.ParticleColorID = val[3].Get<uint16_t>();
 			for (uint32_t i = 0; i < 3; ++i)
 			{
-				r.Texture[i] = val[3 + i].Get<uint32_t>();
+				r.Texture[i] = val[4 + i].Get<uint32_t>();
 			}
-			r.ParticleColorID = val[6].Get<uint16_t>();
 			RecordList.emplace_back(r);
 		};
 	}
@@ -754,10 +743,12 @@ public:
 	struct SRecord
 	{
 		uint32_t ID;
+		uint32_t ParticleColorID;
+		int DisplayFlags;
 		uint32_t Model[2];
 		uint32_t TextureItemID[2];
 		uint16_t GeosetGroup[6];
-		uint32_t ParticleColorID;
+		uint16_t AttachmentGeosetGroup[6];
 		uint32_t HelmetGeosetVis[2];
 	};
 
@@ -765,25 +756,30 @@ public:
 	{
 		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
-			assert(val.size() == 14);
+			assert(val.size() == 21);
 			SRecord r;
 			r.ID = val[0].Get<uint32_t>();
+			r.ParticleColorID = val[1].Get<uint32_t>();
+			r.DisplayFlags = val[2].Get<int>();
 			for (uint32_t i = 0; i < 2; ++i)
 			{
-				r.Model[i] = val[1+i].Get<uint32_t>();
+				r.Model[i] = val[3+i].Get<uint32_t>();
 			}
 			for (uint32_t i = 0; i < 2; ++i)
 			{
-				r.TextureItemID[i] = val[3+i].Get<uint32_t>();
+				r.TextureItemID[i] = val[5+i].Get<uint32_t>();
 			}			
 			for (uint32_t i = 0; i < 6; ++i)
 			{
-				r.GeosetGroup[i] = val[5+i].Get<uint16_t>();
+				r.GeosetGroup[i] = val[7+i].Get<uint16_t>();
 			}
-			r.ParticleColorID = val[11].Get<uint32_t>();
+			for (uint32_t i = 0; i < 6; ++i)
+			{
+				r.AttachmentGeosetGroup[i] = val[13 + i].Get<uint16_t>();
+			}
 			for (uint32_t i = 0; i < 2; ++i)
 			{
-				r.HelmetGeosetVis[i] = val[12+i].Get<uint32_t>();
+				r.HelmetGeosetVis[i] = val[19+i].Get<uint32_t>();
 			}
 			RecordList.emplace_back(r);
 		};
@@ -831,6 +827,7 @@ public:
 	{
 		uint32_t ID;
 		uint32_t ItemID;
+		uint16_t ItemAppearanceModifierID;
 		uint32_t ItemAppearanceID;
 		uint16_t ItemLevel;
 	};
@@ -839,12 +836,13 @@ public:
 	{
 		OnLoadItem = [this](const std::vector<VAR_T>& val)
 		{
-			assert(val.size() == 4);
+			assert(val.size() == 5);
 			SRecord r;
 			r.ID = val[0].Get<uint32_t>();
 			r.ItemID = val[1].Get<uint32_t>();
-			r.ItemAppearanceID = val[2].Get<uint32_t>();
-			r.ItemLevel = val[3].Get<uint16_t>();
+			r.ItemAppearanceModifierID = val[2].Get<uint16_t>();
+			r.ItemAppearanceID = val[3].Get<uint32_t>();
+			r.ItemLevel = val[4].Get<uint16_t>();
 			RecordList.emplace_back(r);
 		};
 	}
@@ -930,10 +928,10 @@ public:
 	struct SRecord
 	{
 		uint32_t Col0;
-		uint16_t ID;
-		uint16_t SubClassID;
 		std::string Name;
 		std::string VerboseName;
+		uint16_t ID;
+		uint16_t SubClassID;
 	};
 
 	ItemSubClassTable()
@@ -943,10 +941,10 @@ public:
 			assert(val.size() == 5);
 			SRecord r;
 			r.Col0 = val[0].Get<uint32_t>();
-			r.ID = val[1].Get<uint16_t>();
-			r.SubClassID = val[2].Get<uint16_t>();
-			r.Name = val[3].Get<std::string>();
-			r.VerboseName = val[4].Get<std::string>();
+			r.Name = val[1].Get<std::string>();
+			r.VerboseName = val[2].Get<std::string>();
+			r.ID = val[3].Get<uint16_t>();
+			r.SubClassID = val[4].Get<uint16_t>();		
 			RecordList.emplace_back(r);
 		};
 	}
@@ -1046,9 +1044,9 @@ public:
 	struct SRecord
 	{
 		uint32_t ID;
-		uint32_t CreatureDisplayInfoExtraID;
 		uint32_t ItemDisplayInfoID;
 		uint16_t ItemType;
+		uint32_t CreatureDisplayInfoExtraID;
 	};
 
 	NpcModelItemSlotDisplayInfoTable()
@@ -1058,9 +1056,9 @@ public:
 			assert(val.size() == 4);
 			SRecord r;
 			r.ID = val[0].Get<uint32_t>();
-			r.CreatureDisplayInfoExtraID = val[1].Get<uint32_t>();
-			r.ItemDisplayInfoID = val[2].Get<uint32_t>();
-			r.ItemType = val[3].Get<uint16_t>();
+			r.ItemDisplayInfoID = val[1].Get<uint32_t>();
+			r.ItemType = val[2].Get<uint16_t>();
+			r.CreatureDisplayInfoExtraID = val[3].Get<uint32_t>();
 			RecordList.emplace_back(r);
 		};
 	}

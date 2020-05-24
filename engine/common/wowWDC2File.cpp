@@ -272,6 +272,8 @@ bool WDC2File::open()
 			m_relationShipData[recordIndex] = foreignKey;
 		}
 	}
+
+	return true;
 }
 
 std::vector<VAR_T> WDC2File::getRecordValue(uint32_t index, const CTableStruct* table) const

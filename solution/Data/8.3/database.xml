@@ -3,10 +3,10 @@
   <!-- Character tables - BEGIN -->
   <table name="CharacterFacialHairStyles">
     <field type="uint" name="ID" primary="yes" />
+	<field type="uint" name="Geoset" arraySize="5" pos="0" />
     <field type="byte" name="RaceID" pos="1" />
     <field type="byte" name="SexID" pos="2" />
     <field type="byte" name="VariationID" pos="3" />
-    <field type="uint" name="Geoset" arraySize="5" pos="0" />
   </table>
   <table name="CharBaseSection">
     <field type="uint" name="ID" primary="yes" />
@@ -33,10 +33,10 @@
     <field type="byte" name="RaceID" pos="0" />
     <field type="byte" name="SexID" pos="1" />
     <field type="byte" name="VariationID" pos="2" />
-    <field type="byte" name="VariationType" pos="5" />
-    <field type="byte" name="GeoSetID" pos="3" />
-    <field type="byte" name="GeoSetType" pos="6" />
+    <field type="byte" name="GeoSetID" pos="3" /> 
     <field type="byte" name="ShowScalp" pos="4" />
+	<field type="byte" name="VariationType" pos="5" />
+	<field type="byte" name="GeoSetType" pos="6" />
     <field type="uint" name="ColorIndex" pos="7" />
     <field type="uint" name="CustomGeoFileDataID" pos="8" />
     <field type="uint" name="HdCustomGeoFileDataID" pos="9" />
@@ -110,9 +110,9 @@
   <!-- Creature tables - BEGIN -->
   <table name="Creature">
     <field type="uint" name="ID" primary="yes" />
+	<field type="text" name="Name" pos="0"/>
     <field type="byte" name="CreatureTypeID" pos="5" />
     <field type="uint" name="DisplayID" arraySize="4" pos="8" />
-    <field type="text" name="Name" pos="0"/>
   </table>
   <table name="CreatureType">
     <field type="uint" name="ID" primary="yes" />
@@ -123,8 +123,8 @@
     <field type="uint" name="ID" primary="yes" />
     <field type="uint16" name="ModelID" pos="1" />
     <field type="uint" name="ExtendedDisplayInfoID" pos="7" />
-    <field type="uint" name="Texture" arraySize="3" pos="24" />
-    <field type="unit16" name="ParticleColorID" pos="9" />
+	<field type="uint16" name="ParticleColorID" pos="9" />
+    <field type="uint" name="Texture" arraySize="3" pos="24" />   
   </table>
   <table name="CreatureDisplayInfoExtra">
     <field type="uint" name="ID" primary="yes" />
@@ -144,9 +144,9 @@
 
   <table name="NpcModelItemSlotDisplayInfo">
     <field type="uint" name="ID" primary="yes" />
-    <field type="uint" name="CreatureDisplayInfoExtraID" relationshipData="yes" createIndex="yes" />
-    <field type="uint" name="ItemDisplayInfoID" pos="0" />
+	<field type="uint" name="ItemDisplayInfoID" pos="0" />
     <field type="byte" name="ItemType" pos="1" />
+    <field type="uint" name="CreatureDisplayInfoExtraID" relationshipData="yes" createIndex="yes" />
   </table>  
   <table name="CreatureModelData">
     <field type="uint" name="ID" primary="yes" />
@@ -170,10 +170,10 @@
   </table>
   <table name="ItemSubClass">
     <field type="uint" name="col0" primary="yes" />
-    <field type="byte" name="ID" pos="2" />
-    <field type="byte" name="SubClassID" pos="3" />
     <field type="text" name="Name" pos="0" />
     <field type="text" name="VerboseName" pos="1" />
+	<field type="byte" name="ID" pos="2" />
+    <field type="byte" name="SubClassID" pos="3" />
   </table>
   <table name="ItemSparse">
     <field type="uint" name="ID" primary="yes" />

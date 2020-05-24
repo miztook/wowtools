@@ -63,13 +63,12 @@ public:		//Êý¾Ý²éÑ¯
 
 public:
 	//tables
-	AnimationDataTable	m_AnimationDataTable;
+	CharacterFacialHairStylesTable	m_CharacterFacialHairStylesTable;
 	CharBaseSectionTable	m_CharBaseSectionTable;
 	CharComponentTextureLayoutsTable	m_CharComponentTextureLayoutsTable;
 	CharComponentTextureSectionsTable	m_CharComponentTextureSectionsTable;
 	CharHairGeoSetsTable	m_CharHairGeoSetsTable;
 	CharSectionsTable	m_CharSectionsTable;
-	CharacterFacialHairStylesTable		m_CharacterFacialHairStylesTable;
 	ChrClassesTable		m_ChrClassesTable;
 	ChrCustomizationTable	m_ChrCustomizationTable;
 	ChrRacesTable		m_ChrRacesTable;

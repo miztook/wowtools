@@ -19,6 +19,11 @@ bool g_IterateTableRecords(const wowDatabase* database, const char* tableName, c
 		return false;
 	}
 
+// 	if (table->name == "CreatureDisplayInfo")
+// 	{
+// 		int x = 0;
+// 	}
+
 	//read records
 	for (uint32_t i = 0; i < file->getRecordCount(); ++i)
 	{

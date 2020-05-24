@@ -7,6 +7,7 @@
 #include <map>
 #include <array>
 #include <functional>
+#include "stringext.h"
 
 #ifndef HANDLE
 typedef void* HANDLE;
@@ -31,10 +32,12 @@ public:
 		{
 			version[0] = version[1] = version[2] = version[3] = 0;
 			casclocale = 0;
+			versionString = std_string_format("%d.%d.%d.%d", version[0], version[1], version[2], version[3]);
 		}
 		std::array<int, 4> version;
 		std::string  locale;
 		std::string  product;
+		std::string  versionString;
 		uint32_t	casclocale;
 	};
 
@@ -50,6 +53,7 @@ public:
 	const char* getLocale() const { return Config.locale.c_str(); }
 	const std::array<int, 4>& getVersion() const { return Config.version; }
 	const char* getProduct() const { return Config.product.c_str(); }
+	const char* getVersionString() const { return Config.versionString.c_str(); }
 
 	//
 	void iterateFiles(const char* ext, WOWFILECALLBACK callback) const;

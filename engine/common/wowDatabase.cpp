@@ -68,12 +68,6 @@ CMemFile* wowDatabase::loadDBMemFile(const char* name) const
 
 bool wowDatabase::loadAllTables()
 {
-	if (!m_AnimationDataTable.loadData(this))
-	{
-		ASSERT(false);
-		return false;
-	}
-
 	if (!m_CharBaseSectionTable.loadData(this))
 	{
 		ASSERT(false);

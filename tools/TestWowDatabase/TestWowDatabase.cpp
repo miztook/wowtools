@@ -15,6 +15,7 @@
 #pragma comment(lib, "CascLib.lib")
 #pragma comment(lib, "pugixml.lib")
 
+void testWowDatabase83();
 void testWowDatabase81();
 void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB);
 void testWowDatabaseClassic();
@@ -25,31 +26,30 @@ int main(int argc, char* argv[])
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
+	testWowDatabase83();
 	//testWowDatabase81();
-	testWowDatabaseClassic();
+	//testWowDatabaseClassic();
 
 	getchar();
 	return 0;
 }
 
-
-void testWowDatabase81()
+void testWowDatabase83()
 {
-	CFileSystem* fs = new CFileSystem(R"(D:\World Of Warcraft 81)");
+	CFileSystem* fs = new CFileSystem(R"(E:\World Of Warcraft)");
 	wowEnvironment* wowEnv = new wowEnvironment(fs);
 	wowDatabase* wowDB = new wowDatabase(wowEnv);
 
 	if (!wowEnv->init("wow"))
-		printf("wowEnv init fail!\n");
+		printf("init fail!\n");
 	else
-		printf("wowEnv init success!\n");
+		printf("wowEnv init success! %s, %s, %s\n", wowEnv->getProduct(), wowEnv->getLocale(), wowEnv->getVersionString());
 
-		/*
 	if (!wowEnv->loadCascListFiles())
 		printf("listfile fail!\n");
 	else
 		printf("listfile success!\n");
-		*/
+
 
 	if (!wowDB->init())
 	{
@@ -60,7 +60,53 @@ void testWowDatabase81()
 		printf("wowDB init success!\n");
 		dumpWowDatabase(fs, wowDB);
 	}
-	
+
+	delete wowDB;
+	delete wowEnv;
+	delete fs;
+}
+
+void testWowDatabase81()
+{
+	CFileSystem* fs = new CFileSystem(R"(D:\World Of Warcraft 81)");
+	wowEnvironment* wowEnv = new wowEnvironment(fs);
+	wowDatabase* wowDB = new wowDatabase(wowEnv);
+
+	if (!wowEnv->init("wow"))
+		printf("wowEnv init fail!\n");
+	else
+		printf("wowEnv init success! %s, %s, %s\n", wowEnv->getProduct(), wowEnv->getLocale(), wowEnv->getVersionString());
+
+		/*
+	if (!wowEnv->loadCascListFiles())
+		printf("listfile fail!\n");
+	else
+		printf("listfile success!\n");
+		*/
+
+	const DBFile* file = wowDB->loadDBFile("CharSections");
+	if (file)
+	{
+		printf("load dbfile success!\n");
+		delete file;
+	}
+	else
+	{
+		printf("load dbfile fail!\n");
+	}
+
+	/*
+	if (!wowDB->init())
+	{
+		printf("wowDB init fail!\n");
+	}
+	else
+	{
+		printf("wowDB init success!\n");
+		dumpWowDatabase(fs, wowDB);
+	}
+	*/
+
 	delete wowDB;
 	delete wowEnv;
 	delete fs;
@@ -73,17 +119,6 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 
 	dir += "Database/";
 	Q_MakeDirForFileName(dir.c_str());
-
-	//AnimationData
-	{
-		CWriteFile* wf = fs->createAndWriteFile((dir + "AnimationData.txt").c_str(), false);
-		for (const auto& r : wowDB->m_AnimationDataTable.RecordList)
-		{
-			wf->writeLine("ID: %u, Name: %s",
-				r.ID, r.Name.c_str());
-		}
-		delete wf;
-	}
 
 	//CharBaseSection
 	{
@@ -145,8 +180,8 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 		CWriteFile* wf = fs->createAndWriteFile((dir + "CharacterFacialHairStyles.txt").c_str(), false);
 		for (const auto& r : wowDB->m_CharacterFacialHairStylesTable.RecordList)
 		{
-			wf->writeLine("ID: %u, RaceID: %d, SexID: %d, VariantID: %d, Geoset[0]: %d, Geoset[1]: %d, Geoset[2]: %d,Geoset[3]: %d, Geoset[4]: %d",
-				r.ID, r.RaceID, r.SexID, r.VariantID, r.Geoset[0], r.Geoset[1], r.Geoset[2], r.Geoset[3], r.Geoset[4]);
+			wf->writeLine("ID: %u, Geoset[0]: %d, Geoset[1]: %d, Geoset[2]: %d,Geoset[3]: %d, Geoset[4]: %d, RaceID: %d, SexID: %d, VariationID: %d",
+				r.ID, r.Geoset[0], r.Geoset[1], r.Geoset[2], r.Geoset[3], r.Geoset[4], r.RaceID, r.SexID, r.VariationID);
 		}
 		delete wf;
 	}
@@ -179,8 +214,8 @@ void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB)
 		for (const auto& r : wowDB->m_ChrRacesTable.RecordList)
 		{
 			wf->writeLine(
-"ID: %u, Flags: %u, MaleDisaplayID: %u, FemaleDispalyID: %u, CharComponentTexLayoutID: %d, ClientPrefix: %s, HighResMaleDisplayId: %u, HighResFemaleDisplayId: %u, CharComponentTexLayoutHiResID: %d, BaseRaceID: %d",
-				r.ID, r.Flags, r.MaleDisplayID, r.FemaleDisplayID, r.CharComponentTexLayoutID, r.ClientPrefix.c_str(), r.HighResMaleDisplayId, r.HighResFemaleDisplayId, r.CharComponentTexLayoutHiResID, r.BaseRaceID);
+"ID: %u, Flags: %u, MaleDisaplayID: %u, FemaleDispalyID: %u, HighResMaleDisplayId: %u, HighResFemaleDisplayId: %u, CharComponentTexLayoutID: %d, ClientPrefix: %s, CharComponentTexLayoutHiResID: %d, BaseRaceID: %d",
+				r.ID, r.Flags, r.MaleDisplayID, r.FemaleDisplayID, r.HighResMaleDisplayID, r.HighResFemaleDisplayID, r.CharComponentTexLayoutID, r.ClientPrefix.c_str(), r.CharComponentTexLayoutHiResID, r.BaseRaceID);
 		}
 		delete wf;
 	}
@@ -327,7 +362,7 @@ void testWowDatabaseClassic()
 	if (!wowEnv->init("wow_classic"))
 		printf("init fail!\n");
 	else
-		printf("init success!\n");
+		printf("wowEnv init success! %s, %s, %s\n", wowEnv->getProduct(), wowEnv->getLocale(), wowEnv->getVersionString());
 
 	if (!wowEnv->loadCascListFiles())
 		printf("listfile fail!\n");
