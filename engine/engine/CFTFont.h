@@ -129,7 +129,7 @@ private:
 	int32_t		Ascender;				//overhang
 	int32_t		Descender;			//underhang
 
-	std::vector<ITexture*>			FontTextures;
+	std::vector<std::shared_ptr<ITexture>>			FontTextures;
 
 	int32_t	NextX;
 	int32_t  NextY;

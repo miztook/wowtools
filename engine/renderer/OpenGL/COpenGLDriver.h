@@ -49,8 +49,8 @@ public:
 	ITextureWriter* createTextureWriter(ITexture* texture) override;
 	bool removeTextureWriter(ITexture* texture) override;
 
-	ITexture* createTexture(bool mipmap, const dimension2d& size, ECOLOR_FORMAT format) override;
-	ITexture* createTexture(bool mipmap, std::shared_ptr<IImage> image) override;
+	std::shared_ptr<ITexture> createTexture(bool mipmap, const dimension2d& size, ECOLOR_FORMAT format) override;
+	std::shared_ptr<ITexture> createTexture(bool mipmap, std::shared_ptr<IImage> image) override;
 	
 public:
 	COpenGLMaterialRenderComponent* getMaterialRenderComponent() const { return MaterialRenderComponent.get();}

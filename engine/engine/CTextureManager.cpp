@@ -10,8 +10,6 @@
 CTextureManager::CTextureManager(wowEnvironment* wowEnv)
 	: WowEnv(wowEnv)
 {
-	DefaultWhite = nullptr;
-
 	loadDefaultTextures();
 }
 
@@ -19,12 +17,12 @@ CTextureManager::~CTextureManager()
 {
 	for (auto itr = TextureMap.begin(); itr != TextureMap.end(); ++itr)
 	{
-		ITexture* tex = itr->second;
-		if (tex)
-			delete tex;
+		std::shared_ptr<ITexture> tex = itr->second;
+		tex.reset();
 	}
 	TextureMap.clear();
 
+	m_TextureCache.flushCache();
 	m_BlpImageCache.flushCache();
 }
 
@@ -82,7 +80,7 @@ std::shared_ptr<ITexture> CTextureManager::loadTexture(const char* filename, boo
 		return tex;
 
 	std::shared_ptr<IImage> image = loadImage(filename);
-	std::shared_ptr<ITexture> texture(createTexture(mipmap, image));
+	std::shared_ptr<ITexture> texture = g_Engine->getDriver()->createTexture(mipmap, image);
 
 	if (texture)
 		m_TextureCache.addToCache(realfilename, texture);
@@ -90,7 +88,7 @@ std::shared_ptr<ITexture> CTextureManager::loadTexture(const char* filename, boo
 	return texture;
 }
 
-ITexture* CTextureManager::getManualTexture(const char* name) const
+std::shared_ptr<ITexture> CTextureManager::getManualTexture(const char* name) const
 {
 	auto itr = TextureMap.find(name);
 	if (itr == TextureMap.end())
@@ -99,12 +97,12 @@ ITexture* CTextureManager::getManualTexture(const char* name) const
 	return itr->second;
 }
 
-ITexture* CTextureManager::addTexture(const char* name, std::shared_ptr<IImage> image, bool mipmap)
+std::shared_ptr<ITexture> CTextureManager::addTexture(const char* name, std::shared_ptr<IImage> image, bool mipmap)
 {
 	if (TextureMap.find(name) != TextureMap.end())
 		return nullptr;
 
-	ITexture* tex = g_Engine->getDriver()->createTexture(false, image);
+	std::shared_ptr<ITexture> tex = g_Engine->getDriver()->createTexture(false, image);
 	if (!tex)
 	{
 		return nullptr;
@@ -119,23 +117,10 @@ void CTextureManager::removeTexture(const char* name)
 	if (itr == TextureMap.end())
 		return;
 
-	ITexture* tex = itr->second;
-	if (tex)
-		delete tex;
+	std::shared_ptr<ITexture> tex = itr->second;
+	tex.reset();
 
 	TextureMap.erase(itr);
-}
-
-ITexture* CTextureManager::createEmptyTexture(const dimension2d& size, ECOLOR_FORMAT format)
-{
-	ITexture* tex = g_Engine->getDriver()->createTexture(false, size, format);
-	return tex;
-}
-
-ITexture* CTextureManager::createTexture(bool mipmap, std::shared_ptr<IImage> image)
-{
-	ITexture* tex = g_Engine->getDriver()->createTexture(mipmap, image);
-	return tex;
 }
 
 void CTextureManager::loadDefaultTextures()
@@ -150,5 +135,5 @@ void CTextureManager::loadDefaultTextures()
 	memset(data, 0xff, nbytes);
 
 	std::shared_ptr<CCImage> img = std::make_shared<CCImage>(format, size, data, true);
-	DefaultWhite = addTexture("$DefaultWhite", img, true);
+	addTexture("$DefaultWhite", img, true);
 }

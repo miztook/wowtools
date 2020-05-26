@@ -31,14 +31,14 @@ public:
 	std::shared_ptr<ITexture> loadTexture(const char* filename, bool mipmap);
 
 public:
-	ITexture* getTextureWhite() const { return DefaultWhite; }
+	std::shared_ptr<ITexture> getTextureWhite() const
+	{
+		return getManualTexture("$DefaultWhite");
+	}
 
-	ITexture* getManualTexture(const char* name) const;
-	ITexture* addTexture(const char* name, std::shared_ptr<IImage> image, bool mipmap);
+	std::shared_ptr<ITexture> getManualTexture(const char* name) const;
+	std::shared_ptr<ITexture> addTexture(const char* name, std::shared_ptr<IImage> image, bool mipmap);
 	void removeTexture(const char* name);
-
-	ITexture* createEmptyTexture(const dimension2d& size, ECOLOR_FORMAT format);
-	ITexture* createTexture(bool mipmap, std::shared_ptr<IImage> image);
 
 private:
 	void loadDefaultTextures();
@@ -46,8 +46,7 @@ private:
 private:
 	wowEnvironment*		WowEnv;
 
-	ITexture*	DefaultWhite;
-	std::map<std::string, ITexture*>	TextureMap;
+	std::map<std::string, std::shared_ptr<ITexture>>	TextureMap;
 	std::list<IRenderTarget*>	RenderTargets;
 
 	CResourceCache<IImage>	m_BlpImageCache;

@@ -152,8 +152,8 @@ public:
 	virtual bool removeTextureWriter(ITexture* texture) = 0;
 
 	//
-	virtual ITexture* createTexture(bool mipmap, const dimension2d& size, ECOLOR_FORMAT format) = 0;
-	virtual ITexture* createTexture(bool mipmap, std::shared_ptr<IImage> image) = 0;
+	virtual std::shared_ptr<ITexture> createTexture(bool mipmap, const dimension2d& size, ECOLOR_FORMAT format) = 0;
+	virtual std::shared_ptr<ITexture> createTexture(bool mipmap, std::shared_ptr<IImage> image) = 0;
 
 public:
 	CAdapterInfo	AdapterInfo;

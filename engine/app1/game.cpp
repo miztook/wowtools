@@ -70,7 +70,7 @@ void CGame::createScene()
 		CMeshSceneNode* sphereSceneNode = m_pScene->addMeshSceneNode("$sphere");
 		sphereSceneNode->setMesh(g_Engine->getMeshManager()->getMesh("$sphere"));
 		CMaterial& mat = sphereSceneNode->getMeshRenderer()->getMaterial();
-		mat.setMainTexture(g_Engine->getTextureManager()->getTextureWhite());
+		mat.setMainTexture(g_Engine->getTextureManager()->getTextureWhite().get());
 		sphereSceneNode->getTransform()->setPos(vector3df(1, 1, 0));
 		sphereSceneNode->getTransform()->setScale(vector3df(1.5));
 	}

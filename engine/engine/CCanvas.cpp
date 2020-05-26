@@ -21,10 +21,10 @@ CCanvas::~CCanvas()
 
 void CCanvas::add2DColor(const recti&rect, SColor color, E_2DBlendMode mode /*= E_Solid*/)
 {
-	ITexture* texture = g_Engine->getTextureManager()->getTextureWhite();
+	auto texture = g_Engine->getTextureManager()->getTextureWhite();
 
 	S2DBlendParam blendParam(color.getAlpha() < 255, false, mode);
-	SQuadDrawBatchKey key(texture, blendParam);
+	SQuadDrawBatchKey key(texture.get(), blendParam);
 	SQuadBatchDraw& batchDraw = m_2DQuadDrawMap[key];
 
 	{

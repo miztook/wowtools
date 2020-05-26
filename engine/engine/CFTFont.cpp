@@ -33,12 +33,12 @@ CFTFont::CFTFont(CFontManager* fontManager, const char* faceName, int faceIndex,
 
 CFTFont::~CFTFont()
 {
-	for (ITexture* tex : FontTextures)
+	for (std::shared_ptr<ITexture> tex : FontTextures)
 	{
 		if (tex)
 		{
-			g_Engine->getDriver()->removeTextureWriter(tex);
-			delete tex;
+			g_Engine->getDriver()->removeTextureWriter(tex.get());
+			tex.reset();
 		}
 	}
 
@@ -87,7 +87,7 @@ void CFTFont::drawA(CCanvas* canvas, const char* utf8text, SColor color, vector2
 		int idx = charInfo->TexIndex;
 		ASSERT(idx >= 0 && idx < (int32_t)FontTextures.size());
 
-		ITexture* texture = FontTextures[idx];
+		ITexture* texture = FontTextures[idx].get();
 		float posX0 = (float)(x + charInfo->offsetX);
 		float posX1 = (float)(posX0 + charInfo->UVRect.getWidth());
 		float posY0 = (float)(y + charInfo->offsetY);
@@ -171,7 +171,7 @@ void CFTFont::drawW(CCanvas* canvas, const char16_t* text, SColor color, vector2
 		int idx = charInfo->TexIndex;
 		ASSERT(idx >= 0 && idx < (int32_t)FontTextures.size());
 
-		ITexture* texture = FontTextures[idx];
+		ITexture* texture = FontTextures[idx].get();
 
 		float posX0 = (float)(x + charInfo->offsetX);
 		float posX1 = (float)(posX0 + charInfo->UVRect.getWidth());
@@ -462,7 +462,7 @@ const CFTFont::SCharInfo* CFTFont::addChar(char16_t ch)
 	}
 
 	//write texture
-	ITexture* tex = FontTextures.back();
+	ITexture* tex = FontTextures.back().get();
 
 	int32_t charposx = CurrentX;
 	int32_t charposy = CurrentY;
@@ -581,7 +581,7 @@ ITexture* CFTFont::getTexture(uint32_t idx)
 	if (idx >= (uint32_t)FontTextures.size())
 		return nullptr;
 
-	return FontTextures[idx];
+	return FontTextures[idx].get();
 }
 
 bool CFTFont::init()
@@ -692,7 +692,7 @@ bool CFTFont::addFontTexture()
 		format = ECF_A8R8G8B8;
 	}
 
-	ITexture* fontTex = g_Engine->getDriver()->createTexture(false, dimension2d(FONT_TEXTURE_SIZE, FONT_TEXTURE_SIZE), format);	   //no mipmap
+	auto fontTex = g_Engine->getDriver()->createTexture(false, dimension2d(FONT_TEXTURE_SIZE, FONT_TEXTURE_SIZE), format);	   //no mipmap
 	FontTextures.push_back(fontTex);
 
 	return true;

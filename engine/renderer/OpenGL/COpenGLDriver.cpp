@@ -771,24 +771,22 @@ bool COpenGLDriver::removeTextureWriter(ITexture * texture)
 	return TextureWriteComponent->removeTextureWriter(texture);
 }
 
-ITexture* COpenGLDriver::createTexture(bool mipmap, const dimension2d& size, ECOLOR_FORMAT format)
+std::shared_ptr<ITexture> COpenGLDriver::createTexture(bool mipmap, const dimension2d& size, ECOLOR_FORMAT format)
 {
-	COpenGLTexture* tex = new COpenGLTexture(this, mipmap);
+	auto tex = std::make_shared<COpenGLTexture>(this, mipmap);
 	if (!tex->createEmptyTexture(size, format))
 	{
-		delete tex;
 		return nullptr;
 	}
-	return tex;
+	return std::static_pointer_cast<ITexture>(tex);
 }
 
-ITexture* COpenGLDriver::createTexture(bool mipmap, std::shared_ptr<IImage> image)
+std::shared_ptr<ITexture> COpenGLDriver::createTexture(bool mipmap, std::shared_ptr<IImage> image)
 {
-	COpenGLTexture* tex = new COpenGLTexture(this, mipmap);
+	auto tex = std::make_shared<COpenGLTexture>(this, mipmap);
 	if (!tex->createFromImage(image))
 	{
-		delete tex;
 		return nullptr;
 	}
-	return tex;
+	return std::static_pointer_cast<ITexture>(tex);
 }

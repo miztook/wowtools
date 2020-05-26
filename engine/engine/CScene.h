@@ -8,6 +8,7 @@
 
 class CCamera;
 class ISceneNode;
+class ITexture;
 
 class CMeshSceneNode;
 
@@ -42,5 +43,7 @@ private:
 	std::unique_ptr<CCamera>	m_p2DCamera;
 
 	std::list<ISceneNode*>	m_SceneNodes;		//所有结点
+
+	ITexture*		DebugTexture;
 };
 
