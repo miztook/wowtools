@@ -31,6 +31,8 @@ public:
 	void cleanupSceneNodes();
 	void deleteAllSceneNodes();
 	const std::list<ISceneNode*>& getTopSceneNodeList() const { return m_SceneNodes; }
+	const ITexture* getDebugTexture() const { return DebugTexture.get(); }
+
 
 	void afterFrame() { cleanupSceneNodes(); }
 
@@ -44,6 +46,6 @@ private:
 
 	std::list<ISceneNode*>	m_SceneNodes;		//所有结点
 
-	ITexture*		DebugTexture;
+	std::shared_ptr<ITexture>		DebugTexture;
 };
 

@@ -52,7 +52,7 @@ void COpenGLTextureWriter::unlock(uint32_t face, uint32_t level) const
 {
 }
 
-bool COpenGLTextureWriter::copyToTexture(ITexture * texture, const recti * descRect) const
+bool COpenGLTextureWriter::copyToTexture(const ITexture* texture, const recti * descRect) const
 {
 	COpenGLMaterialRenderComponent* materialRenderComponent = Driver->getMaterialRenderComponent();
 	GLenum pixelFormat;

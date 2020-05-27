@@ -124,6 +124,8 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 				camRender->BackgroundColor = SColor(64, 64, 64);
 
 				CCanvas* canvas = camRender->RenderLoop.getCanvas();
+
+				renderDebugTexture(canvas, scene->getDebugTexture());
 				renderDebugInfo(driver, canvas);
 				canvas->renderSubBatch(cam);
 			}
@@ -157,6 +159,13 @@ void CSceneRenderer::renderDebugInfo(IVideoDriver* driver, CCanvas* canvas) cons
 		driver->PrimitivesDrawn,
 		driver->DrawCall);
 	EngineUtil::drawDebugInfo(canvas, debugMsg);
+}
+
+void CSceneRenderer::renderDebugTexture(CCanvas* canvas, const ITexture* tex) const
+{
+	if (!tex)
+		return;
+
 }
 
 CSceneRenderer::SCameraRender* CSceneRenderer::getCameraRender(const CCamera* cam)

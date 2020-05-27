@@ -73,8 +73,8 @@ public:
 	bool hasDepthAttachment() const { return HasDepthAttachment; }
 
 	virtual bool isValid() const = 0;
-	virtual ITexture* getRTTexture(int index) const = 0;
-	virtual ITexture* getDepthTexture() const = 0;
+	virtual const ITexture* getRTTexture(int index) const = 0;
+	virtual const ITexture* getDepthTexture() const = 0;
 	virtual bool writeToRTTexture() = 0;
 
 protected:

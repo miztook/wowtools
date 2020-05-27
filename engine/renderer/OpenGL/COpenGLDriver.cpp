@@ -761,12 +761,12 @@ void COpenGLDriver::deleteVao(const IVertexBuffer* vbuffer)
 	}
 }
 
-ITextureWriter* COpenGLDriver::createTextureWriter(ITexture* texture)
+ITextureWriter* COpenGLDriver::createTextureWriter(const ITexture* texture)
 {
 	return TextureWriteComponent->createTextureWriter(texture);
 }
 
-bool COpenGLDriver::removeTextureWriter(ITexture * texture)
+bool COpenGLDriver::removeTextureWriter(const ITexture* texture)
 {
 	return TextureWriteComponent->removeTextureWriter(texture);
 }

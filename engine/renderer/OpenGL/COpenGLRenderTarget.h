@@ -29,8 +29,8 @@ public:
 
 public:
 	bool isValid() const override { return FrameBuffer != 0; }
-	ITexture* getRTTexture(int index) const override;
-	ITexture* getDepthTexture() const override;
+	const ITexture* getRTTexture(int index) const override;
+	const ITexture* getDepthTexture() const override;
 	bool writeToRTTexture() override;
 
 	GLuint getFrameBuffer() const { return FrameBuffer; }
@@ -57,12 +57,12 @@ private:
 	const COpenGLDriver*	Driver;
 	GLenum	Attachments[MAX_COLOR_ATTACHMENTS + 1];
 
-	COpenGLTexture*		RTCopyTextures[MAX_COLOR_ATTACHMENTS];
+	std::unique_ptr<COpenGLTexture>		RTCopyTextures[MAX_COLOR_ATTACHMENTS];
 	GLuint		CopyFrameBuffer;
 
 	GLuint		FrameBuffer;
-	COpenGLTexture*		ColorTextures[MAX_COLOR_ATTACHMENTS];
-	COpenGLTexture*		DepthTexture;
+	std::unique_ptr<COpenGLTexture>		ColorTextures[MAX_COLOR_ATTACHMENTS];
+	std::unique_ptr<COpenGLTexture>		DepthTexture;
 	GLuint		DepthSurface;
 
 	const bool  MultiSample;

@@ -30,8 +30,8 @@ public:
 
 	void setTextureFilter(uint32_t st, E_TEXTURE_FILTER filter, bool mipmap, bool isCube);
 	void setTextureMipMap(uint32_t st, bool mipmap, bool isCube);
-	void setSamplerTexture(uint32_t st, ITexture* tex, bool isCube);
-	void setSamplerTextureMultiSample(uint32_t st, ITexture* tex);
+	void setSamplerTexture(uint32_t st, const ITexture* tex, bool isCube);
+	void setSamplerTextureMultiSample(uint32_t st, const ITexture* tex);
 	void setTextureWrap(uint32_t st, E_TEXTURE_ADDRESS address, E_TEXTURE_CLAMP wrap, bool isCube);
 
 	void resetRSCache();

@@ -44,6 +44,7 @@ private:
 	void endFrame();
 
 	void renderDebugInfo(IVideoDriver* driver, CCanvas* canvas) const;
+	void renderDebugTexture(CCanvas* canvas, const ITexture* tex) const;
 	SCameraRender* getCameraRender(const CCamera* cam);
 
 private:

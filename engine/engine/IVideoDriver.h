@@ -148,8 +148,8 @@ public:
 	virtual IIndexBuffer* createIndexBuffer(E_MESHBUFFER_MAPPING mapping) = 0;
 
 	//
-	virtual ITextureWriter* createTextureWriter(ITexture* texture) = 0;
-	virtual bool removeTextureWriter(ITexture* texture) = 0;
+	virtual ITextureWriter* createTextureWriter(const ITexture* texture) = 0;
+	virtual bool removeTextureWriter(const ITexture* texture) = 0;
 
 	//
 	virtual std::shared_ptr<ITexture> createTexture(bool mipmap, const dimension2d& size, ECOLOR_FORMAT format) = 0;

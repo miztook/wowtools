@@ -14,10 +14,6 @@ COpenGLRenderTarget::COpenGLRenderTarget(const COpenGLDriver* driver, const dime
 	if (HasDepthAttachment)
 		Attachments[NumColorAttachments] = GL_DEPTH_ATTACHMENT;
 
-	memset(ColorTextures, 0, sizeof(ColorTextures));
-	memset(RTCopyTextures, 0, sizeof(RTCopyTextures));
-	DepthTexture = nullptr;
-
 	buildVideoResources();
 }
 
@@ -26,19 +22,19 @@ COpenGLRenderTarget::~COpenGLRenderTarget()
 	releaseVideoResources();
 }
 
-ITexture* COpenGLRenderTarget::getRTTexture(int index) const
+const ITexture* COpenGLRenderTarget::getRTTexture(int index) const
 {
 	if (index < 0 || index >= NumColorAttachments)
 	{
 		ASSERT(false);
 		return nullptr;
 	}
-	return MultiSample ? RTCopyTextures[index] : ColorTextures[index];
+	return MultiSample ? RTCopyTextures[index].get() : ColorTextures[index].get();
 }
 
-ITexture* COpenGLRenderTarget::getDepthTexture() const
+const ITexture* COpenGLRenderTarget::getDepthTexture() const
 {
-	return DepthTexture;
+	return DepthTexture.get();
 }
 
 bool COpenGLRenderTarget::writeToRTTexture()
@@ -117,7 +113,7 @@ bool COpenGLRenderTarget::buildVideoResources()
 		for (int i = 0; i < NumColorAttachments; ++i)
 		{
 			ASSERT(!RTCopyTextures[i]);
-			RTCopyTextures[i] = new COpenGLTexture(Driver, false);
+			RTCopyTextures[i] = std::make_unique<COpenGLTexture>(Driver, false);
 			success = RTCopyTextures[i]->createEmptyTexture(TextureSize, ColorFormats[i]);
 			ASSERT(success);
 		}
@@ -137,11 +133,7 @@ void COpenGLRenderTarget::releaseVideoResources()
 	{
 		for (int i = 0; i < NumColorAttachments; ++i)
 		{
-			if (RTCopyTextures[i])
-			{
-				delete RTCopyTextures[i];
-				RTCopyTextures[i] = nullptr;
-			}
+			RTCopyTextures[i].reset();
 		}
 	}
 
@@ -151,19 +143,11 @@ void COpenGLRenderTarget::releaseVideoResources()
 		DepthSurface = 0;
 	}
 
-	if (DepthTexture)
-	{
-		delete DepthTexture;
-		DepthTexture = nullptr;
-	}
+	DepthTexture.reset();
 
 	for (int i = 0; i < NumColorAttachments; ++i)
 	{
-		if (ColorTextures[i])
-		{
-			delete ColorTextures[i];
-			ColorTextures[i] = nullptr;
-		}
+		ColorTextures[i].reset();
 	}
 
 	if (CopyFrameBuffer)
@@ -204,7 +188,7 @@ bool COpenGLRenderTarget::createAsRenderTarget(const dimension2d& size, ECOLOR_F
 	for (int i = 0; i < NumColorAttachments; ++i)
 	{
 		ASSERT(!ColorTextures[i]);
-		ColorTextures[i] = new COpenGLTexture(Driver, false);
+		ColorTextures[i] = std::make_unique<COpenGLTexture>(Driver, false);
 		if (MultiSample)
 			ColorTextures[i]->createRTTexture(size, ColorFormats[i], antialias * 2);
 		else
@@ -217,7 +201,7 @@ bool COpenGLRenderTarget::createAsRenderTarget(const dimension2d& size, ECOLOR_F
 		if (UseDepthTexture)		//texture
 		{
 			ASSERT(!DepthTexture);
-			DepthTexture = new COpenGLTexture(Driver, false);
+			DepthTexture = std::make_unique<COpenGLTexture>(Driver, false);
 			bool bRet;
 			if (MultiSample)
 				bRet = DepthTexture->createDSTexture_INTZ(size, antialias * 2);
@@ -225,8 +209,7 @@ bool COpenGLRenderTarget::createAsRenderTarget(const dimension2d& size, ECOLOR_F
 				bRet = DepthTexture->createDSTexture_INTZ(size, 0);
 			if (!bRet)
 			{
-				delete DepthTexture;
-				DepthTexture = nullptr;
+				DepthTexture.reset();
 				UseDepthTexture = false;
 			}
 			else

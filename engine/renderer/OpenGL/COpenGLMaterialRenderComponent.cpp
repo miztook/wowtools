@@ -415,21 +415,21 @@ void COpenGLMaterialRenderComponent::setTextureMipMap(uint32_t st, bool mipmap, 
 	}
 }
 
-void COpenGLMaterialRenderComponent::setSamplerTexture(uint32_t st, ITexture* tex, bool isCube)
+void COpenGLMaterialRenderComponent::setSamplerTexture(uint32_t st, const ITexture* tex, bool isCube)
 {
 	setActiveTexture(st);
 
-	COpenGLTexture* gltex = static_cast<COpenGLTexture*>(tex);
+	const COpenGLTexture* gltex = static_cast<const COpenGLTexture*>(tex);
 	glBindTexture(isCube ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D, gltex ? gltex->getGLTexture() : 0);
 	ASSERT_OPENGL_SUCCESS();
 	RsCache.TextureUnits[st].texture = tex;
 }
 
-void COpenGLMaterialRenderComponent::setSamplerTextureMultiSample(uint32_t st, ITexture* tex)
+void COpenGLMaterialRenderComponent::setSamplerTextureMultiSample(uint32_t st, const ITexture* tex)
 {
 	setActiveTexture(st);
 
-	COpenGLTexture* gltex = static_cast<COpenGLTexture*>(tex);
+	const COpenGLTexture* gltex = static_cast<const COpenGLTexture*>(tex);
 	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, gltex ? gltex->getGLTexture() : 0);
 	ASSERT_OPENGL_SUCCESS();
 	RsCache.TextureUnits[st].texture = tex;

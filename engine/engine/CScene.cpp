@@ -4,16 +4,21 @@
 #include "CMeshManager.h"
 #include "ISceneNode.h"
 #include "CMeshSceneNode.h"
+#include "CTextureManager.h"
 
 CScene::CScene(const char* strName)
 	: m_strName(strName)
 {
 	m_p3DCamera = std::make_unique<CCamera>(false);
 	m_p2DCamera = std::make_unique<CCamera>(true);
+
+	DebugTexture = g_Engine->getTextureManager()->getTextureWhite();
 }
 
 CScene::~CScene()
 {
+	DebugTexture.reset();
+
 	deleteAllSceneNodes();
 
 	m_p2DCamera.reset();

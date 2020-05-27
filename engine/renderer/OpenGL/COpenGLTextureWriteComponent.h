@@ -16,7 +16,7 @@ private:
 public:
 	void* lock(uint32_t face, uint32_t level, uint32_t& pitch) const override;
 	void unlock(uint32_t face, uint32_t level) const override;
-	bool copyToTexture(ITexture* texture, const recti* descRect = nullptr) const override;
+	bool copyToTexture(const ITexture* texture, const recti* descRect = nullptr) const override;
 	void initEmptyData() override;
 
 private:

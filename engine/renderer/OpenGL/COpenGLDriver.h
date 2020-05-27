@@ -46,8 +46,8 @@ public:
 	IVertexBuffer* createVertexBuffer(E_MESHBUFFER_MAPPING mapping) override;
 	IIndexBuffer* createIndexBuffer(E_MESHBUFFER_MAPPING mapping) override;
 
-	ITextureWriter* createTextureWriter(ITexture* texture) override;
-	bool removeTextureWriter(ITexture* texture) override;
+	ITextureWriter* createTextureWriter(const ITexture* texture) override;
+	bool removeTextureWriter(const ITexture* texture) override;
 
 	std::shared_ptr<ITexture> createTexture(bool mipmap, const dimension2d& size, ECOLOR_FORMAT format) override;
 	std::shared_ptr<ITexture> createTexture(bool mipmap, std::shared_ptr<IImage> image) override;
