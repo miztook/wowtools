@@ -25,8 +25,6 @@ public:
 		SampleCount = 0;
 		IsCube = false;
 		NumMipmaps = 1;
-
-		m_pImage = nullptr;
 	}
 
 public:

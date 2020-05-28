@@ -59,7 +59,6 @@ void CFTFont::drawA(CCanvas* canvas, const char* utf8text, SColor color, vector2
 	const char* p = utf8text;
 	int nLen = nCharCount > 0 ? nCharCount : (int)strlen(utf8text);
 
-	SVertex_PCT verts[4];			//left top, right top, left bottom, right bottom
 	while (*p && nLen >= 0)
 	{
 		char16_t ch;
@@ -98,42 +97,10 @@ void CFTFont::drawA(CCanvas* canvas, const char* utf8text, SColor color, vector2
 		float texY0 = charInfo->UVRect.top * fInv;
 		float texY1 = charInfo->UVRect.bottom * fInv;
 
-		float fLeft = posX0;
-		float fTop = posY0;
-		float fRight = posX1;
-		float fBottom = posY1;
+		rectf rect(posX0, posY0, posX1, posY1);
+		rectf texcoord(texX0, texY0, texX1, texY1);
 
-		float du = texX1 - texX0;
-		float dv = texY1 - texY0;
-
-		verts[0].Pos.set(fLeft, fTop, 0);
-		verts[0].Color = color;
-		verts[0].TCoords.set(
-			texX0,
-			texY0);
-
-		verts[1].Pos.set(fRight, fTop, 0);
-		verts[1].Color = color;
-		verts[1].TCoords.set(
-			texX1,
-			texY0);
-
-		verts[2].Pos.set(fLeft, fBottom, 0);
-		verts[2].Color = color;
-		verts[2].TCoords.set(
-			texX0,
-			texY1);
-
-		verts[3].Pos.set(fRight, fBottom, 0);
-		verts[3].Color = color;
-		verts[3].TCoords.set(
-			texX1,
-			texY1);
-
-		canvas->add2DQuads(texture,
-			&verts[0],
-			1,
-			blendParam);
+		canvas->add2DImage(texture, rect, 0, color, texcoord, blendParam);
 
 		x += charInfo->width;
 	}
@@ -149,7 +116,6 @@ void CFTFont::drawW(CCanvas* canvas, const char16_t* text, SColor color, vector2
 
 	uint32_t len = nCharCount > 0 ? (uint32_t)nCharCount : (uint32_t)CSysCodeCvt::UTF16Len(text);
 
-	SVertex_PCT verts[4];			//left top, right top, left bottom, right bottom
 	for (uint32_t i = 0; i < len; ++i)
 	{
 		char16_t c = text[i];
@@ -188,37 +154,10 @@ void CFTFont::drawW(CCanvas* canvas, const char16_t* text, SColor color, vector2
 		float fRight = posX1;
 		float fBottom = posY1;
 
-		float du = texX1 - texX0;
-		float dv = texY1 - texY0;
+		rectf rect(posX0, posY0, posX1, posY1);
+		rectf texcoord(texX0, texY0, texX1, texY1);
 
-		verts[0].Pos.set(fLeft, fTop, 0);
-		verts[0].Color = color;
-		verts[0].TCoords.set(
-			texX0,
-			texY0);
-
-		verts[1].Pos.set(fRight, fTop, 0);
-		verts[1].Color = color;
-		verts[1].TCoords.set(
-			texX1,
-			texY0);
-
-		verts[2].Pos.set(fLeft, fBottom, 0);
-		verts[2].Color = color;
-		verts[2].TCoords.set(
-			texX0,
-			texY1);
-
-		verts[3].Pos.set(fRight, fBottom, 0);
-		verts[3].Color = color;
-		verts[3].TCoords.set(
-			texX1,
-			texY1);
-
-		canvas->add2DQuads(texture,
-			&verts[0],
-			1,
-			blendParam);
+		canvas->add2DImage(texture, rect, 0, color, texcoord, blendParam);
 
 		x += charInfo->width;
 	}

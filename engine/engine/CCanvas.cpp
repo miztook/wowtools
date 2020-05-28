@@ -41,24 +41,33 @@ void CCanvas::add2DColor(const recti&rect, SColor color, E_2DBlendMode mode /*= 
 	}
 }
 
-void CCanvas::add2DQuads(const ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam /*= S2DBlendParam::OpaqueSource()*/)
+void CCanvas::add2DImage(const ITexture* texture, const rectf& rect, float depth, const S2DBlendParam& blendParam /*= S2DBlendParam::OpaqueSource()*/)
 {
-	ASSERT(texture);
+	if (!texture)
+		return;
+
+	add2DImage(texture, rect, depth, SColor::White(), rectf(0, 0, 1, 1), blendParam);
+}
+
+void CCanvas::add2DImage(const ITexture* texture, const rectf& rect, float depth, SColor color, const rectf& texcoord, const S2DBlendParam& blendParam /*= S2DBlendParam::OpaqueSource()*/)
+{
 	if (!texture)
 		return;
 
 	SQuadDrawBatchKey key(texture, blendParam);
 	SQuadBatchDraw& batchDraw = m_2DQuadDrawMap[key];
 
-	const SVertex_PCT* p = vertices;
-	for (uint32_t i = 0; i < numQuads; ++i)
 	{
-		batchDraw.drawVerts.push_back(p[0]);
-		batchDraw.drawVerts.push_back(p[1]);
-		batchDraw.drawVerts.push_back(p[2]);
-		batchDraw.drawVerts.push_back(p[3]);
+		SVertex_PCT verts[4];
+		verts[0].set(vector3df((float)rect.left, (float)rect.top, depth), color, vector2df(texcoord.left, texcoord.top));
+		verts[1].set(vector3df((float)rect.right, (float)rect.top, depth), color, vector2df(texcoord.right, texcoord.top));
+		verts[2].set(vector3df((float)rect.left, (float)rect.bottom, depth), color, vector2df(texcoord.left, texcoord.bottom));
+		verts[3].set(vector3df((float)rect.right, (float)rect.bottom, depth), color, vector2df(texcoord.right, texcoord.bottom));
 
-		p += 4;
+		batchDraw.drawVerts.emplace_back(verts[0]);
+		batchDraw.drawVerts.emplace_back(verts[1]);
+		batchDraw.drawVerts.emplace_back(verts[2]);
+		batchDraw.drawVerts.emplace_back(verts[3]);
 	}
 }
 

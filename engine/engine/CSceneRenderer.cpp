@@ -7,6 +7,7 @@
 #include "IRenderer.h"
 #include "CRenderLoop.h"
 #include "CRenderSetting.h"
+#include "ITexture.h"
 #include <algorithm>
 
 bool SceneNodeCompare(const ISceneNode* a, const ISceneNode* b)
@@ -166,6 +167,9 @@ void CSceneRenderer::renderDebugTexture(CCanvas* canvas, const ITexture* tex) co
 	if (!tex)
 		return;
 
+	float x = 100;
+	float y = 10;
+	canvas->add2DImage(tex, rectf(x, y, x + tex->getSize().width, y + tex->getSize().height), 0, S2DBlendParam::OpaqueSource());
 }
 
 CSceneRenderer::SCameraRender* CSceneRenderer::getCameraRender(const CCamera* cam)

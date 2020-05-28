@@ -20,7 +20,8 @@ public:
 public:
 	//
 	void add2DColor(const recti&rect, SColor color, E_2DBlendMode mode = E_Solid);
-	void add2DQuads(const ITexture* texture, const SVertex_PCT* vertices, uint32_t numQuads, const S2DBlendParam& blendParam = S2DBlendParam::OpaqueSource());
+	void add2DImage(const ITexture* texture, const rectf& rect, float depth, const S2DBlendParam& blendParam = S2DBlendParam::OpaqueSource());
+	void add2DImage(const ITexture* texture, const rectf& rect, float depth, SColor color, const rectf& texcoord, const S2DBlendParam& blendParam = S2DBlendParam::OpaqueSource());
 	void renderSubBatch(const CCamera* cam);
 
 private:

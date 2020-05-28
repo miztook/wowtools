@@ -106,7 +106,7 @@ public:
 	E_DRIVER_TYPE getDriverType() const { return DriverType; }
 
 	const recti& getViewPort() const { return Viewport; }
-	const dimension2d& getDisplayMode() const { return ScreenSize; }
+	const dimension2d& getScreenSize() const { return ScreenSize; }
 	const SDriverSetting& getDriverSetting() const { return DriverSetting; }
 
 	void setGlobalMaterial(const SGlobalMaterial& globalMaterial) { GlobalMaterial = &globalMaterial; }

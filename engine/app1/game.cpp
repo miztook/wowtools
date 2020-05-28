@@ -47,7 +47,7 @@ void CGame::createScene()
 {
 	m_pScene = new CScene("default");
 
-	const auto& dim = g_Engine->getDriver()->getDisplayMode();
+	const auto& dim = g_Engine->getDriver()->getScreenSize();
 	float aspect = (float)dim.width / dim.height;
 	vector3df camPos(0, 5, -10);
 	vector3df camDir = f3d::normalize(vector3df(0, 0, 0) - camPos);
@@ -66,6 +66,7 @@ void CGame::createScene()
 		mat.RenderQueue = (ERQ_GEOMETRY - 50);
 	}
 
+	/*
 	{
 		CMeshSceneNode* sphereSceneNode = m_pScene->addMeshSceneNode("$sphere");
 		sphereSceneNode->setMesh(g_Engine->getMeshManager()->getMesh("$sphere"));
@@ -74,6 +75,7 @@ void CGame::createScene()
 		sphereSceneNode->getTransform()->setPos(vector3df(1, 1, 0));
 		sphereSceneNode->getTransform()->setScale(vector3df(1.5));
 	}
+	*/
 }
 
 void CGame::update()
