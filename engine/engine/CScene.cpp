@@ -12,7 +12,7 @@ CScene::CScene(const char* strName)
 	m_p3DCamera = std::make_unique<CCamera>(false);
 	m_p2DCamera = std::make_unique<CCamera>(true);
 
-	DebugTexture = g_Engine->getTextureManager()->getTextureWhite();
+	DebugTexture = g_Engine->getTextureManager()->loadTexture("character/scourge/female/scourgefemalefacelower00_00.blp", false);
 }
 
 CScene::~CScene()

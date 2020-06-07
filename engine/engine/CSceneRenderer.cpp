@@ -33,10 +33,9 @@ CSceneRenderer::CSceneRenderer()
 
 CSceneRenderer::~CSceneRenderer()
 {
-	for (auto itr : CameraRenderMap)
+	for (auto itr = CameraRenderMap.begin(); itr != CameraRenderMap.end(); ++itr)
 	{
-		SCameraRender* cameraRender = itr.second;
-		delete cameraRender;
+		delete itr->second;
 	}
 	CameraRenderMap.clear();
 }

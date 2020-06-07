@@ -63,13 +63,14 @@ void CResourceCache<T>::addToCache(const char* filename, std::shared_ptr<T> item
 template <class T>
 void CResourceCache<T>::flushCache()
 {
-	for (auto itr : UseMap)
+	for (auto& itr : UseMap)
 	{
 		auto count = itr.second.use_count();
-		assert(itr.second.use_count() == 1);
+		assert(count == 1);
 		if (itr.second.use_count() == 1)
 			itr.second.reset();
 	}
+	UseMap.clear();
 }
 
 

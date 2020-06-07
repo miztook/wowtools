@@ -17,8 +17,7 @@ CTextureManager::~CTextureManager()
 {
 	for (auto itr = TextureMap.begin(); itr != TextureMap.end(); ++itr)
 	{
-		std::shared_ptr<ITexture> tex = itr->second;
-		tex.reset();
+		itr->second.reset();
 	}
 	TextureMap.clear();
 
@@ -80,7 +79,12 @@ std::shared_ptr<ITexture> CTextureManager::loadTexture(const char* filename, boo
 		return tex;
 
 	std::shared_ptr<IImage> image = loadImage(filename);
+	if (!image)
+		return nullptr;
+
 	std::shared_ptr<ITexture> texture = g_Engine->getDriver()->createTexture(mipmap, image);
+
+	int count = texture.use_count();
 
 	if (texture)
 		m_TextureCache.addToCache(realfilename, texture);

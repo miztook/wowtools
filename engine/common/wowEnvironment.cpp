@@ -12,10 +12,10 @@
 
 //
 wowEnvironment* g_WowEnvironment = nullptr;
-bool createWowEnvironment(CFileSystem * fs, bool loadCascFile)
+bool createWowEnvironment(CFileSystem* fs, const char* product, bool loadCascFile)
 {
 	g_WowEnvironment = new wowEnvironment(fs);
-	if (!g_WowEnvironment->init("wow_classic"))
+	if (!g_WowEnvironment->init(product))
 	{
 		delete g_WowEnvironment;
 		g_WowEnvironment = nullptr;

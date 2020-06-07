@@ -13,7 +13,7 @@
 #pragma comment(lib, "CascLib.lib")
 #pragma comment(lib, "pugixml.lib")
 
-void testWowEnvironment81();
+void testWowEnvironment83();
 void testWowEnvironmentClassic();
 
 int main(int argc, char* argv[])
@@ -22,14 +22,15 @@ int main(int argc, char* argv[])
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
+	testWowEnvironment83();
 	//testWowEnvironment81();
-	testWowEnvironmentClassic();
+	//testWowEnvironmentClassic();
 
 	getchar();
 	return 0;
 }
 
-void testWowEnvironment81()
+void testWowEnvironment83()
 {
 	CFileSystem* fs = new CFileSystem(R"(E:\World Of Warcraft)");
 	wowEnvironment* wowEnv = new wowEnvironment(fs);

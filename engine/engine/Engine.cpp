@@ -80,10 +80,10 @@ bool Engine::init(E_DRIVER_TYPE driverType, bool vsync, E_AA_MODE aaMode, driver
 	FontManager->createDefaultFonts();
 
 	g_FileSystem->writeLog(ELOG_GX, "Create TextureManager...");
-	TextureManager = new CTextureManager(nullptr);
+	TextureManager = new CTextureManager(g_WowEnvironment);
 
 	g_FileSystem->writeLog(ELOG_GX, "Create MeshManager...");
-	MeshManager = new CMeshManager(nullptr);
+	MeshManager = new CMeshManager(g_WowEnvironment);
 
 	g_FileSystem->writeLog(ELOG_GX, "Create MaterialManager...");
 	MaterialManager = new CMaterialManager();

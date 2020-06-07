@@ -90,7 +90,7 @@ private:
 	std::vector<std::string>		WmoFileList;
 };
 
-bool createWowEnvironment(CFileSystem* fs, bool loadCascFile);
+bool createWowEnvironment(CFileSystem* fs, const char* product, bool loadCascFile);
 void destroyWowEnvironment();
 
 extern wowEnvironment* g_WowEnvironment;

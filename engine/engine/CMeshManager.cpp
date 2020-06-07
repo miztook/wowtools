@@ -11,9 +11,9 @@ CMeshManager::CMeshManager(wowEnvironment* wowEnv)
 
 CMeshManager::~CMeshManager()
 {
-	for (auto& itr : MeshMap)
+	for (auto itr = MeshMap.begin(); itr != MeshMap.end(); ++itr)
 	{
-		delete itr.second;
+		delete itr->second;
 	}
 
 	MeshMap.clear();

@@ -48,6 +48,12 @@ int doRun()
 
 	createFileSystem(R"(E:\World Of Warcraft)");
 
+	if (!createWowEnvironment(g_FileSystem, "wow_classic", true))
+	{
+		destroyWowEnvironment();
+		return -1;
+	}
+
 	if (!createEngine(wndInfo, EDT_OPENGL, true, E_AA_FXAA, mywow_InitDriver))
 	{
 		destroyEngine();
@@ -61,6 +67,7 @@ int doRun()
 	g_Engine->setMessageHandler(&handler);
 
 	g_pGame->createScene();
+
 	CSceneRenderer* sceneRenderer = CSceneRenderer::createSceneRenderer();
 
 	MSG msg;
@@ -93,6 +100,7 @@ int doRun()
 
 	destroyEngine();
 
+	destroyWowEnvironment();
 	destroyFileSystem();
 
 	return 0;
