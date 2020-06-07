@@ -3,10 +3,14 @@
 #include "CMemFile.h"
 #include "CReadFile.h"
 #include "function.h"
+#include "q_memory.h"
 #include <regex>
+
+#include "CSysChrono.h"
 
 #include "CascLib.h"
 #include "CascCommon.h"
+
 
 #define LISTFILE "listfile.csv"
 
@@ -14,6 +18,14 @@
 wowEnvironment* g_WowEnvironment = nullptr;
 bool createWowEnvironment(CFileSystem* fs, const char* product, bool loadCascFile)
 {
+#ifdef A_PLATFORM_WIN_DESKTOP
+	QMem_Init(2, 100, 0);
+#else
+	QMem_Init(1, 4, 1);
+#endif
+
+	TIME_POINT last = CSysChrono::getTimePointNow();
+
 	g_WowEnvironment = new wowEnvironment(fs);
 	if (!g_WowEnvironment->init(product))
 	{
@@ -27,6 +39,10 @@ bool createWowEnvironment(CFileSystem* fs, const char* product, bool loadCascFil
 		if (!g_WowEnvironment->loadCascListFiles())
 			return false;
 	}
+
+	uint32_t ms = CSysChrono::getDurationMilliseconds(last);
+	OutputDebugStringA(std_string_format("duration: %u\n", ms).c_str());
+
 	return true;
 }
 
@@ -34,6 +50,8 @@ void destroyWowEnvironment()
 {
 	delete g_WowEnvironment;
 	g_WowEnvironment = nullptr;
+
+	QMem_End();
 }
 
 wowEnvironment::wowEnvironment(CFileSystem* fs)
@@ -88,9 +106,9 @@ bool wowEnvironment::loadCascListFiles()
 		if (!p)
 			continue;
 
-		std::string filename(p + 1);
-		normalizeFileName(filename);
-		str_tolower(filename);
+		string_cs256 filename(p + 1);
+		filename.normalize();
+		filename.make_lower();
 
 		*p = '\0';
 
@@ -112,7 +130,7 @@ bool wowEnvironment::loadCascListFiles()
 			const char* p = strchr(szFile, '/');
 			while (p)
 			{
-				std::string dir(szFile, (uint32_t)(p - szFile));
+				string_cs256 dir(szFile, (uint32_t)(p - szFile));
 				if (DirIndexMap.find(dir) == DirIndexMap.end())
 					DirIndexMap[dir] = szFile;														//add dir to index
 
@@ -239,12 +257,12 @@ void wowEnvironment::iterateFiles(const char* path, const char * ext, WOWFILECAL
 {
 	std::string strBaseDir(path);
 	str_tolower(strBaseDir);
-	auto itr = DirIndexMap.find(strBaseDir);
+	auto itr = DirIndexMap.find(strBaseDir.c_str());
 	if (itr == DirIndexMap.end())
 		return;
 
 	//calc start
-	std::string firstFile = itr->second;
+	const char* firstFile = itr->second.c_str();
 
 	auto it = FileName2IdMap.find(firstFile);
 	while (it != FileName2IdMap.end())
@@ -300,9 +318,9 @@ const char* wowEnvironment::getFileNameById(uint32_t id) const
 
 uint32_t wowEnvironment::getFileIdByName(const char* filename) const
 {
-	std::string fname(filename);
-	normalizeFileName(fname);
-	str_tolower(fname);
+	string_cs256 fname(filename);
+	fname.normalize();
+	fname.make_lower();
 	auto itr = FileName2IdMap.find(fname);
 	if (itr != FileName2IdMap.end())
 		return itr->second;

@@ -278,6 +278,15 @@
     <ClInclude Include="..\common\wowAnimation.h">
       <Filter>common</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\fixstring.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\q_memory.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\qzone_allocator.h">
+      <Filter>common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">
@@ -426,6 +435,9 @@
     </ClCompile>
     <ClCompile Include="..\engine\CTextureManager.cpp">
       <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\q_memory.cpp">
+      <Filter>common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

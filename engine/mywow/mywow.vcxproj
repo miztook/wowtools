@@ -30,6 +30,7 @@
     <ClInclude Include="..\common\CSysSync.h" />
     <ClInclude Include="..\common\CSysThread.h" />
     <ClInclude Include="..\common\CWriteFile.h" />
+    <ClInclude Include="..\common\fixstring.h" />
     <ClInclude Include="..\common\frustum.h" />
     <ClInclude Include="..\common\function.h" />
     <ClInclude Include="..\common\function3d.h" />
@@ -38,6 +39,8 @@
     <ClInclude Include="..\common\plane3d.h" />
     <ClInclude Include="..\common\predefine.h" />
     <ClInclude Include="..\common\quaternion.h" />
+    <ClInclude Include="..\common\qzone_allocator.h" />
+    <ClInclude Include="..\common\q_memory.h" />
     <ClInclude Include="..\common\rect.h" />
     <ClInclude Include="..\common\S3DVertex.h" />
     <ClInclude Include="..\common\SColor.h" />
@@ -116,6 +119,7 @@
     <ClCompile Include="..\common\CSysCodeCvt.cpp" />
     <ClCompile Include="..\common\CSysThread.cpp" />
     <ClCompile Include="..\common\CWriteFile.cpp" />
+    <ClCompile Include="..\common\q_memory.cpp" />
     <ClCompile Include="..\common\ScriptLexer.cpp" />
     <ClCompile Include="..\common\ScriptParser.cpp" />
     <ClCompile Include="..\common\wowDatabase.cpp" />
