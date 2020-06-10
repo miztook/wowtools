@@ -3,7 +3,6 @@
 #include "CMemFile.h"
 #include "CReadFile.h"
 #include "function.h"
-#include "q_memory.h"
 #include <regex>
 
 #include "CSysChrono.h"
@@ -18,12 +17,6 @@
 wowEnvironment* g_WowEnvironment = nullptr;
 bool createWowEnvironment(CFileSystem* fs, const char* product, bool loadCascFile)
 {
-#ifdef A_PLATFORM_WIN_DESKTOP
-	QMem_Init(2, 100, 0);
-#else
-	QMem_Init(1, 4, 1);
-#endif
-
 	TIME_POINT last = CSysChrono::getTimePointNow();
 
 	g_WowEnvironment = new wowEnvironment(fs);
@@ -50,8 +43,6 @@ void destroyWowEnvironment()
 {
 	delete g_WowEnvironment;
 	g_WowEnvironment = nullptr;
-
-	QMem_End();
 }
 
 wowEnvironment::wowEnvironment(CFileSystem* fs)

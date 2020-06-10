@@ -38,6 +38,27 @@
     <ClCompile Include="..\..\engine\common\wowWDC2File.cpp">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\common\CSysCodeCvt.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\CSysThread.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\q_memory.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\ScriptLexer.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\ScriptParser.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\wowGameFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\wowM2File.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="common">
@@ -142,6 +163,48 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\engine\common\wowWDC2File.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\CResourceCache.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\CSysCodeCvt.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\CSysThread.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\fixstring.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\q_memory.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\qzone_allocator.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\ScriptLexer.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\ScriptParser.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\vector4d.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowAnimation.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowGameFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowHeader.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowM2File.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowM2Struct.h">
       <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>

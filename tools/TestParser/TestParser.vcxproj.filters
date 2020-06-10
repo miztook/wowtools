@@ -59,6 +59,12 @@
     <ClCompile Include="Ogre\ScriptTranslator.cpp">
       <Filter>Ogre</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\engine\common\q_memory.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\common\wowWDC2File.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="common">
@@ -197,6 +203,21 @@
     </ClInclude>
     <ClInclude Include="Ogre\ScriptTranslator.h">
       <Filter>Ogre</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\fixstring.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\q_memory.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\qzone_allocator.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowAnimation.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\common\wowWDC2File.h">
+      <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

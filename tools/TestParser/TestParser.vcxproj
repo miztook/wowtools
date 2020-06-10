@@ -168,6 +168,7 @@
     <ClCompile Include="..\..\engine\common\CSysCodeCvt.cpp" />
     <ClCompile Include="..\..\engine\common\CSysThread.cpp" />
     <ClCompile Include="..\..\engine\common\CWriteFile.cpp" />
+    <ClCompile Include="..\..\engine\common\q_memory.cpp" />
     <ClCompile Include="..\..\engine\common\ScriptLexer.cpp" />
     <ClCompile Include="..\..\engine\common\ScriptParser.cpp" />
     <ClCompile Include="..\..\engine\common\wowDatabase.cpp" />
@@ -177,6 +178,7 @@
     <ClCompile Include="..\..\engine\common\wowM2File.cpp" />
     <ClCompile Include="..\..\engine\common\wowTable.cpp" />
     <ClCompile Include="..\..\engine\common\wowWDB5File.cpp" />
+    <ClCompile Include="..\..\engine\common\wowWDC2File.cpp" />
     <ClCompile Include="..\..\engine\common\wowWDC3File.cpp" />
     <ClCompile Include="..\..\engine\common\wowWMOFile.cpp" />
     <ClCompile Include="Ogre\ScriptCompiler.cpp" />
@@ -195,6 +197,7 @@
     <ClInclude Include="..\..\engine\common\CSysSync.h" />
     <ClInclude Include="..\..\engine\common\CSysThread.h" />
     <ClInclude Include="..\..\engine\common\CWriteFile.h" />
+    <ClInclude Include="..\..\engine\common\fixstring.h" />
     <ClInclude Include="..\..\engine\common\frustum.h" />
     <ClInclude Include="..\..\engine\common\function.h" />
     <ClInclude Include="..\..\engine\common\function3d.h" />
@@ -203,6 +206,8 @@
     <ClInclude Include="..\..\engine\common\plane3d.h" />
     <ClInclude Include="..\..\engine\common\predefine.h" />
     <ClInclude Include="..\..\engine\common\quaternion.h" />
+    <ClInclude Include="..\..\engine\common\qzone_allocator.h" />
+    <ClInclude Include="..\..\engine\common\q_memory.h" />
     <ClInclude Include="..\..\engine\common\rect.h" />
     <ClInclude Include="..\..\engine\common\S3DVertex.h" />
     <ClInclude Include="..\..\engine\common\SColor.h" />
@@ -213,6 +218,7 @@
     <ClInclude Include="..\..\engine\common\vector2d.h" />
     <ClInclude Include="..\..\engine\common\vector3d.h" />
     <ClInclude Include="..\..\engine\common\vector4d.h" />
+    <ClInclude Include="..\..\engine\common\wowAnimation.h" />
     <ClInclude Include="..\..\engine\common\wowDatabase.h" />
     <ClInclude Include="..\..\engine\common\wowDbFile.h" />
     <ClInclude Include="..\..\engine\common\wowEnvironment.h" />
@@ -222,6 +228,7 @@
     <ClInclude Include="..\..\engine\common\wowM2Struct.h" />
     <ClInclude Include="..\..\engine\common\wowTable.h" />
     <ClInclude Include="..\..\engine\common\wowWDB5File.h" />
+    <ClInclude Include="..\..\engine\common\wowWDC2File.h" />
     <ClInclude Include="..\..\engine\common\wowWDC3File.h" />
     <ClInclude Include="..\..\engine\common\wowWMOFile.h" />
     <ClInclude Include="..\..\engine\common\wowWMOStruct.h" />

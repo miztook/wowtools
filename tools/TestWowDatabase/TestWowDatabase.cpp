@@ -16,7 +16,6 @@
 #pragma comment(lib, "pugixml.lib")
 
 void testWowDatabase83();
-void testWowDatabase81();
 void dumpWowDatabase(CFileSystem* fs, const wowDatabase* wowDB);
 void testWowDatabaseClassic();
 
@@ -60,52 +59,6 @@ void testWowDatabase83()
 		printf("wowDB init success!\n");
 		dumpWowDatabase(fs, wowDB);
 	}
-
-	delete wowDB;
-	delete wowEnv;
-	delete fs;
-}
-
-void testWowDatabase81()
-{
-	CFileSystem* fs = new CFileSystem(R"(D:\World Of Warcraft 81)");
-	wowEnvironment* wowEnv = new wowEnvironment(fs);
-	wowDatabase* wowDB = new wowDatabase(wowEnv);
-
-	if (!wowEnv->init("wow"))
-		printf("wowEnv init fail!\n");
-	else
-		printf("wowEnv init success! %s, %s, %s\n", wowEnv->getProduct(), wowEnv->getLocale(), wowEnv->getVersionString());
-
-		/*
-	if (!wowEnv->loadCascListFiles())
-		printf("listfile fail!\n");
-	else
-		printf("listfile success!\n");
-		*/
-
-	const DBFile* file = wowDB->loadDBFile("CharSections");
-	if (file)
-	{
-		printf("load dbfile success!\n");
-		delete file;
-	}
-	else
-	{
-		printf("load dbfile fail!\n");
-	}
-
-	/*
-	if (!wowDB->init())
-	{
-		printf("wowDB init fail!\n");
-	}
-	else
-	{
-		printf("wowDB init success!\n");
-		dumpWowDatabase(fs, wowDB);
-	}
-	*/
 
 	delete wowDB;
 	delete wowEnv;

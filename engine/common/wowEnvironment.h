@@ -8,7 +8,6 @@
 #include <functional>
 #include "stringext.h"
 #include "fixstring.h"
-#include "qzone_allocator.h"
 
 #ifndef HANDLE
 typedef void* HANDLE;
@@ -83,9 +82,9 @@ private:
 	CFileSystem*		FileSystem;
 	SConfig			Config;
 	HANDLE	hStorage;
-	std::map<uint32_t, string_cs256, std::less<uint32_t>, qzone_allocator<std::pair<uint32_t, string_cs256>>>	FileId2NameMap;
-	std::map<string_cs256, uint32_t, std::less<string_cs256>, qzone_allocator<std::pair<string_cs256, uint32_t>>>	FileName2IdMap;
-	std::map<string_cs256, string_cs256, std::less<string_cs256>, qzone_allocator<std::pair<string_cs256, string_cs256>>>	DirIndexMap;
+	std::map<uint32_t, string_cs256>	FileId2NameMap;
+	std::map<string_cs256, uint32_t>	FileName2IdMap;
+	std::map<string_cs256, string_cs256>	DirIndexMap;
 
 	//
 	std::vector<string_cs256>		WmoFileList;
