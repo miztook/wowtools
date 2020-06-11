@@ -17,8 +17,6 @@
 wowEnvironment* g_WowEnvironment = nullptr;
 bool createWowEnvironment(CFileSystem* fs, const char* product, bool loadCascFile)
 {
-	TIME_POINT last = CSysChrono::getTimePointNow();
-
 	g_WowEnvironment = new wowEnvironment(fs);
 	if (!g_WowEnvironment->init(product))
 	{
@@ -32,9 +30,6 @@ bool createWowEnvironment(CFileSystem* fs, const char* product, bool loadCascFil
 		if (!g_WowEnvironment->loadCascListFiles())
 			return false;
 	}
-
-	uint32_t ms = CSysChrono::getDurationMilliseconds(last);
-	OutputDebugStringA(std_string_format("duration: %u\n", ms).c_str());
 
 	return true;
 }
