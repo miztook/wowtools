@@ -371,6 +371,78 @@ inline void Q_getLocalTime(char* timebuf, size_t size)
 #endif
 }
 
+inline void Q_getLocalDate(char* timebuf, size_t size)
+{
+#ifdef A_PLATFORM_WIN_DESKTOP
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+	Q_sprintf(timebuf, size, "%0.4d-%0.2d-%0.2d", time.wYear, time.wMonth, time.wDay);
+#else
+	::tm t;
+	::time_t m_time;
+	::timeval timeofday;
+	::localtime_r(&m_time, &t);
+	::gettimeofday(&timeofday, NULL);
+	Q_sprintf(
+		timebuf,
+		size,
+		"%0.4d-%0.2d-%0.2d",
+		t.tm_year + 1900,
+		t.tm_mon + 1,
+		t.tm_mday);
+#endif
+}
+
+inline void Q_getLocalDateTimeMs(char* timebuf, size_t size)
+{
+#ifdef A_PLATFORM_WIN_DESKTOP
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+	Q_sprintf(timebuf, size, "%0.4d-%0.2d-%0.2d %0.2d:%0.2d:%0.2d.%0.3d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond, time.wMilliseconds);
+#else
+	::tm t;
+	::time_t m_time;
+	::timeval timeofday;
+	::localtime_r(&m_time, &t);
+	::gettimeofday(&timeofday, NULL);
+	Q_sprintf(
+		timebuf,
+		size,
+		"%0.4d-%0.2d-%0.2d %0.2d:%0.2d:%0.2d.%0.3d",
+		t.tm_year + 1900,
+		t.tm_mon + 1,
+		t.tm_mday,
+		t.tm_hour,
+		t.tm_min,
+		t.tm_sec,
+		timeofday.tv_usec / 1000);
+#endif
+}
+
+inline void Q_getLocalDateTimeMinute(char* timebuf, size_t size)
+{
+#ifdef A_PLATFORM_WIN_DESKTOP
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+	Q_sprintf(timebuf, size, "%0.4d-%0.2d-%0.2d_%0.2d_%0.2d", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute);
+#else
+	::tm t;
+	::time_t m_time;
+	::timeval timeofday;
+	::localtime_r(&m_time, &t);
+	::gettimeofday(&timeofday, NULL);
+	Q_sprintf(
+		timebuf,
+		size,
+		"%0.4d-%0.2d-%0.2d_%0.2d_%0.2d",
+		t.tm_year + 1900,
+		t.tm_mon + 1,
+		t.tm_mday,
+		t.tm_hour,
+		t.tm_min);
+#endif
+}
+
 inline void Q_fullpath(const char* filename, char* outfilename, size_t size)
 {
 #ifdef A_PLATFORM_WIN_DESKTOP
@@ -1107,4 +1179,17 @@ inline const char* strstr_anyof(const char* str, const char* substring1, const c
 	if (t1 >= t2)
 		return t2;
 	return NULL;
+}
+
+inline void fixWin10Console()
+{
+#ifdef A_PLATFORM_WIN_DESKTOP
+	HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
+	DWORD mode;
+	GetConsoleMode(hStdin, &mode);
+	mode &= ~ENABLE_QUICK_EDIT_MODE;
+	mode &= ~ENABLE_INSERT_MODE;
+	mode &= ~ENABLE_MOUSE_INPUT;
+	SetConsoleMode(hStdin, mode);
+#endif
 }

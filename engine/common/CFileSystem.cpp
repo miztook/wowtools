@@ -161,10 +161,14 @@ bool CFileSystem::copyFile(const char* src, const char* des) const
 
 bool CFileSystem::moveFile(const char* src, const char* des) const
 {
+	changeFileMode(src, S_IRWXU);
 	if (!copyFile(src, des))
 		return false;
 	if (!deleteFile(src))
+	{
+		deleteFile(des);
 		return false;
+	}
 	return  true;
 }
 

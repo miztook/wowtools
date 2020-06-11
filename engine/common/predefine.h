@@ -39,6 +39,8 @@
 #pragma warning(disable : 4996)
 #pragma warning(disable : 4481)
 
+#define S_IRWXU		_S_IWRITE
+
 #else
 
 #include <alloca.h>

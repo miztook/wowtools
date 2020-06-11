@@ -31,8 +31,8 @@ uint32_t CReadFile::readText(char* buffer, uint32_t len /*= MAX_READ_NUM */)
 
 	ASSERT(!IsBinary);
 
-	char* c = fgets(buffer, len, File);
-	return c ? (uint32_t)strlen(c) : 0;
+	uint32_t read = fread(buffer, 1, len, File);
+	return read;
 }
 
 uint32_t CReadFile::readLine(char* buffer, uint32_t len /*= MAX_READ_NUM*/)

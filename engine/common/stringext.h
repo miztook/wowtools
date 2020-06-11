@@ -330,3 +330,24 @@ inline std::string getFileNameNoExtensionA(const char* filename)
 		return std::string(lastSlash + 1, size_t(p - (lastSlash + 1)));
 	}
 }
+
+inline std::string getFullFileNameNoExtensionA(const char* filename)
+{
+	const char* lastSlash = strrchr(filename, '/');
+	const char* lastBackSlash = strrchr(filename, '\\');
+	if (lastSlash < lastBackSlash)
+		lastSlash = lastBackSlash;
+
+	const char* p = strrchr(filename, '.');
+	if (p && p < lastSlash)
+	{
+		return std::string();
+	}
+
+	if (!p || *(p + 1) == '\0')
+		return std::string(filename);
+	else
+	{
+		return std::string(filename, p - filename);
+	}
+}
