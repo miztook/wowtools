@@ -5,6 +5,7 @@
 #include "IRenderer.h"
 
 class CMesh;
+class wowM2File;
 
 class CMeshRenderer : public IRenderer
 {
@@ -20,19 +21,18 @@ private:
 	aabbox3df Box;
 };
 
-class CMeshSceneNode : public ISceneNode
+class CM2SceneNode : public ISceneNode
 {
 public:
-	CMeshSceneNode();
-	~CMeshSceneNode();
+	explicit CM2SceneNode(std::shared_ptr<wowM2File> file);
+	~CM2SceneNode();
 
 public:
-	CMeshRenderer* setMesh(const CMesh* pMesh);
 	IRenderer* getMeshRenderer() const;
 
 public:
 	SRenderUnit* render(const IRenderer* renderer, const CCamera* cam) override;
 
 private:
-
+	std::shared_ptr<wowM2File> M2File;
 };

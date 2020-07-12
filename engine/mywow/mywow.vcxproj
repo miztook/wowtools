@@ -75,6 +75,7 @@
     <ClInclude Include="..\engine\CInputReader.h" />
     <ClInclude Include="..\engine\CLight.h" />
     <ClInclude Include="..\engine\CLightSetting.h" />
+    <ClInclude Include="..\engine\CM2SceneNode.h" />
     <ClInclude Include="..\engine\CMaterial.h" />
     <ClInclude Include="..\engine\CMaterialManager.h" />
     <ClInclude Include="..\engine\CMesh.h" />
@@ -142,6 +143,7 @@
     <ClCompile Include="..\engine\CInputReader.cpp" />
     <ClCompile Include="..\engine\CLight.cpp" />
     <ClCompile Include="..\engine\CLightSetting.cpp" />
+    <ClCompile Include="..\engine\CM2SceneNode.cpp" />
     <ClCompile Include="..\engine\CMaterial.cpp" />
     <ClCompile Include="..\engine\CMaterialManager.cpp" />
     <ClCompile Include="..\engine\CMesh.cpp" />

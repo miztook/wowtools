@@ -287,6 +287,9 @@
     <ClInclude Include="..\common\qzone_allocator.h">
       <Filter>common</Filter>
     </ClInclude>
+    <ClInclude Include="..\engine\CM2SceneNode.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\CFileSystem.cpp">
@@ -438,6 +441,9 @@
     </ClCompile>
     <ClCompile Include="..\common\q_memory.cpp">
       <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\engine\CM2SceneNode.cpp">
+      <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
