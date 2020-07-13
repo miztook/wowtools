@@ -6,7 +6,7 @@
 #include "wowGameFile.h"
 
 wowM2File::wowM2File(const wowEnvironment* wowEnv)
-	: WowEnvironment(wowEnv)
+	: WowEnvironment(wowEnv), SkinFile(this)
 {
 }
 
@@ -226,10 +226,7 @@ void wowM2File::loadTransparency(const uint8_t* fileStart)
 	{
 		const int16_t* t = (int16_t*)(&fileStart[Header._ofsTransLookup]);
 		TransparencyLookups.resize(Header._nTransLookup);
-		for (uint32_t i = 0; i < Header._nTransLookup; ++i)
-		{
-			memcpy(TransparencyLookups.data(), t, sizeof(int16_t) * Header._nTransLookup);
-		}
+		memcpy(TransparencyLookups.data(), t, sizeof(int16_t) * Header._nTransLookup);
 	}
 }
 
@@ -243,6 +240,13 @@ void wowM2File::loadTextureAnimation(const uint8_t* fileStart)
 		{
 			TextureAnimations[i].init(fileStart, GlobalSequences.data(), (uint32_t)GlobalSequences.size(), t[i]);
 		}
+	}
+
+	if (Header._nTexAnimLookup > 0)
+	{
+		const int16_t* t = (int16_t*)(&fileStart[Header._ofsTexAnimLookup]);
+		TextureAnimationLookups.resize(Header._nTexAnimLookup);
+		memcpy(TextureAnimationLookups.data(), t, sizeof(int16_t) * Header._nTexAnimLookup);
 	}
 }
 
@@ -280,8 +284,73 @@ bool wowM2File::loadSkin(int index)
 	if (!file)
 		return false;
 
+	if (!SkinFile.loadFile(file))
+	{
+		delete file;
+		return false;
+	}
 
-
+	delete file;
 	return true;
 }
 
+wowSkinFile::wowSkinFile(const wowM2File* m2)
+	: M2File(m2)
+{
+
+}
+
+wowSkinFile::~wowSkinFile()
+{
+
+}
+
+bool wowSkinFile::loadFile(CMemFile* file)
+{
+	const uint8_t* skinBuffer = file->getBuffer();
+
+	const M2::skin_header* skinHeader = (const M2::skin_header*)skinBuffer;
+
+	const int numGeosets = skinHeader->_nSubmeshes;
+	const int numTexUnits = skinHeader->_nTextureUnits;
+	const int numIndices = skinHeader->_nTriangles;
+
+	if (numGeosets == 0 || numTexUnits == 0 || numIndices == 0)
+		return true;
+
+	//indices
+	const uint16_t* indexLookup = (const uint16_t*)(&skinBuffer[skinHeader->_ofsIndices]);
+	const uint16_t* triangles = (const uint16_t*)(&skinBuffer[skinHeader->_ofsTriangles]);
+
+	Indices.resize(numIndices);
+	for (uint16_t i = 0; i < numIndices; ++i)
+	{
+		Indices[i] = indexLookup[triangles[i]];
+	}
+
+	//geosets
+	Geosets.resize(numGeosets);
+
+	//texture unit
+	const uint32_t numTexAnimLookup = (uint32_t)M2File->TextureAnimationLookups.size();
+	const uint32_t numTexLookup = (uint32_t)M2File->TextureAnimationLookups.size();
+
+	M2::textureUnit* t = (M2::textureUnit*)(&skinBuffer[skinHeader->_ofsTextureUnits]);
+	for (uint32_t i = 0; i < numTexUnits; ++i)
+	{
+		SGeoset* geo = &Geosets[t[i]._submeshIdx];
+		SGeoset::STexUnit texUnit;
+
+		texUnit.Mode = t[i]._mode;
+		texUnit.Shading = t[i]._shading;
+		texUnit.TexID = (t[i]._textureIdx >= 0 && t[i]._textureIdx < (int16_t)numTexLookup) ?
+			M2File->TexLookups[t[i]._textureIdx] : -1;
+
+		texUnit.rfIndex = (t[i]._renderFlagsIdx >= 0 && t[i]._renderFlagsIdx < (int16_t)m2->NumRenderFlags) ?
+			t[i]._renderFlagsIdx : -1;
+		texUnit.ColorIndex = (t[i]._colorIdx >= 0 && t[i]._colorIdx < (int16_t)m2->NumColors) ?
+			t[i]._colorIdx : -1;
+	}
+
+	return true;
+}

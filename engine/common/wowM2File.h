@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include <vector>
 #include <string>
+#include <set>
+#include <map>
 #include "wowHeader.h"
 #include "wowM2Struct.h"
 #include "S3DVertex.h"
@@ -28,6 +30,64 @@ enum E_BONE_TYPE
 	EBT_RIGHTHAND,
 
 	EBT_COUNT
+};
+
+class wowM2File;
+
+
+class SGeoset
+{
+public:
+	struct SBoneUnit
+	{
+		uint32_t		BoneVStart = 0;				//在skin bone顶点中的偏移
+		uint16_t		TCount = 0;
+		uint16_t		StartIndex = 0;				//在skin 中index偏移
+		uint8_t		BoneCount = 0;
+		int8_t		Index = -1;
+
+		std::set<uint8_t>			BoneIndices;
+		std::map<uint8_t, uint8_t>	local2globalMap;					//local -> global
+	};
+
+	struct STexUnit
+	{
+		int16_t	TexID;				//使用纹理编号
+		int16_t	rfIndex;				//render flag索引
+		int16_t	ColorIndex;
+		int16_t  TransIndex;
+		int16_t	TexAnimIndex;
+		uint16_t	Mode;
+		uint16_t	Shading;		//shader?
+		uint32_t  TexFlags;
+		bool	WrapX;
+		bool	WrapY;
+	};
+
+public:
+	uint32_t		GeoID = 0;
+	uint16_t		VStart = 0;
+	uint16_t		VCount = 0;
+	uint16_t		IStart = 0;
+	uint16_t		ICount = 0;
+	uint16_t		MaxWeights = 0;
+	
+};
+
+class wowSkinFile
+{
+public:
+	explicit wowSkinFile(const wowM2File* m2);
+	~wowSkinFile();
+
+	bool loadFile(CMemFile* file);
+
+public:
+	std::vector<uint16_t>	Indices;
+	std::vector<SGeoset>	Geosets;
+
+private:
+	const wowM2File*	M2File;
 };
 
 class wowM2File
@@ -99,6 +159,18 @@ public:
 		int16_t		Index;
 	};
 
+	struct SRenderFlag
+	{
+		//raw
+		uint16_t	flags;
+		uint16_t	blend;
+
+		bool	lighting;
+		bool	zwrite;
+		bool	frontCulling;
+		bool	invisible;
+	};
+
 public:
 	std::string		Name;
 	std::string		Dir;
@@ -124,9 +196,12 @@ public:
 	std::vector<SModelTransparency>		Transparencies;
 	std::vector<int16_t>	TransparencyLookups;
 	std::vector<SModelTextureAnim>		TextureAnimations;
+	std::vector<int16_t>	TextureAnimationLookups;
 
 	std::vector<SModelAnimation>	Animations;
 	std::vector<int16_t>	AnimationLookups;
+
+	wowSkinFile	SkinFile;
 
 private:
 	void loadVertices(const uint8_t* fileStart);

@@ -76,6 +76,16 @@ void CGame::createScene()
 		sphereSceneNode->getTransform()->setScale(vector3df(1.5));
 	}
 	*/
+
+	{
+		const char* path = "Character\\HUMAN\\Male\\humanmale.m2";
+		std::shared_ptr<wowM2File> m2File = g_Engine->getMeshManager()->loadM2(path);
+		if (m2File)
+		{
+			CSysUtil::outputDebug("m2 load success! %s\n", path);
+		}
+		m2File.reset();
+	}
 }
 
 void CGame::update()
