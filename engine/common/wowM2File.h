@@ -60,8 +60,9 @@ public:
 		uint16_t	Mode;
 		uint16_t	Shading;		//shader?
 		uint32_t  TexFlags;
-		bool	WrapX;
-		bool	WrapY;
+
+		bool WrapX() const { return TexAnimIndex == -1 && (TexFlags & TEXTURE_WRAPX) == 0; }
+		bool WrapY() const { return TexAnimIndex == -1 && (TexFlags & TEXTURE_WRAPY) == 0; }
 	};
 
 public:
@@ -72,6 +73,8 @@ public:
 	uint16_t		ICount = 0;
 	uint16_t		MaxWeights = 0;
 	
+	std::vector<STexUnit>	TextureUnits;
+	std::vector<SBoneUnit>	BoneUnits;
 };
 
 class wowSkinFile
@@ -165,10 +168,10 @@ public:
 		uint16_t	flags;
 		uint16_t	blend;
 
-		bool	lighting;
-		bool	zwrite;
-		bool	frontCulling;
-		bool	invisible;
+		bool lighting() const { return (flags & RENDERFLAGS_UNLIT) == 0; }
+		bool zwrite() const { return (flags & RENDERFLAGS_UNZWRITE) == 0; }
+		bool frontCulling() const { return (flags & RENDERFLAGS_TWOSIDED) == 0; }
+		bool invisible() const { return (flags & 256) != 0; }
 	};
 
 public:
@@ -197,9 +200,16 @@ public:
 	std::vector<int16_t>	TransparencyLookups;
 	std::vector<SModelTextureAnim>		TextureAnimations;
 	std::vector<int16_t>	TextureAnimationLookups;
+	std::vector<SRenderFlag>	RenderFlags;
+
+	std::vector<uint32_t>	TextureFlags;
+	std::vector<ETextureTypes>	TextureTypes;
 
 	std::vector<SModelAnimation>	Animations;
 	std::vector<int16_t>	AnimationLookups;
+
+	std::vector<SModelAttachment>	Attachments;
+	std::vector<int16_t>	AttachLookups;
 
 	wowSkinFile	SkinFile;
 

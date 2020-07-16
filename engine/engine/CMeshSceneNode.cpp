@@ -45,13 +45,6 @@ CMeshRenderer* CMeshSceneNode::setMesh(const CMesh* pMesh)
 	return meshRenderer;
 }
 
-IRenderer* CMeshSceneNode::getMeshRenderer() const
-{
-	if (!m_RendererList.empty())
-		return *m_RendererList.begin();
-	return nullptr;
-}
-
 SRenderUnit* CMeshSceneNode::render(const IRenderer* renderer, const CCamera* cam)
 {
 	const CMeshRenderer* meshRenderer = static_cast<const CMeshRenderer*>(renderer);

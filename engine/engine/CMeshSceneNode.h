@@ -28,7 +28,6 @@ public:
 
 public:
 	CMeshRenderer* setMesh(const CMesh* pMesh);
-	IRenderer* getMeshRenderer() const;
 
 public:
 	SRenderUnit* render(const IRenderer* renderer, const CCamera* cam) override;

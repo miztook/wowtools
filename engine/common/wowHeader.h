@@ -72,3 +72,9 @@ enum ETextureTypes : int
 	TEXTURE_17,					//
 	NUM_TEXTURETYPE,
 };
+
+enum TEXTUREFLAG : int32_t
+{
+	TEXTURE_WRAPX = 1,
+	TEXTURE_WRAPY = 2,
+};

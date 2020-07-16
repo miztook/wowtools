@@ -252,17 +252,43 @@ void wowM2File::loadTextureAnimation(const uint8_t* fileStart)
 
 void wowM2File::loadBones(const uint8_t* fileStart)
 {
+	if (Header._nAnimations == 0)
+		return;
+
 
 }
 
 void wowM2File::loadRenderFlags(const uint8_t* fileStart)
 {
-
+	if (Header._nRenderFlags > 0)
+	{
+		const M2::renderflag* rfs = (M2::renderflag*)(&fileStart[Header._ofsRenderFlags]);
+		RenderFlags.resize(Header._nRenderFlags);
+		memcpy(RenderFlags.data(), rfs, sizeof(M2::renderflag) * Header._nRenderFlags);
+	}
 }
 
 void wowM2File::loadAttachments(const uint8_t* fileStart)
 {
+	if (Header._nAttachments > 0)
+	{
+		Attachments.resize(Header._nAttachments);
+		const M2::attach* att = (M2::attach*)(&fileStart[Header._ofsAttachments]);
+		for (uint32_t i = 0; i < Header._nAttachments; ++i)
+		{
+			Attachments[i].id = att[i]._Id;
+			Attachments[i].position = M2::fixCoordinate(att[i]._Position);
+			Attachments[i].boneIndex = (att[i]._Bone >= 0 && att[i]._Bone < (int32_t)Header._nBones) ?
+				att[i]._Bone : -1;
+		}
+	}
 
+	if (Header._nAttachLookup > 0)
+	{
+		const int16_t* p = (int16_t*)(&fileStart[Header._ofsAttachLookup]);
+		AttachLookups.resize(Header._nAttachLookup);
+		memcpy(AttachLookups.data(), p, sizeof(int16_t)* Header._nAttachLookup);
+	}
 }
 
 void wowM2File::loadParticleSystems(const uint8_t* fileStart)
@@ -334,9 +360,13 @@ bool wowSkinFile::loadFile(CMemFile* file)
 	//texture unit
 	const uint32_t numTexAnimLookup = (uint32_t)M2File->TextureAnimationLookups.size();
 	const uint32_t numTexLookup = (uint32_t)M2File->TextureAnimationLookups.size();
+	const uint32_t numRenderFlag = (uint32_t)M2File->RenderFlags.size();
+	const uint32_t numColor = (uint32_t)M2File->Colors.size();
+	const uint32_t numTransparencyLookup = (uint32_t)M2File->TransparencyLookups.size();
+	const uint32_t numTextureFlag = (uint32_t)M2File->TextureFlags.size();
 
-	M2::textureUnit* t = (M2::textureUnit*)(&skinBuffer[skinHeader->_ofsTextureUnits]);
-	for (uint32_t i = 0; i < numTexUnits; ++i)
+	const M2::textureUnit* t = (M2::textureUnit*)(&skinBuffer[skinHeader->_ofsTextureUnits]);
+	for (int i = 0; i < numTexUnits; ++i)
 	{
 		SGeoset* geo = &Geosets[t[i]._submeshIdx];
 		SGeoset::STexUnit texUnit;
@@ -346,10 +376,17 @@ bool wowSkinFile::loadFile(CMemFile* file)
 		texUnit.TexID = (t[i]._textureIdx >= 0 && t[i]._textureIdx < (int16_t)numTexLookup) ?
 			M2File->TexLookups[t[i]._textureIdx] : -1;
 
-		texUnit.rfIndex = (t[i]._renderFlagsIdx >= 0 && t[i]._renderFlagsIdx < (int16_t)m2->NumRenderFlags) ?
+		texUnit.rfIndex = (t[i]._renderFlagsIdx >= 0 && t[i]._renderFlagsIdx < (int16_t)numRenderFlag) ?
 			t[i]._renderFlagsIdx : -1;
-		texUnit.ColorIndex = (t[i]._colorIdx >= 0 && t[i]._colorIdx < (int16_t)m2->NumColors) ?
+		texUnit.ColorIndex = (t[i]._colorIdx >= 0 && t[i]._colorIdx < (int16_t)numColor) ?
 			t[i]._colorIdx : -1;
+		texUnit.TransIndex = (t[i]._transparencyIdx >= 0 && t[i]._transparencyIdx < (int16_t)numTransparencyLookup) ?
+			M2File->TransparencyLookups[t[i]._transparencyIdx] : -1;
+		texUnit.TexAnimIndex = (t[i]._animationIdx >= 0 && t[i]._animationIdx < (int16_t)numTexAnimLookup) ?
+			M2File->TextureAnimationLookups[t[i]._animationIdx] : -1;
+		texUnit.TexFlags = (texUnit.TexID >= 0 && texUnit.TexID < (int16_t)numTextureFlag)  ? M2File->TextureFlags[texUnit.TexID] : 0;
+	
+		geo->TextureUnits.push_back(texUnit);
 	}
 
 	return true;

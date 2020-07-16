@@ -62,8 +62,12 @@ void CGame::createScene()
 	{
 		CMeshSceneNode* gridSceneNode = m_pScene->addMeshSceneNode("$grid20");
 		gridSceneNode->setMesh(g_Engine->getMeshManager()->getMesh("$grid20"));
-		CMaterial& mat = gridSceneNode->getMeshRenderer()->getMaterial();
-		mat.RenderQueue = (ERQ_GEOMETRY - 50);
+
+		for (IRenderer* renderer : gridSceneNode->getRendererList())
+		{
+			CMaterial& mat = renderer->getMaterial();
+			mat.RenderQueue = (ERQ_GEOMETRY - 50);
+		}
 	}
 
 	/*
