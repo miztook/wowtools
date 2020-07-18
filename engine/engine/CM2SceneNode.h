@@ -28,9 +28,6 @@ public:
 	~CM2SceneNode();
 
 public:
-	IRenderer* getMeshRenderer() const;
-
-public:
 	SRenderUnit* render(const IRenderer* renderer, const CCamera* cam) override;
 
 private:
