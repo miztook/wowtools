@@ -1,5 +1,7 @@
 #include "CMeshSceneNode.h"
 #include "CMesh.h"
+#include "Engine.h"
+#include "CTextureManager.h"
 
 CMeshRenderer::CMeshRenderer(const CMesh * mesh, ISceneNode* node)
 	: IRenderer(node), Mesh(mesh)
@@ -41,11 +43,13 @@ CMeshRenderer* CMeshSceneNode::setMesh(const CMesh* pMesh)
 	m_RendererList.clear();
 
 	auto meshRenderer = new CMeshRenderer(pMesh, this);
+	meshRenderer->getMaterial().setMainTexture(g_Engine->getTextureManager()->getTextureWhite().get());
+
 	m_RendererList.push_back(meshRenderer);
 	return meshRenderer;
 }
 
-SRenderUnit* CMeshSceneNode::render(const IRenderer* renderer, const CCamera* cam)
+std::list<SRenderUnit*> CMeshSceneNode::render(const IRenderer* renderer, const CCamera* cam)
 {
 	const CMeshRenderer* meshRenderer = static_cast<const CMeshRenderer*>(renderer);
 
@@ -59,5 +63,7 @@ SRenderUnit* CMeshSceneNode::render(const IRenderer* renderer, const CCamera* ca
 
 	unit->drawParam.numVertices = mesh->getVertexBuffer()->getNumVertices();
 
-	return unit;
+	std::list<SRenderUnit*> unitList;
+	unitList.push_back(unit);
+	return unitList;
 }

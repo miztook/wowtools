@@ -31,7 +31,7 @@ public:
 	IRenderer* getMeshRenderer() const;
 
 public:
-	SRenderUnit* render(const IRenderer* renderer, const CCamera* cam) override;
+	std::list<SRenderUnit*> render(const IRenderer* renderer, const CCamera* cam) override;
 
 private:
 	std::shared_ptr<wowM2File> M2File;

@@ -30,7 +30,7 @@ public:
 	CMeshRenderer* setMesh(const CMesh* pMesh);
 
 public:
-	SRenderUnit* render(const IRenderer* renderer, const CCamera* cam) override;
+	std::list<SRenderUnit*> render(const IRenderer* renderer, const CCamera* cam) override;
 
 private:
 

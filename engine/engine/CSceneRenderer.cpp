@@ -95,9 +95,11 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 				for (const IRenderer* renderer : camRender->CullResult.VisibleRenderers)
 				{
 					ISceneNode* node = renderer->getSceneNode();
-					SRenderUnit* renderUnit = node->render(renderer, cam);
-					if (renderUnit)
+					std::list<SRenderUnit*> renderUnitList = node->render(renderer, cam);
+					for (SRenderUnit* renderUnit : renderUnitList)
+					{
 						camRender->RenderLoop.addRenderUnit(renderUnit);
+					}
 				}
 
 				//actual render

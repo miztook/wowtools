@@ -25,7 +25,7 @@ protected:
 
 public:
 	virtual void tick(uint32_t tickTime, const CCamera* cam) {}
-	virtual SRenderUnit* render(const IRenderer* renderer, const CCamera* cam) = 0;
+	virtual std::list<SRenderUnit*> render(const IRenderer* renderer, const CCamera* cam) = 0;
 
 public:
 	void setParent(ISceneNode* parent)
