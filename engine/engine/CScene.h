@@ -11,6 +11,7 @@ class ISceneNode;
 class ITexture;
 
 class CMeshSceneNode;
+class CM2SceneNode;
 
 class CScene
 {
@@ -38,6 +39,7 @@ public:
 
 	//
 	CMeshSceneNode* addMeshSceneNode(const char* name);
+	CM2SceneNode* addM2SceneNode(const char* filename);
 
 private:
 	std::string m_strName;

@@ -3,8 +3,10 @@
 #include "Engine.h"
 #include "CMeshManager.h"
 #include "ISceneNode.h"
-#include "CMeshSceneNode.h"
 #include "CTextureManager.h"
+#include "CMeshSceneNode.h"
+#include "CM2SceneNode.h"
+
 
 CScene::CScene(const char* strName)
 	: m_strName(strName)
@@ -91,6 +93,17 @@ void CScene::deleteAllSceneNodes()
 CMeshSceneNode* CScene::addMeshSceneNode(const char* name)
 {
 	CMeshSceneNode* node = new CMeshSceneNode;
+	m_SceneNodes.push_back(node);
+	return node;
+}
+
+CM2SceneNode* CScene::addM2SceneNode(const char* filename)
+{
+	std::shared_ptr<wowM2File> m2File = g_Engine->getMeshManager()->loadM2(filename);
+	if (!m2File)
+		return nullptr;
+
+	CM2SceneNode* node = new CM2SceneNode(m2File);
 	m_SceneNodes.push_back(node);
 	return node;
 }

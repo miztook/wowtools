@@ -84,6 +84,9 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 				{
 					for (const IRenderer* renderer : node->getRendererList())
 					{
+						if (!renderer->Active)
+							continue;
+
 						const aabbox3df& box = renderer->getBoundingBox();
 						if (cam->getWorldFrustum().isInFrustum(box))
 							camRender->CullResult.VisibleRenderers.push_back(renderer);

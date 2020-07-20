@@ -4,21 +4,23 @@
 #include "aabbox3d.h"
 #include "IRenderer.h"
 
-class CMesh;
+class CM2SceneNode;
 class wowM2File;
+class wowSkinFile;
 
-class CMeshRenderer : public IRenderer
+class CM2Renderer : public IRenderer
 {
 public:
-	explicit CMeshRenderer(const CMesh* mesh, ISceneNode* node);
+	explicit CM2Renderer(CM2SceneNode* node);
 
 public:
 	aabbox3df getBoundingBox() const override;
-	const CMesh* getMesh() const { return Mesh; }
 
 private:
-	const CMesh* Mesh;
 	aabbox3df Box;
+
+	const wowM2File*	M2File;
+	const wowSkinFile*		WowSkinFile;
 };
 
 class CM2SceneNode : public ISceneNode
@@ -28,11 +30,46 @@ public:
 	~CM2SceneNode();
 
 public:
-	IRenderer* getMeshRenderer() const;
+	struct SCharTexturePart
+	{
+		std::string name;
+		int region;
+		int layer;
+
+		bool operator<(const SCharTexturePart& c) const
+		{
+			return layer < c.layer;
+		}
+	};
+
+	struct SCharTexture
+	{
+		std::vector<SCharTexturePart>	textureParts;
+	};
+
+	struct SDynGeoset
+	{
+
+	};
+
+	struct SDynBone
+	{
+
+	};
+
+public:
+	std::vector<SDynGeoset>		DynGeosets;
+	std::vector<SDynBone>	DynBones;
+	const wowSkinFile*		WowSkinFile;
 
 public:
 	std::list<SRenderUnit*> render(const IRenderer* renderer, const CCamera* cam) override;
 
 private:
 	std::shared_ptr<wowM2File> M2File;
+
+	CM2Renderer	M2Renderer;
+
+
+	friend class CM2Renderer;
 };

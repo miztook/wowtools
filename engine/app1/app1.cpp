@@ -46,7 +46,7 @@ int doRun()
 	SWindowInfo wndInfo = CSysUtil::createWindow("app1", 1136, 640, false, false);
 	HWND hwnd = wndInfo.hwnd;
 
-	createFileSystem(R"(E:\World Of Warcraft)");
+	createFileSystem(R"(J:\World Of Warcraft)");
 
 	if (!createWowEnvironment(g_FileSystem, "wow_classic", true))
 	{
