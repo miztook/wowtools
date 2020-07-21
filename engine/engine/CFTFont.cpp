@@ -620,16 +620,7 @@ FT_Size CFTFont::GetFTSize() const
 
 bool CFTFont::addFontTexture()
 {
-	ECOLOR_FORMAT format;
-
-	if (g_Engine->getDriver()->isSupportA8L8())
-	{
-		format = ECF_A8L8;
-	}
-	else
-	{
-		format = ECF_A8R8G8B8;
-	}
+	ECOLOR_FORMAT format = ECF_A8R8G8B8;
 
 	auto fontTex = g_Engine->getDriver()->createTexture(false, dimension2d(FONT_TEXTURE_SIZE, FONT_TEXTURE_SIZE), format);	   //no mipmap
 	FontTextures.push_back(fontTex);

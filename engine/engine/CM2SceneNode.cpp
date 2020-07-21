@@ -18,12 +18,12 @@ CM2SceneNode::CM2SceneNode(std::shared_ptr<wowM2File> file)
 {
 	WowSkinFile = &M2File->SkinFile;
 
-	m_RendererList.push_back(&M2Renderer);
+	m_Renderer = &M2Renderer;
 }
 
 CM2SceneNode::~CM2SceneNode()
 {
-	m_RendererList.clear();
+	
 }
 
 std::list<SRenderUnit*> CM2SceneNode::render(const IRenderer* renderer, const CCamera* cam)

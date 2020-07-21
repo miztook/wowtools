@@ -261,13 +261,11 @@ bool COpenGLDriver::initDriver(const SWindowInfo& wndInfo, bool vsync, E_AA_MODE
 	}
 	DriverSetting.antialias = antialias;
 
-	IsSupportA8L8 = GLExtension.TextureCompressionLA || GLExtension.TextureCompressionRG;
 	IsMultiSampleEnabled = (DriverSetting.aaMode >= E_AA_MSAA_1 && DriverSetting.aaMode <= E_AA_MSAA_4) && GLExtension.MultisampleSupported;
 	IsSupportDepthTexture = GLExtension.queryOpenGLFeature(IRR_ARB_depth_texture);
 
 	g_FileSystem->writeLog(ELOG_GX,
-		"IsSupportA8L8 : %d, IsMultiSampleEnabled : %d, IsFxAAEnabled: %d",
-		IsSupportA8L8 ? 1 : 0,
+		"IsMultiSampleEnabled : %d, IsFxAAEnabled: %d",
 		IsMultiSampleEnabled ? 1 : 0,
 		isFXAAEnabled() ? 1 : 0);
 

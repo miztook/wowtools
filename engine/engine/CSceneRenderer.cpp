@@ -82,15 +82,13 @@ void CSceneRenderer::renderFrame(const CScene* scene, bool active)
 				camRender->CullResult.VisibleRenderers.clear();
 				for (const auto& node : camRender->SceneNodeList)
 				{
-					for (const IRenderer* renderer : node->getRendererList())
-					{
-						if (!renderer->Active)
-							continue;
+					const IRenderer* renderer = node->getRenderer();
+					if (!renderer->Active)
+						continue;
 
-						const aabbox3df& box = renderer->getBoundingBox();
-						if (cam->getWorldFrustum().isInFrustum(box))
-							camRender->CullResult.VisibleRenderers.push_back(renderer);
-					}
+					const aabbox3df& box = renderer->getBoundingBox();
+					if (cam->getWorldFrustum().isInFrustum(box))
+						camRender->CullResult.VisibleRenderers.push_back(renderer);
 				}
 
 				//scene node renderer

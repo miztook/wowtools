@@ -27,12 +27,10 @@ public:
 	~CMeshSceneNode();
 
 public:
-	CMeshRenderer* setMesh(const CMesh* pMesh);
-	CMaterial* getMaterial() const;
+	void setMesh(const CMesh* pMesh);
 
 public:
 	std::list<SRenderUnit*> render(const IRenderer* renderer, const CCamera* cam) override;
 
 private:
-	CMeshRenderer*	MeshRenderer;
 };

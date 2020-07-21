@@ -19,34 +19,21 @@ aabbox3df CMeshRenderer::getBoundingBox() const
 
 CMeshSceneNode::CMeshSceneNode()
 {
-	MeshRenderer = nullptr;
+	
 }
 
 CMeshSceneNode::~CMeshSceneNode()
 {
-	delete MeshRenderer;
+	delete m_Renderer;
 }
 
-CMeshRenderer* CMeshSceneNode::setMesh(const CMesh* pMesh)
+void CMeshSceneNode::setMesh(const CMesh* pMesh)
 {
 	if (!pMesh)
-		return nullptr;
+		return;
 
-	m_RendererList.clear();
-
-	delete MeshRenderer;
-	MeshRenderer = new CMeshRenderer(pMesh, this);
-	MeshRenderer->getMaterial().setMainTexture(g_Engine->getTextureManager()->getTextureWhite().get());
-
-	m_RendererList.push_back(MeshRenderer);
-	return MeshRenderer;
-}
-
-CMaterial* CMeshSceneNode::getMaterial() const
-{
-	if (!MeshRenderer)
-		return nullptr;
-	return &MeshRenderer->getMaterial();
+	m_Renderer = new CMeshRenderer(pMesh, this);
+	m_Renderer->getMaterial().setMainTexture(g_Engine->getTextureManager()->getTextureWhite().get());
 }
 
 std::list<SRenderUnit*> CMeshSceneNode::render(const IRenderer* renderer, const CCamera* cam)

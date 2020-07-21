@@ -94,7 +94,6 @@ public:
 
 		IsSupportDepthTexture = false;
 		IsMultiSampleEnabled = false;
-		IsSupportA8L8 = false;
 
 		PrimitivesDrawn = 0;
 		DrawCall = 0;
@@ -119,7 +118,6 @@ public:
 	bool isFXAAEnabled() const { return DriverSetting.aaMode >= E_AA_FXAA && DriverSetting.aaMode <= E_AA_FXAA; }
 	bool isMultiSampleEnabled() const { return IsMultiSampleEnabled; }
 	bool isSupportDepthTexture() const { return IsSupportDepthTexture; }
-	bool isSupportA8L8() const { return IsSupportA8L8; }
 
 	void setShaderVariable(const char* name, const float* src, uint32_t size);
 	void setShaderVariable(const char* name, const matrix4& mat) { setShaderVariable(name, mat.M, 16); }
@@ -184,7 +182,6 @@ protected:
 
 	bool	IsMultiSampleEnabled;
 	bool	IsSupportDepthTexture;
-	bool	IsSupportA8L8;
 };
 
 inline void IVideoDriver::setShaderVariable(const char* name, const float* src, uint32_t size)

@@ -18,6 +18,7 @@ public:
 	ISceneNode()
 		: m_Transform(this), m_Active(true), m_ToDelete(false), m_layer(LAYER_DEFAULT)
 	{
+		m_Renderer = nullptr;
 	}
 
 protected:
@@ -35,7 +36,8 @@ public:
 	void traverse(TRAVERSE_SCENENODE_FUNC func);
 	CTransform* getTransform() { return &m_Transform; }
 	const CTransform* getTransform() const { return &m_Transform; }
-	const std::list<IRenderer*>& getRendererList() const { return m_RendererList; }
+	const IRenderer* getRenderer() const { return m_Renderer; }
+	IRenderer* getRenderer() { return m_Renderer; }
 
 	void destroy();
 	bool isToDelete() const { return m_ToDelete; }
@@ -50,7 +52,7 @@ public:
 
 protected:
 	CTransform		m_Transform;
-	std::list<IRenderer*>	m_RendererList;
+	IRenderer*	m_Renderer;
 	int m_layer;
 	bool m_ToDelete;
 	bool m_Active;
