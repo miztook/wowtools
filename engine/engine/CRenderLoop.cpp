@@ -106,8 +106,15 @@ void CRenderLoop::doRenderLoopPrepass(const CCamera* cam)
 
 void CRenderLoop::doRenderLoopForward(const CCamera* cam)
 {
+	//opaque
+	renderShadowMap(cam);
+	collectShadows();
 	renderOpaques(cam);
+	renderImageEffects(cam);		//处理render target
+
+	//transparent
 	renderAfterOpaues(cam);
+	renderImageEffects(cam);		//处理render target
 }
 
 void CRenderLoop::clearRenderUnits()
@@ -123,6 +130,16 @@ void CRenderLoop::clearRenderUnits()
 		delete unit;
 	}
 	m_RenderUnits_AfterOpaque.clear();
+}
+
+void CRenderLoop::renderShadowMap(const CCamera* cam)
+{
+
+}
+
+void CRenderLoop::collectShadows()
+{
+
 }
 
 void CRenderLoop::renderOpaques(const CCamera* cam)
@@ -153,6 +170,11 @@ void CRenderLoop::renderOpaques(const CCamera* cam)
 
 		driver->draw(pass, unit->vbuffer, unit->ibuffer, unit->primType, unit->primCount, unit->drawParam);
 	}
+}
+
+void CRenderLoop::renderImageEffects(const CCamera* cam)
+{
+
 }
 
 void CRenderLoop::renderAfterOpaues(const CCamera* cam)

@@ -27,6 +27,9 @@ public:
 
 private:
 	void renderOpaques(const CCamera* cam);
+	void renderShadowMap(const CCamera* cam);		//绘制shadowmap
+	void collectShadows();			//收集阴影
+	void renderImageEffects(const CCamera* cam);
 	void renderAfterOpaues(const CCamera* cam);
 
 	void processRenderUnit(SRenderUnit* unit);
