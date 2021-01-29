@@ -25,7 +25,7 @@ int main()
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-	//_CrtSetBreakAlloc(291418);
+	//_CrtSetBreakAlloc(180);
 
 	globalDbg.beginCheckPoint();
 
@@ -51,12 +51,17 @@ int doRun()
 	if (!createWowEnvironment(g_FileSystem, "wow_classic", true))
 	{
 		destroyWowEnvironment();
+		destroyFileSystem();
+
 		return -1;
 	}
 
 	if (!createEngine(wndInfo, EDT_OPENGL, true, E_AA_FXAA, mywow_InitDriver))
 	{
 		destroyEngine();
+		destroyWowEnvironment();
+		destroyFileSystem();
+
 		return -1;
 	}
 
